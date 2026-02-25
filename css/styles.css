@@ -1,1 +1,63 @@
+body {
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    background: #0f172a;
+    color: white;
+}
 
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 40px;
+    background: #1e293b;
+}
+
+.logo {
+    font-weight: 800;
+    font-size: 24px;
+    color: #38bdf8;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+}
+
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(135deg, #0ea5e9, #2563eb);
+}
+
+.hero h1 {
+    font-size: 42px;
+}
+
+button {
+    padding: 12px 25px;
+    border: none;
+    background: #38bdf8;
+    color: black;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.modulo {
+    padding: 60px 40px;
+    border-bottom: 1px solid #334155;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background: #1e293b;
+}
