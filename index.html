@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RDMLS | Radio Digital Municipal La Serena</title>
+<link rel="stylesheet" href="css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
+</head>
 
+<body>
+
+<header class="main-header">
+    <div class="logo">RDMLS</div>
+    <nav>
+        <ul>
+            <li><a href="#radio">Radio</a></li>
+            <li><a href="#juego">Juego Ciudadano</a></li>
+            <li><a href="#mapa">Mapa Inteligente</a></li>
+            <li><a href="#crm">CRM Municipal</a></li>
+        </ul>
+    </nav>
+</header>
+
+<section class="hero">
+    <h1>Radio Digital Municipal La Serena</h1>
+    <p>Plataforma interactiva con juego ciudadano, CRM municipal y mapa inteligente.</p>
+    <button onclick="activarPlataforma()">Activar Plataforma</button>
+</section>
+
+<section id="radio" class="modulo">
+    <h2>📻 Radio en Vivo</h2>
+    <audio controls>
+        <source src="assets/audio/stream.mp3" type="audio/mpeg">
+        Tu navegador no soporta audio.
+    </audio>
+</section>
+
+<section id="juego" class="modulo">
+    <h2>🎮 Juego Ciudadano</h2>
+    <p>Participa en desafíos municipales y gana puntos por interacción ciudadana.</p>
+    <button onclick="iniciarJuego()">Iniciar Juego</button>
+</section>
+
+<section id="mapa" class="modulo">
+    <h2>🗺️ Mapa Inteligente</h2>
+    <div id="mapa-container">
+        Próximamente integración con sistema GIS municipal.
+    </div>
+</section>
+
+<section id="crm" class="modulo">
+    <h2>📊 CRM Municipal</h2>
+    <p>Gestión de solicitudes ciudadanas en tiempo real.</p>
+    <button onclick="abrirCRM()">Acceder</button>
+</section>
+
+<footer>
+    <p>© 2026 RDMLS - Radio Digital Municipal La Serena</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
