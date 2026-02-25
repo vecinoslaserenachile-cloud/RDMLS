@@ -40,7 +40,9 @@
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
-            <video autoplay muted loop playsinline><source src="assets/img/video_full.mp4" type="video/mp4"></video>
+            <video autoplay muted loop playsinline preload="metadata">
+                <source src="assets/img/video_full.mp4" type="video/mp4">
+            </video>
             <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
 
@@ -128,7 +130,9 @@
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
     <div class="modal-content-video" onclick="event.stopPropagation()">
-        <video id="inst-video" controls style="width:100%; height:100%;"><source src="assets/img/video_full.mp4" type="video/mp4"></video>
+        <video id="inst-video" controls playsinline style="width:100%; height:100%;">
+            <source src="assets/img/video_full.mp4" type="video/mp4">
+        </video>
         <button class="close-modal" onclick="toggleVideo(false)">X</button>
     </div>
 </div>
