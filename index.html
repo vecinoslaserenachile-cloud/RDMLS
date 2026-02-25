@@ -1,71 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RDMLS | Radio Digital Municipal La Serena</title>
-<link rel="stylesheet" href="css/styles.css">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;800&display=swap" rel="stylesheet">
-</head>
-
-<body>
-
-<header class="main-header">
-    <div class="logo">RDMLS</div>
-    <nav>
-        <ul>
-            <li><a href="#radio">Radio</a></li>
-            <li><a href="#juego">Juego Ciudadano</a></li>
-            <li><a href="#mapa">Mapa Inteligente</a></li>
-            <li><a href="#crm">CRM Municipal</a></li>
-            <li><a href="ia.html">IA Ciudadana</a></li>
-        </ul>
-    </nav>
-</header>
-
-<section class="hero">
-    <h1>Radio Digital Municipal La Serena</h1>
-    <p>Plataforma interactiva con juego ciudadano, CRM municipal, mapa inteligente e inteligencia artificial.</p>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RDMLS | La Serena 2026</title>
     
-    <div style="margin-top:30px;">
-        <button onclick="activarPlataforma()">Activar Plataforma</button>
-        <a href="ia.html">
-            <button style="margin-left:15px;">Ir a Asistente IA</button>
-        </a>
+    <link rel="icon" type="image/png" href="assets/img/serenito.png">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body onload="initApp()">
+
+<div id="main-layout">
+    
+    <div id="col-left">
+        <div style="text-align:center;">
+            <img src="assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
+            <h1 class="rdmls-title">RDMLS</h1>
+            <div class="clock" id="clock">00:00:00</div>
+            
+            <div class="card-box" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
+                <div style="flex-grow:1;">
+                    <div style="font-size:9px; color:var(--gold); letter-spacing:1px; font-weight:bold;">RADIO MUNICIPAL</div>
+                    <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)" style="width:100%; height:4px; accent-color:gold;">
+                </div>
+            </div>
+        </div>
+
+        <div class="video-box" onclick="toggleVideo(true)">
+            <video autoplay muted loop playsinline><source src="assets/img/video_full.mp4" type="video/mp4"></video>
+            <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
+        </div>
+
+        <div class="card-box">
+            <div class="section-title">PLANIFICADOR DE VIAJES</div>
+            <div class="chip-container">
+                <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
+                <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
+                <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
+                <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
+                <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
+                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
+                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
+                <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
+                <div class="chip" onclick="calcRoute(-33.448, -70.669, 'SANTIAGO')">SANTIAGO</div>
+            </div>
+
+            <div id="dist-hud" class="dist-panel">
+                <div style="text-align:center; color:var(--gold); font-weight:bold; border-bottom:1px solid #555; padding-bottom:3px; margin-bottom:5px;">DESTINO: <span id="lbl-dest">...</span></div>
+                <div class="dist-row"><span>🚗 Auto</span> <span id="v-auto"></span></div>
+                <div class="dist-row"><span>🚌 Bus</span> <span id="v-bus"></span></div>
+                <div class="dist-row"><span>🚲 Bici</span> <span id="v-bici"></span></div>
+                <div class="dist-row"><span>🚶 Pie</span> <span id="v-pie"></span></div>
+                <div class="dist-row"><span>✈️ Avión</span> <span id="v-avion"></span></div>
+                <div style="text-align:center; color:#00e676; margin-top:5px; font-weight:bold; font-size:10px;">¡SERENITO EN CAMINO!</div>
+            </div>
+            <button id="btn-reset" class="btn-reset" onclick="resetRoute()">CERRAR RUTA</button>
+        </div>
+
+        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
+
+        <div id="slider-container">
+            <img src="assets/img/foto1.jpg" class="slide-img active" onerror="this.src='https://via.placeholder.com/400x200/900/fc0?text=TURISMO'">
+            <img src="assets/img/foto2.jpg" class="slide-img" onerror="this.src='https://via.placeholder.com/400x200/000/fc0?text=PATRIMONIO'">
+            <img src="assets/img/foto3.jpg" class="slide-img" onerror="this.src='https://via.placeholder.com/400x200/333/fc0?text=CULTURA'">
+        </div>
     </div>
-</section>
 
-<section id="radio" class="modulo">
-    <h2>📻 Radio en Vivo</h2>
-    <audio controls>
-        <source src="assets/audio/stream.mp3" type="audio/mpeg">
-        Tu navegador no soporta audio.
-    </audio>
-</section>
-
-<section id="juego" class="modulo">
-    <h2>🎮 Juego Ciudadano</h2>
-    <p>Participa en desafíos municipales y gana puntos por interacción ciudadana.</p>
-    <button onclick="iniciarJuego()">Iniciar Juego</button>
-</section>
-
-<section id="mapa" class="modulo">
-    <h2>🗺️ Mapa Inteligente</h2>
-    <div id="mapa-container">
-        Próximamente integración con sistema GIS municipal.
+    <div id="stage-area">
+        <div class="weather-bar">
+            <span><i class="fas fa-cloud"></i> 17°C NUBLADO</span>
+            <span><i class="fas fa-wind"></i> 14 km/h</span>
+            <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
+        </div>
+        <div id="map"></div>
+        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (TANQUE)</button>
     </div>
-</section>
 
-<section id="crm" class="modulo">
-    <h2>📊 CRM Municipal</h2>
-    <p>Gestión de solicitudes ciudadanas en tiempo real.</p>
-    <button onclick="abrirCRM()">Acceder</button>
-</section>
+    <div id="col-right">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
+            <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
+            <button onclick="loginGoogle()" class="btn-access">ACCESO</button>
+        </div>
 
-<footer>
-    <p>© 2026 RDMLS - Radio Digital Municipal La Serena</p>
-</footer>
+        <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
+            <div class="section-title" style="border:none; margin:0; color:#aaa;">UBICACIÓN REAL (Arrastra a Serenito)</div>
+            <div id="geo-result" style="color:var(--gold); font-weight:bold; font-size:13px; margin-top:5px;">📍 Arrastra el pin...</div>
+        </div>
+
+        <div class="card-box">
+            <div class="section-title">NUEVO REPORTE</div>
+            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache)">
+            <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
+            <button class="btn-red" onclick="enviarReporte()">ENVIAR REPORTE</button>
+            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa;">Historial vacío.</div>
+        </div>
+
+        <div class="card-box" style="border-color:var(--red);">
+            <div class="section-title">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
+            <div id="poll-interface"></div>
+            <div id="poll-results" style="display:none; text-align:center;">
+                <b style="color:#00e676;">¡VOTO REGISTRADO!</b>
+            </div>
+        </div>
+
+        <div class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
+            <div class="section-title">SERENITO IA</div>
+            <div id="chat-ia" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid #444; padding:8px; font-size:11px; overflow-y:auto; border-radius:5px; margin-bottom:5px;">
+                ¡Hola! Soy Serenito IA. ¿Consultas sobre trámites?
+            </div>
+            <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
+        </div>
+    </div>
+</div>
+
+<div id="modal-video" class="modal" onclick="toggleVideo(false)">
+    <div class="modal-content-video" onclick="event.stopPropagation()">
+        <video id="inst-video" controls style="width:100%; height:100%;"><source src="assets/img/video_full.mp4" type="video/mp4"></video>
+        <button class="close-modal" onclick="toggleVideo(false)">X</button>
+    </div>
+</div>
+
+<div id="modal-camara" class="modal">
+    <button class="close-modal" onclick="cerrarCamara()">CERRAR</button>
+    <div class="cam-container">
+        <video id="cam-video" autoplay playsinline></video>
+        <img src="assets/img/serenito.png" class="cam-overlay">
+    </div>
+    <button onclick="alert('Foto guardada!')" class="btn-gold" style="width:300px; margin-top:10px;">CAPTURAR</button>
+</div>
+
+<div id="modal-tour-3d" class="modal">
+    <button class="close-modal" onclick="cerrarTour()">SALIR</button>
+    <canvas id="renderCanvas"></canvas>
+</div>
+
+<audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
 
 <script src="js/app.js"></script>
+
 </body>
 </html>
