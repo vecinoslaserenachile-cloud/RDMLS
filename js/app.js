@@ -7,27 +7,31 @@ const CENTRO = [-29.9027, -71.2520];
 let map, marker, polyline, engine, ticketMarker, animInterval;
 const radio = document.getElementById('radio');
 
-// --- INICIALIZACIÓN ---
+// --- INICIO ---
 function initApp() {
-    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL'), 1000);
+    setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL', {hour12: false}), 1000);
     startSlider();
 
+    // Clima API
     fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.90&longitude=-71.25&current_weather=true')
         .then(r=>r.json()).then(d=>{
-            document.getElementById('w-temp').innerText = d.current_weather.temperature+"°C";
-            document.getElementById('w-wind').innerText = d.current_weather.windspeed+" km/h";
+            // Actualizar si existen los elementos (para evitar errores en consola)
+            if(document.getElementById('w-temp')) document.getElementById('w-temp').innerText = d.current_weather.temperature+"°C";
+            if(document.getElementById('w-wind')) document.getElementById('w-wind').innerText = d.current_weather.windspeed+" km/h";
         }).catch(()=>{});
 
+    // Mapa
     map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-    // RUTAS ACTUALIZADAS A: assets/img/
+    // Serenito
     const sIcon = L.divIcon({ 
         html: `<div class="pin-wrapper"><img src="assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'"><div class="pin-arrow"></div></div>`, 
         className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
     });
     marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
+    // Georeferencia
     marker.on('dragend', async (e) => {
         const {lat, lng} = e.target.getLatLng();
         document.getElementById('geo-result').innerText = "Consultando...";
@@ -43,6 +47,52 @@ function initApp() {
     initPoll();
     auth.onAuthStateChanged(u=>{ user=u; if(u) loadHist(); });
 }
+
+// --- SISTEMA MULTIMEDIA INTELIGENTE ---
+function toggleVideo(state) {
+    const modal = document.getElementById('modal-video');
+    const videoPlayer = document.getElementById('inst-video');
+    
+    if (state) {
+        // ABRIR
+        modal.style.display = 'flex';
+        // Si la radio suena, pausarla y recordar
+        if (!radio.paused) {
+            radio.pause();
+            document.getElementById('play-icon').className = 'fas fa-play';
+            radio.dataset.wasPlaying = "true";
+        } else {
+            radio.dataset.wasPlaying = "false";
+        }
+        videoPlayer.play();
+    } else {
+        // CERRAR
+        modal.style.display = 'none';
+        videoPlayer.pause();
+        videoPlayer.currentTime = 0;
+        // Si la radio sonaba antes, reactivar
+        if (radio.dataset.wasPlaying === "true") {
+            radio.play();
+            document.getElementById('play-icon').className = 'fas fa-pause';
+        }
+    }
+}
+
+function toggleRadio() {
+    // Bloquear radio si el video está en pantalla
+    const modal = document.getElementById('modal-video');
+    if (modal.style.display === 'flex') return;
+
+    if (radio.paused) {
+        radio.play();
+        document.getElementById('play-icon').className = 'fas fa-pause';
+    } else {
+        radio.pause();
+        document.getElementById('play-icon').className = 'fas fa-play';
+    }
+}
+
+function setVolume(v) { radio.volume = v; }
 
 // --- RUTA ---
 function calcRoute(lat, lon, name) {
@@ -88,7 +138,7 @@ function resetRoute() {
     marker.setLatLng(CENTRO);
 }
 
-// --- ENCUESTA (Rutas Assets Actualizadas) ---
+// --- ENCUESTA ---
 const qs = [
     {i:"assets/img/serenito.png", q:"¿Seguridad Centro?", o:["Cámaras", "Rondas"]},
     {i:"assets/img/serenito.png", q:"¿Deporte?", o:["Canchas", "Talleres"]},
@@ -104,28 +154,7 @@ function renderPollStep(i) {
     `;
 }
 
-// --- 3D MODE (Ruta Assets Models) ---
-function abrirTour3D() {
-    document.getElementById('modal-tour-3d').style.display='flex';
-    if(!engine) {
-        const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
-        const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-        const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
-        cam.attachControl(c, true); cam.keysUp=[87]; cam.keysDown=[83]; cam.keysLeft=[65]; cam.keysRight=[68];
-        new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
-        const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
-        g.material = new BABYLON.StandardMaterial("m", s); g.material.wireframe=true;
-        // Apunta a assets/models/
-        try{ BABYLON.SceneLoader.ImportMesh("","assets/models/","municipalidad.glb",s, (m)=>{m[0].position.y=0}, null, ()=>{ const b=BABYLON.MeshBuilder.CreateBox("e",{size:5},s); b.position.y=2.5; }); }catch(e){}
-        engine.runRenderLoop(()=>s.render());
-    }
-}
-function cerrarTour() { document.getElementById('modal-tour-3d').style.display='none'; }
-
 // --- UTILS ---
-function toggleVideo(s) { document.getElementById('modal-video').style.display = s ? 'flex' : 'none'; const v = document.getElementById('inst-video'); s ? v.play() : v.pause(); }
-function toggleRadio() { if(radio.paused){ radio.play(); document.getElementById('play-icon').className='fas fa-pause'; } else { radio.pause(); document.getElementById('play-icon').className='fas fa-play'; } }
-function setVolume(v) { radio.volume = v; }
 function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
 function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
 function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
@@ -142,7 +171,7 @@ function loadHist() {
 }
 function chatIA(el) { if(!el.value) return; document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><b>Serenito:</b> Procesando...`; el.value = ""; }
 function startSlider() { 
-    let cur = 0; const imgs = document.querySelectorAll('.slide-img'); 
+    let cur = 0; const imgs = document.querySelectorAll('.slider-img'); 
     if(imgs.length > 0) {
         setInterval(() => { 
             imgs[cur].classList.remove('active'); 
@@ -151,3 +180,17 @@ function startSlider() {
         }, 4000); 
     }
 }
+function abrirTour3D() { 
+    document.getElementById('modal-tour-3d').style.display='flex'; 
+    if(!engine) {
+        const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
+        const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+        const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
+        cam.attachControl(c, true);
+        new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
+        BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m",s);
+        try{ BABYLON.SceneLoader.ImportMesh("","assets/models/","municipalidad.glb",s, (m)=>{m[0].position.y=0}); }catch(e){}
+        engine.runRenderLoop(()=>s.render());
+    }
+}
+function cerrarTour() { document.getElementById('modal-tour-3d').style.display='none'; }
