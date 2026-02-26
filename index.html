@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RDMLS | La Serena 2026</title>
+    <title>RDMLS | Plataforma Inteligente</title>
     
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
     
@@ -11,76 +11,58 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* --- ESTILOS INTEGRADOS (Blindados) --- */
-        :root { 
-            --gold: #ffd700; 
-            --red: #b71c1c; 
-            --dark: #0f0f0f; 
-            --glass: rgba(12, 12, 12, 0.96); 
-        }
-        
+        :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
         /* LAYOUT */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 360px 1fr 390px; }
         
-        /* COLUMNAS */
-        #col-left { 
-            background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; 
-            box-shadow: 5px 0 20px rgba(0,0,0,0.8);
-        }
-        #col-right { 
-            background: var(--glass); padding: 15px; overflow-y: auto; 
-            border-left: 3px solid var(--gold); z-index: 50; 
-            display: flex; flex-direction: column; gap: 15px; 
-        }
+        #col-left { background: linear-gradient(180deg, #900 0%, #500 100%); padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px rgba(0,0,0,0.8); }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
         /* COMPONENTES */
         .rdmls-title { font-family: 'Oswald'; font-size: 42px; margin: 0; text-align: center; text-shadow: 3px 3px 0 #000; line-height: 1; color: white; }
-        .clock { font-family: 'Oswald'; font-size: 28px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; letter-spacing: 2px; }
+        .clock { font-family: 'Oswald'; font-size: 28px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
         .escudo-img { width: 80px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); }
         
         /* VIDEO */
-        .video-box { 
-            height: 120px; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; cursor: pointer; margin-top:10px;
-            box-shadow: 0 5px 15px black;
-        }
+        .video-box { height: 120px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; cursor: pointer; margin-top:10px; box-shadow: 0 5px 15px black; }
         .video-box video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
         .video-box:hover video { opacity: 1; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:30px; text-shadow:0 0 10px black; }
         
+        /* AGENDA CULTURAL (Relleno columna izquierda) */
+        .agenda-item { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #444; font-size: 11px; }
+        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 5px; border-radius: 4px; }
+
         /* SLIDER */
-        #slider-container { 
-            height: 160px; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; margin-top: auto; 
-            box-shadow: 0 5px 15px black;
-        }
+        #slider-container { height: 140px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; box-shadow: 0 5px 15px black; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
         /* UI */
         .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: 900; border: 2px solid white; padding: 10px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 11px; margin-top: 5px; }
         .btn-red { width: 100%; background: var(--red); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
+        .btn-cam { background: #333; color: white; border: 1px dashed #777; width: 100%; padding: 10px; margin-bottom: 5px; cursor: pointer; border-radius: 5px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-cam:hover { background: #444; border-color: var(--gold); color: var(--gold); }
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
         .play-btn { width: 45px; height: 45px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--gold); transition: 0.2s; }
-        .play-btn:hover { transform: scale(1.1); }
         .f-input { width: 100%; padding: 10px; margin-bottom: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 12px; }
 
-        /* PASTILLAS VIAJES */
+        /* PASTILLAS */
         .chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
         .chip { background: var(--gold); color: black; font-weight: 900; border: 2px solid #fff; padding: 6px 10px; font-size: 10px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
         .chip:hover { background: white; color: var(--red); transform: translateY(-2px); }
@@ -100,12 +82,6 @@
         .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 5px; }
         .dist-item i { color: var(--gold); width: 15px; text-align: center; }
 
-        /* ENCUESTA */
-        .poll-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .poll-av { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: #fff; object-fit: cover; }
-        .poll-btn { width: 100%; background: rgba(255,255,255,0.1); color: white; border: 1px solid #555; padding: 8px; font-size: 10px; cursor: pointer; border-radius: 5px; text-align: left; margin-bottom: 4px; display: flex; justify-content: space-between; transition: 0.2s; }
-        .poll-btn:hover { background: var(--gold); color: black; }
-
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
         .modal-content-video { width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 50px black; }
@@ -121,7 +97,6 @@
 <body onload="initApp()">
 
 <div id="main-layout">
-    
     <div id="col-left">
         <div style="text-align:center;">
             <img src="./assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
@@ -131,7 +106,7 @@
             <div class="card-box" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
                 <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
                 <div style="flex-grow:1;">
-                    <div style="font-size:9px; color:var(--gold); letter-spacing:1px; font-weight:bold;">RADIO MUNICIPAL</div>
+                    <div style="font-size:9px; color:var(--gold); font-weight:bold;">RADIO MUNICIPAL</div>
                     <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)" style="width:100%; height:4px; accent-color:gold;">
                 </div>
             </div>
@@ -150,14 +125,11 @@
                 <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
                 <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
                 <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
-                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
-                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
                 <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
-                <div class="chip" onclick="calcRoute(-33.448, -70.669, 'SANTIAGO')">SANTIAGO</div>
             </div>
 
             <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:12px; margin-bottom:5px; border-bottom:1px solid #444; padding-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:12px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
                 <div class="dist-grid">
                     <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
                     <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
@@ -165,12 +137,16 @@
                     <div class="dist-item"><i class="fas fa-bicycle"></i> <span id="v-bici"></span></div>
                     <div class="dist-item"><i class="fas fa-plane"></i> <span id="v-avion"></span></div>
                 </div>
-                <div style="text-align:center; color:#00e676; margin-top:8px; font-weight:bold; font-size:11px; text-transform:uppercase;">¡Serenito en camino!</div>
             </div>
-            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:6px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
+            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:6px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; display:none;">CERRAR RUTA</button>
         </div>
 
-        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
+        <div class="card-box">
+            <div style="font-size:11px; color:var(--gold); font-weight:900; margin-bottom:8px;">AGENDA CULTURAL</div>
+            <div class="agenda-item"><span class="agenda-date">26 FEB</span> <span>Festival del Faro</span></div>
+            <div class="agenda-item"><span class="agenda-date">28 FEB</span> <span>Jazz en la Plaza</span></div>
+            <div class="agenda-item"><span class="agenda-date">02 MAR</span> <span>Feria de Abastos</span></div>
+        </div>
 
         <div id="slider-container">
             <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
@@ -193,17 +169,24 @@
     <div id="col-right">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
-            <button class="btn-gold" style="margin:0; padding:5px 12px; background:#4285f4; border:none; color:white;">ACCESO</button>
+            <button onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 12px; background:#4285f4; border:none; color:white;">ACCESO</button>
         </div>
 
         <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
-            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL (Arrastra a Serenito)</div>
-            <div id="geo-result" style="color:var(--gold); font-weight:bold; font-size:13px; margin-top:5px;">📍 Arrastra el pin...</div>
+            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN (Editable)</div>
+            <input id="geo-address" class="f-input" style="color:var(--gold); font-weight:bold; border-color:var(--gold);" value="Arrastra el pin...">
         </div>
 
         <div class="card-box">
-            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache)">
+            <div style="font-size:10px; color:var(--gold); margin-bottom:5px;">NUEVO REPORTE</div>
+            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache en calle)">
             <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
+            
+            <label class="btn-cam">
+                <i class="fas fa-camera"></i> ADJUNTAR FOTO / CÁMARA
+                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="alert('Foto cargada lista para enviar')">
+            </label>
+
             <button class="btn-red" style="width:100%;" onclick="enviarReporte()">ENVIAR REPORTE</button>
             <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa;">Historial vacío.</div>
         </div>
@@ -235,15 +218,6 @@
     </div>
 </div>
 
-<div id="modal-camara" class="modal">
-    <button class="close-modal" onclick="cerrarCamara()">CERRAR</button>
-    <div class="cam-container">
-        <video id="cam-video" autoplay playsinline></video>
-        <img src="./assets/img/serenito.png" class="cam-overlay">
-    </div>
-    <button onclick="alert('Foto guardada!')" class="btn-gold" style="width:300px; margin-top:10px;">CAPTURAR</button>
-</div>
-
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
@@ -252,7 +226,11 @@
 <audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
 
 <script>
-    // --- LÓGICA DEL SISTEMA ---
+    // Configuración Firebase (Usando tu config)
+    const fbCfg={apiKey:"AIzaSyCDUhik-oYwJ-yBkBYAohw6DJct5FQ78w4",authDomain:"laserena-d1263.firebaseapp.com",projectId:"laserena-d1263",storageBucket:"laserena-d1263.firebasestorage.app",messagingSenderId:"283725387947",appId:"1:283725387947:web:898aa22c80c2fadbe8bfee"};
+    try { firebase.initializeApp(fbCfg); } catch(e){ console.log("Firebase loaded"); }
+    const db=firebase.firestore(); const auth=firebase.auth(); const storage=firebase.storage(); let user=null;
+
     const CENTRO = [-29.9027, -71.2520];
     let map, marker, polyline, animInterval, engine;
     const radio = document.getElementById('radio');
@@ -260,49 +238,87 @@
     function initApp() {
         // Reloj 24H
         setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL', {hour12: false}), 1000);
-        
         startSlider();
         initPoll();
 
         // Mapa
-        try {
-            map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
+        map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-            const sIcon = L.divIcon({ 
-                html: `<div class="pin-wrapper">
-                        <img src="./assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
-                        <div class="pin-arrow"></div>
-                       </div>`, 
-                className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
-            });
-            marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
+        const sIcon = L.divIcon({ 
+            html: `<div class="pin-wrapper">
+                    <img src="./assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
+                    <div class="pin-arrow"></div>
+                   </div>`, 
+            className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
+        });
+        marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
-            marker.on('dragend', (e) => {
-                const c = e.target.getLatLng();
-                document.getElementById('geo-result').innerText = "Buscando...";
-                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}`).then(r=>r.json()).then(d=>{
-                    document.getElementById('geo-result').innerText = `📍 ${d.address.road || 'Coordenadas'}`;
-                }).catch(() => document.getElementById('geo-result').innerText = `📍 ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`);
-            });
-        } catch(e) { console.log(e); }
+        // GEOREFERENCIA EXACTA (Calle + Número)
+        marker.on('dragend', (e) => {
+            const c = e.target.getLatLng();
+            document.getElementById('geo-address').value = "Buscando dirección...";
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}&zoom=18&addressdetails=1`)
+            .then(r=>r.json()).then(d=>{
+                const road = d.address.road || "Calle";
+                const number = d.address.house_number || "S/N";
+                // Actualiza el input editable
+                document.getElementById('geo-address').value = `${road} #${number}`;
+            }).catch(() => document.getElementById('geo-address').value = `Ubicación: ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`);
+        });
+
+        auth.onAuthStateChanged(u=>{ user=u; if(u) loadHist(); });
     }
 
-    // Video Inteligente
+    // ENVIAR REPORTE + FOTO (Firebase)
+    function enviarReporte() {
+        if(!user) return alert("Debes iniciar sesión para reportar.");
+        const file = document.getElementById('foto-reporte').files[0];
+        const asunto = document.getElementById('req-asunto').value;
+        const ubicacion = document.getElementById('geo-address').value;
+
+        if(!asunto) return alert("Escribe un asunto.");
+
+        if(file) {
+            const ref = storage.ref().child(`reportes/${user.uid}/${Date.now()}_${file.name}`);
+            ref.put(file).then(snapshot => {
+                snapshot.ref.getDownloadURL().then(url => {
+                    saveToDb(asunto, ubicacion, url);
+                });
+            }).catch(e => alert("Error subiendo foto: " + e.message));
+        } else {
+            saveToDb(asunto, ubicacion, null);
+        }
+    }
+
+    function saveToDb(asunto, ubi, fotoUrl) {
+        db.collection("tickets_ia").add({
+            userId: user.uid,
+            email: user.email,
+            asunto: asunto,
+            ubicacion: ubi,
+            foto: fotoUrl,
+            fecha: new Date()
+        }).then(() => {
+            alert("¡Reporte enviado con éxito!");
+            loadHist();
+        });
+    }
+
+    // VIDEO & RADIO
     function toggleVideo(state) {
         const modal = document.getElementById('modal-video');
         const v = document.getElementById('inst-video');
         if(state) {
             modal.style.display = 'flex';
-            if(!radio.paused) { radio.pause(); radio.dataset.playing="true"; document.getElementById('play-icon').className='fas fa-play'; }
+            if(!radio.paused) { radio.pause(); radio.dataset.wasPlaying="true"; document.getElementById('play-icon').className='fas fa-play'; }
             v.play();
         } else {
             modal.style.display = 'none';
             v.pause(); v.currentTime=0;
-            if(radio.dataset.playing==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
+            if(radio.dataset.wasPlaying==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
         }
     }
-
     function toggleRadio() {
         if(document.getElementById('modal-video').style.display === 'flex') return;
         if(radio.paused) { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
@@ -310,12 +326,11 @@
     }
     function setVolume(v) { radio.volume = v; }
 
-    // Ruta + Iconos
+    // RUTA
     function calcRoute(lat, lon, name) {
         if(polyline) map.removeLayer(polyline);
         polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5}).addTo(map);
         map.fitBounds(polyline.getBounds(), {padding:[80,80]});
-        
         document.getElementById('dist-hud').style.display = 'block';
         document.getElementById('btn-reset').style.display = 'block';
         document.getElementById('lbl-dest').innerText = name;
@@ -330,38 +345,40 @@
         let p=0; 
         if(animInterval) clearInterval(animInterval);
         animInterval = setInterval(()=>{
-            p+=0.01;
-            const clat = CENTRO[0] + (lat-CENTRO[0])*p;
-            const clng = CENTRO[1] + (lon-CENTRO[1])*p;
-            marker.setLatLng([clat, clng]);
+            p+=0.01; marker.setLatLng([CENTRO[0] + (lat-CENTRO[0])*p, CENTRO[1] + (lon-CENTRO[1])*p]);
             if(p>=1) clearInterval(animInterval);
         }, 20);
     }
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
+    // 3D TOUR
+    function abrirTour3D() {
+        document.getElementById('modal-tour-3d').style.display='flex';
+        if(!engine) {
+            const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
+            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
+            cam.attachControl(c, true);
+            new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
+            BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m",s);
+            // CORREGIDO: Ruta assets/models/
+            try{ BABYLON.SceneLoader.ImportMesh("","./assets/models/","municipalidad.glb",s, (m)=>{m[0].position.y=0}); }catch(e){}
+            engine.runRenderLoop(()=>s.render());
+        }
+    }
+
     // Encuesta
-    const qs = [
-        {img:"./assets/img/serenito.png", q:"¿Seguridad Centro?", o:["Más Cámaras", "Más Rondas"]},
-        {img:"./assets/img/serenito.png", q:"¿Deporte?", o:["Canchas", "Talleres"]},
-        {img:"./assets/img/serenito.png", q:"¿Mascotas?", o:["Parques", "Clínica"]}
-    ];
+    const qs = [{q:"¿Seguridad?",o:["Cámaras","Rondas"]},{q:"¿Deporte?",o:["Canchas","Talleres"]}];
     function initPoll() { renderPoll(0); }
     function renderPoll(i) {
         if(i>=qs.length) { document.getElementById('poll-interface').style.display='none'; document.getElementById('poll-results').style.display='block'; return; }
-        const q=qs[i]; document.getElementById('q-idx').innerText = i+1;
-        document.getElementById('poll-interface').innerHTML = `
-            <div class="poll-item"><img src="${q.img}" class="poll-av" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'"><div style="font-size:11px; font-weight:bold;">${q.q}</div></div>
-            ${q.o.map(opt => `<button class="poll-btn" onclick="renderPoll(${i+1})">${opt} <i class="fas fa-chevron-right"></i></button>`).join('')}
-        `;
+        document.getElementById('poll-interface').innerHTML = `<div style="font-size:11px; font-weight:bold; margin-bottom:5px;">${qs[i].q}</div>` + qs[i].o.map(o=>`<button class="btn-cam" onclick="renderPoll(${i+1})">${o}</button>`).join('');
     }
 
-    function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
-    function enviarReporte() { alert("Reporte Enviado!"); }
+    function loadHist() { db.collection("tickets_ia").where("userId","==",user.uid).onSnapshot(s=>{ document.getElementById('hist-list').innerHTML=""; s.forEach(d=> document.getElementById('hist-list').innerHTML+=`<div>✔ ${d.data().asunto}</div>`); }); }
+    function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
     function chatIA(el) { if(!el.value) return; document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><b>Serenito:</b> Procesando...`; el.value = ""; }
-    function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
-    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
-    function loginGoogle() { alert("Login Google (Demo)"); }
-    function abrirTour3D() { document.getElementById('modal-tour-3d').style.display='flex'; }
+    function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
 </script>
 
 </body>
