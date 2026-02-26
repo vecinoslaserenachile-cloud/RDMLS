@@ -1,4 +1,4 @@
-// --- CONFIGURACIÓN ---
+// --- FIREBASE CONFIG ---
 const fbCfg={apiKey:"AIzaSyCDUhik-oYwJ-yBkBYAohw6DJct5FQ78w4",authDomain:"laserena-d1263.firebaseapp.com",projectId:"laserena-d1263",storageBucket:"laserena-d1263.firebasestorage.app",messagingSenderId:"283725387947",appId:"1:283725387947:web:898aa22c80c2fadbe8bfee"};
 try { firebase.initializeApp(fbCfg); } catch(e){ console.log("Firebase loaded"); }
 const db=firebase.firestore(); const auth=firebase.auth(); let user=null;
@@ -7,7 +7,7 @@ const CENTRO = [-29.9027, -71.2520];
 let map, marker, polyline, engine, ticketMarker, animInterval;
 const radio = document.getElementById('radio');
 
-// --- INICIO ---
+// --- INICIALIZACIÓN ---
 function initApp() {
     setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL', {hour12: false}), 1000);
     startSlider();
@@ -15,7 +15,6 @@ function initApp() {
     // Clima API
     fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.90&longitude=-71.25&current_weather=true')
         .then(r=>r.json()).then(d=>{
-            // Actualizar si existen los elementos (para evitar errores en consola)
             if(document.getElementById('w-temp')) document.getElementById('w-temp').innerText = d.current_weather.temperature+"°C";
             if(document.getElementById('w-wind')) document.getElementById('w-wind').innerText = d.current_weather.windspeed+" km/h";
         }).catch(()=>{});
@@ -24,14 +23,14 @@ function initApp() {
     map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-    // Serenito
+    // Serenito Personalizado
     const sIcon = L.divIcon({ 
         html: `<div class="pin-wrapper"><img src="assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'"><div class="pin-arrow"></div></div>`, 
         className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
     });
     marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
-    // Georeferencia
+    // Georeferencia Drag & Drop
     marker.on('dragend', async (e) => {
         const {lat, lng} = e.target.getLatLng();
         document.getElementById('geo-result').innerText = "Consultando...";
@@ -48,15 +47,14 @@ function initApp() {
     auth.onAuthStateChanged(u=>{ user=u; if(u) loadHist(); });
 }
 
-// --- SISTEMA MULTIMEDIA INTELIGENTE ---
+// --- VIDEO & RADIO INTELIGENTES ---
 function toggleVideo(state) {
     const modal = document.getElementById('modal-video');
     const videoPlayer = document.getElementById('inst-video');
     
     if (state) {
-        // ABRIR
+        // Abrir Video = Pausar Radio
         modal.style.display = 'flex';
-        // Si la radio suena, pausarla y recordar
         if (!radio.paused) {
             radio.pause();
             document.getElementById('play-icon').className = 'fas fa-play';
@@ -66,11 +64,10 @@ function toggleVideo(state) {
         }
         videoPlayer.play();
     } else {
-        // CERRAR
+        // Cerrar Video = Restaurar Radio
         modal.style.display = 'none';
         videoPlayer.pause();
         videoPlayer.currentTime = 0;
-        // Si la radio sonaba antes, reactivar
         if (radio.dataset.wasPlaying === "true") {
             radio.play();
             document.getElementById('play-icon').className = 'fas fa-pause';
@@ -79,9 +76,8 @@ function toggleVideo(state) {
 }
 
 function toggleRadio() {
-    // Bloquear radio si el video está en pantalla
     const modal = document.getElementById('modal-video');
-    if (modal.style.display === 'flex') return;
+    if (modal.style.display === 'flex') return; // Bloquear si hay video
 
     if (radio.paused) {
         radio.play();
@@ -94,7 +90,7 @@ function toggleRadio() {
 
 function setVolume(v) { radio.volume = v; }
 
-// --- RUTA ---
+// --- RUTA + TICKET VERDE ---
 function calcRoute(lat, lon, name) {
     if(polyline) map.removeLayer(polyline);
     if(ticketMarker) map.removeLayer(ticketMarker);
@@ -113,6 +109,7 @@ function calcRoute(lat, lon, name) {
     document.getElementById('v-pie').innerText = (km*12).toFixed(0)+" min";
     document.getElementById('v-avion').innerText = km>150?(km/12).toFixed(0)+"m":"N/A";
 
+    // Animación
     let p = 0; const steps = 150; 
     if(animInterval) clearInterval(animInterval);
     animInterval = setInterval(() => {
@@ -154,43 +151,25 @@ function renderPollStep(i) {
     `;
 }
 
-// --- UTILS ---
-function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
-function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
-function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-function enviarReporte() { 
-    if(!user) return alert("Inicia sesión primero");
-    db.collection("tickets_ia").add({ userId:user.uid, asunto:document.getElementById('req-asunto').value, fecha:new Date() });
-    alert("Enviado"); loadHist();
-}
-function loadHist() {
-    db.collection("tickets_ia").where("userId","==",user.uid).onSnapshot(s=>{
-        document.getElementById('hist-list').innerHTML="";
-        s.forEach(d=> document.getElementById('hist-list').innerHTML+=`<div>✔ ${d.data().asunto}</div>`);
-    });
-}
-function chatIA(el) { if(!el.value) return; document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><b>Serenito:</b> Procesando...`; el.value = ""; }
-function startSlider() { 
-    let cur = 0; const imgs = document.querySelectorAll('.slider-img'); 
-    if(imgs.length > 0) {
-        setInterval(() => { 
-            imgs[cur].classList.remove('active'); 
-            cur = (cur + 1) % imgs.length; 
-            imgs[cur].classList.add('active'); 
-        }, 4000); 
-    }
-}
-function abrirTour3D() { 
-    document.getElementById('modal-tour-3d').style.display='flex'; 
+// --- OTROS ---
+function abrirTour3D() {
+    document.getElementById('modal-tour-3d').style.display='flex';
     if(!engine) {
         const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
         const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
         const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
-        cam.attachControl(c, true);
+        cam.attachControl(c, true); cam.keysUp=[87]; cam.keysDown=[83]; cam.keysLeft=[65]; cam.keysRight=[68];
         new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
-        BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m",s);
-        try{ BABYLON.SceneLoader.ImportMesh("","assets/models/","municipalidad.glb",s, (m)=>{m[0].position.y=0}); }catch(e){}
+        BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m", s);
+        try{ BABYLON.SceneLoader.ImportMesh("","assets/img/","municipalidad.glb",s, (m)=>{m[0].position.y=0}); }catch(e){}
         engine.runRenderLoop(()=>s.render());
     }
 }
 function cerrarTour() { document.getElementById('modal-tour-3d').style.display='none'; }
+function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
+function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
+function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+function enviarReporte() { if(!user) return alert("Inicia sesión"); db.collection("tickets_ia").add({ userId:user.uid, asunto:document.getElementById('req-asunto').value, fecha:new Date() }); alert("Enviado"); loadHist(); }
+function loadHist() { db.collection("tickets_ia").where("userId","==",user.uid).onSnapshot(s=>{ document.getElementById('hist-list').innerHTML=""; s.forEach(d=> document.getElementById('hist-list').innerHTML+=`<div>✔ ${d.data().asunto}</div>`); }); }
+function chatIA(el) { if(!el.value) return; document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><b>Serenito:</b> Procesando...`; el.value = ""; }
+function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
