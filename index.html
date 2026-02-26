@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RDMLS | Portal Ciudadano 2026</title>
     
+    <meta name="description" content="Plataforma de Gestión Municipal Inteligente La Serena">
     <meta name="theme-color" content="#b71c1c">
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
     
@@ -30,8 +31,8 @@
         /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 15px; z-index: 50; box-shadow: 5px 0 20px black;
+            padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
         }
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
@@ -40,28 +41,29 @@
         /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 38px; margin: 0; text-align: center; text-shadow: 2px 2px 0 #000; line-height: 1; color: white; }
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
-        /* LOGO MÁS GRANDE */
         .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO */
+        /* VIDEO (YOUTUBE EMBED) */
         .video-box { 
-            height: 120px; border: 2px solid var(--gold); border-radius: 8px; 
+            height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
             box-shadow: 0 4px 10px black; flex-shrink: 0;
         }
-        .video-box iframe { pointer-events: none; width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; }
-        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:35px; text-shadow:0 0 10px black; z-index: 10; }
+        /* Capa transparente para capturar el click sobre el iframe */
+        .video-click-layer { position: absolute; inset: 0; z-index: 20; background: transparent; }
+        .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
+        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
-        /* SALÓN DE LA FAMA (Ajustado) */
-        .fama-box { height: 120px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; }
-        .fama-box:hover { transform: scale(1.02); border-color: white; }
+        /* SALÓN DE LA FAMA */
+        .fama-box { height: 110px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; }
+        .fama-box:hover { transform: scale(1.02); }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
-        .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.8); color: white; font-size: 10px; text-align: center; padding: 4px; font-weight: bold; }
+        .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 10px; text-align: center; padding: 4px; font-weight: bold; }
 
         /* SLIDER */
-        #slider-container { height: 130px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
+        #slider-container { height: 140px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
@@ -69,7 +71,7 @@
         .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: 900; border: 2px solid white; padding: 8px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 10px; margin-top: 5px; }
         .btn-red { width: 100%; background: var(--red); color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
-        .play-btn { width: 40px; height: 40px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
+        .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
         .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
 
         /* CHIPS */
@@ -80,16 +82,19 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN CON FLECHA TIPO GPS */
-        .pin-wrapper { position: relative; width: 60px; height: 85px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); }
-        .pin-img { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
-        .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid white; margin-top: -2px; z-index: 5; }
-        
+        /* PIN CON FLECHA GPS */
+        .pin-wrapper { position: relative; width: 50px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        .pin-img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
+        /* Flecha inferior estilo GPS */
+        .pin-arrow { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 18px solid white; margin-top: -3px; z-index: 5; }
+        .ticket-icon { color: #00e676; font-size: 24px; background: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border: 2px solid #00e676; box-shadow: 0 3px 10px black; animation: popIn 0.5s; }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
         /* DISTANCIAS GRANDES */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 10px; }
-        .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; } /* Iconos más grandes */
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 8px; }
+        .dist-item { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+        .dist-item i { color: var(--gold); font-size: 16px; width: 20px; text-align: center; }
 
         /* CHAT IA */
         #chat-container { display: flex; flex-direction: column; height: 160px; }
@@ -98,8 +103,11 @@
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
 
         /* ENCUESTA */
-        .poll-bar-bg { background: #333; height: 8px; border-radius: 4px; margin-top: 2px; width: 100%; }
-        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 4px; width: 0%; transition: width 1s; }
+        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
+        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+
+        /* TOAST ALERT */
+        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
@@ -110,9 +118,6 @@
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
-
-        /* TOAST NOTIFICATION */
-        #custom-alert { position: fixed; top: 20px; right: 20px; background: #b71c1c; color: white; padding: 12px 20px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 15px black; display: none; z-index: 99999; font-weight: bold; }
 
         @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #stage-area { height: 60vh; order: -1; } }
     </style>
@@ -139,6 +144,7 @@
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
+            <div class="video-click-layer"></div>
             <iframe src="https://www.youtube.com/embed/_MeFYP4PkqU?autoplay=1&mute=1&controls=0&loop=1&playlist=_MeFYP4PkqU&disablekb=1&modestbranding=1" frameborder="0"></iframe>
             <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
@@ -155,7 +161,7 @@
             <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px; border-bottom:1px solid #555; padding-bottom:3px;">PLANIFICADOR DE VIAJES</div>
             
             <div style="display:flex; gap:5px; margin-bottom:5px;">
-                <input id="custom-city" class="f-input" placeholder="Ciudad..." style="margin:0;">
+                <input id="custom-city" class="f-input" placeholder="Escribe Ciudad..." style="margin:0;">
                 <button class="btn-gold" style="margin:0; padding:5px 10px;" onclick="searchCity()"><i class="fas fa-search"></i></button>
             </div>
 
@@ -171,7 +177,7 @@
             </div>
 
             <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:14px; margin-bottom:10px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:14px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
                 <div class="dist-grid">
                     <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
                     <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
@@ -180,7 +186,7 @@
                     <div class="dist-item"><i class="fas fa-plane"></i> <span id="v-avion"></span></div>
                 </div>
             </div>
-            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:5px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
+            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
         </div>
 
         <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
@@ -200,7 +206,7 @@
             <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
         <div id="map"></div>
-        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (MUNDO)</button>
+        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (TANQUE)</button>
     </div>
 
     <div id="col-right">
@@ -246,11 +252,12 @@
         </div>
 
         <div class="card-box" style="border-color:var(--red);">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (1/10)</div>
+            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
             <div id="poll-interface"></div>
             <div id="poll-results" style="display:none;">
-                <div style="font-size:14px; text-align:center; color:#00e676; font-weight:bold; margin-bottom:5px;">¡GRACIAS POR PARTICIPAR!</div>
-                <div style="text-align:center; font-size:40px;">📊</div>
+                <div style="font-size:12px; text-align:center; color:#00e676; font-weight:bold; margin-bottom:5px;">¡GRACIAS POR PARTICIPAR!</div>
+                <div style="font-size:10px; color:white;">A FAVOR <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:70%"></div></div></div>
+                <div style="font-size:10px; color:white; margin-top:5px;">EN CONTRA <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:30%; background:var(--red);"></div></div></div>
             </div>
         </div>
 
@@ -281,7 +288,9 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:14px; background:rgba(0,0,0,0.5); padding:5px;">🎮 Usa <b>W-A-S-D</b> para moverte como Tanque</div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:12px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">
+        🎮 <b>MODO TANQUE:</b> Usa W-A-S-D para caminar
+    </div>
 </div>
 
 <audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
@@ -303,12 +312,13 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
+        // SERENITO (Pin con Flecha GPS)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
                     <div class="pin-arrow"></div>
                    </div>`, 
-            className: 'dummy', iconSize: [50, 80], iconAnchor: [25, 80] 
+            className: 'dummy', iconSize: [50, 85], iconAnchor: [25, 85] 
         });
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
@@ -329,11 +339,11 @@
                 document.getElementById('user-img').src = u.photoURL;
                 document.getElementById('user-name').innerText = u.displayName.split(' ')[0];
                 loadHist();
-                showAlert(`👋 Hola ${u.displayName.split(' ')[0]}`);
+                showAlert(`👋 Hola, ${u.displayName.split(' ')[0]}`);
             } else {
                 document.getElementById('btn-login').style.display='block';
                 document.getElementById('user-profile').style.display='none';
-                document.getElementById('hist-list').innerHTML="Inicia sesión para ver historial.";
+                document.getElementById('hist-list').innerHTML="<i>Inicia sesión para ver tus reportes.</i>";
             }
         });
     }
@@ -354,7 +364,7 @@
             ubicacion: ubi,
             fecha: new Date(),
             estado: "Pendiente"
-        }).then(()=> { showAlert("✅ Reporte Enviado"); loadHist(); });
+        }).then(()=> { showAlert("✅ Reporte Enviado a Central"); loadHist(); });
     }
 
     function loadHist() {
@@ -363,7 +373,7 @@
             list.innerHTML="";
             s.forEach(d=> {
                 const data = d.data();
-                const color = data.estado === "Pendiente" ? "orange" : "green";
+                const color = data.estado === "Pendiente" ? "orange" : "#00e676";
                 list.innerHTML += `<div style="border-bottom:1px solid #333; padding:4px; font-size:10px; display:flex; justify-content:space-between;">
                     <span>${data.asunto}</span> <span style="color:${color}; font-weight:bold;">${data.estado}</span>
                 </div>`;
@@ -408,7 +418,7 @@
         animInterval = setInterval(()=>{ p+=0.01; marker.setLatLng([CENTRO[0] + (lat-CENTRO[0])*p, CENTRO[1] + (lon-CENTRO[1])*p]); if(p>=1) clearInterval(animInterval); }, 20);
     }
     
-    // BÚSQUEDA MANUAL CIUDAD
+    // BÚSQUEDA CIUDAD
     async function searchCity() {
         const city = document.getElementById('custom-city').value;
         if(!city) return;
@@ -424,30 +434,36 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
+    // PASEO 3D (MUNDO + TANQUE)
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
             const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
             const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
+            
+            // CÁMARA TIPO TANQUE (FPS)
             const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
             cam.attachControl(c, true);
             cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
+            cam.speed = 1.5; // Velocidad de tanque
+            
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
-            const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
+            // Suelo con Mapa
+            const ground = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
             const mat = new BABYLON.StandardMaterial("m",s);
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
-            g.material = mat;
+            ground.material = mat;
 
-            // CARGA 3D (MUNI + INTENDENCIA + SERENITO)
+            // CARGA MODELOS (Muni, Intendencia, Serenito)
             const load = (f,x,z,scl) => {
                 BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
                     m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
                 });
             };
             load("municipalidad.glb", 0, 0, 3);
-            load("intendencia.glb", 50, 50, 3);
-            load("serenito.glb", 0, -10, 2);
+            load("intendencia.glb", 60, 40, 3); // Posicionada en la plaza
+            load("serenito.glb", -10, 10, 2);
 
             engine.runRenderLoop(()=>s.render());
         }
@@ -458,7 +474,7 @@
     function renderPoll(i) {
         if(i>=qs.length) { document.getElementById('poll-interface').style.display='none'; document.getElementById('poll-results').style.display='block'; return; }
         document.getElementById('poll-interface').innerHTML = `
-            <div style="font-size:12px; font-weight:bold; margin-bottom:5px;">${qs[i]}</div>
+            <div style="font-size:11px; font-weight:bold; margin-bottom:5px;">${qs[i]}</div>
             <button class="btn-cam" onclick="renderPoll(${i+1})">👍 BIEN</button>
             <button class="btn-cam" onclick="renderPoll(${i+1})">👎 MAL</button>
         `;
@@ -474,7 +490,7 @@
         
         setTimeout(()=> {
             let res = "No entendí, ¿puedes repetir?";
-            if(msg.includes("hola")) res = "¡Hola vecino! ¿Cómo te ayudo?";
+            if(msg.includes("hola")) res = "¡Hola vecino! ¿Cómo te ayudo hoy?";
             else if(msg.includes("reporte") || msg.includes("ticket")) res = "Puedes ingresar tu reporte en el formulario de arriba ☝️";
             else if(msg.includes("ayuda")) res = "Soy Serenito IA. Puedo guiarte con trámites o turismo.";
             
