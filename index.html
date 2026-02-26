@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RDMLS | La Serena 2026</title>
+    <title>RDMLS | Portal Ciudadano 2026</title>
     
     <meta name="theme-color" content="#b71c1c">
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
@@ -27,11 +27,11 @@
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNAS */
+        /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            display: flex; flex-direction: column; gap: 15px; z-index: 50; box-shadow: 5px 0 20px black;
         }
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
@@ -40,8 +40,10 @@
         /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 38px; margin: 0; text-align: center; text-shadow: 2px 2px 0 #000; line-height: 1; color: white; }
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
-        .escudo-img { width: 70px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); }
-        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); }
+        /* LOGO MÁS GRANDE */
+        .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
+        .escudo-img:hover { transform: scale(1.1); }
+        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
         /* VIDEO */
         .video-box { 
@@ -52,13 +54,14 @@
         .video-box iframe { pointer-events: none; width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:35px; text-shadow:0 0 10px black; z-index: 10; }
         
-        /* SALÓN DE LA FAMA (Relleno) */
-        .fama-box { height: 100px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); }
-        .fama-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7); color: var(--gold); font-size: 10px; text-align: center; padding: 3px; font-weight: bold; }
+        /* SALÓN DE LA FAMA (Ajustado) */
+        .fama-box { height: 120px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; }
+        .fama-box:hover { transform: scale(1.02); border-color: white; }
+        .fama-img { width: 100%; height: 100%; object-fit: cover; }
+        .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.8); color: white; font-size: 10px; text-align: center; padding: 4px; font-weight: bold; }
 
         /* SLIDER */
-        #slider-container { height: 120px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
+        #slider-container { height: 130px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
@@ -66,7 +69,7 @@
         .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: 900; border: 2px solid white; padding: 8px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 10px; margin-top: 5px; }
         .btn-red { width: 100%; background: var(--red); color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
-        .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
+        .play-btn { width: 40px; height: 40px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
         .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
 
         /* CHIPS */
@@ -74,17 +77,19 @@
         .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
         .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
 
-        /* PIN MEJORADO (GPS Style) */
-        .pin-wrapper { position: relative; width: 50px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 8px rgba(0,0,0,0.9)); transition: transform 0.1s; }
-        .pin-wrapper:active { transform: translateY(-5px); }
-        .pin-img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
-        .pin-arrow { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 18px solid white; margin-top: -4px; z-index: 5; }
+        /* CLIMA */
+        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
+
+        /* PIN CON FLECHA TIPO GPS */
+        .pin-wrapper { position: relative; width: 60px; height: 85px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); }
+        .pin-img { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
+        .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid white; margin-top: -2px; z-index: 5; }
         
         /* DISTANCIAS GRANDES */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
         .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 8px; }
-        .dist-item i { color: var(--gold); font-size: 16px; width: 20px; text-align: center; }
+        .dist-item { display: flex; align-items: center; gap: 10px; }
+        .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; } /* Iconos más grandes */
 
         /* CHAT IA */
         #chat-container { display: flex; flex-direction: column; height: 160px; }
@@ -92,14 +97,9 @@
         .chat-input-area { display: flex; gap: 5px; }
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
 
-        /* ALERTAS LINDAS (TOAST) */
-        #custom-alert { 
-            position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); 
-            color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold);
-            box-shadow: 0 5px 20px black; z-index: 20000; display: none; font-family: 'Oswald'; letter-spacing: 1px;
-            animation: slideIn 0.5s forwards;
-        }
-        @keyframes slideIn { from { transform: translateX(100%); opacity:0; } to { transform: translateX(0); opacity:1; } }
+        /* ENCUESTA */
+        .poll-bar-bg { background: #333; height: 8px; border-radius: 4px; margin-top: 2px; width: 100%; }
+        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 4px; width: 0%; transition: width 1s; }
 
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
@@ -111,15 +111,15 @@
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
 
-        /* CLIMA & UI */
-        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
+        /* TOAST NOTIFICATION */
+        #custom-alert { position: fixed; top: 20px; right: 20px; background: #b71c1c; color: white; padding: 12px 20px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 15px black; display: none; z-index: 99999; font-weight: bold; }
 
         @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #stage-area { height: 60vh; order: -1; } }
     </style>
 </head>
 <body onload="initApp()">
 
-<div id="custom-alert">🚀 ¡ACCIÓN REALIZADA CON ÉXITO!</div>
+<div id="custom-alert">Mensaje del sistema</div>
 
 <div id="main-layout">
     
@@ -144,7 +144,21 @@
         </div>
 
         <div class="card-box">
+            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">SALÓN DE LA FAMA</div>
+            <div class="fama-box" onclick="expandPhoto(this.querySelector('img'))">
+                <img src="./assets/img/relleno-personajes.jpg" class="fama-img" onerror="this.style.display='none'">
+                <div class="fama-title">PERSONAJES ILUSTRES DE LA REGIÓN</div>
+            </div>
+        </div>
+
+        <div class="card-box">
             <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px; border-bottom:1px solid #555; padding-bottom:3px;">PLANIFICADOR DE VIAJES</div>
+            
+            <div style="display:flex; gap:5px; margin-bottom:5px;">
+                <input id="custom-city" class="f-input" placeholder="Ciudad..." style="margin:0;">
+                <button class="btn-gold" style="margin:0; padding:5px 10px;" onclick="searchCity()"><i class="fas fa-search"></i></button>
+            </div>
+
             <div class="chip-container">
                 <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
                 <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
@@ -169,17 +183,9 @@
             <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:5px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
         </div>
 
-        <div class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">SALÓN DE LA FAMA</div>
-            <div class="fama-box">
-                <img src="./assets/img/relleno-personajes.jpg" class="fama-img" onerror="this.style.display='none'">
-                <div class="fama-title">PERSONAJES ILUSTRES DE LA REGIÓN</div>
-            </div>
-        </div>
-
         <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
-        <div id="slider-container" onclick="expandPhoto()">
+        <div id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
             <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
             <img src="./assets/img/comic-playa.jpg" class="slide-img">
             <img src="./assets/img/comic-cielo.jpg" class="slide-img">
@@ -222,19 +228,29 @@
             
             <label style="background: #333; color: white; border: 1px dashed #777; width: 100%; padding: 6px; margin-bottom: 5px; cursor: pointer; border-radius: 5px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
                 <i class="fas fa-camera"></i> FOTO / CÁMARA
-                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="showAlert('📷 Foto adjuntada correctamente')">
+                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="showAlert('📷 Foto adjuntada')">
             </label>
 
             <button class="btn-red" style="width:100%; padding:8px;" onclick="enviarReporte()">ENVIAR REPORTE</button>
-            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;"></div>
+            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;">Historial vacío.</div>
+        </div>
+
+        <div class="card-box">
+            <div style="font-size:10px; color:var(--gold); font-weight:bold;">TELÉFONOS EMERGENCIA</div>
+            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between; margin-top:5px;">
+                <span>🚑 SAMU: 131</span> <span>🚒 Bomberos: 132</span>
+            </div>
+            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between;">
+                <span>🚓 Carabineros: 133</span> <span>🛡️ Seguridad: 1402</span>
+            </div>
         </div>
 
         <div class="card-box" style="border-color:var(--red);">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
+            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (1/10)</div>
             <div id="poll-interface"></div>
             <div id="poll-results" style="display:none;">
                 <div style="font-size:14px; text-align:center; color:#00e676; font-weight:bold; margin-bottom:5px;">¡GRACIAS POR PARTICIPAR!</div>
-                <div style="text-align:center; font-size:40px;">🗳️</div>
+                <div style="text-align:center; font-size:40px;">📊</div>
             </div>
         </div>
 
@@ -265,7 +281,7 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:12px;">Usa W-A-S-D para moverte</div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:14px; background:rgba(0,0,0,0.5); padding:5px;">🎮 Usa <b>W-A-S-D</b> para moverte como Tanque</div>
 </div>
 
 <audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
@@ -287,7 +303,6 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // PIN SERENITO MEJORADO
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
@@ -314,11 +329,11 @@
                 document.getElementById('user-img').src = u.photoURL;
                 document.getElementById('user-name').innerText = u.displayName.split(' ')[0];
                 loadHist();
-                showAlert(`👋 Bienvenido, ${u.displayName.split(' ')[0]}`);
+                showAlert(`👋 Hola ${u.displayName.split(' ')[0]}`);
             } else {
                 document.getElementById('btn-login').style.display='block';
                 document.getElementById('user-profile').style.display='none';
-                document.getElementById('hist-list').innerHTML="<i>Inicia sesión para ver tus reportes.</i>";
+                document.getElementById('hist-list').innerHTML="Inicia sesión para ver historial.";
             }
         });
     }
@@ -330,7 +345,6 @@
         if(!user) return showAlert("⚠️ Inicia sesión primero");
         const asun = document.getElementById('req-asunto').value;
         const ubi = document.getElementById('geo-address').value;
-        
         if(!asun) return showAlert("⚠️ Escribe un asunto");
 
         db.collection("tickets_ia").add({
@@ -340,7 +354,7 @@
             ubicacion: ubi,
             fecha: new Date(),
             estado: "Pendiente"
-        }).then(()=> { showAlert("✅ Reporte Enviado a Central"); loadHist(); });
+        }).then(()=> { showAlert("✅ Reporte Enviado"); loadHist(); });
     }
 
     function loadHist() {
@@ -357,7 +371,6 @@
         });
     }
 
-    // Video Youtube + Radio
     function toggleVideo(state) {
         const modal = document.getElementById('modal-video');
         if(state) {
@@ -394,74 +407,85 @@
         let p=0; if(animInterval) clearInterval(animInterval);
         animInterval = setInterval(()=>{ p+=0.01; marker.setLatLng([CENTRO[0] + (lat-CENTRO[0])*p, CENTRO[1] + (lon-CENTRO[1])*p]); if(p>=1) clearInterval(animInterval); }, 20);
     }
+    
+    // BÚSQUEDA MANUAL CIUDAD
+    async function searchCity() {
+        const city = document.getElementById('custom-city').value;
+        if(!city) return;
+        showAlert("🔎 Buscando " + city + "...");
+        try {
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Chile`);
+            const d = await r.json();
+            if(d.length > 0) {
+                calcRoute(parseFloat(d[0].lat), parseFloat(d[0].lon), city.toUpperCase());
+            } else { showAlert("❌ Ciudad no encontrada"); }
+        } catch(e) { showAlert("❌ Error de búsqueda"); }
+    }
+
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
-    // PASEO 3D (Mundo Completo)
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
             const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
-            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1); // Cielo azul
+            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
             const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
             cam.attachControl(c, true);
             cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
-            // Suelo con Mapa
-            const ground = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
+            const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
             const mat = new BABYLON.StandardMaterial("m",s);
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
-            ground.material = mat;
+            g.material = mat;
 
-            // Edificios
-            const loadModel = (file, x, z, scale) => {
-                BABYLON.SceneLoader.ImportMesh("", "./assets/models/", file, s, (m)=>{ 
-                    m[0].position.set(x, 0, z); m[0].scaling = new BABYLON.Vector3(scale, scale, scale); 
+            // CARGA 3D (MUNI + INTENDENCIA + SERENITO)
+            const load = (f,x,z,scl) => {
+                BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
+                    m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
                 });
             };
-            loadModel("municipalidad.glb", 0, 0, 3);
-            loadModel("intendencia.glb", 50, 50, 3);
-            // Serenito Tanque
-            loadModel("serenito.glb", 0, -10, 2);
+            load("municipalidad.glb", 0, 0, 3);
+            load("intendencia.glb", 50, 50, 3);
+            load("serenito.glb", 0, -10, 2);
 
             engine.runRenderLoop(()=>s.render());
         }
     }
 
-    // Encuesta
-    const qs = ["¿Seguridad?", "¿Limpieza?", "¿Eventos?", "¿Tráfico?", "¿Salud?", "¿Parques?", "¿Cultura?", "¿Playas?", "¿Comercio?", "¿Turismo?"];
+    const qs = ["¿Seguridad Centro?", "¿Limpieza Playas?", "¿Alumbrado Público?", "¿Estado Veredas?", "¿Recolección Basura?", "¿Eventos Verano?", "¿Tráfico Vehicular?", "¿Transporte Mayor?", "¿Áreas Verdes?", "¿Atención Municipal?"];
     function initPoll() { renderPoll(0); }
     function renderPoll(i) {
         if(i>=qs.length) { document.getElementById('poll-interface').style.display='none'; document.getElementById('poll-results').style.display='block'; return; }
         document.getElementById('poll-interface').innerHTML = `
-            <div style="font-size:11px; font-weight:bold; margin-bottom:5px;">${qs[i]}</div>
+            <div style="font-size:12px; font-weight:bold; margin-bottom:5px;">${qs[i]}</div>
             <button class="btn-cam" onclick="renderPoll(${i+1})">👍 BIEN</button>
             <button class="btn-cam" onclick="renderPoll(${i+1})">👎 MAL</button>
         `;
     }
 
-    function expandPhoto() {
-        const active = document.querySelector('.slide-img.active');
-        if(active) { document.getElementById('modal-img').style.display='flex'; document.getElementById('img-expanded').src = active.src; }
-    }
+    function expandPhoto(el) { if(el){ document.getElementById('modal-img').style.display='flex'; document.getElementById('img-expanded').src = el.src; } }
 
     function chatIA(el) { 
-        if(!el.value) return; 
-        document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><i>Serenito está escribiendo...</i>`;
-        const val = el.value; el.value = "";
+        if(!el.value) return;
+        const msg = el.value.toLowerCase();
+        document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><i>Escribiendo...</i>`;
+        el.value = "";
+        
         setTimeout(()=> {
-            document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Serenito está escribiendo...</i>", `<b>Serenito:</b> Entendido, procesando solicitud sobre "${val}".`);
-        }, 1500);
+            let res = "No entendí, ¿puedes repetir?";
+            if(msg.includes("hola")) res = "¡Hola vecino! ¿Cómo te ayudo?";
+            else if(msg.includes("reporte") || msg.includes("ticket")) res = "Puedes ingresar tu reporte en el formulario de arriba ☝️";
+            else if(msg.includes("ayuda")) res = "Soy Serenito IA. Puedo guiarte con trámites o turismo.";
+            
+            document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Escribiendo...</i>", `<b>Serenito:</b> ${res}`);
+        }, 1000);
     }
     
     function startDictation() { alert("🎙️ Escuchando..."); }
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
     function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
-    function showAlert(msg) { 
-        const a = document.getElementById('custom-alert'); 
-        a.innerText = msg; a.style.display='block'; 
-        setTimeout(()=>a.style.display='none', 3000); 
-    }
+    function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
     function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
 </script>
 
