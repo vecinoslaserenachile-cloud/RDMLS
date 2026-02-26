@@ -25,17 +25,24 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- LAYOUT ESCRITORIO --- */
+        /* --- LAYOUT ESCRITORIO (FIJO) --- */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
+        /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 12px; overflow-y: auto; overflow-x: hidden; 
-            border-right: 3px solid var(--gold); display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black; position: relative;
+            padding: 12px; 
+            overflow-y: auto; 
+            overflow-x: hidden; 
+            border-right: 3px solid var(--gold); 
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
+            position: relative;
         }
         
+        /* COLUMNA DERECHA */
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         
+        /* CENTRO (MAPA) */
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -46,6 +53,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
         
+        /* VIDEO BOX */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -55,30 +63,43 @@
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
+        /* SALÓN DE LA FAMA */
         .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; width: 100%; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
+        /* SLIDER (PROTEGIDO) */
         #slider-container { 
-            height: 140px; width: 100%; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; margin-top: auto; 
-            cursor: zoom-in; flex-shrink: 0; display: block !important; box-sizing: border-box;
+            height: 140px; 
+            width: 100%; 
+            border: 2px solid var(--gold); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            position: relative; 
+            background: #000; 
+            margin-top: auto; 
+            cursor: zoom-in; 
+            flex-shrink: 0; 
+            box-sizing: border-box;
+            display: block !important;
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
+        /* UI ELEMENTS */
         .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: 900; border: 2px solid white; padding: 8px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 10px; margin-top: 5px; }
         .btn-red { width: 100%; background: var(--red); color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
         .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
         .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
 
+        /* CHIPS */
         .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
         .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
         .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
 
-        /* CLIMA (Posición Absoluta por defecto en Desktop) */
+        /* CLIMA (Por defecto absoluto para escritorio) */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
         /* PIN GPS */
@@ -86,11 +107,13 @@
         .pin-img { width: 110px; height: 110px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
         .pin-arrow { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 25px solid var(--red); margin-top: -8px; z-index: 5; }
         
+        /* DISTANCIAS */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
         .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; color: #ddd; margin-top: 8px; }
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
+        /* CHAT & ALERTS */
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
         .chat-input-area { display: flex; gap: 5px; }
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
@@ -104,19 +127,14 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        /* CÁMARA (CON CONTROLES) */
-        .cam-container { width: 320px; height: 500px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
+        /* CÁMARA & PERFIL */
+        .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-overlay { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); transition: all 0.1s; }
-        
-        .cam-controls { position: absolute; bottom: 80px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0 20px; box-sizing: border-box; z-index: 25; }
-        .cam-slider { width: 100%; accent-color: var(--gold); }
-        .shutter-btn { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: white; border-radius: 50%; border: 4px solid #ccc; cursor: pointer; z-index: 20; }
-        
+        .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
+        .shutter-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: white; border-radius: 50%; border: 4px solid #ccc; cursor: pointer; z-index: 20; }
         .char-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 20; }
         .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
         .char-btn img { width: 100%; height: 100%; object-fit: contain; }
-        
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
@@ -124,6 +142,9 @@
         .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
         .mobile-footer { display: none; }
+        
+        /* SCROLL SAFE ZONE */
+        .map-safe-zone { display: none; }
 
         /* --- RESPONSIVE FINAL (MÓVIL CORREGIDO) --- */
         @media (max-width: 1024px) { 
@@ -134,36 +155,54 @@
             #mob-header { order: 1; padding: 15px; }
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* CLIMA SEPARADO DEL MAPA EN MÓVIL */
-            .weather-bar { position: static; transform: none; width: 92%; margin: 0 auto 10px auto; order: 3; justify-content: center; }
+            /* CLIMA SEPARADO (BLOQUE INDEPENDIENTE) */
+            .weather-bar { 
+                position: static; /* Ya no flota */
+                transform: none; 
+                width: 92%; 
+                margin: 0 auto 10px auto; 
+                order: 3; 
+                justify-content: center; 
+                background: #111; 
+                border: 1px solid var(--gold); 
+                padding: 10px;
+                box-sizing: border-box;
+            }
 
-            /* MAPA CON SCROLL DE SEGURIDAD */
+            /* MAPA MÓVIL OPTIMIZADO (35vh + Scroll Safe Zone) */
             #stage-area { 
                 order: 4; 
-                height: 20vh; /* Altura Reducida */
-                min-height: 200px; 
-                width: 92%; /* Menos ancho para no confundir */
+                height: 35vh; /* Altura solicitada (aprox doble) */
+                min-height: 250px; 
+                width: 92%; 
                 margin: 0 auto; 
-                display: flex; 
-                border: 2px solid var(--gold); border-radius: 12px; 
+                display: flex; /* Flex para Mapa | SafeZone */
+                border: 2px solid var(--gold); 
+                border-radius: 12px; 
                 z-index: 1; 
                 background: #000;
                 overflow: hidden;
             }
-            #map { width: calc(100% - 30px); height: 100%; min-height: unset; } /* Mapa deja espacio a la derecha */
-            /* ZONA SEGURA DE SCROLL */
-            #stage-area::after { content: '↕'; display: flex; align-items: center; justify-content: center; width: 30px; height: 100%; background: #111; color: #555; font-size: 18px; border-left: 1px solid #333; }
+            #map { width: 85%; height: 100%; min-height: unset; } /* 85% Mapa */
+            /* ZONA SEGURA A LA DERECHA */
+            .map-safe-zone { 
+                display: flex; 
+                width: 15%; 
+                height: 100%; 
+                background: #111; 
+                color: #555; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 20px; 
+                border-left: 1px solid #333; 
+                cursor: grab;
+            }
             
-            /* UBICACIÓN + REPORTE (PEGADOS) */
-            #mob-location { order: 5; margin: 15px 15px 5px 15px; background: rgba(0,0,0,0.8); border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: none; }
-            #mob-report { order: 6; margin: 0 15px 15px 15px; border-top-left-radius: 0; border-top-right-radius: 0; border-top: 1px solid #444; }
-            
-            /* PLANIFICADOR DESPUÉS */
-            #mob-planner { order: 7; margin: 5px 15px 15px 15px; }
-            
-            #mob-login { order: 8; padding: 0 15px; margin-bottom: 10px; }
-            
-            /* Resto */
+            /* ORDEN LÓGICO */
+            #mob-location { order: 5; margin: 15px 15px 5px 15px; background: rgba(0,0,0,0.8); }
+            #mob-planner { order: 6; margin: 5px 15px 15px 15px; }
+            #mob-login { order: 7; padding: 0 15px; margin-bottom: 10px; }
+            #mob-report { order: 8; margin: 0 15px 15px 15px; }
             #mob-emergency { order: 9; margin: 0 15px 15px 15px; }
             #mob-poll { order: 10; margin: 0 15px 15px 15px; }
             #mob-ia { order: 11; margin: 0 15px 15px 15px; }
@@ -175,7 +214,7 @@
 
             .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
-            .tank-btn { display: none; } /* Ocultar botón 3D en mapa pequeño móvil para limpieza */
+            .tank-btn { display: none; } 
         }
     </style>
 </head>
@@ -256,12 +295,12 @@
     </div>
 
     <div id="stage-area">
-        <div class="weather-bar">
+        <div id="map"></div>
+        <div class="map-safe-zone">↕</div> <div class="weather-bar">
             <span><i class="fas fa-cloud"></i> 17°C NUBLADO</span>
             <span><i class="fas fa-wind"></i> 14 km/h</span>
             <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
-        <div id="map"></div>
         <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (MUNDO)</button>
     </div>
 
@@ -279,7 +318,7 @@
         </div>
 
         <div id="mob-location" class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
-            <div style="font-size:10px; color:#aaa; font-weight:bold; margin-bottom:5px;">UBICACIÓN (Requerida para reporte)</div>
+            <div style="font-size:10px; color:#aaa; font-weight:bold; margin-bottom:5px;">UBICACIÓN REAL (Arrastra el pin)</div>
             <input id="geo-address" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold);" value="Arrastra el pin...">
             <input id="geo-address-mob" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold); display:none;" value="Arrastra el pin...">
         </div>
@@ -351,14 +390,10 @@
 <div id="modal-camara" class="modal" style="background:black;">
     <div class="cam-container">
         <canvas id="cam-canvas" style="display:none;"></canvas>
+        
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
         
-        <div class="cam-controls">
-            <input type="range" class="cam-slider" min="0.2" max="1.5" step="0.1" value="0.5" oninput="updateCamOverlay(this.value, 'scale')">
-            <input type="range" class="cam-slider" min="0" max="100" step="1" value="50" oninput="updateCamOverlay(this.value, 'pos')">
-        </div>
-
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
@@ -380,10 +415,6 @@
     let map, marker, polyline, engine, animInterval;
     let serenitoMesh; 
     const radio = document.getElementById('radio');
-
-    // VARIABLES DE CAMARA
-    let camScale = 0.5;
-    let camPos = 50;
 
     function initApp() {
         setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL', {hour12: false}), 1000);
@@ -553,7 +584,7 @@
             load("intendencia.glb", 60, 40, 6);
             load("serenito.glb", 0, -10, 2, (mesh) => {
                 serenitoMesh = mesh;
-                serenitoMesh.rotation.y = Math.PI;
+                serenitoMesh.rotation.y = Math.PI; // MIRAR DE FRENTE
                 cam.target = serenitoMesh;
             });
 
@@ -605,6 +636,7 @@
         }, 1000);
     }
     
+    // RECONOCIMIENTO DE VOZ REAL
     function startDictation() {
         if ('webkitSpeechRecognition' in window) {
             const recognition = new webkitSpeechRecognition();
@@ -614,26 +646,17 @@
                 const text = event.results[0][0].transcript;
                 document.querySelector('.chat-input-area input').value = text;
             };
-            recognition.onerror = function(event) { alert("Error: " + event.error); };
+            recognition.onerror = function(event) { alert("Error de micrófono: " + event.error); };
         } else {
-            alert("Navegador no soporta dictado. Usa Chrome.");
+            alert("Tu navegador no soporta dictado. Usa Chrome.");
         }
     }
 
-    // CÁMARA PRO
+    // FOTO Y GUARDADO
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
     function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
     function setChar(img) { document.getElementById('cam-overlay-img').src = "./assets/img/" + img; }
     
-    function updateCamOverlay(val, type) {
-        if(type === 'scale') camScale = val;
-        if(type === 'pos') camPos = val;
-        
-        const overlay = document.getElementById('cam-overlay-img');
-        overlay.style.width = (camScale * 100) + "%";
-        overlay.style.left = camPos + "%";
-    }
-
     function tomarFoto() {
         const v = document.getElementById('cam-video');
         const c = document.getElementById('cam-canvas');
@@ -647,24 +670,20 @@
         ctx.translate(c.width, 0);
         ctx.scale(-1, 1);
         ctx.drawImage(v, 0, 0, c.width, c.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0); 
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
         
-        // Calcular posición y tamaño basado en sliders
-        const ow = c.width * camScale; 
+        // Dibujar overlay
+        const ow = c.width * 0.5; // 50% width
         const oh = (overlay.naturalHeight / overlay.naturalWidth) * ow;
-        // Posición X basada en porcentaje camPos (0 a 100)
-        // Si camPos es 50 (centro), x debe ser (c.width - ow)/2
-        // Ajuste fino: (c.width * (camPos/100)) - (ow/2)
-        const ox = (c.width * (camPos/100)) - (ow/2);
+        ctx.drawImage(overlay, c.width - ow, c.height - oh, ow, oh);
         
-        ctx.drawImage(overlay, ox, c.height - oh, ow, oh);
-        
+        // Crear link de descarga
         const link = document.createElement('a');
-        link.download = 'selfie-rdmls.png';
+        link.download = 'selfie-serenito.png';
         link.href = c.toDataURL();
         link.click();
         
-        alert("📸 ¡Foto lista! Se ha descargado o mantén presionado para guardar.");
+        alert("📸 ¡Foto lista! Mantén presionado para guardar o Captura Pantalla.");
     }
 
     function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
