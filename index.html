@@ -33,6 +33,7 @@
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; 
             overflow-y: auto; 
+            overflow-x: hidden; 
             border-right: 3px solid var(--gold); 
             display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
@@ -67,19 +68,11 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (ESTE ES EL QUE NO PUEDE FALTAR) */
+        /* SLIDER */
         #slider-container { 
-            height: 140px; 
-            width: 100%; 
-            border: 2px solid var(--gold); 
-            border-radius: 8px; 
-            overflow: hidden; 
-            position: relative; 
-            background: #000; 
-            margin-top: auto; 
-            cursor: zoom-in; 
-            flex-shrink: 0; /* IMPIDE QUE DESAPAREZCA */
-            min-height: 140px; /* GARANTÍA DE VISIBILIDAD */
+            height: 140px; width: 100%; border: 2px solid var(--gold); border-radius: 8px; 
+            overflow: hidden; position: relative; background: #000; margin-top: auto; 
+            cursor: zoom-in; flex-shrink: 0; box-sizing: border-box;
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -99,10 +92,10 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS */
-        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
-        .pin-img { width: 120px; height: 120px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
-        .pin-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--red); margin-top: -10px; z-index: 5; }
+        /* PIN GPS (GIGANTE 110px) */
+        .pin-wrapper { position: relative; width: 110px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        .pin-img { width: 110px; height: 110px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
+        .pin-arrow { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 25px solid var(--red); margin-top: -8px; z-index: 5; }
         
         /* DISTANCIAS */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
@@ -138,7 +131,7 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL MAPA CORTO) --- */
+        /* --- RESPONSIVE FINAL (MÓVIL MAPA 20vh) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
@@ -151,11 +144,11 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (25vh - MAPA CORTO PARA NO ATRAPAR EL DEDO) */
+            /* 3. Mapa (20vh - ULTRA COMPACTO PARA VER DIRECCIÓN) */
             #stage-area { 
                 order: 3; 
-                height: 25vh; /* Altura reducida */
-                min-height: 220px; /* Mínimo seguro */
+                height: 20vh; /* Altura Reducida */
+                min-height: 180px; 
                 width: 100%; 
                 border-top: 2px solid var(--gold); 
                 border-bottom: 2px solid var(--gold); 
@@ -398,7 +391,7 @@
                     <img src="./assets/img/serenito.png" class="pin-img">
                     <div class="pin-arrow"></div>
                    </div>`, 
-            className: 'dummy', iconSize: [120, 160], iconAnchor: [60, 160] 
+            className: 'dummy', iconSize: [110, 150], iconAnchor: [55, 150] 
         });
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
@@ -545,6 +538,7 @@
             load("intendencia.glb", 60, 40, 6);
             load("serenito.glb", 0, -10, 2, (mesh) => {
                 serenitoMesh = mesh;
+                serenitoMesh.rotation.y = Math.PI; // MIRAR DE FRENTE
                 cam.target = serenitoMesh;
             });
 
@@ -596,7 +590,22 @@
         }, 1000);
     }
     
-    function startDictation() { alert("🎙️ Escuchando..."); }
+    // RECONOCIMIENTO DE VOZ REAL
+    function startDictation() {
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'es-CL';
+            recognition.start();
+            recognition.onresult = function(event) {
+                const text = event.results[0][0].transcript;
+                document.querySelector('.chat-input-area input').value = text;
+            };
+            recognition.onerror = function(event) { alert("Error de micrófono: " + event.error); };
+        } else {
+            alert("Tu navegador no soporta dictado. Usa Chrome.");
+        }
+    }
+
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
     function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
     function setChar(img) { document.getElementById('cam-overlay-img').src = "./assets/img/" + img; }
