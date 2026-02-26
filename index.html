@@ -5,91 +5,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RDMLS | La Serena 2026</title>
     
+    <link rel="icon" type="image/png" href="assets/img/serenito.png">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
 
     <style>
-        /* ESTILOS GALA INTEGRADOS */
-        :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.95); }
+        /* --- CSS INTEGRADO PARA EVITAR ERRORES DE CARGA --- */
+        :root { 
+            --gold: #ffd700; 
+            --red: #b71c1c; 
+            --dark: #0f0f0f; 
+            --glass: rgba(12, 12, 12, 0.95); 
+        }
+        
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
+        /* LAYOUT DE 3 COLUMNAS */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 360px 1fr 390px; }
         
-        #col-left { background: linear-gradient(180deg, #8a0000 0%, #300000 100%); padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px rgba(0,0,0,0.6); }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        /* COLUMNAS */
+        #col-left { 
+            background: linear-gradient(180deg, #8a0000 0%, #300000 100%); 
+            padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            display: flex; flex-direction: column; gap: 12px; z-index: 50; 
+            box-shadow: 5px 0 20px rgba(0,0,0,0.6);
+        }
+        #col-right { 
+            background: var(--glass); padding: 15px; overflow-y: auto; 
+            border-left: 3px solid var(--gold); z-index: 50; 
+            display: flex; flex-direction: column; gap: 15px; 
+        }
         
-        /* CORRECCIÓN MAPA NEGRO */
+        /* MAPA (CORRECCIÓN PANTALLA NEGRA) */
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
-        #map { width: 100%; height: 100%; z-index: 1; min-height: 100vh; }
+        #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
-        /* COMPONENTES */
+        /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 42px; margin: 0; text-align: center; text-shadow: 3px 3px 0 #000; line-height: 1; color: white; }
         .clock { font-family: 'Oswald'; font-size: 26px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .escudo-img { width: 80px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); }
         .card-box { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
         
         /* VIDEO */
         .video-box { height: 120px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; cursor: pointer; margin-top:10px; }
         .video-box video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:25px; text-shadow:0 0 5px black; }
         
         /* SLIDER */
         #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s; }
         .slide-img.active { opacity: 1; }
 
-        /* BOTONES */
+        /* UI */
         .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: bold; border: 2px solid white; padding: 10px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 11px; margin-top: 5px; }
+        .btn-red { width: 100%; background: var(--red); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
+        .play-btn { width: 45px; height: 45px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
+        .f-input { width: 100%; padding: 10px; margin-bottom: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 12px; }
 
         /* PASTILLAS */
-        .chip { background: var(--gold); color: #000; font-weight: 900; border: 2px solid #fff; padding: 6px 10px; font-size: 10px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; margin: 2px; display:inline-block; }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+        .chip { background: var(--gold); color: #000; font-weight: 900; border: 2px solid #fff; padding: 6px 10px; font-size: 10px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
         .chip:hover { background: #fff; color: var(--red); }
 
-        /* CLIMA */
+        /* CLIMA FLOTANTE */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* SERENITO PIN */
+        /* PIN SERENITO & TICKET */
         .pin-wrapper { position: relative; width: 60px; height: 90px; display: flex; flex-direction: column; align-items: center; }
         .pin-img { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; background: var(--gold); box-shadow: 0 5px 15px black; object-fit: cover; z-index: 10; }
         .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid white; margin-top: -3px; z-index: 5; }
+        .ticket-icon { color: #00e676; font-size: 30px; background: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border: 3px solid #00e676; box-shadow: 0 5px 15px black; animation: popIn 0.5s; }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+
+        /* DISTANCIAS */
+        .dist-panel { background: rgba(0,0,0,0.8); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; font-size: 11px; margin-top: 10px; display: none; }
+        .dist-row { display: flex; justify-content: space-between; margin-bottom: 4px; color: #ddd; border-bottom: 1px solid #444; }
 
         /* MODALES */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; }
-        .modal-content-video { width: 80%; max-width: 900px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; }
-        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
+        .modal-content-video { width: 80%; max-width: 900px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 30px black; }
+        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center;}
+        .cam-container { width: 360px; height: 480px; border: 3px solid var(--gold); position: relative; overflow: hidden; background: black; box-shadow: 0 0 30px black; }
+        #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; filter: drop-shadow(0 0 10px black); }
+        #renderCanvas { width: 100%; height: 100%; outline: none; }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #col-left, #col-right { height: auto; } #stage-area { height: 50vh; order: -1; } }
     </style>
 </head>
 <body onload="initApp()">
 
 <div id="main-layout">
+    
     <div id="col-left">
         <div style="text-align:center;">
-            <img src="assets/img/escudo.png" style="width:80px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
+            <img src="assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
             <h1 class="rdmls-title">RDMLS</h1>
             <div class="clock" id="clock">00:00:00</div>
+            
+            <div class="card-box" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
+                <div style="flex-grow:1;">
+                    <div style="font-size:9px; color:var(--gold); letter-spacing:1px; font-weight:bold;">RADIO MUNICIPAL</div>
+                    <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)" style="width:100%; height:4px; accent-color:gold;">
+                </div>
+            </div>
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
             <video autoplay muted loop playsinline><source src="assets/img/video_full.mp4" type="video/mp4"></video>
+            <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
 
         <div class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">PLANIFICADOR DE VIAJES</div>
-            <div style="display:flex; flex-wrap:wrap; gap:5px;">
+            <div class="section-title">PLANIFICADOR DE VIAJES</div>
+            <div class="chip-container">
                 <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
                 <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
-                <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
                 <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
+                <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
+                <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
+                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
+                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
+                <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
+                <div class="chip" onclick="calcRoute(-33.448, -70.669, 'SANTIAGO')">SANTIAGO</div>
             </div>
-            <div id="dist-hud" style="display:none; background:rgba(0,0,0,0.8); border:1px solid var(--gold); padding:10px; margin-top:10px; border-radius:8px;">
+
+            <div id="dist-hud" class="dist-panel">
                 <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:11px;">DESTINO: <span id="lbl-dest">...</span></div>
-                <div style="font-size:11px; color:#ddd;">🚗 Auto: <span id="v-auto"></span></div>
-                <div style="font-size:11px; color:#ddd;">🚌 Bus: <span id="v-bus"></span></div>
+                <div class="dist-row"><span>🚗 Auto</span> <span id="v-auto"></span></div>
+                <div class="dist-row"><span>🚌 Bus</span> <span id="v-bus"></span></div>
+                <div class="dist-row"><span>🚲 Bici</span> <span id="v-bici"></span></div>
+                <div class="dist-row"><span>✈️ Avión</span> <span id="v-avion"></span></div>
                 <div style="text-align:center; color:#00e676; margin-top:5px; font-weight:bold; font-size:10px;">¡SERENITO EN CAMINO!</div>
             </div>
+            <button id="btn-reset" style="width:100%; background:var(--red); color:white; border:none; padding:8px; border-radius:5px; margin-top:5px; cursor:pointer; font-size:10px; font-weight:bold; display:none;" onclick="resetRoute()">CERRAR RUTA</button>
         </div>
 
         <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()">SELFIE CON SERENITO</button>
@@ -105,15 +167,16 @@
         <div class="weather-bar">
             <span><i class="fas fa-cloud"></i> 17°C NUBLADO</span>
             <span><i class="fas fa-wind"></i> 14 km/h</span>
+            <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
         <div id="map"></div>
-        <button class="tank-btn" onclick="alert('Modo 3D Cargando...')">PASEO 3D</button>
+        <button class="tank-btn" onclick="abrirTour3D()">PASEO 3D (TANQUE)</button>
     </div>
 
     <div id="col-right">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
-            <button style="background:#4285f4; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; font-size:11px;">ACCESO</button>
+            <button onclick="loginGoogle()" style="background:#4285f4; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer; font-size:11px;">ACCESO</button>
         </div>
 
         <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
@@ -122,8 +185,18 @@
         </div>
 
         <div class="card-box">
-            <input style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; margin-bottom:5px;" placeholder="Asunto...">
-            <button class="btn-gold" style="background:var(--red); color:white;">ENVIAR REPORTE</button>
+            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache)">
+            <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
+            <button class="btn-gold" style="background:var(--red); color:white;" onclick="enviarReporte()">ENVIAR REPORTE</button>
+            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa;">Historial vacío.</div>
+        </div>
+
+        <div class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
+            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">SERENITO IA</div>
+            <div id="chat-ia" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid #444; padding:8px; font-size:11px; overflow-y:auto; border-radius:5px; margin-bottom:5px;">
+                ¡Hola! Soy Serenito IA. ¿Consultas sobre trámites?
+            </div>
+            <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
         </div>
     </div>
 </div>
@@ -135,27 +208,44 @@
     </div>
 </div>
 
+<div id="modal-camara" class="modal">
+    <button class="close-modal" onclick="cerrarCamara()">CERRAR</button>
+    <div class="cam-container">
+        <video id="cam-video" autoplay playsinline></video>
+        <img src="assets/img/serenito.png" class="cam-overlay">
+    </div>
+    <button onclick="alert('Foto guardada!')" class="btn-gold" style="width:300px; margin-top:10px;">CAPTURAR</button>
+</div>
+
+<div id="modal-tour-3d" class="modal">
+    <button class="close-modal" onclick="cerrarTour()">SALIR</button>
+    <canvas id="renderCanvas"></canvas>
+</div>
+
+<audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
+
 <script>
+    // Configuración Firebase
+    const fbCfg={apiKey:"AIzaSyCDUhik-oYwJ-yBkBYAohw6DJct5FQ78w4",authDomain:"laserena-d1263.firebaseapp.com",projectId:"laserena-d1263",storageBucket:"laserena-d1263.firebasestorage.app",messagingSenderId:"283725387947",appId:"1:283725387947:web:898aa22c80c2fadbe8bfee"};
+    try { firebase.initializeApp(fbCfg); } catch(e){ console.log("Firebase already loaded"); }
+    const db=firebase.firestore(); const auth=firebase.auth(); let user=null;
+
     const CENTRO = [-29.9027, -71.2520];
-    let map, marker, polyline, animInterval;
+    let map, marker, polyline, engine, ticketMarker, animInterval;
+    const radio = document.getElementById('radio');
 
     function initApp() {
         // Reloj
-        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL'), 1000);
         
         // Slider
-        let s = 0; const imgs = document.querySelectorAll('.slide-img');
-        if(imgs.length > 0) setInterval(() => { 
-            imgs[s].classList.remove('active'); 
-            s = (s + 1) % imgs.length; 
-            imgs[s].classList.add('active'); 
-        }, 4000);
+        startSlider();
 
         // Mapa
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // Serenito
+        // Serenito Marker (Ruta Assets)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper"><img src="assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'"><div class="pin-arrow"></div></div>`, 
             className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
@@ -163,43 +253,121 @@
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
         // Geo
-        marker.on('dragend', (e) => {
+        marker.on('dragend', async (e) => {
+            const {lat, lng} = e.target.getLatLng();
             document.getElementById('geo-result').innerText = "Consultando...";
-            // Simulación rápida para evitar errores CORS si falla API
-            setTimeout(() => { 
-                const c = e.target.getLatLng();
-                document.getElementById('geo-result').innerText = `📍 ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; 
-            }, 500);
+            try {
+                const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`);
+                const d = await r.json();
+                const addr = d.address.road || "Calle";
+                const num = d.address.house_number ? `#${d.address.house_number}` : "";
+                document.getElementById('geo-result').innerText = `📍 ${addr} ${num}`;
+            } catch(e) { document.getElementById('geo-result').innerText = "📍 Ubicación manual"; }
         });
+
+        // Clima
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.90&longitude=-71.25&current_weather=true')
+            .then(r=>r.json()).then(d=>{
+                if(document.querySelector('.weather-bar')) {
+                    document.querySelector('.weather-bar').innerHTML = `
+                        <span><i class="fas fa-cloud"></i> ${d.current_weather.temperature}°C</span>
+                        <span><i class="fas fa-wind"></i> ${d.current_weather.windspeed} km/h</span>
+                        <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>`;
+                }
+            }).catch(()=>{});
+
+        auth.onAuthStateChanged(u=>{ user=u; if(u) loadHist(); });
     }
 
+    // Ruta + Animación
     function calcRoute(lat, lon, name) {
         if(polyline) map.removeLayer(polyline);
-        polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5}).addTo(map);
-        map.fitBounds(polyline.getBounds(), {padding:[80,80]});
+        if(ticketMarker) map.removeLayer(ticketMarker);
         
+        polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5, dashArray: '10, 10'}).addTo(map);
+        map.fitBounds(polyline.getBounds(), {padding:[80,80]});
+
+        const km = (map.distance(CENTRO, [lat, lon])/1000).toFixed(1);
         document.getElementById('dist-hud').style.display = 'block';
+        document.getElementById('btn-reset').style.display = 'block';
         document.getElementById('lbl-dest').innerText = name;
         
-        // Animación
-        let p = 0; 
+        document.getElementById('v-auto').innerText = (km/0.8).toFixed(0)+" min";
+        document.getElementById('v-bus').innerText = (km/0.5).toFixed(0)+" min";
+        document.getElementById('v-bici').innerText = (km*4).toFixed(0)+" min";
+        document.getElementById('v-pie').innerText = (km*12).toFixed(0)+" min";
+        document.getElementById('v-avion').innerText = km>150?(km/12).toFixed(0)+"m":"N/A";
+
+        let p = 0; const steps = 150; 
         if(animInterval) clearInterval(animInterval);
         animInterval = setInterval(() => {
-            p += 0.01;
-            const clat = CENTRO[0] + (lat - CENTRO[0]) * p;
-            const clng = CENTRO[1] + (lon - CENTRO[1]) * p;
+            p++;
+            const clat = CENTRO[0] + (lat-CENTRO[0]) * (p/steps);
+            const clng = CENTRO[1] + (lon-CENTRO[1]) * (p/steps);
             marker.setLatLng([clat, clng]);
-            if(p >= 1) clearInterval(animInterval);
+            
+            if(p >= steps) {
+                clearInterval(animInterval);
+                const tIcon = L.divIcon({ html: '<div class="ticket-icon"><i class="fas fa-check"></i></div>', className: 'dummy', iconSize: [40, 40] });
+                ticketMarker = L.marker([lat, lon], {icon: tIcon, zIndexOffset:2000}).addTo(map);
+            }
         }, 20);
     }
 
-    function toggleVideo(state) {
-        document.getElementById('modal-video').style.display = state ? 'flex' : 'none';
-        const v = document.getElementById('inst-video');
-        state ? v.play() : v.pause();
+    function resetRoute() { 
+        if(polyline) map.removeLayer(polyline); 
+        if(ticketMarker) map.removeLayer(ticketMarker);
+        document.getElementById('dist-hud').style.display='none'; 
+        document.getElementById('btn-reset').style.display='none'; 
+        map.flyTo(CENTRO, 15); 
+        marker.setLatLng(CENTRO);
     }
+
+    // Video Inteligente
+    function toggleVideo(state) {
+        const modal = document.getElementById('modal-video');
+        const v = document.getElementById('inst-video');
+        if(state) {
+            modal.style.display = 'flex';
+            if(!radio.paused) { radio.pause(); radio.dataset.playing="true"; document.getElementById('play-icon').className='fas fa-play'; }
+            v.play();
+        } else {
+            modal.style.display = 'none';
+            v.pause();
+            if(radio.dataset.playing==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
+        }
+    }
+
+    // Utils
+    function toggleRadio() { if(radio.paused){ radio.play(); document.getElementById('play-icon').className='fas fa-pause'; } else { radio.pause(); document.getElementById('play-icon').className='fas fa-play'; } }
+    function setVolume(v) { radio.volume = v; }
+    function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
+    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
+    function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+    function chatIA(el) { if(!el.value) return; document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><b>Serenito:</b> Procesando...`; el.value = ""; }
+    function enviarReporte() { if(!user) return alert("Inicia sesión"); db.collection("tickets_ia").add({ userId:user.uid, asunto:document.getElementById('req-asunto').value, fecha:new Date() }); alert("Enviado"); loadHist(); }
+    function loadHist() { db.collection("tickets_ia").where("userId","==",user.uid).onSnapshot(s=>{ document.getElementById('hist-list').innerHTML=""; s.forEach(d=> document.getElementById('hist-list').innerHTML+=`<div>✔ ${d.data().asunto}</div>`); }); }
     
-    function abrirCamara() { alert("Abriendo cámara..."); }
+    function startSlider() { 
+        let cur = 0; const imgs = document.querySelectorAll('.slide-img'); 
+        if(imgs.length>0) setInterval(()=>{ imgs[cur].classList.remove('active'); cur=(cur+1)%imgs.length; imgs[cur].classList.add('active'); }, 4000); 
+    }
+
+    function abrirTour3D() {
+        document.getElementById('modal-tour-3d').style.display='flex';
+        if(!engine) {
+            const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
+            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
+            cam.attachControl(c, true);
+            new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
+            BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m", s);
+            // Cargar modelo si existe
+            try{ BABYLON.SceneLoader.ImportMesh("","assets/img/","municipalidad.glb",s, (m)=>{m[0].position.y=0}); }catch(e){}
+            engine.runRenderLoop(()=>s.render());
+        }
+    }
+    function cerrarTour() { document.getElementById('modal-tour-3d').style.display='none'; }
 </script>
 
 </body>
