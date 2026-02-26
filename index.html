@@ -25,7 +25,7 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- LAYOUT ESCRITORIO (FIJO) --- */
+        /* --- LAYOUT ESCRITORIO --- */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         /* COLUMNA IZQUIERDA */
@@ -33,10 +33,8 @@
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; 
             overflow-y: auto; 
-            overflow-x: hidden; 
             border-right: 3px solid var(--gold); 
             display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
-            position: relative;
         }
         
         /* COLUMNA DERECHA */
@@ -51,9 +49,9 @@
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
         .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
         .escudo-img:hover { transform: scale(1.1); }
-        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
+        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
         
-        /* VIDEO BOX */
+        /* VIDEO */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -69,7 +67,7 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER */
+        /* SLIDER (ESTE ES EL QUE NO PUEDE FALTAR) */
         #slider-container { 
             height: 140px; 
             width: 100%; 
@@ -80,8 +78,8 @@
             background: #000; 
             margin-top: auto; 
             cursor: zoom-in; 
-            flex-shrink: 0; 
-            box-sizing: border-box;
+            flex-shrink: 0; /* IMPIDE QUE DESAPAREZCA */
+            min-height: 140px; /* GARANTÍA DE VISIBILIDAD */
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -140,7 +138,7 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL PULIDO) --- */
+        /* --- RESPONSIVE FINAL (MÓVIL MAPA CORTO) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
@@ -153,8 +151,16 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (25vh - ALTURA PERFECTA) */
-            #stage-area { order: 3; height: 25vh; min-height: 200px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
+            /* 3. Mapa (25vh - MAPA CORTO PARA NO ATRAPAR EL DEDO) */
+            #stage-area { 
+                order: 3; 
+                height: 25vh; /* Altura reducida */
+                min-height: 220px; /* Mínimo seguro */
+                width: 100%; 
+                border-top: 2px solid var(--gold); 
+                border-bottom: 2px solid var(--gold); 
+                z-index: 1; 
+            }
             
             /* 4. Ubicación (Pegada al mapa) */
             #mob-location { order: 4; margin: 10px 15px 5px 15px; background: rgba(0,0,0,0.8); }
@@ -172,7 +178,7 @@
             #mob-ia { order: 10; margin: 0 15px 15px 15px; }
             #mob-fama { order: 11; margin: 0 15px 15px 15px; }
             #mob-selfie { order: 12; margin: 0 15px 15px 15px; }
-            #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; }
+            #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; display: block !important; }
             
             /* Footer */
             .mobile-footer { display: block; order: 14; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
@@ -250,7 +256,7 @@
         <button id="mob-selfie" class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
         <div id="mob-slider" id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
-            <div id="slider-container" style="height:100%; width:100%; position:relative;">
+            <div id="slider-container">
                 <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
                 <img src="./assets/img/comic-playa.jpg" class="slide-img">
                 <img src="./assets/img/comic-cielo.jpg" class="slide-img">
