@@ -6,12 +6,14 @@
     <title>RDMLS | Portal Ciudadano 2026</title>
     
     <meta name="theme-color" content="#b71c1c">
+    <meta name="description" content="Plataforma de Gestión Municipal Inteligente La Serena">
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -22,6 +24,8 @@
 
     <style>
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
+        
+        /* ESTILO BASE (ESCRITORIO: FIJO) */
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
@@ -30,9 +34,9 @@
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -43,7 +47,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO BOX */
+        /* VIDEO */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -71,12 +75,17 @@
         .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
         .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
 
-        /* PIN MEJORADO (SIN FONDO, FLECHA ROJA) */
+        /* CHIPS */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
+        .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
+
+        /* CLIMA */
+        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
+
+        /* PIN GPS */
         .pin-wrapper { position: relative; width: 60px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
-        .pin-wrapper:active { transform: translateY(-5px); }
-        /* Imagen transparente sin borde */
         .pin-img { width: 60px; height: 60px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
-        /* Flecha Roja */
         .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid var(--red); margin-top: -5px; z-index: 5; }
         
         /* DISTANCIAS */
@@ -85,13 +94,30 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
+        /* CHAT IA */
+        #chat-container { display: flex; flex-direction: column; height: 160px; }
+        #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
+        .chat-input-area { display: flex; gap: 5px; }
+        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
+
+        /* ENCUESTA */
+        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
+        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+
+        /* TOAST ALERT */
+        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
+
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
         .modal-content-video { width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 50px black; }
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        /* CÁMARA (Con selección de personaje) */
+        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
+        #renderCanvas { width: 100%; height: 100%; outline: none; }
+
+        /* CÁMARA */
         .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
@@ -100,26 +126,23 @@
         .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
         .char-btn img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* PERFIL */
-        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
-        #renderCanvas { width: 100%; height: 100%; outline: none; }
+        /* FOOTER MÓVIL (OCULTO EN DESKTOP) */
+        .mobile-footer { display: none; }
 
-        /* OTHER UI */
-        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
-        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
-        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
-        .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
-        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
-        
-        /* CHAT & POLL */
-        #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
-        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
-        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
-        .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
-        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
-
-        @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #stage-area { height: 60vh; order: -1; } }
+        /* --- RESPONSIVE OPTIMIZADO PARA FLUIDEZ --- */
+        @media (max-width: 1024px) { 
+            body, html { overflow: auto; height: auto; } /* Permitir Scroll en Móvil */
+            #main-layout { display: flex; flex-direction: column; height: auto; } 
+            #col-left, #col-right { height: auto; overflow: visible; box-shadow: none; border: none; }
+            #stage-area { height: 60vh; order: -1; } /* Mapa primero */
+            
+            /* Ajustes Móviles */
+            .rdmls-title { font-size: 32px; margin-top: 10px; }
+            .escudo-img { width: 60px; }
+            
+            /* Footer visible solo en móvil */
+            .mobile-footer { display: block; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; border-top: 1px solid #333; margin-top: 20px; font-family: 'Oswald'; letter-spacing: 1px; }
+        }
     </style>
 </head>
 <body onload="initApp()">
@@ -238,12 +261,6 @@
             <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;">Historial vacío.</div>
         </div>
 
-        <div class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold;">TELÉFONOS EMERGENCIA</div>
-            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between; margin-top:5px;"><span>🚑 SAMU: 131</span> <span>🚒 Bomberos: 132</span></div>
-            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between;"><span>🚓 Carabineros: 133</span> <span>🛡️ Seguridad: 1402</span></div>
-        </div>
-
         <div class="card-box" style="border-color:var(--red);">
             <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
             <div id="poll-interface"></div>
@@ -265,6 +282,10 @@
             </div>
         </div>
     </div>
+    
+    <div class="mobile-footer">
+        © 2026 Ilustre Municipalidad de La Serena | RDMLS | Rodrigo Godoy
+    </div>
 </div>
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
@@ -281,9 +302,7 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:14px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px; text-align:center;">
-        👆 <b>TOCA EL PISO</b> PARA CAMINAR HACIA ALLÁ
-    </div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:12px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">🎮 <b>MODO TANQUE:</b> Usa W-A-S-D para caminar</div>
 </div>
 
 <div id="modal-camara" class="modal" style="background:black;">
@@ -310,7 +329,7 @@
 
     const CENTRO = [-29.9027, -71.2520];
     let map, marker, polyline, engine, animInterval;
-    let serenitoMesh; // Para el 3D
+    let serenitoMesh; 
     const radio = document.getElementById('radio');
 
     function initApp() {
@@ -321,7 +340,6 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // SERENITO (SIN FONDO, FLECHA ROJA)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
@@ -447,61 +465,57 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
-    // --- PASEO 3D: CAMINAR AL CLICK ---
+    // PASEO 3D (INTERACTIVO AL CLICK)
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
             const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
             const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
             
-            // CÁMARA ORBITAL (Mejor para Touch)
+            // Cámara Orbital (Más fácil de manejar en móvil/desktop)
             const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
             cam.attachControl(c, true);
+            cam.upperBetaLimit = Math.PI / 2; // No pasar bajo el suelo
             
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
-            // Suelo
             const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
             const mat = new BABYLON.StandardMaterial("m",s);
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
             g.material = mat;
 
-            // Cargar Edificios
-            const load = (f,x,z,scl) => {
+            // Modelos
+            const load = (f,x,z,scl, cb) => {
                 BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
                     m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
+                    if(cb) cb(m[0]);
                 });
             };
             load("municipalidad.glb", 0, 0, 3);
             load("intendencia.glb", 60, 40, 3);
             
-            // Cargar Serenito (Variable Global)
-            BABYLON.SceneLoader.ImportMesh("", "./assets/models/", "serenito.glb", s, (m)=>{ 
-                serenitoMesh = m[0];
-                serenitoMesh.position.set(0,0,-10); // Sobre el piso
-                serenitoMesh.scaling = new BABYLON.Vector3(2,2,2);
-                cam.target = serenitoMesh; // La cámara sigue a Serenito
+            // Serenito
+            load("serenito.glb", 0, -10, 2, (mesh) => {
+                serenitoMesh = mesh;
+                cam.target = serenitoMesh; // Cámara sigue a Serenito
             });
 
-            // Lógica de Movimiento al Click
+            // Caminar al Click
             let targetPos = null;
-            s.onPointerDown = (evt, pickResult) => {
-                if(pickResult.hit && pickResult.pickedMesh === g) {
-                    targetPos = pickResult.pickedPoint;
-                    if(serenitoMesh) serenitoMesh.lookAt(targetPos); // Mirar
+            s.onPointerDown = (evt, pick) => {
+                if(pick.hit && pick.pickedMesh === g) {
+                    targetPos = pick.pickedPoint;
+                    if(serenitoMesh) serenitoMesh.lookAt(targetPos);
                 }
             };
 
-            // Loop de Animación (Caminar)
             s.registerBeforeRender(() => {
                 if(serenitoMesh && targetPos) {
                     const diff = targetPos.subtract(serenitoMesh.position);
                     if(diff.length() > 0.5) {
                         diff.normalize();
-                        serenitoMesh.position.addInPlace(diff.scale(0.2)); // Velocidad
-                    } else {
-                        targetPos = null; // Llegó
-                    }
+                        serenitoMesh.position.addInPlace(diff.scale(0.3));
+                    } else { targetPos = null; }
                 }
             });
 
