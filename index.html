@@ -36,6 +36,7 @@
             overflow-x: hidden; 
             border-right: 3px solid var(--gold); 
             display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
+            position: relative;
         }
         
         /* COLUMNA DERECHA */
@@ -68,11 +69,19 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER */
+        /* SLIDER (RESCATADO) */
         #slider-container { 
-            height: 140px; width: 100%; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; margin-top: auto; 
-            cursor: zoom-in; flex-shrink: 0; box-sizing: border-box;
+            height: 140px; 
+            width: 100%; 
+            border: 2px solid var(--gold); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            position: relative; 
+            background: #000; 
+            margin-top: auto; 
+            cursor: zoom-in; 
+            flex-shrink: 0; /* ESTO EVITA QUE SE OCULTE */
+            display: block !important;
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -92,7 +101,7 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS (GIGANTE 110px) */
+        /* PIN GPS */
         .pin-wrapper { position: relative; width: 110px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
         .pin-img { width: 110px; height: 110px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
         .pin-arrow { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 25px solid var(--red); margin-top: -8px; z-index: 5; }
@@ -131,7 +140,7 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL MAPA 20vh) --- */
+        /* --- RESPONSIVE FINAL (MÓVIL MAPA 25vh) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
@@ -144,11 +153,11 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (20vh - ULTRA COMPACTO PARA VER DIRECCIÓN) */
+            /* 3. Mapa (25vh - NO OCUPA TODA LA PANTALLA) */
             #stage-area { 
                 order: 3; 
-                height: 20vh; /* Altura Reducida */
-                min-height: 180px; 
+                height: 25vh; /* Altura Reducida */
+                min-height: 200px; 
                 width: 100%; 
                 border-top: 2px solid var(--gold); 
                 border-bottom: 2px solid var(--gold); 
