@@ -25,10 +25,10 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* LAYOUT ESCRITORIO (INTOCABLE) */
+        /* LAYOUT DE ESCRITORIO */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNAS */
+        /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
@@ -49,7 +49,7 @@
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
-            box-shadow: 0 4px 10px black; flex-shrink: 0;
+            box-shadow: 0 4px 10px black; flex-shrink: 0; width: 100%;
         }
         .video-click-layer { position: absolute; inset: 0; z-index: 20; background: transparent; }
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
@@ -61,11 +61,19 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (ESTE ES EL QUE FALTABA) */
+        /* SLIDER (ARREGLADO) */
         #slider-container { 
-            height: 140px; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; margin-top: auto; 
-            cursor: zoom-in; flex-shrink: 0; 
+            height: 140px; 
+            width: 100%; /* Asegura ancho completo */
+            border: 2px solid var(--gold); 
+            border-radius: 8px; 
+            overflow: hidden; 
+            position: relative; 
+            background: #000; 
+            margin-top: auto; /* Empuja hacia abajo si hay espacio */
+            cursor: zoom-in; 
+            flex-shrink: 0; 
+            box-sizing: border-box; /* Evita desbordes por bordes */
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -86,7 +94,7 @@
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
         /* PIN GPS */
-        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
         .pin-img { width: 120px; height: 120px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
         .pin-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--red); margin-top: -10px; z-index: 5; }
         
@@ -96,10 +104,17 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT & ALERTS */
+        /* CHAT IA */
+        #chat-container { display: flex; flex-direction: column; height: 160px; }
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
+        .chat-input-area { display: flex; gap: 5px; }
+        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
+
+        /* ENCUESTA */
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+
+        /* TOAST ALERT */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
@@ -108,6 +123,7 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
+        /* PERFIL */
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
@@ -126,12 +142,11 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE OPTIMIZADO (ORDEN LÓGICO) --- */
+        /* --- RESPONSIVE FINAL (MÓVIL PULIDO) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
             
-            /* Usamos display: contents para reordenar los hijos directamente */
             #col-left, #col-right { display: contents; } 
             
             /* 1. Cabecera */
@@ -140,35 +155,33 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (Altura 35vh para no atrapar) */
-            #stage-area { order: 3; height: 35vh; min-height: 250px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
+            /* 3. Mapa (25vh - ALTURA PERFECTA PARA NO PERDERSE) */
+            #stage-area { order: 3; height: 25vh; min-height: 200px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
             
-            /* 4. Ubicación (Pegado al mapa) */
-            #mob-location { order: 4; margin: 15px; background: rgba(0,0,0,0.8); }
+            /* 4. Ubicación (Pegada al mapa para contexto inmediato) */
+            #mob-location { order: 4; margin: 10px 15px 5px 15px; background: rgba(0,0,0,0.8); }
             
             /* 5. Planificador */
-            #mob-planner { order: 5; margin: 0 15px 15px 15px; }
+            #mob-planner { order: 5; margin: 5px 15px 15px 15px; }
             
             /* 6. Login */
             #mob-login { order: 6; padding: 0 15px; margin-bottom: 10px; }
             
-            /* 7. Resto */
+            /* Resto */
             #mob-report { order: 7; margin: 0 15px 15px 15px; }
             #mob-emergency { order: 8; margin: 0 15px 15px 15px; }
             #mob-poll { order: 9; margin: 0 15px 15px 15px; }
             #mob-ia { order: 10; margin: 0 15px 15px 15px; }
             #mob-fama { order: 11; margin: 0 15px 15px 15px; }
             #mob-selfie { order: 12; margin: 0 15px 15px 15px; }
-            #mob-slider { order: 13; margin: 0 15px 20px 15px; }
+            #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; }
             
             /* Footer */
             .mobile-footer { display: block; order: 14; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
 
             .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
-            
-            /* Ajuste Botón 3D en móvil para no tapar */
-            .tank-btn { bottom: 10px; padding: 8px 20px; font-size: 12px; }
+            .tank-btn { bottom: 10px; padding: 6px 15px; font-size: 11px; }
         }
     </style>
 </head>
@@ -239,12 +252,10 @@
         <button id="mob-selfie" class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
         <div id="mob-slider" id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
-            <div id="slider-container" style="height:100%; width:100%; position:relative;">
-                <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
-                <img src="./assets/img/comic-playa.jpg" class="slide-img">
-                <img src="./assets/img/comic-cielo.jpg" class="slide-img">
-                <img src="./assets/img/rdmls.png" class="slide-img">
-            </div>
+            <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
+            <img src="./assets/img/comic-playa.jpg" class="slide-img">
+            <img src="./assets/img/comic-cielo.jpg" class="slide-img">
+            <img src="./assets/img/rdmls.png" class="slide-img">
         </div>
     </div>
 
@@ -312,7 +323,7 @@
                 <div id="chat-ia">¡Hola! Soy Serenito IA. ¿En qué te ayudo?</div>
                 <div class="chat-input-area">
                     <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
-                    <button class="btn-mic"><i class="fas fa-microphone"></i></button>
+                    <button class="btn-mic" onclick="startDictation()"><i class="fas fa-microphone"></i></button>
                 </div>
             </div>
         </div>
@@ -344,12 +355,10 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
-        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
-
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -501,7 +510,6 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
-    // PASEO 3D
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
