@@ -24,13 +24,12 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* LAYOUT */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 360px 1fr 390px; }
         
         #col-left { 
-            background: linear-gradient(180deg, #900 0%, #500 100%); 
+            background: linear-gradient(180deg, #900 0%, #300 100%); 
             padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
         #col-right { 
             background: var(--glass); padding: 15px; overflow-y: auto; 
@@ -41,26 +40,26 @@
 
         /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 42px; margin: 0; text-align: center; text-shadow: 3px 3px 0 #000; line-height: 1; color: white; }
-        .clock { font-family: 'Oswald'; font-size: 28px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .clock { font-family: 'Oswald'; font-size: 28px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); }
         .escudo-img { width: 80px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15); }
         
         /* VIDEO */
         .video-box { 
             height: 120px; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; cursor: pointer; margin-top:10px;
+            overflow: hidden; position: relative; background: #000; cursor: pointer;
             box-shadow: 0 5px 15px black;
         }
         .video-box video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
         .video-box:hover video { opacity: 1; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:30px; text-shadow:0 0 10px black; }
         
-        /* AGENDA */
-        .agenda-item { display: flex; align-items: center; gap: 10px; padding: 5px 0; border-bottom: 1px solid #444; font-size: 11px; }
-        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 5px; border-radius: 4px; }
+        /* RELLENO IZQUIERDO (NOTICIAS) */
+        .news-item { font-size: 10px; border-bottom: 1px solid #444; padding: 4px 0; display: flex; gap: 5px; align-items: center; }
+        .news-dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; }
 
         /* SLIDER */
-        #slider-container { height: 140px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; }
+        #slider-container { height: 130px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s; }
         .slide-img.active { opacity: 1; }
 
@@ -69,17 +68,14 @@
         .btn-red { width: 100%; background: var(--red); color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
         .btn-cam { background: #333; color: white; border: 1px dashed #777; width: 100%; padding: 10px; margin-bottom: 5px; cursor: pointer; border-radius: 5px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-cam:hover { background: #444; border-color: var(--gold); color: var(--gold); }
-        
         .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
-        
-        .play-btn { width: 45px; height: 45px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--gold); }
-        
+        .play-btn { width: 40px; height: 40px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--gold); }
         .f-input { width: 100%; padding: 10px; margin-bottom: 8px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 12px; }
 
-        /* CHIPS */
-        .chip-container { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-        .chip { background: var(--gold); color: black; font-weight: 900; border: 2px solid #fff; padding: 6px 10px; font-size: 10px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 4px 6px rgba(0,0,0,0.4); }
-        .chip:hover { background: white; color: var(--red); transform: translateY(-2px); }
+        /* PASTILLAS */
+        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; }
+        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 5px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; }
+        .chip:hover { background: white; color: var(--red); }
 
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
@@ -92,15 +88,20 @@
         @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
 
         /* DISTANCIAS */
-        .dist-panel { background: rgba(0,0,0,0.9); border: 1px solid var(--gold); border-radius: 8px; padding: 12px; margin-top: 10px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 5px; }
+        .dist-panel { background: rgba(0,0,0,0.9); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 10px; display: none; }
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; font-size: 10px; color: #ddd; margin-top: 5px; }
         .dist-item i { color: var(--gold); width: 15px; text-align: center; }
+
+        /* PERFIL USUARIO (Arriba Derecha) */
+        .user-profile { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); }
+        .user-avatar { width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; }
+        .user-name { font-size: 11px; font-weight: bold; color: white; }
 
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
         .modal-content-video { width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 50px black; }
-        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
-        .cam-container { width: 360px; height: 480px; border: 3px solid var(--gold); position: relative; overflow: hidden; background: black; box-shadow: 0 0 30px black; }
+        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; }
+        .cam-container { width: 360px; height: 480px; border: 3px solid var(--gold); position: relative; overflow: hidden; background: black; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; filter: drop-shadow(0 0 10px black); }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
@@ -118,7 +119,7 @@
             <h1 class="rdmls-title">RDMLS</h1>
             <div class="clock" id="clock">00:00:00</div>
             
-            <div class="card-box" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+            <div class="card-box" style="display:flex; align-items:center; gap:10px;">
                 <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
                 <div style="flex-grow:1;">
                     <div style="font-size:9px; color:var(--gold); font-weight:bold;">RADIO MUNICIPAL</div>
@@ -128,42 +129,44 @@
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
-            <video autoplay muted loop playsinline preload="metadata"><source src="./assets/img/video_full.mp4" type="video/mp4"></video>
+            <video autoplay muted loop playsinline preload="auto"><source src="./assets/img/video_full.mp4" type="video/mp4"></video>
             <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
 
         <div class="card-box">
-            <div style="font-size:11px; color:var(--gold); font-weight:900; margin-bottom:8px; border-bottom:1px solid #555; padding-bottom:3px;">PLANIFICADOR DE VIAJES</div>
+            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">PLANIFICADOR</div>
             <div class="chip-container">
                 <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
                 <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
                 <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
                 <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
                 <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
-                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
-                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
                 <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
             </div>
 
             <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:12px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:11px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
                 <div class="dist-grid">
                     <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
                     <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
                     <div class="dist-item"><i class="fas fa-walking"></i> <span id="v-pie"></span></div>
                     <div class="dist-item"><i class="fas fa-bicycle"></i> <span id="v-bici"></span></div>
-                    <div class="dist-item"><i class="fas fa-plane"></i> <span id="v-avion"></span></div>
                 </div>
             </div>
-            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:6px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; display:none;">CERRAR RUTA</button>
+            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:5px; cursor:pointer; font-size:10px; font-weight:bold; display:none;">CERRAR RUTA</button>
         </div>
 
         <div class="card-box">
-            <div style="font-size:11px; color:var(--gold); font-weight:900; margin-bottom:8px;">AGENDA CULTURAL</div>
-            <div class="agenda-item"><span class="agenda-date">HOY</span> <span>Festival del Faro</span></div>
-            <div class="agenda-item"><span class="agenda-date">28 FEB</span> <span>Jazz en la Plaza</span></div>
-            <div class="agenda-item"><span class="agenda-date">02 MAR</span> <span>Feria de Abastos</span></div>
+            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">FARMACIAS DE TURNO</div>
+            <div class="news-item"><span class="news-dot"></span> Cruz Verde (Balmaceda 450)</div>
+            <div class="news-item"><span class="news-dot"></span> Ahumada (Cienfuegos 320)</div>
+            
+            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-top:10px; margin-bottom:5px;">NOTICIAS</div>
+            <div class="news-item"><span class="news-dot"></span> Cierre calle Prat por obras</div>
+            <div class="news-item"><span class="news-dot"></span> Festival del Faro este sábado</div>
         </div>
+
+        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
         <div id="slider-container">
             <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
@@ -186,11 +189,13 @@
     <div id="col-right">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
-            <button onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 12px; background:#4285f4; border:none; color:white;">ACCESO GOOGLE</button>
+            <div id="login-container">
+                <button onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 12px; background:#4285f4; border:none; color:white;">ACCESO GOOGLE</button>
+            </div>
         </div>
 
         <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
-            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL (Editable)</div>
+            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL (Arrastra el pin)</div>
             <input id="geo-address" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold);" value="Arrastra el pin...">
         </div>
 
@@ -201,18 +206,18 @@
             
             <label class="btn-cam">
                 <i class="fas fa-camera"></i> FOTO / CÁMARA
-                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="alert('Foto lista')">
+                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="alert('Foto adjuntada correctamente')">
             </label>
 
             <button class="btn-red" style="width:100%;" onclick="enviarReporte()">ENVIAR REPORTE</button>
-            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:100px; overflow-y:auto;">Historial vacío (Requiere Login)</div>
+            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:100px; overflow-y:auto;">Inicia sesión para ver historial.</div>
         </div>
 
         <div class="card-box" style="border-color:var(--red);">
             <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:10px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
             <div id="poll-interface"></div>
             <div id="poll-results" style="display:none; text-align:center;">
-                <b style="color:#00e676;">¡GRACIAS!</b>
+                <b style="color:#00e676;">¡GRACIAS POR VOTAR!</b>
             </div>
         </div>
 
@@ -238,13 +243,12 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:12px;">Usa WASD para moverte</div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:12px;">Usa W-A-S-D para moverte</div>
 </div>
 
 <audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
 
 <script>
-    // --- CONEXIÓN REAL A FIREBASE ---
     const fbCfg={apiKey:"AIzaSyCDUhik-oYwJ-yBkBYAohw6DJct5FQ78w4",authDomain:"laserena-d1263.firebaseapp.com",projectId:"laserena-d1263",storageBucket:"laserena-d1263.firebasestorage.app",messagingSenderId:"283725387947",appId:"1:283725387947:web:898aa22c80c2fadbe8bfee"};
     try { firebase.initializeApp(fbCfg); } catch(e){ console.log("Firebase loaded"); }
     const db=firebase.firestore(); const auth=firebase.auth(); const storage=firebase.storage(); let user=null;
@@ -270,78 +274,75 @@
         });
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
-        // --- GEOREFERENCIA EXACTA (Calle + Número) ---
+        // Georeferencia + Número
         marker.on('dragend', (e) => {
             const c = e.target.getLatLng();
             document.getElementById('geo-address').value = "Consultando...";
             fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}&zoom=18&addressdetails=1`)
             .then(r=>r.json()).then(d=>{
                 const road = d.address.road || "Calle";
-                const number = d.address.house_number || "S/N";
-                document.getElementById('geo-address').value = `${road} #${number}`;
+                const num = d.address.house_number || "S/N";
+                document.getElementById('geo-address').value = `${road} #${num}`;
             }).catch(() => document.getElementById('geo-address').value = `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`);
         });
 
+        // AUTH LISTENER (Cambia botón por foto)
         auth.onAuthStateChanged(u=>{ 
             user=u; 
             if(u) {
-                alert(`Bienvenido: ${u.displayName}`);
+                document.getElementById('login-container').innerHTML = `
+                    <div class="user-profile">
+                        <img src="${u.photoURL}" class="user-avatar" onerror="this.src='https://cdn-icons-png.flaticon.com/512/149/149071.png'">
+                        <div class="user-name">${u.displayName.split(' ')[0]}</div>
+                    </div>`;
                 loadHist();
             }
         });
     }
 
-    // --- LOGIN REAL DE GOOGLE ---
     function loginGoogle() { 
-        const provider = new firebase.auth.GoogleAuthProvider();
-        auth.signInWithPopup(provider).catch(e => alert("Error Login: " + e.message)); 
+        const p = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(p).catch(e => alert(e.message)); 
     }
 
-    // --- GUARDAR REPORTE EN DB REAL ---
     function enviarReporte() {
-        if(!user) return alert("Por favor, inicia sesión (Acceso Google)");
+        if(!user) return alert("Debes iniciar sesión.");
         const asunto = document.getElementById('req-asunto').value;
-        const ubicacion = document.getElementById('geo-address').value;
-        if(!asunto) return alert("Falta el asunto");
-
+        const ubi = document.getElementById('geo-address').value;
+        if(!asunto) return alert("Falta asunto");
+        
+        // Simular envío rápido para la demo si no hay archivo, o real si hay
         db.collection("tickets_ia").add({
             userId: user.uid,
-            userName: user.displayName,
-            email: user.email,
             asunto: asunto,
-            ubicacion: ubicacion,
-            fecha: new Date(),
-            estado: "Pendiente"
-        }).then(() => {
-            alert("Reporte guardado en base de datos municipal");
+            ubicacion: ubi,
+            fecha: new Date()
+        }).then(()=>{
+            alert("Reporte Enviado a Central");
             loadHist();
-        }).catch(e => alert("Error DB: " + e.message));
-    }
-
-    function loadHist() {
-        db.collection("tickets_ia").where("userId","==",user.uid).orderBy("fecha","desc").limit(10)
-        .onSnapshot(s=>{
-            const div = document.getElementById('hist-list');
-            div.innerHTML="";
-            s.forEach(d=> {
-                const data = d.data();
-                div.innerHTML += `<div style="border-bottom:1px solid #333; padding:2px;">📅 ${data.asunto}</div>`;
-            });
         });
     }
 
-    // --- VIDEO INTELIGENTE ---
+    function loadHist() {
+        db.collection("tickets_ia").where("userId","==",user.uid).orderBy("fecha","desc").limit(5).onSnapshot(s=>{
+            const list = document.getElementById('hist-list');
+            list.innerHTML="";
+            s.forEach(d=> list.innerHTML += `<div style="border-bottom:1px solid #333; padding:3px;">📅 ${d.data().asunto}</div>`);
+        });
+    }
+
+    // Video Inteligente
     function toggleVideo(state) {
         const modal = document.getElementById('modal-video');
         const v = document.getElementById('inst-video');
         if(state) {
             modal.style.display = 'flex';
-            if(!radio.paused) { radio.pause(); radio.dataset.playing="true"; document.getElementById('play-icon').className='fas fa-play'; }
+            if(!radio.paused) { radio.pause(); radio.dataset.wasPlaying="true"; document.getElementById('play-icon').className='fas fa-play'; }
             v.play();
         } else {
             modal.style.display = 'none';
             v.pause(); v.currentTime=0;
-            if(radio.dataset.playing==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
+            if(radio.dataset.wasPlaying==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
         }
     }
     function toggleRadio() {
@@ -351,32 +352,7 @@
     }
     function setVolume(v) { radio.volume = v; }
 
-    // --- PASEO 3D (Ruta Corregida a models/) ---
-    function abrirTour3D() {
-        document.getElementById('modal-tour-3d').style.display='flex';
-        if(!engine) {
-            const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
-            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
-            const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 2, -10), s);
-            cam.attachControl(c, true);
-            // Configuración WASD para moverse
-            cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
-            
-            new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
-            const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
-            g.material = new BABYLON.StandardMaterial("m",s);
-            
-            // Cargar Modelo desde assets/models/
-            BABYLON.SceneLoader.ImportMesh("","./assets/models/","municipalidad.glb",s, (m)=>{
-                m[0].position.y=0;
-                m[0].scaling = new BABYLON.Vector3(2,2,2); // Ajustar tamaño
-            }, null, (e)=>{ console.log("Error modelo 3D:", e); });
-            
-            engine.runRenderLoop(()=>s.render());
-        }
-    }
-
-    // --- RUTA ---
+    // Ruta
     function calcRoute(lat, lon, name) {
         if(polyline) map.removeLayer(polyline);
         polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5}).addTo(map);
@@ -384,12 +360,14 @@
         document.getElementById('dist-hud').style.display = 'block';
         document.getElementById('btn-reset').style.display = 'block';
         document.getElementById('lbl-dest').innerText = name;
+        
         const km = (map.distance(CENTRO, [lat, lon])/1000).toFixed(1);
         document.getElementById('v-auto').innerText = (km/0.8).toFixed(0)+"m";
         document.getElementById('v-bus').innerText = (km/0.5).toFixed(0)+"m";
         document.getElementById('v-pie').innerText = (km*12).toFixed(0)+"m";
         document.getElementById('v-bici').innerText = (km*4).toFixed(0)+"m";
         document.getElementById('v-avion').innerText = km>150 ? (km/12).toFixed(0)+"m" : "N/A";
+
         let p=0; 
         if(animInterval) clearInterval(animInterval);
         animInterval = setInterval(()=>{
@@ -398,6 +376,23 @@
         }, 20);
     }
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
+
+    // 3D (Ruta Models)
+    function abrirTour3D() {
+        document.getElementById('modal-tour-3d').style.display='flex';
+        if(!engine) {
+            const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
+            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.1, 0.1, 0.1);
+            const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
+            cam.attachControl(c, true);
+            cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
+            new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
+            BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s).material = new BABYLON.StandardMaterial("m",s);
+            // Cargar modelo desde assets/models/
+            try{ BABYLON.SceneLoader.ImportMesh("","./assets/models/","municipalidad.glb",s, (m)=>{ m[0].position.y=0; }); }catch(e){}
+            engine.runRenderLoop(()=>s.render());
+        }
+    }
 
     const qs = [{q:"¿Seguridad?",o:["Cámaras","Rondas"]},{q:"¿Deporte?",o:["Canchas","Talleres"]}];
     function initPoll() { renderPoll(0); }
