@@ -25,24 +25,18 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- LAYOUT ESCRITORIO (FIJO) --- */
+        /* LAYOUT ESCRITORIO (FIJO) */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 12px; 
+            padding: 15px; 
             overflow-y: auto; 
-            overflow-x: hidden; /* EVITA QUE EL SLIDER SE SALGA */
             border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
-            position: relative;
+            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        
-        /* COLUMNA DERECHA */
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
-        
-        /* CENTRO (MAPA) */
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -51,9 +45,9 @@
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
         .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
         .escudo-img:hover { transform: scale(1.1); }
-        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
+        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
         
-        /* VIDEO BOX */
+        /* VIDEO */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -69,9 +63,9 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (CORREGIDO PARA NO SALIRSE) */
+        /* SLIDER (RECUPERADO Y BLINDADO) */
         #slider-container { 
-            height: 140px; 
+            height: 150px; 
             width: 100%; 
             border: 2px solid var(--gold); 
             border-radius: 8px; 
@@ -82,6 +76,7 @@
             cursor: zoom-in; 
             flex-shrink: 0; 
             box-sizing: border-box;
+            display: block !important; /* Forzar visibilidad */
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -114,8 +109,6 @@
 
         /* CHAT & ALERTS */
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
-        .chat-input-area { display: flex; gap: 5px; }
-        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
@@ -155,7 +148,7 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (30vh - ALTURA PERFECTA PARA VER LO DE ABAJO) */
+            /* 3. Mapa (30vh - ALTURA PERFECTA) */
             #stage-area { order: 3; height: 30vh; min-height: 250px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
             
             /* 4. Ubicación (Pegada al mapa) */
@@ -357,12 +350,10 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
-        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
-
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -522,7 +513,7 @@
             
             const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
             cam.attachControl(c, true);
-            cam.upperBetaLimit = Math.PI / 2; // Bloqueo de piso
+            cam.upperBetaLimit = Math.PI / 2; // FIX SUELO
             
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
