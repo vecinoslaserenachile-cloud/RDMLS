@@ -25,7 +25,7 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* --- LAYOUT ESCRITORIO --- */
+        /* --- LAYOUT ESCRITORIO (FIJO) --- */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         #col-left { 
@@ -37,8 +37,13 @@
         
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         
+        /* CENTRO (MAPA) */
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
-        #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
+        
+        /* CONTENEDOR DEL MAPA (WRAPPER) */
+        #map-wrapper { width: 100%; height: 100%; display: flex; }
+        #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; flex-grow: 1; }
+        .map-safe-zone { display: none; } /* Oculto en escritorio */
 
         /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 38px; margin: 0; text-align: center; text-shadow: 2px 2px 0 #000; line-height: 1; color: white; }
@@ -99,7 +104,6 @@
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
-        /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
         .modal-content-video { width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 50px black; }
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
@@ -121,7 +125,7 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL PULIDO + CLIMA SEPARADO) --- */
+        /* --- RESPONSIVE FINAL (MÓVIL CORREGIDO) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
@@ -130,68 +134,83 @@
             #mob-header { order: 1; padding: 15px; }
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* CLIMA Y MAPA EN CONTENEDOR CENTRAL */
-            #stage-area { 
-                order: 3; 
-                width: 100%; 
-                height: auto; 
-                background: transparent; 
-                position: static; 
-                display: flex; 
-                flex-direction: column; /* Apila clima y mapa */
-                align-items: center;
-                margin-bottom: 15px;
-            }
-
-            /* CLIMA: SEPARADO Y ESTATICO */
+            /* CLIMA SEPARADO */
             .weather-bar { 
                 position: static; 
                 transform: none; 
-                width: 96%; 
-                margin: 0 0 10px 0; 
+                width: 92%; 
+                margin: 0 auto 10px auto; 
+                order: 3; 
                 justify-content: center; 
                 background: #111; 
                 border: 1px solid var(--gold); 
-                box-shadow: 0 2px 5px black;
+                padding: 10px;
+                box-sizing: border-box;
             }
 
-            /* MAPA: CAJA INDEPENDIENTE */
-            #map-container {
-                width: 96%;
-                height: 35vh; /* Altura Ideal (Doble de antes) */
-                min-height: 300px;
+            /* STAGE AREA (Contenedor Central) */
+            #stage-area { 
+                order: 4; 
+                width: 100%; 
+                height: auto;
+                background: transparent; 
+                display: flex; 
+                flex-direction: column; /* Apila Mapa+Zona */
+                align-items: center;
+                margin-bottom: 10px;
+            }
+
+            /* MAPA TIPO TARJETA */
+            #map-wrapper {
+                width: 92%; /* Tarjeta centrada */
+                height: 35vh; /* Altura controlada */
+                min-height: 250px;
                 border: 2px solid var(--gold);
                 border-radius: 12px;
                 overflow: hidden;
                 display: flex;
+                background: #000;
             }
             
-            #map { width: calc(100% - 30px); height: 100%; min-height: unset; }
-            .map-safe-zone { display: flex; width: 30px; background: #111; color: #555; align-items: center; justify-content: center; font-size: 20px; border-left: 1px solid #333; }
-
-            /* UBICACIÓN */
-            #mob-location { order: 4; margin: 0 15px 5px 15px; background: rgba(0,0,0,0.8); }
+            /* MAPA REAL */
+            #map { 
+                width: calc(100% - 40px); /* Deja espacio para la zona segura */
+                height: 100%; 
+                min-height: 100%; 
+                z-index: 1;
+            }
             
-            #mob-planner { order: 5; margin: 5px 15px 15px 15px; }
-            #mob-login { order: 6; padding: 0 15px; margin-bottom: 10px; }
-            #mob-report { order: 7; margin: 0 15px 15px 15px; }
-            #mob-emergency { order: 8; margin: 0 15px 15px 15px; }
-            #mob-poll { order: 9; margin: 0 15px 15px 15px; }
-            #mob-ia { order: 10; margin: 0 15px 15px 15px; }
-            #mob-fama { order: 11; margin: 0 15px 15px 15px; }
-            #mob-selfie { order: 12; margin: 0 15px 15px 15px; }
-            #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; display: block !important; }
+            /* ZONA SEGURA (CARRIL DERECHO) */
+            .map-safe-zone { 
+                display: flex; 
+                width: 40px; 
+                height: 100%; 
+                background: #111; 
+                color: #555; 
+                align-items: center; 
+                justify-content: center; 
+                font-size: 20px; 
+                border-left: 1px solid #333; 
+                cursor: grab;
+            }
             
-            .mobile-footer { display: block; order: 14; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
+            #mob-location { order: 5; margin: 0 15px 5px 15px; background: rgba(0,0,0,0.8); }
+            #mob-planner { order: 6; margin: 5px 15px 15px 15px; }
+            #mob-login { order: 7; padding: 0 15px; margin-bottom: 10px; }
+            #mob-report { order: 8; margin: 0 15px 15px 15px; }
+            #mob-emergency { order: 9; margin: 0 15px 15px 15px; }
+            #mob-poll { order: 10; margin: 0 15px 15px 15px; }
+            #mob-ia { order: 11; margin: 0 15px 15px 15px; }
+            #mob-fama { order: 12; margin: 0 15px 15px 15px; }
+            #mob-selfie { order: 13; margin: 0 15px 15px 15px; }
+            #mob-slider { order: 14; margin: 0 15px 20px 15px; height: 130px !important; display: block !important; }
+            
+            .mobile-footer { display: block; order: 15; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
 
             .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
             .tank-btn { display: none; }
         }
-        
-        /* Helper para Desktop */
-        #map-container { width: 100%; height: 100%; }
-        .map-safe-zone { display: none; }
     </style>
 </head>
 <body onload="initApp()">
@@ -277,7 +296,7 @@
             <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
         
-        <div id="map-container">
+        <div id="map-wrapper">
             <div id="map"></div>
             <div class="map-safe-zone">↕</div>
         </div>
