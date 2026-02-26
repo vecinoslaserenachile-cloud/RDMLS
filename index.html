@@ -69,7 +69,7 @@
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (RESCATADO) */
+        /* SLIDER */
         #slider-container { 
             height: 140px; 
             width: 100%; 
@@ -80,7 +80,8 @@
             background: #000; 
             margin-top: auto; 
             cursor: zoom-in; 
-            flex-shrink: 0; /* ESTO EVITA QUE SE OCULTE */
+            flex-shrink: 0; 
+            box-sizing: border-box;
             display: block !important;
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
@@ -101,7 +102,7 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS */
+        /* PIN GPS GIGANTE (110px) */
         .pin-wrapper { position: relative; width: 110px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
         .pin-img { width: 110px; height: 110px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
         .pin-arrow { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 25px solid var(--red); margin-top: -8px; z-index: 5; }
@@ -112,8 +113,11 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT & ALERTS */
+        /* CHAT IA */
+        #chat-container { display: flex; flex-direction: column; height: 160px; }
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
+        .chat-input-area { display: flex; gap: 5px; }
+        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
@@ -140,40 +144,31 @@
 
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL MAPA 25vh) --- */
+        /* --- RESPONSIVE FINAL (MAPA 18vh = MUY COMPACTO) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
             
             #col-left, #col-right { display: contents; } 
             
-            /* 1. Cabecera */
             #mob-header { order: 1; padding: 15px; }
-            
-            /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (25vh - NO OCUPA TODA LA PANTALLA) */
+            /* MAPA PEQUEÑO PARA FLUIDEZ */
             #stage-area { 
                 order: 3; 
-                height: 25vh; /* Altura Reducida */
-                min-height: 200px; 
+                height: 18vh; /* Altura muy reducida */
+                min-height: 180px; 
                 width: 100%; 
                 border-top: 2px solid var(--gold); 
                 border-bottom: 2px solid var(--gold); 
                 z-index: 1; 
             }
             
-            /* 4. Ubicación (Pegada al mapa) */
+            /* ELEMENTOS SIGUIENTES PEGADOS AL MAPA */
             #mob-location { order: 4; margin: 10px 15px 5px 15px; background: rgba(0,0,0,0.8); }
-            
-            /* 5. Planificador */
             #mob-planner { order: 5; margin: 5px 15px 15px 15px; }
-            
-            /* 6. Login */
             #mob-login { order: 6; padding: 0 15px; margin-bottom: 10px; }
-            
-            /* Resto */
             #mob-report { order: 7; margin: 0 15px 15px 15px; }
             #mob-emergency { order: 8; margin: 0 15px 15px 15px; }
             #mob-poll { order: 9; margin: 0 15px 15px 15px; }
@@ -182,7 +177,6 @@
             #mob-selfie { order: 12; margin: 0 15px 15px 15px; }
             #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; display: block !important; }
             
-            /* Footer */
             .mobile-footer { display: block; order: 14; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
 
             .rdmls-title { font-size: 32px; }
@@ -361,6 +355,8 @@
 
 <div id="modal-camara" class="modal" style="background:black;">
     <div class="cam-container">
+        <canvas id="cam-canvas" style="display:none;"></canvas>
+        
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
         
@@ -369,7 +365,7 @@
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
 
-        <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
+        <button class="shutter-btn" onclick="tomarFoto()"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
 </div>
@@ -615,9 +611,40 @@
         }
     }
 
+    // FOTO Y GUARDADO
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
     function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
     function setChar(img) { document.getElementById('cam-overlay-img').src = "./assets/img/" + img; }
+    
+    function tomarFoto() {
+        const v = document.getElementById('cam-video');
+        const c = document.getElementById('cam-canvas');
+        const overlay = document.getElementById('cam-overlay-img');
+        
+        c.width = v.videoWidth;
+        c.height = v.videoHeight;
+        const ctx = c.getContext('2d');
+        
+        // Espejo
+        ctx.translate(c.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(v, 0, 0, c.width, c.height);
+        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
+        
+        // Dibujar overlay
+        const ow = c.width * 0.5; // 50% width
+        const oh = (overlay.naturalHeight / overlay.naturalWidth) * ow;
+        ctx.drawImage(overlay, c.width - ow, c.height - oh, ow, oh);
+        
+        // Crear link de descarga
+        const link = document.createElement('a');
+        link.download = 'selfie-serenito.png';
+        link.href = c.toDataURL();
+        link.click();
+        
+        alert("📸 ¡Foto lista! Mantén presionado para guardar o Captura Pantalla.");
+    }
+
     function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
     function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
 </script>
