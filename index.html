@@ -25,16 +25,14 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* LAYOUT ESCRITORIO (FIJO) */
+        /* LAYOUT DE ESCRITORIO (FIJO) */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 15px; 
-            overflow-y: auto; 
-            border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
@@ -45,39 +43,26 @@
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
         .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
         .escudo-img:hover { transform: scale(1.1); }
-        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
+        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
         /* VIDEO */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
-            box-shadow: 0 4px 10px black; flex-shrink: 0; width: 100%;
+            box-shadow: 0 4px 10px black; flex-shrink: 0;
         }
         .video-click-layer { position: absolute; inset: 0; z-index: 20; background: transparent; }
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
         /* SALÓN DE LA FAMA */
-        .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; width: 100%; }
+        .fama-box { height: 160px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (RECUPERADO Y BLINDADO) */
-        #slider-container { 
-            height: 150px; 
-            width: 100%; 
-            border: 2px solid var(--gold); 
-            border-radius: 8px; 
-            overflow: hidden; 
-            position: relative; 
-            background: #000; 
-            margin-top: auto; 
-            cursor: zoom-in; 
-            flex-shrink: 0; 
-            box-sizing: border-box;
-            display: block !important; /* Forzar visibilidad */
-        }
+        /* SLIDER */
+        #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
@@ -107,10 +92,15 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT & ALERTS */
+        /* CHAT & ENCUESTA */
+        #chat-container { display: flex; flex-direction: column; height: 160px; }
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
+        .chat-input-area { display: flex; gap: 5px; }
+        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+
+        /* TOAST */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
@@ -119,7 +109,7 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        /* CÁMARA & PERFIL */
+        /* CÁMARA */
         .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
@@ -127,54 +117,40 @@
         .char-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 20; }
         .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
         .char-btn img { width: 100%; height: 100%; object-fit: contain; }
+
+        /* PERFIL */
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
         .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
         .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
+        /* --- VERSIÓN MÓVIL (SINTONÍA FINA) --- */
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE FINAL (MÓVIL PULIDO) --- */
         @media (max-width: 1024px) { 
-            body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
+            body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); } /* Fondo rojo en body */
             #main-layout { display: flex; flex-direction: column; height: auto; }
             
-            #col-left, #col-right { display: contents; } 
+            /* DESARMAMOS LA COLUMNA IZQUIERDA PARA ORDENAR */
+            #col-left { display: contents; } 
             
-            /* 1. Cabecera */
-            #mob-header { order: 1; padding: 15px; }
+            /* ORDEN SAGRADO */
+            .header-container { order: 1; padding: 15px; } /* Cabecera */
+            .video-box { order: 2; margin: 0 15px 15px 15px; } /* Video */
+            #stage-area { order: 3; height: 55vh; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); } /* Mapa */
             
-            /* 2. Video */
-            #mob-video { order: 2; margin: 0 15px 15px 15px; }
+            /* Resto de Columna Izquierda (Fama, Planner, Slider) */
+            .card-box, #slider-container, .btn-gold { order: 4; margin: 10px 15px; }
             
-            /* 3. Mapa (30vh - ALTURA PERFECTA) */
-            #stage-area { order: 3; height: 30vh; min-height: 250px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
-            
-            /* 4. Ubicación (Pegada al mapa) */
-            #mob-location { order: 4; margin: 10px 15px 5px 15px; background: rgba(0,0,0,0.8); }
-            
-            /* 5. Planificador */
-            #mob-planner { order: 5; margin: 5px 15px 15px 15px; }
-            
-            /* 6. Login */
-            #mob-login { order: 6; padding: 0 15px; margin-bottom: 10px; }
-            
-            /* Resto */
-            #mob-report { order: 7; margin: 0 15px 15px 15px; }
-            #mob-emergency { order: 8; margin: 0 15px 15px 15px; }
-            #mob-poll { order: 9; margin: 0 15px 15px 15px; }
-            #mob-ia { order: 10; margin: 0 15px 15px 15px; }
-            #mob-fama { order: 11; margin: 0 15px 15px 15px; }
-            #mob-selfie { order: 12; margin: 0 15px 15px 15px; }
-            #mob-slider { order: 13; margin: 0 15px 20px 15px; height: 130px !important; }
+            /* Columna Derecha (Reportes) */
+            #col-right { order: 5; background: rgba(0,0,0,0.6); padding: 15px; border: none; height: auto; overflow: visible; }
             
             /* Footer */
-            .mobile-footer { display: block; order: 14; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
+            .mobile-footer { display: block; order: 6; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; margin-top: 20px; border-top: 1px solid #333; }
 
             .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
-            .tank-btn { bottom: 10px; padding: 6px 15px; font-size: 11px; }
         }
     </style>
 </head>
@@ -185,7 +161,7 @@
 <div id="main-layout">
     
     <div id="col-left">
-        <div id="mob-header" style="text-align:center;">
+        <div class="header-container" style="text-align:center;">
             <img src="./assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
             <h1 class="rdmls-title">RDMLS</h1>
             <div class="clock" id="clock">00:00:00</div>
@@ -199,13 +175,13 @@
             </div>
         </div>
 
-        <div id="mob-video" class="video-box" onclick="toggleVideo(true)">
+        <div class="video-box" onclick="toggleVideo(true)">
             <div class="video-click-layer"></div>
             <iframe src="https://www.youtube.com/embed/_MeFYP4PkqU?autoplay=1&mute=1&controls=0&loop=1&playlist=_MeFYP4PkqU&disablekb=1&modestbranding=1" frameborder="0"></iframe>
             <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
 
-        <div id="mob-fama" class="card-box">
+        <div class="card-box">
             <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">SALÓN DE LA FAMA</div>
             <div class="fama-box" onclick="expandPhoto(this.querySelector('img'))">
                 <img src="./assets/img/relleno-personajes.jpg" class="fama-img" onerror="this.style.display='none'">
@@ -213,7 +189,7 @@
             </div>
         </div>
 
-        <div id="mob-planner" class="card-box">
+        <div class="card-box">
             <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px; border-bottom:1px solid #555; padding-bottom:3px;">PLANIFICADOR DE VIAJES</div>
             <div style="display:flex; gap:5px; margin-bottom:5px;">
                 <input id="custom-city" class="f-input" placeholder="Escribe Ciudad..." style="margin:0;">
@@ -242,15 +218,13 @@
             <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
         </div>
 
-        <button id="mob-selfie" class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
+        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
-        <div id="mob-slider" id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
-            <div id="slider-container" style="height:100%; width:100%; position:relative;">
-                <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
-                <img src="./assets/img/comic-playa.jpg" class="slide-img">
-                <img src="./assets/img/comic-cielo.jpg" class="slide-img">
-                <img src="./assets/img/rdmls.png" class="slide-img">
-            </div>
+        <div id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
+            <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
+            <img src="./assets/img/comic-playa.jpg" class="slide-img">
+            <img src="./assets/img/comic-cielo.jpg" class="slide-img">
+            <img src="./assets/img/rdmls.png" class="slide-img">
         </div>
     </div>
 
@@ -265,7 +239,7 @@
     </div>
 
     <div id="col-right">
-        <div id="mob-login" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
             <button id="btn-login" onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 10px; background:#4285f4; border:none; color:white;">ACCESO GOOGLE</button>
             <div id="user-profile">
@@ -277,12 +251,12 @@
             </div>
         </div>
 
-        <div id="mob-location" class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
+        <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
             <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL (Arrastra el pin)</div>
             <input id="geo-address" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold);" value="Arrastra el pin...">
         </div>
 
-        <div id="mob-report" class="card-box">
+        <div class="card-box">
             <div style="font-size:10px; color:var(--gold); margin-bottom:5px;">NUEVO REPORTE</div>
             <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache en calle)">
             <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
@@ -296,13 +270,13 @@
             <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;">Historial vacío.</div>
         </div>
 
-        <div id="mob-emergency" class="card-box">
+        <div class="card-box">
             <div style="font-size:10px; color:var(--gold); font-weight:bold;">TELÉFONOS EMERGENCIA</div>
             <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between; margin-top:5px;"><span>🚑 SAMU: 131</span> <span>🚒 Bomberos: 132</span></div>
             <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between;"><span>🚓 Carabineros: 133</span> <span>🛡️ Seguridad: 1402</span></div>
         </div>
 
-        <div id="mob-poll" class="card-box" style="border-color:var(--red);">
+        <div class="card-box" style="border-color:var(--red);">
             <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
             <div id="poll-interface"></div>
             <div id="poll-results" style="display:none;">
@@ -312,7 +286,7 @@
             </div>
         </div>
 
-        <div id="mob-ia" class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
+        <div class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
             <div style="font-size:10px; color:var(--gold); font-weight:bold;">SERENITO IA</div>
             <div id="chat-container">
                 <div id="chat-ia">¡Hola! Soy Serenito IA. ¿En qué te ayudo?</div>
@@ -324,9 +298,7 @@
         </div>
     </div>
     
-    <div class="mobile-footer">
-        © 2026 Ilustre Municipalidad de La Serena | RDMLS
-    </div>
+    <div class="mobile-footer">© 2026 Ilustre Municipalidad de La Serena | RDMLS | Rodrigo Godoy</div>
 </div>
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
@@ -350,10 +322,12 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
+        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
+
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -505,15 +479,17 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
+    // PASEO 3D (INTERACTIVO AL CLICK)
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
             const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
             const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
             
+            // Cámara Orbital (Más fácil de manejar en móvil/desktop)
             const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
             cam.attachControl(c, true);
-            cam.upperBetaLimit = Math.PI / 2; // FIX SUELO
+            cam.upperBetaLimit = Math.PI / 2; // No pasar bajo el suelo
             
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
@@ -522,6 +498,7 @@
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
             g.material = mat;
 
+            // Modelos (X2)
             const load = (f,x,z,scl, cb) => {
                 BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
                     m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
@@ -530,11 +507,14 @@
             };
             load("municipalidad.glb", 0, 0, 6);
             load("intendencia.glb", 60, 40, 6);
+            
+            // Serenito
             load("serenito.glb", 0, -10, 2, (mesh) => {
                 serenitoMesh = mesh;
-                cam.target = serenitoMesh;
+                cam.target = serenitoMesh; // Cámara sigue a Serenito
             });
 
+            // Caminar al Click
             let targetPos = null;
             s.onPointerDown = (evt, pick) => {
                 if(pick.hit && pick.pickedMesh === g) {
