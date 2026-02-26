@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RDMLS | Portal Ciudadano 2026</title>
     
-    <meta name="description" content="Plataforma de Gestión Municipal Inteligente La Serena">
     <meta name="theme-color" content="#b71c1c">
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
     
@@ -32,15 +31,16 @@
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
         /* HEADER */
         .rdmls-title { font-family: 'Oswald'; font-size: 38px; margin: 0; text-align: center; text-shadow: 2px 2px 0 #000; line-height: 1; color: white; }
         .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
+        /* LOGO MÁS GRANDE */
         .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
@@ -51,12 +51,12 @@
             overflow: hidden; position: relative; background: #000; cursor: pointer;
             box-shadow: 0 4px 10px black; flex-shrink: 0;
         }
-        /* Capa transparente para capturar el click sobre el iframe */
+        /* Capa transparente para capturar el click */
         .video-click-layer { position: absolute; inset: 0; z-index: 20; background: transparent; }
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
-        /* SALÓN DE LA FAMA */
+        /* SALÓN DE LA FAMA (Ajustado) */
         .fama-box { height: 110px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; }
         .fama-box:hover { transform: scale(1.02); }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
@@ -92,9 +92,9 @@
 
         /* DISTANCIAS GRANDES */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 10px; font-size: 11px; }
-        .dist-item i { color: var(--gold); font-size: 16px; width: 20px; text-align: center; }
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; color: #ddd; margin-top: 8px; }
+        .dist-item { display: flex; align-items: center; gap: 10px; }
+        .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; } /* Iconos más grandes */
 
         /* CHAT IA */
         #chat-container { display: flex; flex-direction: column; height: 160px; }
@@ -103,8 +103,8 @@
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
 
         /* ENCUESTA */
-        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
-        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+        .poll-bar-bg { background: #333; height: 8px; border-radius: 4px; margin-top: 2px; width: 100%; }
+        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 4px; width: 0%; transition: width 1s; }
 
         /* TOAST ALERT */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
@@ -118,6 +118,10 @@
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
+
+        /* AGENDA */
+        .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
+        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
         @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #stage-area { height: 60vh; order: -1; } }
     </style>
@@ -177,7 +181,7 @@
             </div>
 
             <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:14px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:14px; margin-bottom:10px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
                 <div class="dist-grid">
                     <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
                     <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
@@ -186,7 +190,7 @@
                     <div class="dist-item"><i class="fas fa-plane"></i> <span id="v-avion"></span></div>
                 </div>
             </div>
-            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
+            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:5px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
         </div>
 
         <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
@@ -206,7 +210,7 @@
             <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
         <div id="map"></div>
-        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (TANQUE)</button>
+        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (MUNDO)</button>
     </div>
 
     <div id="col-right">
@@ -288,9 +292,7 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:12px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">
-        🎮 <b>MODO TANQUE:</b> Usa W-A-S-D para caminar
-    </div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:12px;">Usa W-A-S-D para moverte</div>
 </div>
 
 <audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
@@ -373,7 +375,7 @@
             list.innerHTML="";
             s.forEach(d=> {
                 const data = d.data();
-                const color = data.estado === "Pendiente" ? "orange" : "#00e676";
+                const color = data.estado === "Pendiente" ? "orange" : "green";
                 list.innerHTML += `<div style="border-bottom:1px solid #333; padding:4px; font-size:10px; display:flex; justify-content:space-between;">
                     <span>${data.asunto}</span> <span style="color:${color}; font-weight:bold;">${data.estado}</span>
                 </div>`;
@@ -445,8 +447,6 @@
             const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -20), s);
             cam.attachControl(c, true);
             cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
-            cam.speed = 1.5; // Velocidad de tanque
-            
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
             // Suelo con Mapa
