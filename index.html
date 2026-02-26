@@ -6,7 +6,6 @@
     <title>RDMLS | Portal Ciudadano 2026</title>
     
     <meta name="theme-color" content="#b71c1c">
-    <meta name="description" content="Plataforma de Gestión Municipal Inteligente La Serena">
     <link rel="icon" type="image/png" href="./assets/img/serenito.png">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -24,8 +23,6 @@
 
     <style>
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
-        
-        /* ESTILO BASE (ESCRITORIO: FIJO) */
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
@@ -34,9 +31,9 @@
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -47,7 +44,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO */
+        /* VIDEO BOX */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -83,10 +80,11 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS */
-        .pin-wrapper { position: relative; width: 60px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
-        .pin-img { width: 60px; height: 60px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
-        .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid var(--red); margin-top: -5px; z-index: 5; }
+        /* PIN GPS GIGANTE (x2) */
+        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        .pin-img { width: 120px; height: 120px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
+        /* Flecha Roja Grande */
+        .pin-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--red); margin-top: -10px; z-index: 5; }
         
         /* DISTANCIAS */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
@@ -113,10 +111,6 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
-        #renderCanvas { width: 100%; height: 100%; outline: none; }
-
         /* CÁMARA */
         .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
@@ -126,21 +120,22 @@
         .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
         .char-btn img { width: 100%; height: 100%; object-fit: contain; }
 
-        /* FOOTER MÓVIL (OCULTO EN DESKTOP) */
+        /* PERFIL */
+        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
+        #renderCanvas { width: 100%; height: 100%; outline: none; }
+
+        /* FOOTER MÓVIL */
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE OPTIMIZADO PARA FLUIDEZ --- */
+        /* RESPONSIVE */
         @media (max-width: 1024px) { 
-            body, html { overflow: auto; height: auto; } /* Permitir Scroll en Móvil */
+            body, html { overflow: auto; height: auto; }
             #main-layout { display: flex; flex-direction: column; height: auto; } 
             #col-left, #col-right { height: auto; overflow: visible; box-shadow: none; border: none; }
-            #stage-area { height: 60vh; order: -1; } /* Mapa primero */
-            
-            /* Ajustes Móviles */
+            #stage-area { height: 60vh; order: -1; }
             .rdmls-title { font-size: 32px; margin-top: 10px; }
             .escudo-img { width: 60px; }
-            
-            /* Footer visible solo en móvil */
             .mobile-footer { display: block; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; border-top: 1px solid #333; margin-top: 20px; font-family: 'Oswald'; letter-spacing: 1px; }
         }
     </style>
@@ -261,6 +256,12 @@
             <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;">Historial vacío.</div>
         </div>
 
+        <div class="card-box">
+            <div style="font-size:10px; color:var(--gold); font-weight:bold;">TELÉFONOS EMERGENCIA</div>
+            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between; margin-top:5px;"><span>🚑 SAMU: 131</span> <span>🚒 Bomberos: 132</span></div>
+            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between;"><span>🚓 Carabineros: 133</span> <span>🛡️ Seguridad: 1402</span></div>
+        </div>
+
         <div class="card-box" style="border-color:var(--red);">
             <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
             <div id="poll-interface"></div>
@@ -283,9 +284,7 @@
         </div>
     </div>
     
-    <div class="mobile-footer">
-        © 2026 Ilustre Municipalidad de La Serena | RDMLS | Rodrigo Godoy
-    </div>
+    <div class="mobile-footer">© 2026 Ilustre Municipalidad de La Serena | RDMLS | Rodrigo Godoy</div>
 </div>
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
@@ -309,12 +308,10 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
-        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
-
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -340,12 +337,13 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
+        // SERENITO GIGANTE (x2)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
                     <div class="pin-arrow"></div>
                    </div>`, 
-            className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
+            className: 'dummy', iconSize: [120, 160], iconAnchor: [60, 160] 
         });
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
@@ -484,15 +482,15 @@
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
             g.material = mat;
 
-            // Modelos
+            // Modelos (X2)
             const load = (f,x,z,scl, cb) => {
                 BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
                     m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
                     if(cb) cb(m[0]);
                 });
             };
-            load("municipalidad.glb", 0, 0, 3);
-            load("intendencia.glb", 60, 40, 3);
+            load("municipalidad.glb", 0, 0, 6);
+            load("intendencia.glb", 60, 40, 6);
             
             // Serenito
             load("serenito.glb", 0, -10, 2, (mesh) => {
