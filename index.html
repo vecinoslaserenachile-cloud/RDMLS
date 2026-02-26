@@ -12,7 +12,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -27,13 +26,13 @@
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNA IZQUIERDA (Equilibrada) */
+        /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -54,13 +53,13 @@
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
-        /* SALÓN DE LA FAMA (ALTURA AUMENTADA PARA EQUILIBRIO) */
+        /* SALÓN DE LA FAMA */
         .fama-box { height: 160px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (ALTURA AJUSTADA) */
+        /* SLIDER */
         #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -72,37 +71,19 @@
         .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
         .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
 
-        /* CHIPS */
-        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
-        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
-        .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
-
-        /* CLIMA */
-        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
-
-        /* PIN GPS */
-        .pin-wrapper { position: relative; width: 50px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
-        .pin-img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
-        .pin-arrow { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 18px solid white; margin-top: -3px; z-index: 5; }
+        /* PIN MEJORADO (SIN FONDO, FLECHA ROJA) */
+        .pin-wrapper { position: relative; width: 60px; height: 80px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        .pin-wrapper:active { transform: translateY(-5px); }
+        /* Imagen transparente sin borde */
+        .pin-img { width: 60px; height: 60px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
+        /* Flecha Roja */
+        .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid var(--red); margin-top: -5px; z-index: 5; }
         
         /* DISTANCIAS */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 10px; font-size: 11px; }
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; color: #ddd; margin-top: 8px; }
+        .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
-
-        /* CHAT IA */
-        #chat-container { display: flex; flex-direction: column; height: 160px; }
-        #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
-        .chat-input-area { display: flex; gap: 5px; }
-        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
-
-        /* ENCUESTA */
-        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
-        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
-
-        /* TOAST ALERT */
-        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
@@ -110,16 +91,33 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
+        /* CÁMARA (Con selección de personaje) */
+        .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
+        #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+        .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
+        .shutter-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: white; border-radius: 50%; border: 4px solid #ccc; cursor: pointer; z-index: 20; }
+        .char-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 20; }
+        .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
+        .char-btn img { width: 100%; height: 100%; object-fit: contain; }
+
         /* PERFIL */
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
 
-        /* CÁMARA */
-        .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; }
-        #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-overlay { position: absolute; bottom: 10px; left:0; width: 100%; text-align: center; }
-        .shutter-btn { width: 60px; height: 60px; background: white; border-radius: 50%; border: 4px solid #ccc; cursor: pointer; }
+        /* OTHER UI */
+        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
+        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
+        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
+        .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
+        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
+        
+        /* CHAT & POLL */
+        #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
+        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
+        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
+        .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
+        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
         @media (max-width: 1024px) { #main-layout { display: flex; flex-direction: column; height: auto; } #stage-area { height: 60vh; order: -1; } }
     </style>
@@ -283,15 +281,22 @@
 <div id="modal-tour-3d" class="modal">
     <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
     <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:12px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">🎮 <b>MODO TANQUE:</b> Usa W-A-S-D para caminar</div>
+    <div style="position:absolute; bottom:20px; color:white; font-size:14px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px; text-align:center;">
+        👆 <b>TOCA EL PISO</b> PARA CAMINAR HACIA ALLÁ
+    </div>
 </div>
 
 <div id="modal-camara" class="modal" style="background:black;">
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
-        <div class="cam-overlay">
-            <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
+        <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
+        
+        <div class="char-selector">
+            <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
+            <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
+
+        <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
 </div>
@@ -305,6 +310,7 @@
 
     const CENTRO = [-29.9027, -71.2520];
     let map, marker, polyline, engine, animInterval;
+    let serenitoMesh; // Para el 3D
     const radio = document.getElementById('radio');
 
     function initApp() {
@@ -315,13 +321,13 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-        // SERENITO (Pin con Flecha GPS)
+        // SERENITO (SIN FONDO, FLECHA ROJA)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
                     <div class="pin-arrow"></div>
                    </div>`, 
-            className: 'dummy', iconSize: [50, 85], iconAnchor: [25, 85] 
+            className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
         });
         marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
 
@@ -402,7 +408,6 @@
     }
     function setVolume(v) { radio.volume = v; }
 
-    // FORMATO HORAS (Ajuste Solicitado)
     function fmtTime(m) {
         if(m >= 60) return `${Math.floor(m/60)}h ${(m%60).toFixed(0)}m`;
         return `${m.toFixed(0)} min`;
@@ -442,27 +447,26 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
-    // PASEO 3D (MUNDO + TANQUE)
+    // --- PASEO 3D: CAMINAR AL CLICK ---
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
             const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
             const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
             
-            // CÁMARA TIPO TANQUE (FPS)
-            const cam = new BABYLON.FreeCamera("tank", new BABYLON.Vector3(0, 5, -30), s);
+            // CÁMARA ORBITAL (Mejor para Touch)
+            const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
             cam.attachControl(c, true);
-            cam.keysUp.push(87); cam.keysDown.push(83); cam.keysLeft.push(65); cam.keysRight.push(68);
+            
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
-            // Suelo con Mapa
-            const ground = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
+            // Suelo
+            const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
             const mat = new BABYLON.StandardMaterial("m",s);
-            // Asegúrate de que mapa.jpg exista en assets/img/
             mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
-            ground.material = mat;
+            g.material = mat;
 
-            // CARGA MODELOS (Muni, Intendencia, Serenito) EN EL SUELO (Y=0)
+            // Cargar Edificios
             const load = (f,x,z,scl) => {
                 BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
                     m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
@@ -470,7 +474,36 @@
             };
             load("municipalidad.glb", 0, 0, 3);
             load("intendencia.glb", 60, 40, 3);
-            load("serenito.glb", -10, 10, 2);
+            
+            // Cargar Serenito (Variable Global)
+            BABYLON.SceneLoader.ImportMesh("", "./assets/models/", "serenito.glb", s, (m)=>{ 
+                serenitoMesh = m[0];
+                serenitoMesh.position.set(0,0,-10); // Sobre el piso
+                serenitoMesh.scaling = new BABYLON.Vector3(2,2,2);
+                cam.target = serenitoMesh; // La cámara sigue a Serenito
+            });
+
+            // Lógica de Movimiento al Click
+            let targetPos = null;
+            s.onPointerDown = (evt, pickResult) => {
+                if(pickResult.hit && pickResult.pickedMesh === g) {
+                    targetPos = pickResult.pickedPoint;
+                    if(serenitoMesh) serenitoMesh.lookAt(targetPos); // Mirar
+                }
+            };
+
+            // Loop de Animación (Caminar)
+            s.registerBeforeRender(() => {
+                if(serenitoMesh && targetPos) {
+                    const diff = targetPos.subtract(serenitoMesh.position);
+                    if(diff.length() > 0.5) {
+                        diff.normalize();
+                        serenitoMesh.position.addInPlace(diff.scale(0.2)); // Velocidad
+                    } else {
+                        targetPos = null; // Llegó
+                    }
+                }
+            });
 
             engine.runRenderLoop(()=>s.render());
         }
@@ -494,20 +527,18 @@
         const msg = el.value.toLowerCase();
         document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><i>Escribiendo...</i>`;
         el.value = "";
-        
         setTimeout(()=> {
-            let res = "No entendí, ¿puedes repetir?";
-            if(msg.includes("hola")) res = "¡Hola vecino! ¿Cómo te ayudo hoy?";
-            else if(msg.includes("reporte") || msg.includes("ticket")) res = "Puedes ingresar tu reporte en el formulario de arriba ☝️";
-            else if(msg.includes("ayuda")) res = "Soy Serenito IA. Puedo guiarte con trámites o turismo.";
-            
+            let res = "Soy Serenito IA. ¿En qué te ayudo?";
+            if(msg.includes("hola")) res = "¡Hola vecino! Bienvenido.";
+            else if(msg.includes("reporte") || msg.includes("ticket")) res = "Usa el formulario de arriba ☝️ para reportar.";
             document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Escribiendo...</i>", `<b>Serenito:</b> ${res}`);
         }, 1000);
     }
     
     function startDictation() { alert("🎙️ Escuchando..."); }
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
-    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; const v=document.getElementById('cam-video'); if(v.srcObject) v.srcObject.getTracks().forEach(t=>t.stop()); }
+    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
+    function setChar(img) { document.getElementById('cam-overlay-img').src = "./assets/img/" + img; }
     function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
     function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
 </script>
