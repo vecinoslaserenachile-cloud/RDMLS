@@ -25,16 +25,16 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* LAYOUT DE ESCRITORIO (FIJO) */
+        /* LAYOUT ESCRITORIO (INTOCABLE) */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNA IZQUIERDA */
+        /* COLUMNAS */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px black;
+            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -56,13 +56,17 @@
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
         /* SALÓN DE LA FAMA */
-        .fama-box { height: 160px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
+        .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER */
-        #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
+        /* SLIDER (ESTE ES EL QUE FALTABA) */
+        #slider-container { 
+            height: 140px; border: 2px solid var(--gold); border-radius: 8px; 
+            overflow: hidden; position: relative; background: #000; margin-top: auto; 
+            cursor: zoom-in; flex-shrink: 0; 
+        }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
 
@@ -81,8 +85,8 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS (GIGANTE x2) */
-        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
+        /* PIN GPS */
+        .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.8)); transition: transform 0.1s; }
         .pin-img { width: 120px; height: 120px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
         .pin-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--red); margin-top: -10px; z-index: 5; }
         
@@ -92,17 +96,10 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT IA */
-        #chat-container { display: flex; flex-direction: column; height: 160px; }
+        /* CHAT & ALERTS */
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
-        .chat-input-area { display: flex; gap: 5px; }
-        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
-
-        /* ENCUESTA */
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
-
-        /* TOAST ALERT */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
@@ -111,7 +108,6 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        /* PERFIL */
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
@@ -128,18 +124,15 @@
         .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
         .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
-        /* FOOTER MÓVIL */
         .mobile-footer { display: none; }
 
-        /* --- RESPONSIVE OPTIMIZADO PARA FLUJO LÓGICO --- */
+        /* --- RESPONSIVE OPTIMIZADO (ORDEN LÓGICO) --- */
         @media (max-width: 1024px) { 
             body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
             #main-layout { display: flex; flex-direction: column; height: auto; }
             
-            /* DESBLOQUEAMOS LAS COLUMNAS PARA REORDENAR HIJOS */
+            /* Usamos display: contents para reordenar los hijos directamente */
             #col-left, #col-right { display: contents; } 
-            
-            /* -- ORDEN SAGRADO (MÓVIL) -- */
             
             /* 1. Cabecera */
             #mob-header { order: 1; padding: 15px; }
@@ -147,19 +140,19 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (Altura reducida para ver lo que sigue) */
-            #stage-area { order: 3; height: 40vh; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); }
+            /* 3. Mapa (Altura 35vh para no atrapar) */
+            #stage-area { order: 3; height: 35vh; min-height: 250px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
             
-            /* 4. Ubicación (Inmediatamente después del mapa) */
+            /* 4. Ubicación (Pegado al mapa) */
             #mob-location { order: 4; margin: 15px; background: rgba(0,0,0,0.8); }
             
-            /* 5. Planificador (Cerca del mapa) */
+            /* 5. Planificador */
             #mob-planner { order: 5; margin: 0 15px 15px 15px; }
             
-            /* 6. Login/Acceso */
+            /* 6. Login */
             #mob-login { order: 6; padding: 0 15px; margin-bottom: 10px; }
             
-            /* 7. El resto de elementos (Orden natural) */
+            /* 7. Resto */
             #mob-report { order: 7; margin: 0 15px 15px 15px; }
             #mob-emergency { order: 8; margin: 0 15px 15px 15px; }
             #mob-poll { order: 9; margin: 0 15px 15px 15px; }
@@ -173,6 +166,9 @@
 
             .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
+            
+            /* Ajuste Botón 3D en móvil para no tapar */
+            .tank-btn { bottom: 10px; padding: 8px 20px; font-size: 12px; }
         }
     </style>
 </head>
@@ -316,13 +312,15 @@
                 <div id="chat-ia">¡Hola! Soy Serenito IA. ¿En qué te ayudo?</div>
                 <div class="chat-input-area">
                     <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
-                    <button class="btn-mic" onclick="startDictation()"><i class="fas fa-microphone"></i></button>
+                    <button class="btn-mic"><i class="fas fa-microphone"></i></button>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="mobile-footer">© 2026 Ilustre Municipalidad de La Serena | RDMLS</div>
+    <div class="mobile-footer">
+        © 2026 Ilustre Municipalidad de La Serena | RDMLS
+    </div>
 </div>
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
@@ -346,10 +344,12 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
+        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
+
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -375,6 +375,7 @@
         map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
+        // SERENITO GIGANTE (x2)
         const sIcon = L.divIcon({ 
             html: `<div class="pin-wrapper">
                     <img src="./assets/img/serenito.png" class="pin-img">
@@ -500,6 +501,7 @@
 
     function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
 
+    // PASEO 3D
     function abrirTour3D() {
         document.getElementById('modal-tour-3d').style.display='flex';
         if(!engine) {
