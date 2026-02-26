@@ -25,6 +25,7 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
+        /* LAYOUT DE ESCRITORIO (FIJO) */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         /* COLUMNA IZQUIERDA */
@@ -44,7 +45,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO BOX */
+        /* VIDEO */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -80,10 +81,9 @@
         /* CLIMA */
         .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
 
-        /* PIN GPS GIGANTE (x2) */
+        /* PIN GPS */
         .pin-wrapper { position: relative; width: 120px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
         .pin-img { width: 120px; height: 120px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
-        /* Flecha Roja Grande */
         .pin-arrow { width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 30px solid var(--red); margin-top: -10px; z-index: 5; }
         
         /* DISTANCIAS */
@@ -92,17 +92,15 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT IA */
+        /* CHAT & ENCUESTA */
         #chat-container { display: flex; flex-direction: column; height: 160px; }
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
         .chat-input-area { display: flex; gap: 5px; }
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
-
-        /* ENCUESTA */
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
 
-        /* TOAST ALERT */
+        /* TOAST */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
@@ -124,19 +122,35 @@
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
+        .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
+        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
-        /* FOOTER MÓVIL */
+        /* --- VERSIÓN MÓVIL (SINTONÍA FINA) --- */
         .mobile-footer { display: none; }
 
-        /* RESPONSIVE */
         @media (max-width: 1024px) { 
-            body, html { overflow: auto; height: auto; }
-            #main-layout { display: flex; flex-direction: column; height: auto; } 
-            #col-left, #col-right { height: auto; overflow: visible; box-shadow: none; border: none; }
-            #stage-area { height: 60vh; order: -1; }
-            .rdmls-title { font-size: 32px; margin-top: 10px; }
+            body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); } /* Fondo rojo en body */
+            #main-layout { display: flex; flex-direction: column; height: auto; }
+            
+            /* DESARMAMOS LA COLUMNA IZQUIERDA PARA ORDENAR */
+            #col-left { display: contents; } 
+            
+            /* ORDEN SAGRADO */
+            .header-container { order: 1; padding: 15px; } /* Cabecera */
+            .video-box { order: 2; margin: 0 15px 15px 15px; } /* Video */
+            #stage-area { order: 3; height: 55vh; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); } /* Mapa */
+            
+            /* Resto de Columna Izquierda (Fama, Planner, Slider) */
+            .card-box, #slider-container, .btn-gold { order: 4; margin: 10px 15px; }
+            
+            /* Columna Derecha (Reportes) */
+            #col-right { order: 5; background: rgba(0,0,0,0.6); padding: 15px; border: none; height: auto; overflow: visible; }
+            
+            /* Footer */
+            .mobile-footer { display: block; order: 6; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; margin-top: 20px; border-top: 1px solid #333; }
+
+            .rdmls-title { font-size: 32px; }
             .escudo-img { width: 60px; }
-            .mobile-footer { display: block; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; border-top: 1px solid #333; margin-top: 20px; font-family: 'Oswald'; letter-spacing: 1px; }
         }
     </style>
 </head>
@@ -147,12 +161,12 @@
 <div id="main-layout">
     
     <div id="col-left">
-        <div style="text-align:center;">
+        <div class="header-container" style="text-align:center;">
             <img src="./assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
             <h1 class="rdmls-title">RDMLS</h1>
             <div class="clock" id="clock">00:00:00</div>
             
-            <div class="card-box" style="display:flex; align-items:center; gap:8px; margin-top:5px;">
+            <div class="card-box" style="display:flex; align-items:center; gap:8px; margin-top:5px; text-align:left;">
                 <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
                 <div style="flex-grow:1;">
                     <div style="font-size:9px; color:var(--gold); font-weight:bold;">RADIO MUNICIPAL</div>
@@ -308,10 +322,12 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
+        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
+
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
