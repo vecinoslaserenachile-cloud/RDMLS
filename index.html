@@ -27,7 +27,7 @@
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNA IZQUIERDA */
+        /* COLUMNA IZQUIERDA (Equilibrada) */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
             padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
@@ -44,7 +44,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO */
+        /* VIDEO BOX */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -54,13 +54,13 @@
         .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
-        /* SALÓN DE LA FAMA */
+        /* SALÓN DE LA FAMA (ALTURA AUMENTADA PARA EQUILIBRIO) */
         .fama-box { height: 160px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER */
+        /* SLIDER (ALTURA AJUSTADA) */
         #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; cursor: zoom-in; flex-shrink: 0; }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -85,10 +85,10 @@
         .pin-img { width: 50px; height: 50px; border-radius: 50%; border: 3px solid white; background: var(--gold); object-fit: cover; z-index: 10; }
         .pin-arrow { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 18px solid white; margin-top: -3px; z-index: 5; }
         
-        /* DISTANCIAS GRANDES */
+        /* DISTANCIAS */
         .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 10px; }
+        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11px; color: #ddd; margin-top: 8px; }
+        .dist-item { display: flex; align-items: center; gap: 10px; font-size: 11px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
         /* CHAT IA */
@@ -110,6 +110,7 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
+        /* PERFIL */
         #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
@@ -193,7 +194,7 @@
             <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
             <img src="./assets/img/comic-playa.jpg" class="slide-img">
             <img src="./assets/img/comic-cielo.jpg" class="slide-img">
-            <img src="./assets/img/RDMLS H.jpg" class="slide-img">
+            <img src="./assets/img/rdmls.png" class="slide-img">
         </div>
     </div>
 
@@ -506,7 +507,7 @@
     
     function startDictation() { alert("🎙️ Escuchando..."); }
     function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
-    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
+    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; const v=document.getElementById('cam-video'); if(v.srcObject) v.srcObject.getTracks().forEach(t=>t.stop()); }
     function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
     function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
 </script>
