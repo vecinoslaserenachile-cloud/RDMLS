@@ -27,10 +27,10 @@
 
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
-        /* COLUMNA IZQUIERDA (Equilibrada) */
+        /* COLUMNA IZQUIERDA (Armonizada) */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
             display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
         }
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
@@ -43,15 +43,15 @@
         .escudo-img { width: 70px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); }
         .card-box { background: rgba(0,0,0,0.5); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO BOX (Previsualización) */
+        /* VIDEO PREVIEW (Autoplay Mudo) */
         .video-box { 
             height: 120px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
             box-shadow: 0 4px 10px black; flex-shrink: 0;
         }
-        .video-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; transition: 0.3s; }
-        .video-box:hover img { opacity: 1; }
-        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:35px; text-shadow:0 0 10px black; }
+        /* Iframe bloqueado al click para que el div padre maneje el evento */
+        .video-box iframe { pointer-events: none; width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.6; }
+        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:35px; text-shadow:0 0 10px black; z-index: 10; }
         
         /* SLIDER FOTOS */
         #slider-container { 
@@ -105,7 +105,8 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); }
+        /* PERFIL (Estilo botón integrado) */
+        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
         .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
         #renderCanvas { width: 100%; height: 100%; outline: none; }
 
@@ -136,7 +137,7 @@
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
-            <img src="https://img.youtube.com/vi/_MeFYP4PkqU/hqdefault.jpg" alt="Video Cover">
+            <iframe src="https://www.youtube.com/embed/_MeFYP4PkqU?autoplay=1&mute=1&controls=0&loop=1&playlist=_MeFYP4PkqU&disablekb=1&modestbranding=1" frameborder="0"></iframe>
             <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
         </div>
 
@@ -160,7 +161,7 @@
             </div>
 
             <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:12px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:11px; margin-bottom:5px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
                 <div class="dist-grid">
                     <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
                     <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
@@ -197,8 +198,11 @@
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
             <button id="btn-login" onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 10px; background:#4285f4; border:none; color:white;">ACCESO GOOGLE</button>
             <div id="user-profile">
-                <img id="user-img" src="" class="user-avatar">
-                <div id="user-name" style="font-size:10px; font-weight:bold; color:var(--gold);"></div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <img id="user-img" src="" class="user-avatar">
+                    <div id="user-name" style="font-size:10px; font-weight:bold; color:var(--gold);"></div>
+                </div>
+                <button onclick="logoutGoogle()" style="background:var(--red); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:9px; cursor:pointer;">SALIR</button>
             </div>
         </div>
 
@@ -304,11 +308,16 @@
                 document.getElementById('user-img').src = u.photoURL;
                 document.getElementById('user-name').innerText = u.displayName.split(' ')[0];
                 loadHist();
+            } else {
+                document.getElementById('btn-login').style.display='block';
+                document.getElementById('user-profile').style.display='none';
+                document.getElementById('hist-list').innerHTML="Historial vacío.";
             }
         });
     }
 
     function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
+    function logoutGoogle() { auth.signOut(); }
 
     function enviarReporte() {
         if(!user) return alert("Inicia sesión primero");
