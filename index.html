@@ -25,16 +25,24 @@
         :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
         body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
 
-        /* LAYOUT DE ESCRITORIO */
+        /* --- LAYOUT ESCRITORIO (FIJO) --- */
         #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
         
         /* COLUMNA IZQUIERDA */
         #col-left { 
             background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 12px; overflow-y: auto; border-right: 3px solid var(--gold); 
+            padding: 12px; 
+            overflow-y: auto; 
+            overflow-x: hidden; /* EVITA QUE EL SLIDER SE SALGA */
+            border-right: 3px solid var(--gold); 
             display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black;
+            position: relative;
         }
+        
+        /* COLUMNA DERECHA */
         #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
+        
+        /* CENTRO (MAPA) */
         #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
         #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; }
 
@@ -45,7 +53,7 @@
         .escudo-img:hover { transform: scale(1.1); }
         .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); }
         
-        /* VIDEO */
+        /* VIDEO BOX */
         .video-box { 
             height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
             overflow: hidden; position: relative; background: #000; cursor: pointer;
@@ -56,24 +64,24 @@
         .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
         
         /* SALÓN DE LA FAMA */
-        .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; }
+        .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; width: 100%; }
         .fama-box:hover { transform: scale(1.02); border-color: white; }
         .fama-img { width: 100%; height: 100%; object-fit: cover; }
         .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
 
-        /* SLIDER (ARREGLADO) */
+        /* SLIDER (CORREGIDO PARA NO SALIRSE) */
         #slider-container { 
             height: 140px; 
-            width: 100%; /* Asegura ancho completo */
+            width: 100%; 
             border: 2px solid var(--gold); 
             border-radius: 8px; 
             overflow: hidden; 
             position: relative; 
             background: #000; 
-            margin-top: auto; /* Empuja hacia abajo si hay espacio */
+            margin-top: auto; 
             cursor: zoom-in; 
             flex-shrink: 0; 
-            box-sizing: border-box; /* Evita desbordes por bordes */
+            box-sizing: border-box;
         }
         .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
         .slide-img.active { opacity: 1; }
@@ -104,17 +112,12 @@
         .dist-item { display: flex; align-items: center; gap: 10px; }
         .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
 
-        /* CHAT IA */
-        #chat-container { display: flex; flex-direction: column; height: 160px; }
+        /* CHAT & ALERTS */
         #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
         .chat-input-area { display: flex; gap: 5px; }
         .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
-
-        /* ENCUESTA */
         .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
         .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
-
-        /* TOAST ALERT */
         #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
 
         /* MODALES */
@@ -123,12 +126,7 @@
         .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
         .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
         
-        /* PERFIL */
-        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
-        #renderCanvas { width: 100%; height: 100%; outline: none; }
-
-        /* CÁMARA */
+        /* CÁMARA & PERFIL */
         .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
         #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
         .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
@@ -136,7 +134,9 @@
         .char-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 20; }
         .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
         .char-btn img { width: 100%; height: 100%; object-fit: contain; }
-
+        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
+        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
+        #renderCanvas { width: 100%; height: 100%; outline: none; }
         .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
         .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
 
@@ -155,10 +155,10 @@
             /* 2. Video */
             #mob-video { order: 2; margin: 0 15px 15px 15px; }
             
-            /* 3. Mapa (25vh - ALTURA PERFECTA PARA NO PERDERSE) */
-            #stage-area { order: 3; height: 25vh; min-height: 200px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
+            /* 3. Mapa (30vh - ALTURA PERFECTA PARA VER LO DE ABAJO) */
+            #stage-area { order: 3; height: 30vh; min-height: 250px; width: 100%; border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold); z-index: 1; }
             
-            /* 4. Ubicación (Pegada al mapa para contexto inmediato) */
+            /* 4. Ubicación (Pegada al mapa) */
             #mob-location { order: 4; margin: 10px 15px 5px 15px; background: rgba(0,0,0,0.8); }
             
             /* 5. Planificador */
@@ -252,10 +252,12 @@
         <button id="mob-selfie" class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
 
         <div id="mob-slider" id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
-            <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
-            <img src="./assets/img/comic-playa.jpg" class="slide-img">
-            <img src="./assets/img/comic-cielo.jpg" class="slide-img">
-            <img src="./assets/img/rdmls.png" class="slide-img">
+            <div id="slider-container" style="height:100%; width:100%; position:relative;">
+                <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
+                <img src="./assets/img/comic-playa.jpg" class="slide-img">
+                <img src="./assets/img/comic-cielo.jpg" class="slide-img">
+                <img src="./assets/img/rdmls.png" class="slide-img">
+            </div>
         </div>
     </div>
 
@@ -355,10 +357,12 @@
     <div class="cam-container">
         <video id="cam-video" autoplay playsinline></video>
         <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
+        
         <div class="char-selector">
             <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
             <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
         </div>
+
         <button class="shutter-btn" onclick="cerrarCamara(); showAlert('📸 ¡Foto guardada!')"></button>
         <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
     </div>
@@ -518,7 +522,7 @@
             
             const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
             cam.attachControl(c, true);
-            cam.upperBetaLimit = Math.PI / 2;
+            cam.upperBetaLimit = Math.PI / 2; // Bloqueo de piso
             
             new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
             
