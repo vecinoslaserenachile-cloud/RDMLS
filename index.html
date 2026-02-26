@@ -5,74 +5,94 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RDMLS | La Serena 2026</title>
     
-    <link rel="icon" type="image/png" href="assets/img/serenito.png">
-    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.babylonjs.com/babylon.js"></script>
     <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ESTILOS GALA INTEGRADOS */
+        :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.95); }
+        body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
+
+        #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 360px 1fr 390px; }
+        
+        #col-left { background: linear-gradient(180deg, #8a0000 0%, #300000 100%); padding: 15px; overflow-y: auto; border-right: 3px solid var(--gold); display: flex; flex-direction: column; gap: 12px; z-index: 50; box-shadow: 5px 0 20px rgba(0,0,0,0.6); }
+        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* CORRECCIÓN MAPA NEGRO */
+        #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
+        #map { width: 100%; height: 100%; z-index: 1; min-height: 100vh; }
+
+        /* COMPONENTES */
+        .rdmls-title { font-family: 'Oswald'; font-size: 42px; margin: 0; text-align: center; text-shadow: 3px 3px 0 #000; line-height: 1; color: white; }
+        .clock { font-family: 'Oswald'; font-size: 26px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 5px; }
+        .card-box { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* VIDEO */
+        .video-box { height: 120px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; cursor: pointer; margin-top:10px; }
+        .video-box video { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        
+        /* SLIDER */
+        #slider-container { height: 150px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; position: relative; background: #000; margin-top: auto; }
+        .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s; }
+        .slide-img.active { opacity: 1; }
+
+        /* BOTONES */
+        .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: bold; border: 2px solid white; padding: 10px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 11px; margin-top: 5px; }
+        .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
+
+        /* PASTILLAS */
+        .chip { background: var(--gold); color: #000; font-weight: 900; border: 2px solid #fff; padding: 6px 10px; font-size: 10px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; margin: 2px; display:inline-block; }
+        .chip:hover { background: #fff; color: var(--red); }
+
+        /* CLIMA */
+        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
+
+        /* SERENITO PIN */
+        .pin-wrapper { position: relative; width: 60px; height: 90px; display: flex; flex-direction: column; align-items: center; }
+        .pin-img { width: 55px; height: 55px; border-radius: 50%; border: 3px solid white; background: var(--gold); box-shadow: 0 5px 15px black; object-fit: cover; z-index: 10; }
+        .pin-arrow { width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 15px solid white; margin-top: -3px; z-index: 5; }
+
+        /* MODALES */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; }
+        .modal-content-video { width: 80%; max-width: 900px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; }
+        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; }
+    </style>
 </head>
 <body onload="initApp()">
 
 <div id="main-layout">
-    
     <div id="col-left">
         <div style="text-align:center;">
-            <img src="assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
+            <img src="assets/img/escudo.png" style="width:80px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
             <h1 class="rdmls-title">RDMLS</h1>
             <div class="clock" id="clock">00:00:00</div>
-            
-            <div class="card-box" style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-                <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
-                <div style="flex-grow:1;">
-                    <div style="font-size:9px; color:var(--gold); letter-spacing:1px; font-weight:bold;">RADIO MUNICIPAL</div>
-                    <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)" style="width:100%; height:4px; accent-color:gold;">
-                </div>
-            </div>
         </div>
 
         <div class="video-box" onclick="toggleVideo(true)">
-            <video autoplay muted loop playsinline preload="metadata">
-                <source src="assets/img/video_full.mp4" type="video/mp4">
-            </video>
-            <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
+            <video autoplay muted loop playsinline><source src="assets/img/video_full.mp4" type="video/mp4"></video>
         </div>
 
         <div class="card-box">
-            <div class="section-title">PLANIFICADOR DE VIAJES</div>
-            <div class="chip-container">
+            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">PLANIFICADOR DE VIAJES</div>
+            <div style="display:flex; flex-wrap:wrap; gap:5px;">
                 <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
                 <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
-                <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
-                <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
-                <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
-                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
-                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
                 <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
-                <div class="chip" onclick="calcRoute(-33.448, -70.669, 'SANTIAGO')">SANTIAGO</div>
+                <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
             </div>
-
-            <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; border-bottom:1px solid #555; padding-bottom:3px; margin-bottom:5px;">DESTINO: <span id="lbl-dest">...</span></div>
-                <div class="dist-row"><span>🚗 Auto</span> <span id="v-auto"></span></div>
-                <div class="dist-row"><span>🚌 Bus</span> <span id="v-bus"></span></div>
-                <div class="dist-row"><span>🚲 Bici</span> <span id="v-bici"></span></div>
-                <div class="dist-row"><span>🚶 Pie</span> <span id="v-pie"></span></div>
-                <div class="dist-row"><span>✈️ Avión</span> <span id="v-avion"></span></div>
+            <div id="dist-hud" style="display:none; background:rgba(0,0,0,0.8); border:1px solid var(--gold); padding:10px; margin-top:10px; border-radius:8px;">
+                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:11px;">DESTINO: <span id="lbl-dest">...</span></div>
+                <div style="font-size:11px; color:#ddd;">🚗 Auto: <span id="v-auto"></span></div>
+                <div style="font-size:11px; color:#ddd;">🚌 Bus: <span id="v-bus"></span></div>
                 <div style="text-align:center; color:#00e676; margin-top:5px; font-weight:bold; font-size:10px;">¡SERENITO EN CAMINO!</div>
             </div>
-            <button id="btn-reset" class="btn-reset" onclick="resetRoute()">CERRAR RUTA</button>
         </div>
 
-        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
+        <button class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold);" onclick="abrirCamara()">SELFIE CON SERENITO</button>
 
         <div id="slider-container">
             <img src="assets/img/foto1.jpg" class="slide-img active" onerror="this.src='https://via.placeholder.com/400x200/900/fc0?text=TURISMO'">
@@ -85,75 +105,102 @@
         <div class="weather-bar">
             <span><i class="fas fa-cloud"></i> 17°C NUBLADO</span>
             <span><i class="fas fa-wind"></i> 14 km/h</span>
-            <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
         </div>
         <div id="map"></div>
-        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (TANQUE)</button>
+        <button class="tank-btn" onclick="alert('Modo 3D Cargando...')">PASEO 3D</button>
     </div>
 
     <div id="col-right">
         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
             <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
-            <button onclick="loginGoogle()" class="btn-access">ACCESO</button>
+            <button style="background:#4285f4; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; font-size:11px;">ACCESO</button>
         </div>
 
         <div class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
-            <div class="section-title" style="border:none; margin:0; color:#aaa;">UBICACIÓN REAL (Arrastra a Serenito)</div>
+            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL</div>
             <div id="geo-result" style="color:var(--gold); font-weight:bold; font-size:13px; margin-top:5px;">📍 Arrastra el pin...</div>
         </div>
 
         <div class="card-box">
-            <div class="section-title">NUEVO REPORTE</div>
-            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache)">
-            <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
-            <button class="btn-red" onclick="enviarReporte()">ENVIAR REPORTE</button>
-            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa;">Historial vacío.</div>
-        </div>
-
-        <div class="card-box" style="border-color:var(--red);">
-            <div class="section-title">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
-            <div id="poll-interface"></div>
-            <div id="poll-results" style="display:none; text-align:center;">
-                <b style="color:#00e676;">¡VOTO REGISTRADO!</b>
-            </div>
-        </div>
-
-        <div class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
-            <div class="section-title">SERENITO IA</div>
-            <div id="chat-ia" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid #444; padding:8px; font-size:11px; overflow-y:auto; border-radius:5px; margin-bottom:5px;">
-                ¡Hola! Soy Serenito IA. ¿Consultas sobre trámites?
-            </div>
-            <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
+            <input style="width:100%; padding:10px; background:#222; border:1px solid #444; color:white; margin-bottom:5px;" placeholder="Asunto...">
+            <button class="btn-gold" style="background:var(--red); color:white;">ENVIAR REPORTE</button>
         </div>
     </div>
 </div>
 
 <div id="modal-video" class="modal" onclick="toggleVideo(false)">
     <div class="modal-content-video" onclick="event.stopPropagation()">
-        <video id="inst-video" controls playsinline style="width:100%; height:100%;">
-            <source src="assets/img/video_full.mp4" type="video/mp4">
-        </video>
+        <video id="inst-video" controls style="width:100%; height:100%;"><source src="assets/img/video_full.mp4" type="video/mp4"></video>
         <button class="close-modal" onclick="toggleVideo(false)">X</button>
     </div>
 </div>
 
-<div id="modal-camara" class="modal">
-    <button class="close-modal" onclick="cerrarCamara()">CERRAR</button>
-    <div class="cam-container">
-        <video id="cam-video" autoplay playsinline></video>
-        <img src="assets/img/serenito.png" class="cam-overlay">
-    </div>
-    <button onclick="alert('Foto guardada!')" class="btn-gold" style="width:300px; margin-top:10px;">CAPTURAR</button>
-</div>
+<script>
+    const CENTRO = [-29.9027, -71.2520];
+    let map, marker, polyline, animInterval;
 
-<div id="modal-tour-3d" class="modal">
-    <button class="close-modal" onclick="cerrarTour()">SALIR</button>
-    <canvas id="renderCanvas"></canvas>
-</div>
+    function initApp() {
+        // Reloj
+        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString(), 1000);
+        
+        // Slider
+        let s = 0; const imgs = document.querySelectorAll('.slide-img');
+        if(imgs.length > 0) setInterval(() => { 
+            imgs[s].classList.remove('active'); 
+            s = (s + 1) % imgs.length; 
+            imgs[s].classList.add('active'); 
+        }, 4000);
 
-<audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
+        // Mapa
+        map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
 
-<script src="js/app.js"></script>
+        // Serenito
+        const sIcon = L.divIcon({ 
+            html: `<div class="pin-wrapper"><img src="assets/img/serenito.png" class="pin-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'"><div class="pin-arrow"></div></div>`, 
+            className: 'dummy', iconSize: [60, 90], iconAnchor: [30, 90] 
+        });
+        marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
+
+        // Geo
+        marker.on('dragend', (e) => {
+            document.getElementById('geo-result').innerText = "Consultando...";
+            // Simulación rápida para evitar errores CORS si falla API
+            setTimeout(() => { 
+                const c = e.target.getLatLng();
+                document.getElementById('geo-result').innerText = `📍 ${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`; 
+            }, 500);
+        });
+    }
+
+    function calcRoute(lat, lon, name) {
+        if(polyline) map.removeLayer(polyline);
+        polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5}).addTo(map);
+        map.fitBounds(polyline.getBounds(), {padding:[80,80]});
+        
+        document.getElementById('dist-hud').style.display = 'block';
+        document.getElementById('lbl-dest').innerText = name;
+        
+        // Animación
+        let p = 0; 
+        if(animInterval) clearInterval(animInterval);
+        animInterval = setInterval(() => {
+            p += 0.01;
+            const clat = CENTRO[0] + (lat - CENTRO[0]) * p;
+            const clng = CENTRO[1] + (lon - CENTRO[1]) * p;
+            marker.setLatLng([clat, clng]);
+            if(p >= 1) clearInterval(animInterval);
+        }, 20);
+    }
+
+    function toggleVideo(state) {
+        document.getElementById('modal-video').style.display = state ? 'flex' : 'none';
+        const v = document.getElementById('inst-video');
+        state ? v.play() : v.pause();
+    }
+    
+    function abrirCamara() { alert("Abriendo cámara..."); }
+</script>
 
 </body>
 </html>
