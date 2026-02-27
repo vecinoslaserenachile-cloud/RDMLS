@@ -2,693 +2,207 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RDMLS | Portal Ciudadano 2026</title>
-    
-    <meta name="theme-color" content="#b71c1c">
-    <link rel="icon" type="image/png" href="./assets/img/serenito.png">
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://cdn.babylonjs.com/babylon.js"></script>
-    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
-    
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serenito App - Simulación Reactiva de Protocolo Municipal</title>
     <style>
-        :root { --gold: #ffd700; --red: #b71c1c; --dark: #0f0f0f; --glass: rgba(12, 12, 12, 0.96); }
-        body, html { margin: 0; padding: 0; font-family: 'Roboto', sans-serif; background: var(--dark); color: white; width: 100%; height: 100%; overflow: hidden; }
-
-        /* --- LAYOUT ESCRITORIO (FIJO) --- */
-        #main-layout { display: grid; width: 100vw; height: 100vh; grid-template-columns: 350px 1fr 380px; }
-        
-        #col-left { 
-            background: linear-gradient(180deg, #900 0%, #500 100%); 
-            padding: 12px; overflow-y: auto; overflow-x: hidden; 
-            border-right: 3px solid var(--gold); 
-            display: flex; flex-direction: column; gap: 10px; z-index: 50; box-shadow: 5px 0 20px black; position: relative;
+        /* CSS BÁSICO PARA ESTRUCTURAR LA DEMO */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 20px;
         }
-        
-        #col-right { background: var(--glass); padding: 15px; overflow-y: auto; border-left: 3px solid var(--gold); z-index: 50; display: flex; flex-direction: column; gap: 12px; }
-        
-        /* CENTRO (MAPA) */
-        #stage-area { position: relative; width: 100%; height: 100%; background: #222; }
-        
-        /* CONTENEDOR DEL MAPA (WRAPPER) */
-        #map-wrapper { width: 100%; height: 100%; display: flex; }
-        #map { width: 100%; height: 100%; min-height: 100vh; z-index: 1; flex-grow: 1; }
-        .map-safe-zone { display: none; } /* Oculto en escritorio */
-
-        /* HEADER */
-        .rdmls-title { font-family: 'Oswald'; font-size: 38px; margin: 0; text-align: center; text-shadow: 2px 2px 0 #000; line-height: 1; color: white; }
-        .clock { font-family: 'Oswald'; font-size: 24px; color: var(--gold); text-align: center; margin-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.2); letter-spacing: 1px; }
-        .escudo-img { width: 90px; margin: 0 auto; display: block; filter: drop-shadow(0 4px 4px black); transition: transform 0.3s; }
-        .escudo-img:hover { transform: scale(1.1); }
-        .card-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); flex-shrink: 0; }
-        
-        .video-box { 
-            height: 130px; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; cursor: pointer;
-            box-shadow: 0 4px 10px black; flex-shrink: 0; width: 100%;
+        h1, h2 { color: #003366; } /* Color municipal La Serena */
+        .app-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .video-click-layer { position: absolute; inset: 0; z-index: 20; background: transparent; }
-        .video-box iframe { width: 150%; height: 150%; margin-left: -25%; margin-top: -15%; opacity: 0.7; pointer-events: none; }
-        .vid-overlay { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:40px; text-shadow:0 0 10px black; z-index: 10; }
-        
-        .fama-box { height: 140px; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--gold); cursor: zoom-in; transition: transform 0.2s; flex-shrink: 0; width: 100%; }
-        .fama-box:hover { transform: scale(1.02); border-color: white; }
-        .fama-img { width: 100%; height: 100%; object-fit: cover; }
-        .fama-title { position: absolute; bottom: 0; width: 100%; background: rgba(183, 28, 28, 0.9); color: white; font-size: 11px; text-align: center; padding: 5px; font-weight: bold; letter-spacing: 1px; }
-
-        #slider-container { 
-            height: 140px; width: 100%; border: 2px solid var(--gold); border-radius: 8px; 
-            overflow: hidden; position: relative; background: #000; margin-top: auto; 
-            cursor: zoom-in; flex-shrink: 0; display: block !important; box-sizing: border-box;
+        .col {
+            flex: 1;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        .slide-img { position: absolute; top:0; left:0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity 1.5s ease-in-out; }
-        .slide-img.active { opacity: 1; }
 
-        .btn-gold { width: 100%; background: var(--gold); color: black; font-weight: 900; border: 2px solid white; padding: 8px; cursor: pointer; border-radius: 5px; text-transform: uppercase; font-size: 10px; margin-top: 5px; }
-        .btn-red { width: 100%; background: var(--red); color: white; padding: 10px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; box-shadow: 0 4px 10px black; }
-        .tank-btn { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 1000; background: var(--gold); color: black; font-weight: bold; padding: 12px 30px; border-radius: 30px; border: 3px solid white; cursor: pointer; box-shadow: 0 10px 20px black; font-family: 'Oswald'; font-size: 16px; }
-        .play-btn { width: 35px; height: 35px; border-radius: 50%; background: white; color: var(--red); border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 10px var(--gold); }
-        .f-input { width: 100%; padding: 8px; margin-bottom: 5px; background: #222; border: 1px solid #444; color: white; border-radius: 5px; box-sizing: border-box; font-size: 11px; }
-
-        .chip-container { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 5px; }
-        .chip { background: var(--gold); color: black; font-weight: 900; border: 1px solid #fff; padding: 4px 8px; font-size: 9px; border-radius: 20px; cursor: pointer; text-align: center; flex-grow: 1; text-transform: uppercase; box-shadow: 0 2px 4px black; }
-        .chip:hover { background: white; color: var(--red); transform: translateY(-1px); }
-
-        /* CLIMA (ESCRITORIO: Flotante) */
-        .weather-bar { position: absolute; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; gap: 20px; background: rgba(0,0,0,0.85); padding: 8px 25px; border-radius: 30px; border: 2px solid var(--gold); font-size: 12px; color: var(--gold); font-family: 'Oswald'; box-shadow: 0 5px 20px black; }
-
-        /* PIN GPS */
-        .pin-wrapper { position: relative; width: 110px; height: 160px; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.8)); transition: transform 0.1s; }
-        .pin-img { width: 110px; height: 110px; object-fit: contain; z-index: 10; filter: drop-shadow(0 0 2px white); }
-        .pin-arrow { width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 25px solid var(--red); margin-top: -8px; z-index: 5; }
-        
-        .dist-panel { background: rgba(0,0,0,0.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px; margin-top: 8px; display: none; box-shadow: 0 5px 15px black; }
-        .dist-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 12px; color: #ddd; margin-top: 8px; }
-        .dist-item { display: flex; align-items: center; gap: 10px; }
-        .dist-item i { color: var(--gold); font-size: 18px; width: 20px; text-align: center; }
-
-        #chat-ia { flex-grow: 1; background: rgba(0,0,0,0.4); border: 1px solid #444; padding: 8px; font-size: 11px; overflow-y: auto; border-radius: 5px; margin-bottom: 5px; }
-        .chat-input-area { display: flex; gap: 5px; }
-        .btn-mic { background: var(--red); color: white; border: none; width: 35px; border-radius: 5px; cursor: pointer; }
-        .poll-bar-bg { background: #333; height: 10px; border-radius: 5px; margin-top: 3px; width: 100%; }
-        .poll-bar-fill { background: #00e676; height: 100%; border-radius: 5px; width: 0%; transition: width 1s; }
-        #custom-alert { position: fixed; top: 20px; right: 20px; background: linear-gradient(90deg, #b71c1c, #000); color: white; padding: 15px 25px; border-radius: 5px; border-left: 5px solid var(--gold); box-shadow: 0 5px 20px black; z-index: 99999; display: none; font-family: 'Oswald'; }
-
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
-        .modal-content-video { width: 90%; max-width: 1000px; aspect-ratio: 16/9; background: black; border: 3px solid var(--gold); position: relative; box-shadow: 0 0 50px black; }
-        .modal-content-img { width: auto; max-width: 90%; max-height: 90vh; border: 3px solid var(--gold); box-shadow: 0 0 50px black; }
-        .close-modal { position: absolute; top: -15px; right: -15px; background: var(--red); color: white; width: 35px; height: 35px; border-radius: 50%; font-weight: bold; cursor: pointer; border: 2px solid white; display:flex; align-items:center; justify-content:center; font-size:16px; z-index:10002; box-shadow: 0 5px 10px black; }
-        
-        .cam-container { width: 320px; height: 480px; background: #000; border: 3px solid var(--gold); position: relative; overflow: hidden; }
-        #cam-video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-        .cam-overlay { position: absolute; bottom: 0; right: 0; width: 50%; pointer-events: none; filter: drop-shadow(0 0 10px black); }
-        .shutter-btn { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; background: white; border-radius: 50%; border: 4px solid #ccc; cursor: pointer; z-index: 20; }
-        .char-selector { position: absolute; top: 10px; left: 10px; display: flex; gap: 5px; z-index: 20; }
-        .char-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--gold); background: rgba(0,0,0,0.5); cursor: pointer; padding: 2px; }
-        .char-btn img { width: 100%; height: 100%; object-fit: contain; }
-        
-        #user-profile { display: none; align-items: center; gap: 10px; background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 20px; border: 1px solid var(--gold); margin-top: 5px; justify-content: space-between; }
-        .user-avatar { width: 28px; height: 28px; border-radius: 50%; border: 2px solid white; object-fit:cover; }
-        #renderCanvas { width: 100%; height: 100%; outline: none; }
-        .agenda-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid #444; font-size: 10px; }
-        .agenda-date { background: var(--gold); color: black; font-weight: bold; padding: 2px 4px; border-radius: 3px; font-size: 9px; }
-
-        .mobile-footer { display: none; }
-
-        /* --- RESPONSIVE FINAL (MÓVIL CORREGIDO) --- */
-        @media (max-width: 1024px) { 
-            body, html { overflow: auto; height: auto; background: linear-gradient(180deg, #900 0%, #300 100%); }
-            #main-layout { display: flex; flex-direction: column; height: auto; }
-            #col-left, #col-right { display: contents; } 
-            
-            #mob-header { order: 1; padding: 15px; }
-            #mob-video { order: 2; margin: 0 15px 15px 15px; }
-            
-            /* CLIMA SEPARADO */
-            .weather-bar { 
-                position: static; 
-                transform: none; 
-                width: 92%; 
-                margin: 0 auto 10px auto; 
-                order: 3; 
-                justify-content: center; 
-                background: #111; 
-                border: 1px solid var(--gold); 
-                padding: 10px;
-                box-sizing: border-box;
-            }
-
-            /* STAGE AREA (Contenedor Central) */
-            #stage-area { 
-                order: 4; 
-                width: 100%; 
-                height: auto;
-                background: transparent; 
-                display: flex; 
-                flex-direction: column; /* Apila Mapa+Zona */
-                align-items: center;
-                margin-bottom: 10px;
-            }
-
-            /* MAPA TIPO TARJETA */
-            #map-wrapper {
-                width: 92%; /* Tarjeta centrada */
-                height: 35vh; /* Altura controlada */
-                min-height: 250px;
-                border: 2px solid var(--gold);
-                border-radius: 12px;
-                overflow: hidden;
-                display: flex;
-                background: #000;
-            }
-            
-            /* MAPA REAL */
-            #map { 
-                width: calc(100% - 40px); /* Deja espacio para la zona segura */
-                height: 100%; 
-                min-height: 100%; 
-                z-index: 1;
-            }
-            
-            /* ZONA SEGURA (CARRIL DERECHO) */
-            .map-safe-zone { 
-                display: flex; 
-                width: 40px; 
-                height: 100%; 
-                background: #111; 
-                color: #555; 
-                align-items: center; 
-                justify-content: center; 
-                font-size: 20px; 
-                border-left: 1px solid #333; 
-                cursor: grab;
-            }
-            
-            #mob-location { order: 5; margin: 0 15px 5px 15px; background: rgba(0,0,0,0.8); }
-            #mob-planner { order: 6; margin: 5px 15px 15px 15px; }
-            #mob-login { order: 7; padding: 0 15px; margin-bottom: 10px; }
-            #mob-report { order: 8; margin: 0 15px 15px 15px; }
-            #mob-emergency { order: 9; margin: 0 15px 15px 15px; }
-            #mob-poll { order: 10; margin: 0 15px 15px 15px; }
-            #mob-ia { order: 11; margin: 0 15px 15px 15px; }
-            #mob-fama { order: 12; margin: 0 15px 15px 15px; }
-            #mob-selfie { order: 13; margin: 0 15px 15px 15px; }
-            #mob-slider { order: 14; margin: 0 15px 20px 15px; height: 130px !important; display: block !important; }
-            
-            .mobile-footer { display: block; order: 15; background: #111; color: #555; text-align: center; padding: 20px; font-size: 10px; font-family: 'Oswald'; border-top: 1px solid #333; }
-
-            .rdmls-title { font-size: 32px; }
-            .escudo-img { width: 60px; }
-            .tank-btn { display: none; }
+        /* ESTILOS PARA LA COLUMNA 1 (PUERTA) */
+        #checkin-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
         }
+        .autoridad-btn {
+            background-color: #e3f2fd;
+            border: 2px solid #90caf9;
+            color: #0d47a1;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .autoridad-btn:hover { background-color: #bbdefb; }
+        .autoridad-btn.presente {
+            background-color: #81c784; /* Verde: Llegó */
+            border-color: #66bb6a;
+            color: white;
+            font-weight: bold;
+        }
+        .rango-tag {
+            font-size: 0.8em;
+            background-color: rgba(0,0,0,0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+            float: right;
+        }
+
+        /* ESTILOS PARA LA COLUMNA 2 (LOCUTOR) - MIMIC MOCKUP */
+        #pantalla-locutor {
+            background-color: #000; /* Fondo Negro (image_1.png) */
+            color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            min-height: 200px;
+            border: 4px solid #FFD700; /* Borde amarillo de 'Mic' */
+        }
+        .announcer-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #FFD700; /* Texto Amarillo/Dorado */
+            font-family: 'Courier New', Courier, monospace; /* Tipografía para leer */
+        }
+        .alert-text {
+            color: #ff5252;
+            font-weight: bold;
+            font-style: italic;
+        }
+        strong { font-weight: bold; color: white; }
     </style>
 </head>
-<body onload="initApp()">
+<body>
 
-<div id="custom-alert">Mensaje del sistema</div>
+    <header style="text-align: center; margin-bottom: 20px;">
+        <h1 style="margin: 0;">SERENITO APP</h1>
+        <p style="margin: 5px 0 0; color: #666;">PROTOCOLO & EVENTOS</p>
+    </header>
 
-<div id="main-layout">
-    
-    <div id="col-left">
-        <div id="mob-header" style="text-align:center;">
-            <img src="./assets/img/escudo.png" class="escudo-img" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3660/3660358.png'">
-            <h1 class="rdmls-title">RDMLS</h1>
-            <div class="clock" id="clock">00:00:00</div>
-            
-            <div class="card-box" style="display:flex; align-items:center; gap:8px; margin-top:5px; text-align:left;">
-                <button onclick="toggleRadio()" id="rad-btn" class="play-btn"><i class="fas fa-play" id="play-icon"></i></button>
-                <div style="flex-grow:1;">
-                    <div style="font-size:9px; color:var(--gold); font-weight:bold;">RADIO MUNICIPAL</div>
-                    <input type="range" min="0" max="1" step="0.1" value="0.5" oninput="setVolume(this.value)" style="width:100%; height:3px; accent-color:gold;">
+    <div class="app-container">
+        <div class="col" id="col-puerta">
+            <h2>1. Acreditación de Autoridades (Simulación de Puerta)</h2>
+            <p>Haz clic en cada autoridad para marcar su check-in (llegada al evento).</p>
+            <div id="checkin-buttons">
                 </div>
-            </div>
         </div>
 
-        <div id="mob-video" class="video-box" onclick="toggleVideo(true)">
-            <div class="video-click-layer"></div>
-            <iframe src="https://www.youtube.com/embed/_MeFYP4PkqU?autoplay=1&mute=1&controls=0&loop=1&playlist=_MeFYP4PkqU&disablekb=1&modestbranding=1" frameborder="0"></iframe>
-            <div class="vid-overlay"><i class="fas fa-play-circle"></i></div>
-        </div>
-
-        <div id="mob-fama" class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px;">SALÓN DE LA FAMA</div>
-            <div class="fama-box" onclick="expandPhoto(this.querySelector('img'))">
-                <img src="./assets/img/relleno-personajes.jpg" class="fama-img" onerror="this.style.display='none'">
-                <div class="fama-title">PERSONAJES ILUSTRES DE LA REGIÓN</div>
-            </div>
-        </div>
-
-        <div id="mob-planner" class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:900; margin-bottom:5px; border-bottom:1px solid #555; padding-bottom:3px;">PLANIFICADOR DE VIAJES</div>
-            <div style="display:flex; gap:5px; margin-bottom:5px;">
-                <input id="custom-city" class="f-input" placeholder="Escribe Ciudad..." style="margin:0;">
-                <button class="btn-gold" style="margin:0; padding:5px 10px;" onclick="searchCity()"><i class="fas fa-search"></i></button>
-            </div>
-            <div class="chip-container">
-                <div class="chip" onclick="calcRoute(-30.033, -70.708, 'VICUÑA')">VICUÑA</div>
-                <div class="chip" onclick="calcRoute(-30.231, -71.185, 'ANDACOLLO')">ANDACOLLO</div>
-                <div class="chip" onclick="calcRoute(-29.243, -71.469, 'P. CHOROS')">P. CHOROS</div>
-                <div class="chip" onclick="calcRoute(-30.601, -71.199, 'OVALLE')">OVALLE</div>
-                <div class="chip" onclick="calcRoute(-31.633, -71.166, 'ILLAPEL')">ILLAPEL</div>
-                <div class="chip" onclick="calcRoute(-30.675, -71.678, 'FRAY JORGE')">FRAY JORGE</div>
-                <div class="chip" onclick="calcRoute(-29.981, -71.121, 'ALGARROBITO')">ALGARROBITO</div>
-                <div class="chip" onclick="calcRoute(-29.953, -71.339, 'COQUIMBO')">COQUIMBO</div>
-            </div>
-            <div id="dist-hud" class="dist-panel">
-                <div style="text-align:center; color:var(--gold); font-weight:bold; font-size:14px; margin-bottom:10px;">DESTINO: <span id="lbl-dest" style="color:white;">...</span></div>
-                <div class="dist-grid">
-                    <div class="dist-item"><i class="fas fa-car"></i> <span id="v-auto"></span></div>
-                    <div class="dist-item"><i class="fas fa-bus"></i> <span id="v-bus"></span></div>
-                    <div class="dist-item"><i class="fas fa-walking"></i> <span id="v-pie"></span></div>
-                    <div class="dist-item"><i class="fas fa-bicycle"></i> <span id="v-bici"></span></div>
-                    <div class="dist-item"><i class="fas fa-plane"></i> <span id="v-avion"></span></div>
-                </div>
-            </div>
-            <button id="btn-reset" onclick="resetRoute()" style="width:100%; background:var(--red); color:white; border:none; padding:5px; margin-top:8px; cursor:pointer; font-size:10px; font-weight:bold; border-radius:4px; display:none;">CERRAR RUTA</button>
-        </div>
-
-        <button id="mob-selfie" class="btn-gold" style="background:#222; border-color:var(--gold); color:var(--gold); padding:8px;" onclick="abrirCamara()"><i class="fas fa-camera"></i> SELFIE CON SERENITO</button>
-
-        <div id="mob-slider" id="slider-container" onclick="expandPhoto(this.querySelector('.active'))">
-            <div id="slider-container">
-                <img src="./assets/img/comic-patrimonio.jpg" class="slide-img active">
-                <img src="./assets/img/comic-playa.jpg" class="slide-img">
-                <img src="./assets/img/comic-cielo.jpg" class="slide-img">
-                <img src="./assets/img/rdmls.png" class="slide-img">
+        <div class="col" id="col-locutor">
+            <h2>2. Pestaña del Locutor (Vocativos Oficiales en vivo)</h2>
+            <p>Esta vista reacciona instantáneamente a quién ha hecho Check-in en la Puerta.</p>
+            <div id="pantalla-locutor">
+                <div class="announcer-text" id="vocativos-actualizados">
+                    </div>
             </div>
         </div>
     </div>
 
-    <div id="stage-area">
-        <div class="weather-bar">
-            <span><i class="fas fa-cloud"></i> 17°C NUBLADO</span>
-            <span><i class="fas fa-wind"></i> 14 km/h</span>
-            <span><i class="fas fa-moon"></i> LUNA CRECIENTE</span>
-        </div>
-        
-        <div id="map-wrapper">
-            <div id="map"></div>
-            <div class="map-safe-zone">↕</div>
-        </div>
-        
-        <button class="tank-btn" onclick="abrirTour3D()"><i class="fas fa-gamepad"></i> PASEO 3D (MUNDO)</button>
-    </div>
+    <script>
+        // --- DATA Y LÓGICA CENTRAL DE PROTOCOLO (JavaScript) ---
 
-    <div id="col-right">
-        <div id="mob-login" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #444; padding-bottom:10px;">
-            <h4 style="color:var(--gold); margin:0; font-family:'Oswald';">CENTRAL OPERATIVA</h4>
-            <button id="btn-login" onclick="loginGoogle()" class="btn-gold" style="margin:0; padding:5px 10px; background:#4285f4; border:none; color:white;">ACCESO GOOGLE</button>
-            <div id="user-profile">
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <img id="user-img" src="" class="user-avatar">
-                    <div id="user-name" style="font-size:10px; font-weight:bold; color:var(--gold);"></div>
-                </div>
-                <button onclick="logoutGoogle()" style="background:var(--red); color:white; border:none; padding:4px 8px; border-radius:10px; font-size:9px; cursor:pointer;">SALIR</button>
-            </div>
-        </div>
+        // 1. LA MATRIZ DE PRECEDENCIA (JSON)
+        // Definimos el orden jerárquico oficial. El número menor de rango_precedencia indica más jerarquía.
+        // Incluye los nombres actualizados: Daniela Norambuena, etc.
+        const autoridadesProtocolo = [
+            { id: 1, cargo: "Gobernadora Regional", nombre: "Krist Naranjo", rango_precedencia: 1, presente: false },
+            { id: 2, cargo: "Delegado Presidencial", nombre: "Galos Luna", rango_precedencia: 2, presente: false },
+            { id: 3, cargo: "Alcaldesa de La Serena", nombre: "Daniela Norambuena", rango_precedencia: 3, presente: false }, // User corrected name
+            { id: 4, cargo: "Cuerpo de Concejales", nombre: "Sres. Concejales de la Comuna", rango_precedencia: 4, presente: false },
+            { id: 5, cargo: "Diputados del Distrito", nombre: "Honorables Diputados", rango_precedencia: 5, presente: false }
+        ];
 
-        <div id="mob-location" class="card-box" style="border:1px dashed var(--gold); background:rgba(255,215,0,0.05);">
-            <div style="font-size:10px; color:#aaa; font-weight:bold;">UBICACIÓN REAL (Arrastra el pin)</div>
-            <input id="geo-address" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold);" value="Arrastra el pin...">
-            <input id="geo-address-mob" class="f-input" style="color:var(--gold); font-weight:bold; border:1px solid var(--gold); display:none;" value="Arrastra el pin...">
-        </div>
+        // 2. FUNCIÓN DE INICIALIZACIÓN: Dibuja los botones de la puerta por primera vez
+        function inicializarDemo() {
+            renderGateButtons();
+            // Al inicio, no hay nadie presente, por lo que la pantalla del locutor dice "esperando"
+            actualizarPantallaLocutor('<p class="alert-text">Atención: No se registran autoridades acreditadas aún.</p>');
+        }
 
-        <div id="mob-report" class="card-box">
-            <div style="font-size:10px; color:var(--gold); margin-bottom:5px;">NUEVO REPORTE</div>
-            <input class="f-input" id="req-asunto" placeholder="Asunto (Ej: Bache en calle)">
-            <textarea class="f-input" id="req-desc" rows="2" placeholder="Detalle..."></textarea>
-            
-            <label style="background: #333; color: white; border: 1px dashed #777; width: 100%; padding: 6px; margin-bottom: 5px; cursor: pointer; border-radius: 5px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                <i class="fas fa-camera"></i> FOTO / CÁMARA
-                <input type="file" id="foto-reporte" accept="image/*" capture="environment" style="display:none;" onchange="showAlert('📷 Foto adjuntada')">
-            </label>
+        // 3. FUNCIÓN DE RENDERIZADO: Crea/actualiza los botones en la 'Puerta'
+        function renderGateButtons() {
+            const container = document.getElementById('checkin-buttons');
+            container.innerHTML = ''; // Limpiar botones anteriores
 
-            <button class="btn-red" style="width:100%; padding:8px;" onclick="enviarReporte()">ENVIAR REPORTE</button>
-            <div id="hist-list" style="margin-top:10px; font-size:10px; color:#aaa; max-height:80px; overflow-y:auto;">Historial vacío.</div>
-        </div>
+            autoridadesProtocolo.forEach(autoridad => {
+                const btn = document.createElement('button');
+                btn.className = 'autoridad-btn';
+                btn.onclick = () => marcarCheckIn(autoridad.id);
 
-        <div id="mob-emergency" class="card-box">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold;">TELÉFONOS EMERGENCIA</div>
-            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between; margin-top:5px;"><span>🚑 SAMU: 131</span> <span>🚒 Bomberos: 132</span></div>
-            <div style="font-size:10px; color:#ccc; display:flex; justify-content:space-between;"><span>🚓 Carabineros: 133</span> <span>🛡️ Seguridad: 1402</span></div>
-        </div>
+                // Estado visual si está presente
+                if (autoridad.presente) {
+                    btn.className += ' presente';
+                    btn.innerHTML = `<span class="rango-tag">${autoridad.rango_precedencia}</span> ${autoridad.cargo} (PRESENTE)`;
+                    btn.disabled = true; // No re-acreditar
+                } else {
+                    btn.innerHTML = `<span class="rango-tag">${autoridad.rango_precedencia}</span> Acreditar: ${autoridad.cargo}`;
+                }
 
-        <div id="mob-poll" class="card-box" style="border-color:var(--red);">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold; margin-bottom:5px;">CONSULTA VECINAL (<span id="q-idx">1</span>/10)</div>
-            <div id="poll-interface"></div>
-            <div id="poll-results" style="display:none;">
-                <div style="font-size:12px; text-align:center; color:#00e676; font-weight:bold; margin-bottom:5px;">¡GRACIAS POR PARTICIPAR!</div>
-                <div style="font-size:10px; color:white;">A FAVOR <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:70%"></div></div></div>
-                <div style="font-size:10px; color:white; margin-top:5px;">EN CONTRA <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:30%; background:var(--red);"></div></div></div>
-            </div>
-        </div>
-
-        <div id="mob-ia" class="card-box" style="flex-grow:1; display:flex; flex-direction:column;">
-            <div style="font-size:10px; color:var(--gold); font-weight:bold;">SERENITO IA</div>
-            <div id="chat-container">
-                <div id="chat-ia">¡Hola! Soy Serenito IA. ¿En qué te ayudo?</div>
-                <div class="chat-input-area">
-                    <input class="f-input" style="margin:0;" placeholder="Escribe..." onkeypress="if(event.key==='Enter')chatIA(this)">
-                    <button class="btn-mic" onclick="startDictation()"><i class="fas fa-microphone"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="mobile-footer">
-        © 2026 Ilustre Municipalidad de La Serena | RDMLS
-    </div>
-</div>
-
-<div id="modal-video" class="modal" onclick="toggleVideo(false)">
-    <div class="modal-content-video" onclick="event.stopPropagation()">
-        <iframe id="yt-player" width="100%" height="100%" src="https://www.youtube.com/embed/_MeFYP4PkqU?enablejsapi=1&si=fn9xVKOGUJP8cmUD" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <button class="close-modal" onclick="toggleVideo(false)">X</button>
-    </div>
-</div>
-
-<div id="modal-img" class="modal" onclick="this.style.display='none'">
-    <img id="img-expanded" class="modal-content-img">
-</div>
-
-<div id="modal-tour-3d" class="modal">
-    <button class="close-modal" style="top:20px; right:20px;" onclick="document.getElementById('modal-tour-3d').style.display='none'">SALIR</button>
-    <canvas id="renderCanvas" style="width:100%; height:100%; outline:none;"></canvas>
-    <div style="position:absolute; bottom:20px; color:white; font-size:12px; background:rgba(0,0,0,0.5); padding:10px; border-radius:10px;">🎮 <b>MODO TANQUE:</b> Usa W-A-S-D para caminar</div>
-</div>
-
-<div id="modal-camara" class="modal" style="background:black;">
-    <div class="cam-container">
-        <canvas id="cam-canvas" style="display:none;"></canvas>
-        
-        <video id="cam-video" autoplay playsinline></video>
-        <img id="cam-overlay-img" src="./assets/img/serenito.png" class="cam-overlay">
-        
-        <div class="char-selector">
-            <div class="char-btn" onclick="setChar('serenito.png')"><img src="./assets/img/serenito.png"></div>
-            <div class="char-btn" onclick="setChar('pampita.png')"><img src="./assets/img/pampita.png" onerror="this.src='./assets/img/serenito.png'"></div>
-        </div>
-
-        <button class="shutter-btn" onclick="tomarFoto()"></button>
-        <button class="close-modal" onclick="cerrarCamara()" style="top:10px; right:10px;">X</button>
-    </div>
-</div>
-
-<audio id="radio" src="https://az11.yesstreaming.net:8590/radio.mp3" crossorigin="anonymous"></audio>
-
-<script>
-    const fbCfg={apiKey:"AIzaSyCDUhik-oYwJ-yBkBYAohw6DJct5FQ78w4",authDomain:"laserena-d1263.firebaseapp.com",projectId:"laserena-d1263",storageBucket:"laserena-d1263.firebasestorage.app",messagingSenderId:"283725387947",appId:"1:283725387947:web:898aa22c80c2fadbe8bfee"};
-    try { firebase.initializeApp(fbCfg); } catch(e){}
-    const db=firebase.firestore(); const auth=firebase.auth(); const storage=firebase.storage(); let user=null;
-
-    const CENTRO = [-29.9027, -71.2520];
-    let map, marker, polyline, engine, animInterval;
-    let serenitoMesh; 
-    const radio = document.getElementById('radio');
-
-    function initApp() {
-        setInterval(() => document.getElementById('clock').innerText = new Date().toLocaleTimeString('es-CL', {hour12: false}), 1000);
-        startSlider();
-        initPoll();
-
-        map = L.map('map', {zoomControl:false}).setView(CENTRO, 15);
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(map);
-
-        // SERENITO GIGANTE (x2)
-        const sIcon = L.divIcon({ 
-            html: `<div class="pin-wrapper">
-                    <img src="./assets/img/serenito.png" class="pin-img">
-                    <div class="pin-arrow"></div>
-                   </div>`, 
-            className: 'dummy', iconSize: [110, 150], iconAnchor: [55, 150] 
-        });
-        marker = L.marker(CENTRO, {icon: sIcon, draggable: true, zIndexOffset:1000}).addTo(map);
-
-        marker.on('dragend', (e) => {
-            const c = e.target.getLatLng();
-            const txt = "Consultando...";
-            // Actualizar ambos inputs (escritorio y movil)
-            document.querySelectorAll('#geo-address, #geo-address-mob').forEach(el => el.value = txt);
-
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}&zoom=18&addressdetails=1`)
-            .then(r=>r.json()).then(d=>{
-                const addr = `${d.address.road || 'Calle'} #${d.address.house_number || 'S/N'}`;
-                document.querySelectorAll('#geo-address, #geo-address-mob').forEach(el => el.value = addr);
-            }).catch(()=>{
-                const err = "Ubicación manual";
-                document.querySelectorAll('#geo-address, #geo-address-mob').forEach(el => el.value = err);
+                container.appendChild(btn);
             });
-        });
+        }
 
-        auth.onAuthStateChanged(u=>{ 
-            user=u; 
-            if(u) {
-                document.getElementById('btn-login').style.display='none';
-                document.getElementById('user-profile').style.display='flex';
-                document.getElementById('user-img').src = u.photoURL;
-                document.getElementById('user-name').innerText = u.displayName.split(' ')[0];
-                loadHist();
-                showAlert(`👋 Hola, ${u.displayName.split(' ')[0]}`);
-            } else {
-                document.getElementById('btn-login').style.display='block';
-                document.getElementById('user-profile').style.display='none';
-                document.getElementById('hist-list').innerHTML="<i>Inicia sesión para ver tus reportes.</i>";
+        // 4. LÓGICA DE CHECK-IN: Marca llegada y dispara la actualización protocolar
+        function marcarCheckIn(idAutoridad) {
+            // A. Actualizar estado en la base de datos simulada
+            const autoridad = autoridadesProtocolo.find(a => a.id === idAutoridad);
+            if (autoridad) {
+                autoridad.presente = true;
+                console.log(`Logística: ${autoridad.nombre} ha ingresado.`);
             }
-        });
-    }
 
-    function loginGoogle() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-    function logoutGoogle() { auth.signOut(); }
+            // B. Actualizar visualmente la puerta
+            renderGateButtons();
 
-    function enviarReporte() {
-        if(!user) return showAlert("⚠️ Inicia sesión primero");
-        const asun = document.getElementById('req-asunto').value;
-        const ubi = document.getElementById('geo-address').value; // Toma el valor del principal
-        if(!asun) return showAlert("⚠️ Escribe un asunto");
-
-        db.collection("tickets_ia").add({
-            userId: user.uid,
-            userName: user.displayName,
-            asunto: asun,
-            ubicacion: ubi,
-            fecha: new Date(),
-            estado: "Pendiente"
-        }).then(()=> { showAlert("✅ Reporte Enviado a Central"); loadHist(); });
-    }
-
-    function loadHist() {
-        db.collection("tickets_ia").where("userId","==",user.uid).orderBy("fecha","desc").limit(5).onSnapshot(s=>{
-            const list = document.getElementById('hist-list');
-            list.innerHTML="";
-            s.forEach(d=> {
-                const data = d.data();
-                const color = data.estado === "Pendiente" ? "orange" : "green";
-                list.innerHTML += `<div style="border-bottom:1px solid #333; padding:4px; font-size:10px; display:flex; justify-content:space-between;">
-                    <span>${data.asunto}</span> <span style="color:${color}; font-weight:bold;">${data.estado}</span>
-                </div>`;
-            });
-        });
-    }
-
-    function toggleVideo(state) {
-        const modal = document.getElementById('modal-video');
-        if(state) {
-            modal.style.display = 'flex';
-            if(!radio.paused) { radio.pause(); radio.dataset.wasPlaying="true"; document.getElementById('play-icon').className='fas fa-play'; }
-        } else {
-            modal.style.display = 'none';
-            document.getElementById('yt-player').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
-            if(radio.dataset.wasPlaying==="true") { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
+            // C. DISPARAR REACCIÓN PROTOCOLAR: Recalcular vocativos y actualizar locutor
+            calcularYActualizarVocativos();
         }
-    }
-    function toggleRadio() {
-        if(document.getElementById('modal-video').style.display === 'flex') return;
-        if(radio.paused) { radio.play(); document.getElementById('play-icon').className='fas fa-pause'; }
-        else { radio.pause(); document.getElementById('play-icon').className='fas fa-play'; }
-    }
-    function setVolume(v) { radio.volume = v; }
 
-    function fmtTime(m) {
-        if(m >= 60) return `${Math.floor(m/60)}h ${(m%60).toFixed(0)}m`;
-        return `${m.toFixed(0)} min`;
-    }
+        // 5. EL CEREBRO DE PROTOCOLO: Filtra, Ordena y Genera el Vocativo Dynamic
+        function calcularYActualizarVocativos() {
+            // A. Filtrar solo los presentes
+            const presentes = autoridadesProtocolo.filter(a => a.presente);
 
-    function calcRoute(lat, lon, name) {
-        if(polyline) map.removeLayer(polyline);
-        polyline = L.polyline([CENTRO, [lat, lon]], {color: '#b71c1c', weight: 5}).addTo(map);
-        map.fitBounds(polyline.getBounds(), {padding:[80,80]});
-        document.getElementById('dist-hud').style.display = 'block';
-        document.getElementById('btn-reset').style.display = 'block';
-        document.getElementById('lbl-dest').innerText = name;
-        
-        const km = (map.distance(CENTRO, [lat, lon])/1000);
-        document.getElementById('v-auto').innerText = fmtTime(km/0.8);
-        document.getElementById('v-bus').innerText = fmtTime(km/0.6);
-        document.getElementById('v-pie').innerText = fmtTime(km*12);
-        document.getElementById('v-bici').innerText = fmtTime(km*4);
-        document.getElementById('v-avion').innerText = km>150 ? fmtTime(km/12) : "N/A";
-        
-        let p=0; if(animInterval) clearInterval(animInterval);
-        animInterval = setInterval(()=>{ p+=0.01; marker.setLatLng([CENTRO[0] + (lat-CENTRO[0])*p, CENTRO[1] + (lon-CENTRO[1])*p]); if(p>=1) clearInterval(animInterval); }, 20);
-    }
-    
-    async function searchCity() {
-        const city = document.getElementById('custom-city').value;
-        if(!city) return;
-        showAlert("🔎 Buscando " + city + "...");
-        try {
-            const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Chile`);
-            const d = await r.json();
-            if(d.length > 0) {
-                calcRoute(parseFloat(d[0].lat), parseFloat(d[0].lon), city.toUpperCase());
-            } else { showAlert("❌ Ciudad no encontrada"); }
-        } catch(e) { showAlert("❌ Error de búsqueda"); }
-    }
+            // B. Ordenar por Rango de Precedencia (Número menor primero)
+            presentes.sort((a, b) => a.rango_precedencia - b.rango_precedencia);
 
-    function resetRoute() { if(polyline)map.removeLayer(polyline); document.getElementById('dist-hud').style.display='none'; document.getElementById('btn-reset').style.display='none'; map.flyTo(CENTRO, 15); marker.setLatLng(CENTRO); }
+            // C. Generar el texto dinámico para el locutor
+            let textoVocativosHTML = '';
 
-    function abrirTour3D() {
-        document.getElementById('modal-tour-3d').style.display='flex';
-        if(!engine) {
-            const c = document.getElementById('renderCanvas'); engine = new BABYLON.Engine(c, true);
-            const s = new BABYLON.Scene(engine); s.clearColor = new BABYLON.Color3(0.5, 0.8, 1);
-            
-            const cam = new BABYLON.ArcRotateCamera("cam", -Math.PI/2, Math.PI/3, 20, new BABYLON.Vector3(0,0,0), s);
-            cam.attachControl(c, true);
-            cam.upperBetaLimit = Math.PI / 2; // FIX SUELO
-            
-            new BABYLON.HemisphericLight("l", new BABYLON.Vector3(0,1,0), s);
-            
-            const g = BABYLON.MeshBuilder.CreateGround("g", {width:500, height:500}, s);
-            const mat = new BABYLON.StandardMaterial("m",s);
-            mat.diffuseTexture = new BABYLON.Texture("./assets/img/mapa.jpg", s);
-            g.material = mat;
+            if (presentes.length === 0) {
+                textoVocativosHTML = '<p class="alert-text">Atención: No se registran autoridades acreditadas aún.</p>';
+            } else {
+                presentes.forEach((autoridad, index) => {
+                    // El primero de la lista sorted presides.
+                    const prefijo = (index === 0)
+                        ? `Saludamos a quien preside este acto, `
+                        : `Saludamos también a `;
 
-            const load = (f,x,z,scl, cb) => {
-                BABYLON.SceneLoader.ImportMesh("", "./assets/models/", f, s, (m)=>{ 
-                    m[0].position.set(x,0,z); m[0].scaling = new BABYLON.Vector3(scl,scl,scl); 
-                    if(cb) cb(m[0]);
+                    // Formato de nombre y cargo
+                    textoVocativosHTML += `<p>${prefijo} <strong>${autoridad.cargo}</strong>, ${autoridad.nombre}.</p>`;
                 });
-            };
-            load("municipalidad.glb", 0, 0, 6);
-            load("intendencia.glb", 60, 40, 6);
-            load("serenito.glb", 0, -10, 2, (mesh) => {
-                serenitoMesh = mesh;
-                serenitoMesh.rotation.y = Math.PI; // MIRAR DE FRENTE
-                cam.target = serenitoMesh;
-            });
+            }
 
-            let targetPos = null;
-            s.onPointerDown = (evt, pick) => {
-                if(pick.hit && pick.pickedMesh === g) {
-                    targetPos = pick.pickedPoint;
-                    if(serenitoMesh) serenitoMesh.lookAt(targetPos);
-                }
-            };
-
-            s.registerBeforeRender(() => {
-                if(serenitoMesh && targetPos) {
-                    const diff = targetPos.subtract(serenitoMesh.position);
-                    if(diff.length() > 0.5) {
-                        diff.normalize();
-                        serenitoMesh.position.addInPlace(diff.scale(0.3));
-                    } else { targetPos = null; }
-                }
-            });
-
-            engine.runRenderLoop(()=>s.render());
+            // D. Actualizar la Pantalla del Locutor
+            actualizarPantallaLocutor(textoVocativosHTML);
         }
-    }
 
-    const qs = ["¿Seguridad Centro?", "¿Limpieza Playas?", "¿Alumbrado Público?", "¿Estado Veredas?", "¿Recolección Basura?", "¿Eventos Verano?", "¿Tráfico Vehicular?", "¿Transporte Mayor?", "¿Áreas Verdes?", "¿Atención Municipal?"];
-    function initPoll() { renderPoll(0); }
-    function renderPoll(i) {
-        if(i>=qs.length) { document.getElementById('poll-interface').style.display='none'; document.getElementById('poll-results').style.display='block'; return; }
-        document.getElementById('poll-interface').innerHTML = `
-            <div style="font-size:11px; font-weight:bold; margin-bottom:5px;">${qs[i]}</div>
-            <button class="btn-cam" onclick="renderPoll(${i+1})">👍 BIEN</button>
-            <button class="btn-cam" onclick="renderPoll(${i+1})">👎 MAL</button>
-        `;
-    }
-
-    function expandPhoto(el) { if(el){ document.getElementById('modal-img').style.display='flex'; document.getElementById('img-expanded').src = el.src; } }
-
-    function chatIA(el) { 
-        if(!el.value) return;
-        const msg = el.value.toLowerCase();
-        document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><i>Escribiendo...</i>`;
-        el.value = "";
-        setTimeout(()=> {
-            let res = "Soy Serenito IA. ¿En qué te ayudo?";
-            if(msg.includes("hola")) res = "¡Hola vecino! Bienvenido.";
-            else if(msg.includes("reporte") || msg.includes("ticket")) res = "Usa el formulario de arriba ☝️ para reportar.";
-            document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Escribiendo...</i>", `<b>Serenito:</b> ${res}`);
-        }, 1000);
-    }
-    
-    // RECONOCIMIENTO DE VOZ REAL
-    function startDictation() {
-        if ('webkitSpeechRecognition' in window) {
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'es-CL';
-            recognition.start();
-            recognition.onresult = function(event) {
-                const text = event.results[0][0].transcript;
-                document.querySelector('.chat-input-area input').value = text;
-            };
-            recognition.onerror = function(event) { alert("Error de micrófono: " + event.error); };
-        } else {
-            alert("Tu navegador no soporta dictado. Usa Chrome.");
+        // 6. FUNCIÓN DE ACTUALIZACIÓN DEL DOM: Empuja el texto a la pantalla del locutor
+        function actualizarPantallaLocutor(textHTML) {
+            const target = document.getElementById('vocativos-actualizados');
+            target.innerHTML = textHTML;
         }
-    }
 
-    // FOTO Y GUARDADO
-    function abrirCamara() { document.getElementById('modal-camara').style.display='flex'; navigator.mediaDevices.getUserMedia({video:true}).then(s=>document.getElementById('cam-video').srcObject=s); }
-    function cerrarCamara() { document.getElementById('modal-camara').style.display='none'; }
-    function setChar(img) { document.getElementById('cam-overlay-img').src = "./assets/img/" + img; }
-    
-    function tomarFoto() {
-        const v = document.getElementById('cam-video');
-        const c = document.getElementById('cam-canvas');
-        const overlay = document.getElementById('cam-overlay-img');
-        
-        c.width = v.videoWidth;
-        c.height = v.videoHeight;
-        const ctx = c.getContext('2d');
-        
-        // Espejo
-        ctx.translate(c.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(v, 0, 0, c.width, c.height);
-        ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
-        
-        // Dibujar overlay
-        const ow = c.width * 0.5; // 50% width
-        const oh = (overlay.naturalHeight / overlay.naturalWidth) * ow;
-        ctx.drawImage(overlay, c.width - ow, c.height - oh, ow, oh);
-        
-        // Crear link de descarga
-        const link = document.createElement('a');
-        link.download = 'selfie-serenito.png';
-        link.href = c.toDataURL();
-        link.click();
-        
-        alert("📸 ¡Foto lista! Mantén presionado para guardar o Captura Pantalla.");
-    }
-
-    function showAlert(msg) { const a = document.getElementById('custom-alert'); a.innerText = msg; a.style.display='block'; setTimeout(()=>a.style.display='none', 3000); }
-    function startSlider() { let c=0; const s=document.querySelectorAll('.slide-img'); if(s.length>0) setInterval(()=>{ s[c].classList.remove('active'); c=(c+1)%s.length; s[c].classList.add('active'); }, 4000); }
-</script>
-
+        // INICIAR LA SIMULACIÓN
+        inicializarDemo();
+    </script>
 </body>
 </html>
