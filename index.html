@@ -440,9 +440,9 @@
             // Actualizar ambos inputs (escritorio y movil)
             document.querySelectorAll('#geo-address, #geo-address-mob').forEach(el => el.value = txt);
 
-            fetch(https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}&zoom=18&addressdetails=1)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${c.lat}&lon=${c.lng}&zoom=18&addressdetails=1`)
             .then(r=>r.json()).then(d=>{
-                const addr = ${d.address.road || 'Calle'} #${d.address.house_number || 'S/N'};
+                const addr = `${d.address.road || 'Calle'} #${d.address.house_number || 'S/N'}`;
                 document.querySelectorAll('#geo-address, #geo-address-mob').forEach(el => el.value = addr);
             }).catch(()=>{
                 const err = "Ubicación manual";
@@ -458,7 +458,7 @@
                 document.getElementById('user-img').src = u.photoURL;
                 document.getElementById('user-name').innerText = u.displayName.split(' ')[0];
                 loadHist();
-                showAlert(👋 Hola, ${u.displayName.split(' ')[0]});
+                showAlert(`👋 Hola, ${u.displayName.split(' ')[0]}`);
             } else {
                 document.getElementById('btn-login').style.display='block';
                 document.getElementById('user-profile').style.display='none';
@@ -519,8 +519,8 @@
     function setVolume(v) { radio.volume = v; }
 
     function fmtTime(m) {
-        if(m >= 60) return ${Math.floor(m/60)}h ${(m%60).toFixed(0)}m;
-        return ${m.toFixed(0)} min;
+        if(m >= 60) return `${Math.floor(m/60)}h ${(m%60).toFixed(0)}m`;
+        return `${m.toFixed(0)} min`;
     }
 
     function calcRoute(lat, lon, name) {
@@ -547,7 +547,7 @@
         if(!city) return;
         showAlert("🔎 Buscando " + city + "...");
         try {
-            const r = await fetch(https://nominatim.openstreetmap.org/search?format=json&q=${city}, Chile);
+            const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${city}, Chile`);
             const d = await r.json();
             if(d.length > 0) {
                 calcRoute(parseFloat(d[0].lat), parseFloat(d[0].lon), city.toUpperCase());
@@ -626,13 +626,13 @@
     function chatIA(el) { 
         if(!el.value) return;
         const msg = el.value.toLowerCase();
-        document.getElementById('chat-ia').innerHTML += <br><b>Tú:</b> ${el.value}<br><i>Escribiendo...</i>;
+        document.getElementById('chat-ia').innerHTML += `<br><b>Tú:</b> ${el.value}<br><i>Escribiendo...</i>`;
         el.value = "";
         setTimeout(()=> {
             let res = "Soy Serenito IA. ¿En qué te ayudo?";
             if(msg.includes("hola")) res = "¡Hola vecino! Bienvenido.";
             else if(msg.includes("reporte") || msg.includes("ticket")) res = "Usa el formulario de arriba ☝️ para reportar.";
-            document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Escribiendo...</i>", <b>Serenito:</b> ${res});
+            document.getElementById('chat-ia').innerHTML = document.getElementById('chat-ia').innerHTML.replace("<i>Escribiendo...</i>", `<b>Serenito:</b> ${res}`);
         }, 1000);
     }
     
