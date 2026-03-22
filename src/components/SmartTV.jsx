@@ -147,8 +147,6 @@ export default function SmartTV({ weather }) {
         scale: 1, 
         opacity: 1, 
         y: 0,
-        width: isFullScreen ? '100vw' : (isExpanded ? (window.innerWidth < 768 ? '260px' : '380px') : (window.innerWidth < 768 ? '100px' : '220px')),
-        height: isFullScreen ? '100vh' : (isExpanded ? (window.innerWidth < 768 ? '160px' : '250px') : (window.innerWidth < 768 ? '65px' : '150px')),
         bottom: isFullScreen ? '0' : (window.innerWidth < 768 ? '85px' : 'auto'),
         right: isFullScreen ? '0' : (window.innerWidth < 768 ? '15px' : 'auto'),
         left: isFullScreen ? '0' : (window.innerWidth < 768 ? 'auto' : '50px'),
@@ -165,7 +163,14 @@ export default function SmartTV({ weather }) {
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        cursor: 'default'
+        cursor: 'default',
+        resize: isExpanded && !isFullScreen && window.innerWidth >= 768 ? 'both' : 'none',
+        minWidth: isFullScreen ? '100vw' : (isExpanded ? (window.innerWidth < 768 ? '260px' : '380px') : (window.innerWidth < 768 ? '100px' : '220px')),
+        minHeight: isFullScreen ? '100vh' : (isExpanded ? (window.innerWidth < 768 ? '160px' : '250px') : (window.innerWidth < 768 ? '65px' : '150px')),
+        width: 'auto',
+        height: 'auto',
+        maxWidth: '100vw',
+        maxHeight: '100vh'
       }}
     >
       {/* Header del Televisor - Drag Handle */}

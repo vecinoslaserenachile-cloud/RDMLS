@@ -49,7 +49,7 @@ export default function PuntoVecinal() {
                         });
                     }
                 })
-                .catch(err => console.error("Error fetching real weather:", err));
+                .catch(() => {}); // Fallback is already handled by default state
         };
 
         fetchWeather();

@@ -635,7 +635,7 @@ function AppContent() {
             });
           }
         })
-        .catch(err => console.error("Error fetching real weather:", err));
+        .catch(() => {}); // Fallback is already handled by default state
     };
 
     fetchWeather();
@@ -837,6 +837,30 @@ function AppContent() {
       <SmartShare renderAsHiddenObserver={true} />
       <FloatingActionPanel />
       <ErrorCollector />
+
+      {/* Módulo Vertical RRSS (Transversal) */}
+      <button 
+        onClick={() => {
+            window.dispatchEvent(new CustomEvent('open-vls-feed'));
+            window.dispatchEvent(new CustomEvent('stop-all-audio'));
+        }}
+        className="btn-glass hover-lift"
+        style={{
+          position: 'fixed', right: '0', top: '50%', transform: 'translateY(-50%)',
+          zIndex: 99999, background: 'rgba(15, 23, 42, 0.95)', 
+          border: '1px solid #38bdf8', borderRight: 'none',
+          padding: '15px 8px', borderRadius: '16px 0 0 16px',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
+          boxShadow: '-4px 0 20px rgba(56, 189, 248, 0.3)',
+          cursor: 'pointer'
+        }}
+        title="Abrir Radar Vertical (5 Redes)"
+      >
+        <div style={{ fontSize: '0.7rem', color: '#white', writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontWeight: '900', letterSpacing: '2px', textShadow: '0 0 5px rgba(56, 189, 248, 0.8)' }}>
+            RADAR SOCIAL
+        </div>
+        <Sparkles size={18} color="#38bdf8" className="pulse-slow" />
+      </button>
 
       {/* VLSound — solo portales VLS, no RDMLS */}
       {!isRDMLS && (

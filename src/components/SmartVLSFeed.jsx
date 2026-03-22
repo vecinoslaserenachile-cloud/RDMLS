@@ -4,40 +4,49 @@ import SmartVerticalReel from './SmartVerticalReel';
 export default function SmartVLSFeed({ onClose }) {
     const FEED_ITEMS = [
         {
-            title: "Megaoperativo Regional: +100 Detenidos",
-            desc: "Carabineros y PDI despliegan plan de seguridad en toda la Provincia de Elqui. Resultados históricos en combate al delito. #SeguridadVLS",
-            tag: "Operativo Policial",
-            bg: "#020617",
-            image: "https://pbs.twimg.com/media/GH8c4w_WIAAQ9Vw?format=jpg&name=large",
-            actionText: "VER DETALLES",
+            title: "Red Vecinal Abierta",
+            desc: "Mantente conectado con tu comunidad. Grupos vecinales, alertas comunitarias y comercio local directo en Facebook.",
+            tag: "Facebook",
+            bg: "#1877f2", // Facebook Blue
+            image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1074&auto=format&fit=crop",
+            actionText: "IR AL GRUPO",
+            link: "https://facebook.com"
+        },
+        {
+            title: "Noticias en Tiempo Real",
+            desc: "Sigue el pulso de la ciudad. Alertas de tráfico, clima y contingencias de la Comuna Smart directo en X.",
+            tag: "X (Twitter)",
+            bg: "#000000", // X Black
+            image: "https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1074&auto=format&fit=crop",
+            actionText: "SEGUIR ALERTA",
             link: "https://x.com/vecinoslaserena"
         },
         {
-            title: "Alerta de Lluvias para el Finde",
-            desc: "Se pronostican las primeras precipitaciones del año en La Serena y Coquimbo. Recomendamos limpiar canaletas y preparar kits de emergencia.",
-            tag: "Meteorología",
-            bg: "#1e3a8a",
-            image: "https://pbs.twimg.com/media/GFu9M2BXwAAv9B8?format=jpg&name=large",
-            actionText: "VER PRONÓSTICO",
-            link: "https://x.com/vecinoslaserena"
+            title: "Galería Urbana",
+            desc: "Nuestra identidad visual. Rincones históricos, panoramas y emprendedores locales destacados cada día.",
+            tag: "Instagram",
+            bg: "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)", // Instagram Gradient
+            image: "https://images.unsplash.com/photo-1611262588024-d12430b98920?q=80&w=1074&auto=format&fit=crop",
+            actionText: "VER REELS",
+            link: "https://instagram.com"
         },
         {
-            title: "Corte de Energía: Robo de Cables",
-            desc: "Sectores de La Serena sufren interrupción por robo de 700m de tendido eléctrico. Red Inteligente VLS monitorea el restablecimiento.",
-            tag: "Suministro",
-            bg: "#064e3b",
-            image: "https://pbs.twimg.com/media/GE8Xy_BXEAAYi6z?format=jpg&name=large",
-            actionText: "VER MAPA DE AVANCE",
-            link: "https://x.com/vecinoslaserena"
+            title: "#LaSerenaSmart",
+            desc: "Cultura urbana vibrante. Retos, trends locales y el lado más joven y dinámico de nuestra comuna.",
+            tag: "TikTok",
+            bg: "#000000",
+            image: "https://images.unsplash.com/photo-1611605698323-b185335eeb8e?q=80&w=1074&auto=format&fit=crop",
+            actionText: "VER TENDENCIAS",
+            link: "https://tiktok.com"
         },
         {
-            title: "Resistencia Educativa: Slep Elqui",
-            desc: "Polémica tras publicación de periodista de Slep Elqui. 'Comenzó la era de la resistencia' marca el pulso del cambio institucional.",
-            tag: "Educación",
-            bg: "#b45309",
-            image: "https://pbs.twimg.com/media/GDUXy-BX0AA8Y9B?format=jpg&name=large",
-            actionText: "LEER COLUMNA",
-            link: "https://x.com/vecinoslaserena"
+            title: "TVLS Contenidos",
+            desc: "Nuestro canal oficial. Reportajes, entrevistas, consejos de soberanía digital y transmisiones en vivo del municipio.",
+            tag: "YouTube",
+            bg: "#ff0000", // YouTube Red
+            image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1074&auto=format&fit=crop",
+            actionText: "SUSCRIBIRSE",
+            link: "https://youtube.com"
         }
     ];
 

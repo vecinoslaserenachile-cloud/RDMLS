@@ -603,6 +603,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             <style>{`
                 .vls-wincha-container {
                     width: 100%;
+                    max-width: 100vw;
                     background: #ef4444;
                     color: white;
                     overflow: hidden;
@@ -702,8 +703,11 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 borderRadius: isExpanded ? '20px' : '40px', 
                 border: '2px solid rgba(239, 68, 68, 0.5)', 
                 boxShadow: '0 15px 45px rgba(0,0,0,0.8)',
-                transition: 'all 0.4s cubic-bezier(0.19, 1, 0.22, 1)', 
-                width: isExpanded ? (isMobile ? '280px' : '340px') : 'auto',
+                transition: 'border-radius 0.4s, background 0.4s', 
+                minWidth: isExpanded ? (isMobile ? '280px' : '340px') : 'auto',
+                maxWidth: '95vw',
+                width: isExpanded && !isMobile ? '340px' : 'auto',
+                resize: isExpanded && !isMobile ? 'horizontal' : 'none',
                 overflow: 'hidden',
                 display: 'flex',
                 flexDirection: 'column'

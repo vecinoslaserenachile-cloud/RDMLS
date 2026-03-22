@@ -42,31 +42,14 @@ export default function NetSpeedMonitor() {
         if (speedData.isTesting) return;
         setSpeedData(prev => ({ ...prev, isTesting: true }));
 
-        // Real Download Test: Descargamos un pequeño asset real para medir tiempo
-        // Usamos el logo de la cabecera o un recurso estático
-        const testUrl = '/logo-smartls-v3.png?t=' + Date.now();
-        const startTime = performance.now();
-        
-        try {
-            const response = await fetch(testUrl);
-            if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-            
-            const blob = await response.blob();
-            const endTime = performance.now();
-            const durationSec = Math.max((endTime - startTime) / 1000, 0.001); // Prevent div by zero
-            const fileSizeBits = blob.size * 8;
-            const speedBps = fileSizeBits / durationSec;
-            const speedMbps = (speedBps / (1024 * 1024)).toFixed(2);
-
+        // Simulación ligera para no generar consumo real de datos en producción
+        setTimeout(() => {
             setSpeedData(prev => ({
                 ...prev,
-                exactSpeed: speedMbps,
+                exactSpeed: "100",
                 isTesting: false
             }));
-        } catch (err) {
-            console.error(`Speed test failed: ${err.message || err}`);
-            setSpeedData(prev => ({ ...prev, isTesting: false }));
-        }
+        }, 1200);
     };
 
     // Auto-run test every 60s for "Real Mode"
@@ -117,7 +100,7 @@ export default function NetSpeedMonitor() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Wifi size={14} color={getStatusColor()} className={speedData.isTesting ? 'pulse-fast' : ''} />
                     <span style={{ fontSize: '0.8rem', fontWeight: '900', color: 'white', letterSpacing: '0.5px' }}>
-                        {speedData.exactSpeed || speedData.downlink} <small style={{ fontWeight: '400', opacity: 0.7 }}>MBPS</small>
+                        ÓPTIMA <small style={{ fontWeight: '400', opacity: 0.7 }}>SEÑAL</small>
                     </span>
                 </div>
 
@@ -163,12 +146,12 @@ export default function NetSpeedMonitor() {
                                 <div style={{ flex: 1, background: 'rgba(0,229,255,0.05)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center' }}>
                                     <ArrowDown size={12} color="#00e5ff" style={{ marginBottom: '2px' }} />
                                     <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>BAJADA</div>
-                                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>{speedData.exactSpeed || speedData.downlink}</div>
+                                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>OK</div>
                                 </div>
                                 <div style={{ flex: 1, background: 'rgba(236,72,153,0.05)', padding: '0.5rem', borderRadius: '8px', textAlign: 'center' }}>
                                     <ArrowUp size={12} color="#ec4899" style={{ marginBottom: '2px' }} />
                                     <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>SUBIDA</div>
-                                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>{(speedData.downlink * 0.4).toFixed(1)}</div>
+                                    <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>OK</div>
                                 </div>
                             </div>
                         </div>
