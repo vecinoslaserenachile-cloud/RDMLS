@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
     CreditCard, Globe, Ticket, CheckCircle, Shield, 
     ArrowRight, X, Zap, Star, DollarSign, AlertCircle, Loader,
-    UtensilsCrossed, Gift, Info
+    UtensilsCrossed, Gift, Info, Heart
 } from 'lucide-react';
 
 // ─── CONFIGURACIÓN DE PACKS (Editar precios aquí) ───────────────────────────
