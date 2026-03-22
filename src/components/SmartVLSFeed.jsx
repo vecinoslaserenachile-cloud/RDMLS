@@ -8,7 +8,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Mantente conectado con tu comunidad. Grupos vecinales, alertas comunitarias y comercio local directo en Facebook.",
             tag: "Facebook",
             bg: "#1877f2", // Facebook Blue
-            image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1074&auto=format&fit=crop",
+            image: "/vls_diaguita_ceramic_smart_ui_1774012541579.png",
             actionText: "IR AL GRUPO",
             link: "https://facebook.com"
         },
@@ -17,7 +17,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Sigue el pulso de la ciudad. Alertas de tráfico, clima y contingencias de la Comuna Smart directo en X.",
             tag: "X (Twitter)",
             bg: "#000000", // X Black
-            image: "https://images.unsplash.com/photo-1611605698335-8b1569810432?q=80&w=1074&auto=format&fit=crop",
+            image: "/vls_elolivar_sanctuary_3d_1774012523251.png",
             actionText: "SEGUIR ALERTA",
             link: "https://x.com/vecinoslaserena"
         },
@@ -26,7 +26,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Nuestra identidad visual. Rincones históricos, panoramas y emprendedores locales destacados cada día.",
             tag: "Instagram",
             bg: "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)", // Instagram Gradient
-            image: "https://images.unsplash.com/photo-1611262588024-d12430b98920?q=80&w=1074&auto=format&fit=crop",
+            image: "/comic-patrimonio.jpg",
             actionText: "VER REELS",
             link: "https://instagram.com"
         },
@@ -35,7 +35,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Cultura urbana vibrante. Retos, trends locales y el lado más joven y dinámico de nuestra comuna.",
             tag: "TikTok",
             bg: "#000000",
-            image: "https://images.unsplash.com/photo-1611605698323-b185335eeb8e?q=80&w=1074&auto=format&fit=crop",
+            image: "/comic-playa.jpg",
             actionText: "VER TENDENCIAS",
             link: "https://tiktok.com"
         },
@@ -44,7 +44,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Nuestro canal oficial. Reportajes, entrevistas, consejos de soberanía digital y transmisiones en vivo del municipio.",
             tag: "YouTube",
             bg: "#ff0000", // YouTube Red
-            image: "https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=1074&auto=format&fit=crop",
+            image: "/vls_molle_animas_3d_1774012579587.png",
             actionText: "SUSCRIBIRSE",
             link: "https://youtube.com"
         }
