@@ -1,0 +1,23 @@
+{
+  "name": "vecinoslaserena.cl",
+  "short_name": "vecinoslaserena.cl",
+  "description": "Portal de Innovación Ciudadana - La Serena",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#38bdf8",
+  "icons": [
+    {
+      "src": "/vls-logo-3d.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/vls-logo-3d.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

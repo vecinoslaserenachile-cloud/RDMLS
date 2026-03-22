@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Red crystal base with bevel effect (PREMIUM VLS) -->
+  <rect x="4" y="4" width="56" height="56" rx="12" fill="#ef4444"/>
+  
+  <!-- Glass/Crystal shine top -->
+  <path d="M4 16C4 9.37258 9.37258 4 16 4H48C54.6274 4 60 9.37258 60 16V24C30 20 10 35 4 24V16Z" fill="white" fill-opacity="0.25"/>
+  
+  <!-- Bottom bevel shadow -->
+  <path d="M4 48C10 55 54 55 60 48V52C60 58.6274 54.6274 64 48 64H16C9.37258 64 4 58.6274 4 52V48Z" fill="black" fill-opacity="0.2"/>
+
+  <!-- VLS Typography -->
+  <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="white" font-family="'Segoe UI', Roboto, Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="1">VLS</text>
+  
+  <!-- Subtle border shine -->
+  <rect x="4.5" y="4.5" width="55" height="55" rx="11.5" stroke="white" stroke-opacity="0.3"/>
+</svg>

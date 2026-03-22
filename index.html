@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Active Defense Layer (Simulated/Basic WAF configuration) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- Note: A full strict CSP requires server backend, but we declare safe origin limits -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline' 'unsafe-eval' blob: http: https: ws: wss:; img-src 'self' data: blob: https: http:; object-src 'none'; font-src 'self' data: https:">
+
+  <link rel="icon" type="image/svg+xml" href="/vls-crystal-icon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/vls-logo-3d.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/vls-logo-3d.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#38bdf8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Open Graph Data for Social Media -->
+  <meta property="og:title" content="La Serena Smart City 2026 - Portal Vecinal" />
+  <meta property="og:description" content="Ecosistema de Innovación, Seguridad y Co-creación Ciudadana. ¡Sé parte del futuro de nuestra comuna!" />
+  <meta property="og:image" content="/vls-logo-3d.png" />
+  <meta property="og:type" content="website" />
+
+  <title>vecinoslaserena.cl</title>
+  <script>
+    function logErrorToConsole(msg, isPromise) {
+      let consoleDiv = document.getElementById('vls-mini-error-console');
+      if (!consoleDiv) {
+        consoleDiv = document.createElement('div');
+        consoleDiv.id = 'vls-mini-error-console';
+        consoleDiv.style.cssText = 'position:fixed; bottom:10px; left:10px; z-index:999999; max-width:300px; max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.8); color:#ef4444; border:1px solid #ef4444; border-radius:8px; padding:10px; font-family:monospace; font-size:10px; opacity:0.9; box-shadow:0 0 10px rgba(0,0,0,0.5); pointer-events:auto;';
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.innerHTML = 'x';
+        closeBtn.style.cssText = 'float:right; background:transparent; border:none; color:white; cursor:pointer; font-weight:bold; height:20px; width:20px;';
+        closeBtn.onclick = () => consoleDiv.style.display = 'none';
+        
+        const title = document.createElement('strong');
+        title.style.color = '#facc15';
+        title.innerHTML = 'LOG DE ERRORES<br/>';
+        
+        const contentDiv = document.createElement('div');
+        contentDiv.id = 'vls-error-content';
+        
+        consoleDiv.appendChild(closeBtn);
+        consoleDiv.appendChild(title);
+        consoleDiv.appendChild(contentDiv);
+        document.body.appendChild(consoleDiv);
+      }
+      
+      consoleDiv.style.display = 'block';
+      const content = document.getElementById('vls-error-content');
+      const errEl = document.createElement('div');
+      errEl.style.borderBottom = '1px solid rgba(239, 68, 68, 0.3)';
+      errEl.style.paddingBottom = '4px';
+      errEl.style.marginBottom = '4px';
+      errEl.innerText = (isPromise ? '[PROMISE] ' : '[ERROR] ') + msg;
+      content.appendChild(errEl);
+      content.scrollTop = content.scrollHeight;
+    }
+
+    window.addEventListener('error', function (e) {
+      logErrorToConsole(e.error ? e.error.message : e.message, false);
+      // No detener la propagación, esto evita 'matar' la app
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      let msg = e.reason;
+      if (e.reason && e.reason.message) msg = e.reason.message;
+      logErrorToConsole(msg, true);
+    });
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>

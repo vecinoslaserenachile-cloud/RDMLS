@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rally Serenito - Seguridad Ciudadana</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            touch-action: none;
+            /* Prevent scroll on mobile swipe */
+        }
+
+        canvas {
+            background-color: #3b3b3b;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+            border-radius: 8px;
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+        }
+
+        #ui-bar {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.5);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        #energy-bar-container {
+            width: 150px;
+            height: 20px;
+            background: #444;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #666;
+        }
+
+        #energy-bar {
+            width: 100%;
+            height: 100%;
+            background: #0f0;
+            transition: width 0.1s, background-color 0.3s;
+        }
+
+        .controls-hint {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: center;
+        }
+
+        /* Mobile DPAD */
+        #dpad {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .dpad-btn {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            user-select: none;
+        }
+
+        .dpad-btn:active {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        #btn-up {
+            top: 10px;
+            left: 55px;
+        }
+
+        #btn-down {
+            bottom: 10px;
+            left: 55px;
+        }
+
+        #btn-left {
+            top: 55px;
+            left: 10px;
+        }
+
+        #btn-right {
+            top: 55px;
+            right: 10px;
+        }
+
+        #siren-btn {
+            display: none;
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            background: rgba(239, 68, 68, 0.4);
+            border: 2px solid #ef4444;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+        }
+
+        #siren-btn:active {
+            background: rgba(239, 68, 68, 0.8);
+        }
+
+        @media (max-width: 768px) {
+
+            #dpad,
+            #siren-btn {
+                display: flex;
+            }
+
+            .controls-hint {
+                display: none;
+            }
+        }
+
+        #game-over-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        button.retry-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 1.2rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="ui-bar">
+        <div>Nivel: <span id="level-text">1</span> | Puntos: <span id="score-text">0</span></div>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span>Gestión:</span>
+            <div id="energy-bar-container">
+                <div id="energy-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="640"></canvas>
+
+    <div class="controls-hint">Teclas: Flechas para Mover | ESPACIO para Sirena (-10 Energía)</div>
+
+    <!-- Mobile Controls -->
+    <div id="dpad">
+        <div class="dpad-btn" id="btn-up">↑</div>
+        <div class="dpad-btn" id="btn-down">↓</div>
+        <div class="dpad-btn" id="btn-left">←</div>
+        <div class="dpad-btn" id="btn-right">→</div>
+    </div>
+    <div id="siren-btn">Sirena</div>
+
+    <div id="game-over-screen">
+        <h1 id="end-title" style="color: #ffcc00; font-size: 3rem; text-align:center;">¡JUEGO TERMINADO!</h1>
+        <h2 id="end-score" style="color: white; margin-top: 0;">Puntaje: 0</h2>
+        <button class="retry-btn" onclick="location.reload()">Jugar de Nuevo</button>
+        <button class="retry-btn" style="background:#ef4444; margin-top:10px;" onclick="volverAlMenu()">Volver a Smart
+            City</button>
+    </div>
+
+    <script>
+        function volverAlMenu() {
+            window.parent.postMessage({ type: 'CLOSE_GAME' }, '*');
+        }
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Configuración Base
+        const WIDTH = 800;
+        const HEIGHT = 640;
+        const TILE_SIZE = 40;
+
+        // Colores base de Pygame portados
+        const BG_COLOR = '#4a5568';
+        const WALL_COLOR = '#2d3748';
+        const REQ_COLOR = '#fcd34d';
+
+        const MAPA_1 = [
+            "00000000000000000000",
+            "01111111111111111110",
+            "01000100000010000010",
+            "01000100000010000010",
+            "01111111101111111110",
+            "01000001001001000010",
+            "01111101111111011110",
+            "00000101000001010000",
+            "00000101111111010000",
+            "00000100000100010000",
+            "01111111111111111110",
+            "01000100000010000010",
+            "01100111101111001110",
+            "00100000101000001000",
+            "01111111111111111110",
+            "00000000000000000000"
+        ];
+
+        const MAPA_2 = [
+            "00000000000000000000",
+            "01111101111111111110",
+            "01000101000010000010",
+            "01110111000011111110",
+            "00010000000001000010",
+            "01111111111111111110",
+            "01000001001001000010",
+            "01111101111111011110",
+            "00000101000000010000",
+            "00000101111111011110",
+            "01111100000100010010",
+            "01000000000111110010",
+            "01111111100000000010",
+            "00100000111111111110",
+            "01111111111111111110",
+            "00000000000000000000"
+        ];
+
+        const MAPA_3 = [
+            "00000000000000000000",
+            "01111111111111111110",
+            "01010101010101010100",
+            "01111111011111111110",
+            "00010100010000000100",
+            "01110111111111110110",
+            "01000001001001000010",
+            "01111101111111011110",
+            "00000100000000010000",
+            "01111111111111111110",
+            "01010101010101010100",
+            "01111111011111111110",
+            "01001000000000100010",
+            "01111111110111111110",
+            "01111111111111111110",
+            "00000000000000000000"
+        ];
+
+        const NIVELES = [MAPA_1, MAPA_2, MAPA_3];
+        let nivelActual = 0;
+
+        const sfxMove = new Audio('https://kappa.vgmsite.com/soundtracks/super-mario-bros-nes/stqhgbsk/16%20-%20Coin.mp3');
+        const sfxWin = new Audio('https://kappa.vgmsite.com/soundtracks/super-mario-bros-nes/bofcrxrt/05%20-%20Stage%20Clear.mp3');
+        const sfxGameOver = new Audio('https://kappa.vgmsite.com/soundtracks/super-mario-bros-nes/wfttmsyx/07%20-%20Game%20Over.mp3');
+        const bgmSuspense = new Audio('https://kappa.vgmsite.com/soundtracks/super-mario-bros-nes/jssbzzxy/01%20-%20Super%20Mario%20Bros.mp3');
+        bgmSuspense.loop = true;
+        bgmSuspense.volume = 0.3;
+
+        // ESTADOS DEL JUEGO: 'maze', 'pong', 'futbolito'
+        let gameState = 'maze';
+
+        // Variables para minijuegos
+        let pongParams = { ballX: 400, ballY: 300, dirX: 4, dirY: 4, paddleY: 250, opponentY: 250, score: 0 };
+        let futParams = { barX: 100, dirX: 10, targetMin: 350, targetMax: 450, kicks: 0, goals: 0 };
+
+        let walls = [];
+        let requerimientos = [];
+        let enemies = [];
+        let arcades = [];
+        let particles = [];
+
+        // Jugador (Serenito Camioneta)
+        // Lo hacemos un poco más pequeño (hitbox) para que sea súper fácil doblar sin chocarse
+        const player = {
+            x: 1 * TILE_SIZE + 6,
+            y: 1 * TILE_SIZE + 6,
+            w: TILE_SIZE - 12,
+            h: TILE_SIZE - 12,
+            dx: 0,
+            dy: 0,
+            speed: 5,
+            energia: 100.0,
+            score: 0
+        };
+
+        function cargarNivel() {
+            walls = [];
+            requerimientos = [];
+            enemies = [];
+            arcades = [];
+            let mapa = NIVELES[nivelActual];
+
+            for (let row = 0; row < mapa.length; row++) {
+                // Ensure row exists, sometimes map row string needs `.length`
+                for (let col = 0; col < mapa[row].length; col++) {
+                    let tile = mapa[row][col];
+                    if (tile === "0") {
+                        walls.push({ x: col * TILE_SIZE, y: row * TILE_SIZE, w: TILE_SIZE, h: TILE_SIZE });
+                    } else if (tile === "1") {
+                        if (Math.random() < 0.08 && (row > 2 || col > 2)) {
+                            requerimientos.push({
+                                x: col * TILE_SIZE + 5,
+                                y: row * TILE_SIZE + 5,
+                                w: TILE_SIZE - 10,
+                                h: TILE_SIZE - 10,
+                                active: true,
+                                emoji: ['🚶', '🏃', '👵', '👨‍👩‍👧', '🚴'][Math.floor(Math.random() * 5)]
+                            });
+                        } else if (Math.random() < 0.02 && (row > 3 || col > 3)) {
+                            // Generar máquinas de microjuegos (Arcades)
+                            arcades.push({
+                                x: col * TILE_SIZE + 5,
+                                y: row * TILE_SIZE + 5,
+                                w: TILE_SIZE - 10,
+                                h: TILE_SIZE - 10,
+                                active: true,
+                                type: Math.random() > 0.5 ? 'pong' : 'futbolito'
+                            });
+                        }
+                    } else if (tile === "0" && Math.random() < (0.015 * (nivelActual + 1))) {
+                        // Generar enemigos (ladrones/incógnitos) en espacios vacíos aleatorios según el nivel
+                        if (row > 3 || col > 3) { // Lejos del spawn
+                            enemies.push({
+                                x: col * TILE_SIZE + 5,
+                                y: row * TILE_SIZE + 5,
+                                w: TILE_SIZE - 10,
+                                h: TILE_SIZE - 10,
+                                active: true,
+                                dx: Math.random() < 0.5 ? 1 : -1,
+                                dy: Math.random() < 0.5 ? 1 : -1,
+                                speed: 1.5 + (nivelActual * 0.5),
+                                emoji: '🐒'
+                            });
+                        }
+                    }
+                }
+            }
+
+            player.x = 1 * TILE_SIZE + 6;
+            player.y = 1 * TILE_SIZE + 6;
+            player.dx = 0;
+            player.dy = 0;
+            player.energia = 100.0;
+        }
+
+        cargarNivel();
+
+        let gameOver = false;
+        let keys = {};
+
+        // Eventos Teclado
+        window.addEventListener('keydown', e => {
+            keys[e.code] = true;
+            if (e.code === 'Space') fireSiren();
+        });
+        window.addEventListener('keyup', e => { keys[e.code] = false; });
+
+        // Eventos Touch DPAD
+        const bindBtn = (id, axis, val) => {
+            const btn = document.getElementById(id);
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); if (axis === 'x') player.dx = val; else player.dy = val; });
+            btn.addEventListener('touchend', (e) => { e.preventDefault(); if (axis === 'x') player.dx = 0; else player.dy = 0; });
+            btn.addEventListener('mousedown', () => { if (axis === 'x') player.dx = val; else player.dy = val; });
+            btn.addEventListener('mouseup', () => { if (axis === 'x') player.dx = 0; else player.dy = 0; });
+        };
+        bindBtn('btn-up', 'y', -1);
+        bindBtn('btn-down', 'y', 1);
+        bindBtn('btn-left', 'x', -1);
+        bindBtn('btn-right', 'x', 1);
+
+        const sirenBtn = document.getElementById('siren-btn');
+        sirenBtn.addEventListener('touchstart', (e) => { e.preventDefault(); fireSiren(); });
+        sirenBtn.addEventListener('mousedown', () => { fireSiren(); });
+
+        let alertActive = false;
+        let alertTimer = 0;
+
+        function fireSiren() {
+            if (gameState === 'futbolito') {
+                // Tapping space to kick the penalty
+                if (futParams.kicks < 5) {
+                    futParams.kicks++;
+                    if (futParams.barX >= futParams.targetMin && futParams.barX <= futParams.targetMax) {
+                        futParams.goals++;
+                        sfxMove.play().catch(e => e);
+                    } else {
+                        sfxGameOver.cloneNode().play().catch(e => e);
+                    }
+                    if (futParams.kicks >= 3) {
+                        setTimeout(() => {
+                            if (futParams.goals >= 2) {
+                                player.score += 2000;
+                                player.energia = 100;
+                                alert("¡Goleador! Has ganado el partido. Grandes recompenas adquiridas.");
+                            } else {
+                                alert("Perdiste el partido de futbolito. Mucha suerte para la próxima.");
+                            }
+                            gameState = 'maze';
+                        }, 500);
+                    }
+                }
+                return;
+            }
+
+            if (gameState !== 'maze') return; // En minijuegos no hay sirena
+
+            if (player.energia > 10 && !gameOver && !alertActive) {
+                player.energia -= 10;
+                alertActive = true;
+                alertTimer = 300; // 5 segundos a 60 fps
+                // Efecto de anillo de sonido
+                particles.push({ x: player.x + player.w / 2, y: player.y + player.h / 2, radius: 10, alpha: 1.0, color: 'blue' });
+            }
+        }
+
+        function checkRectCollision(r1, r2) {
+            return !(r2.x >= r1.x + r1.w ||
+                r2.x + r2.w <= r1.x ||
+                r2.y >= r1.y + r1.h ||
+                r2.y + r2.h <= r1.y);
+        }
+
+        function update() {
+            if (gameOver) return;
+
+            // ---- Lógica de Minijuegos ---
+            if (gameState === 'pong') {
+                pongParams.ballX += pongParams.dirX;
+                pongParams.ballY += pongParams.dirY;
+
+                // Controles del jugador en Pong
+                if (keys['ArrowUp'] || keys['KeyW']) pongParams.paddleY -= 6;
+                if (keys['ArrowDown'] || keys['KeyS']) pongParams.paddleY += 6;
+                pongParams.paddleY = Math.max(0, Math.min(pongParams.paddleY, HEIGHT - 100));
+
+                // IA oponente simple
+                if (pongParams.ballY > pongParams.opponentY + 50) pongParams.opponentY += 3;
+                else if (pongParams.ballY < pongParams.opponentY + 50) pongParams.opponentY -= 3;
+                pongParams.opponentY = Math.max(0, Math.min(pongParams.opponentY, HEIGHT - 100));
+
+                // Rebotes (Arriba / Abajo)
+                if (pongParams.ballY <= 0 || pongParams.ballY >= HEIGHT) pongParams.dirY *= -1;
+
+                // Colision con paletas
+                if (pongParams.ballX <= 40 && pongParams.ballY >= pongParams.paddleY && pongParams.ballY <= pongParams.paddleY + 100) {
+                    pongParams.dirX *= -1.1; // Se acelera ligeramente
+                    pongParams.ballX = 40;
+                }
+                if (pongParams.ballX >= WIDTH - 40 && pongParams.ballY >= pongParams.opponentY && pongParams.ballY <= pongParams.opponentY + 100) {
+                    pongParams.dirX *= -1.1;
+                    pongParams.ballX = WIDTH - 40;
+                }
+
+                // Goles
+                if (pongParams.ballX < 0 || pongParams.ballX > WIDTH) {
+                    if (pongParams.ballX > WIDTH) {
+                        pongParams.score++; // Gano punto
+                        if (pongParams.score >= 3) {
+                            alert("¡Has ganado el Tenis Virtual y aseguraste las calles! +1500pts");
+                            player.score += 1500;
+                            player.energia = 100;
+                            gameState = 'maze';
+                        }
+                    } else {
+                        // Perdió punto -> Pierde energía
+                        player.energia -= 20;
+                        if (player.energia <= 0) {
+                            alert("Perdiste en el arcade y se te acabó la energía...");
+                            gameState = 'maze'; // Se encargará de tirar game over abajo
+                        } else {
+                            gameState = 'maze';
+                            alert("¡El rival te anotó y perdiste! Suerte a la próxima.");
+                        }
+                    }
+                    pongParams = { ballX: 400, ballY: 300, dirX: 4, dirY: 4, paddleY: 250, opponentY: 250, score: 0 };
+                }
+                return;
+            }
+
+            if (gameState === 'futbolito') {
+                futParams.barX += futParams.dirX;
+                if (futParams.barX <= 50 || futParams.barX >= WIDTH - 50) futParams.dirX *= -1;
+                return; // Pausa el update del laberinto
+            }
+            // -----------------------------
+
+            if (alertActive) {
+                alertTimer--;
+                if (alertTimer <= 0) alertActive = false;
+            }
+
+            // Movimiento por teclado (solo laberinto)
+            let isKeyPressed = false;
+            if (keys['ArrowUp'] || keys['KeyW']) { player.dx = 0; player.dy = -1; isKeyPressed = true; }
+            else if (keys['ArrowDown'] || keys['KeyS']) { player.dx = 0; player.dy = 1; isKeyPressed = true; }
+            else if (keys['ArrowLeft'] || keys['KeyA']) { player.dx = -1; player.dy = 0; isKeyPressed = true; }
+            else if (keys['ArrowRight'] || keys['KeyD']) { player.dx = 1; player.dy = 0; isKeyPressed = true; }
+
+            // Si estuviésemos en un entorno Desktop y saltamos las teclas, detenemos
+            // (El DPAD actualiza player.dx/dy directo en los eventos touch, así que no reseteamos aquí a menos que no haya touch activado)
+            if (!isKeyPressed && !window.matchMedia("(pointer: coarse)").matches) {
+                player.dx = 0;
+                player.dy = 0;
+            }
+
+            // Aplicar Movimiento e iterar colisiones
+            if (player.dx !== 0) {
+                let oldX = player.x;
+                player.x += player.dx * player.speed;
+                for (let wall of walls) {
+                    if (checkRectCollision(player, wall)) {
+                        player.x = oldX;
+                        player.dx = 0; // Detener en X al chocar
+                        break;
+                    }
+                }
+            }
+
+            if (player.dy !== 0) {
+                let oldY = player.y;
+                player.y += player.dy * player.speed;
+                for (let wall of walls) {
+                    if (checkRectCollision(player, wall)) {
+                        player.y = oldY;
+                        player.dy = 0; // Detener en Y al chocar
+                        break;
+                    }
+                }
+            }
+
+            // Consumo de Energía más lento
+            if (player.dx !== 0 || player.dy !== 0) {
+                player.energia -= 0.02; // Bajado de 0.05 a 0.02
+            }
+
+            // Colisión con Requerimientos (Puntaje)
+            for (let req of requerimientos) {
+                if (req.active && checkRectCollision(player, req)) {
+                    req.active = false;
+                    player.score += 100;
+                    player.energia += 20;
+                    if (player.energia > 100) player.energia = 100;
+
+                    let snd = sfxMove.cloneNode();
+                    snd.volume = 0.4;
+                    snd.play().catch(e => e);
+                }
+            }
+
+            // Colisión con Máquinas de Arcade
+            for (let arc of arcades) {
+                if (arc.active && checkRectCollision(player, arc)) {
+                    arc.active = false; // Solo se usa una vez
+                    alert(`¡Encontraste una máquina de Arcade! Cargando: ${arc.type.toUpperCase()}`);
+                    gameState = arc.type;
+                    if (arc.type === 'futbolito') {
+                        futParams = { barX: 100, dirX: 10, targetMin: WIDTH / 2 - 50, targetMax: WIDTH / 2 + 50, kicks: 0, goals: 0 };
+                    }
+                    if (arc.type === 'pong') {
+                        pongParams = { ballX: 400, ballY: 300, dirX: 4, dirY: 4, paddleY: 250, opponentY: 250, score: 0 };
+                    }
+                }
+            }
+
+            // Movimiento e IA de Enemigos
+            for (let en of enemies) {
+                if (!en.active) continue;
+
+                // Movimiento Persecución Simple si estamos cerca o huida si hay alerta
+                let distX = player.x - en.x;
+                let distY = player.y - en.y;
+                let absDist = Math.abs(distX) + Math.abs(distY);
+
+                if (absDist < 250) { // Si el jugador está cerca
+                    if (alertActive) {
+                        en.dx = distX > 0 ? -1 : 1;
+                        en.dy = distY > 0 ? -1 : 1;
+                    } else {
+                        en.dx = distX > 0 ? 1 : -1;
+                        en.dy = distY > 0 ? 1 : -1;
+                    }
+                }
+
+                let currentSpeed = alertActive ? en.speed * 0.7 : en.speed;
+                en.x += en.dx * currentSpeed;
+                en.y += en.dy * currentSpeed;
+
+                // Colisión de enemigo con pared (rebote)
+                for (let wall of walls) {
+                    if (checkRectCollision(en, wall)) {
+                        en.dx *= -1;
+                        en.dy *= -1;
+                        en.x += en.dx * currentSpeed * 2;
+                        en.y += en.dy * currentSpeed * 2;
+                        break;
+                    }
+                }
+
+                // Colisión Fatal Jugador vs Enemigo
+                if (checkRectCollision(player, en)) {
+                    if (alertActive) {
+                        en.active = false;
+                        player.score += 500;
+                        particles.push({ x: en.x + en.w / 2, y: en.y + en.h / 2, radius: 10, alpha: 1.0, color: 'blue' });
+                        let hit = sfxMove.cloneNode();
+                        hit.volume = 0.8;
+                        hit.play().catch(e => e);
+                    } else {
+                        player.energia -= 50; // Quita muchísima energía de golpe
+                        en.active = false; // Desaparece tras robar energía
+
+                        particles.push({ x: player.x + player.w / 2, y: player.y + player.h / 2, radius: 20, alpha: 1.0, color: 'red' });
+
+                        let hit = sfxGameOver.cloneNode();
+                        hit.volume = 0.5;
+                        hit.play().catch(e => e);
+                    }
+                }
+            }
+
+            // UpdateUI
+            document.getElementById('score-text').innerText = player.score;
+            document.getElementById('level-text').innerText = nivelActual + 1;
+            let p_energy = Math.max(0, player.energia);
+            const eBar = document.getElementById('energy-bar');
+            eBar.style.width = p_energy + '%';
+            if (p_energy < 20) eBar.style.backgroundColor = '#f00';
+            else if (p_energy < 50) eBar.style.backgroundColor = '#ff0';
+            else eBar.style.backgroundColor = '#0f0';
+
+            // Check Win/Loss
+            if (player.energia <= 0) {
+                endGame("¡SIN ENERGÍA! JUEGO TERMINADO", "#ef4444", true);
+            } else {
+                let allCollected = true;
+                for (let r of requerimientos) if (r.active) { allCollected = false; break; }
+                if (allCollected) {
+                    if (nivelActual + 1 < NIVELES.length) {
+                        sfxWin.play().catch(e => e);
+                        bgmSuspense.pause();
+                        let sum = "\n🌟 +500 Pts y +1 Insignia Ciudadana.";
+                        endGame("¡TURNO COMPLETADO! PREPÁRATE PARA EL SIGUIENTE NIVEL..." + sum, "#10b981", false);
+                    } else {
+                        sfxWin.play().catch(e => e);
+                        bgmSuspense.pause();
+                        // Simulación de interacción, influencia e implicación del KPI.
+                        try {
+                            window.parent.postMessage({ type: 'GAME_WIN_KPI', score: player.score }, '*');
+                        } catch (e) { }
+
+                        endGame("¡GANASTE! MISIÓN DE SEGURIDAD TOTAL COMPLETADA", "#fcd34d", true);
+                    }
+                }
+            }
+
+            // Update Particles (Sirena)
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.radius += 5;
+                p.alpha -= 0.05;
+                if (p.alpha <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function endGame(msg, color, final) {
+            gameOver = true;
+            const screen = document.getElementById('game-over-screen');
+            screen.style.display = 'flex';
+            const title = document.getElementById('end-title');
+            title.innerText = msg;
+            title.style.color = color;
+            document.getElementById('end-score').innerText = "Puntaje: " + player.score;
+
+            const btn = screen.querySelector('.retry-btn');
+            if (final) {
+                btn.innerText = "Jugar de Nuevo";
+                btn.onclick = () => {
+                    nivelActual = 0;
+                    player.score = 0;
+                    cargarNivel();
+                    gameOver = false;
+                    screen.style.display = 'none';
+                    player.dx = 0; player.dy = 0;
+                    for (let k in keys) keys[k] = false;
+                };
+            } else {
+                btn.innerText = "Siguiente Nivel";
+                btn.onclick = () => {
+                    nivelActual++;
+                    cargarNivel();
+                    gameOver = false;
+                    screen.style.display = 'none';
+                    player.dx = 0; player.dy = 0;
+                    for (let k in keys) keys[k] = false;
+                };
+            }
+        }
+
+        function draw() {
+            // Limpiar
+            ctx.fillStyle = BG_COLOR;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // ---- RENDER MINIJUEGOS ----
+            if (gameState === 'pong') {
+                ctx.fillStyle = '#111';
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+                // Centro
+                ctx.strokeStyle = '#fff';
+                ctx.setLineDash([10, 10]);
+                ctx.beginPath();
+                ctx.moveTo(WIDTH / 2, 0);
+                ctx.lineTo(WIDTH / 2, HEIGHT);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                // Pelota
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(pongParams.ballX, pongParams.ballY, 15, 15);
+                // Mi Paleta
+                ctx.fillStyle = '#38bdf8';
+                ctx.fillRect(20, pongParams.paddleY, 20, 100);
+                // Oponente
+                ctx.fillStyle = '#ef4444';
+                ctx.fillRect(WIDTH - 40, pongParams.opponentY, 20, 100);
+
+                // Texto
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`TENIS RETRO - Usa Flechas Arriba/Abajo`, WIDTH / 2, 30);
+                ctx.fillText(`Llega a 3 puntos para dominar el deporte. Score: ${pongParams.score}`, WIDTH / 2, 60);
+                return;
+            }
+
+            if (gameState === 'futbolito') {
+                ctx.fillStyle = '#10b981'; // Cesped
+                ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+                // Arco de fondo
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 10;
+                ctx.strokeRect(WIDTH / 2 - 150, 50, 300, 150);
+
+                // Zonas de penalty UI
+                ctx.fillStyle = '#fff';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Tiros: ${futParams.kicks}/3 | Goles: ${futParams.goals}`, WIDTH / 2, 40);
+                ctx.fillText(`¡PRESIONA ESPACIO o SIRENA en el centro verde para GOLEAR!`, WIDTH / 2, HEIGHT - 100);
+
+                // Barra medidora base
+                ctx.fillStyle = '#555';
+                ctx.fillRect(50, HEIGHT - 200, WIDTH - 100, 40);
+                // Zona objetivo verde
+                ctx.fillStyle = '#34d399';
+                ctx.fillRect(futParams.targetMin, HEIGHT - 200, futParams.targetMax - futParams.targetMin, 40);
+                // Indicador móvil
+                ctx.fillStyle = '#fcd34d';
+                ctx.fillRect(futParams.barX - 10, HEIGHT - 210, 20, 60);
+                return;
+            }
+            // -------------------------
+
+            // Paredes
+            ctx.fillStyle = WALL_COLOR;
+            for (let wall of walls) {
+                ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+                // Efecto volumen (borde suave)
+                ctx.strokeStyle = '#8a8ae6';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(wall.x + 1, wall.y + 1, wall.w - 2, wall.h - 2);
+            }
+
+            // Requerimientos (Vecinos Emojis)
+            for (let req of requerimientos) {
+                if (req.active) {
+                    ctx.font = "20px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(req.emoji, req.x + req.w / 2, req.y + req.h / 2);
+
+                    // Highlight aura
+                    ctx.strokeStyle = REQ_COLOR;
+                    ctx.beginPath();
+                    ctx.arc(req.x + req.w / 2, req.y + req.h / 2, 12, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // Máquinas Arcades
+            for (let arc of arcades) {
+                if (arc.active) {
+                    ctx.font = "24px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText('🕹️', arc.x + arc.w / 2, arc.y + arc.h / 2);
+                    // Aura pulsante rosa
+                    let r = 15 + Math.sin(Date.now() / 150) * 5;
+                    ctx.strokeStyle = '#ec4899';
+                    ctx.beginPath();
+                    ctx.arc(arc.x + arc.w / 2, arc.y + arc.h / 2, r, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            // Enemigos (Peligro)
+            for (let en of enemies) {
+                if (en.active) {
+                    ctx.font = "22px Arial";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    if (alertActive) {
+                        ctx.fillText('👻', en.x + en.w / 2, en.y + en.h / 2);
+                    } else {
+                        ctx.fillText(en.emoji, en.x + en.w / 2, en.y + en.h / 2);
+                    }
+                }
+            }
+
+            // Player Emoji (Patrulla)
+            ctx.font = "24px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            let vehicle = '🚔';
+            if (player.dx > 0) vehicle = '🚓';
+            if (player.dx < 0) vehicle = '🚓';
+
+            ctx.fillText(vehicle, player.x + player.w / 2, player.y + player.h / 2);
+
+            // Particles
+            for (let p of particles) {
+                ctx.strokeStyle = p.color === 'blue' ? `rgba(59, 130, 246, ${p.alpha})` : `rgba(239, 68, 68, ${p.alpha})`;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+
+        function loop() {
+            update();
+            draw();
+            requestAnimationFrame(loop);
+        }
+
+        // Iniciar
+        function startMusic() {
+            bgmSuspense.play().catch(e => console.log('Esperando interacción para audio...'));
+            window.removeEventListener('keydown', startMusic);
+            window.removeEventListener('touchstart', startMusic);
+        }
+        window.addEventListener('keydown', startMusic);
+        window.addEventListener('touchstart', startMusic);
+
+        requestAnimationFrame(loop);
+
+    </script>
+</body>
+
+</html>

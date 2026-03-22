@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLS IA: 6 Sombreros de De Bono — VERSIÓN PURA v3.1</title>
+
+    <!-- Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #05080f;
+            --surface: rgba(15, 23, 42, 0.9);
+            --border: rgba(56, 189, 248, 0.2);
+            --text: #f1f5f9;
+            --accent: #38bdf8;
+            --radius: 20px;
+        }
+
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; height: 100vh; overflow: hidden; }
+        #root { height: 100%; display: flex; flex-direction: column; }
+
+        .glass { background: var(--surface); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: var(--radius); }
+        .card { padding: 1.5rem; transition: 0.3s; }
+        
+        /* EXCLUSIVE PLAYER STYLING */
+        .music-tag { font-size: 0.6rem; font-weight: 900; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+        .song-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 8px 12px; border-radius: 10px; font-size: 0.8rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; }
+        .song-btn:hover { background: rgba(56, 189, 248, 0.15); border-color: var(--accent); }
+        .song-btn.active { background: var(--accent); color: #000; font-weight: bold; border-color: white; }
+
+        /* BUTTONS */
+        .btn-vls { border: none; padding: 12px 20px; border-radius: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; alignItems: center; gap: 8px; font-family: 'Outfit'; }
+        .btn-primary { background: var(--accent); color: #05080f; }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .hat-btn { width: 50px; height: 50px; border-radius: 12px; border: 2px solid transparent; cursor: pointer; transition: 0.3s; }
+        .hat-btn.active { transform: scale(1.15); border-color: var(--accent); box-shadow: 0 0 15px currentColor; }
+
+        @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
+        .animate-pulse { animation: pulse 2s infinite; }
+        
+        .video-container { width: 100%; height: 100%; position: relative; background: #000; overflow: hidden; display: flex; justify-content: center; }
+        video { height: 100%; object-fit: contain; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    const HATS = [
+        { id: 'white', color: '#ffffff', accent: '#38bdf8', title: 'Blanco', sub: 'Hechos y Datos', script: 'Soy el Sombrero Blanco. Solo veo datos y hechos. ¿Cuántos vecinos somos? ¿Cuál es el presupuesto? Sin emociones, solo la verdad técnica.', songIdx: 0 },
+        { id: 'red', color: '#ef4444', accent: '#ef4444', title: 'Rojo', sub: 'Emociones', script: '¡Hola! Soy el Sombrero Rojo. Aquí valen las corazonadas. Lo que sientes es lo más importante para nuestra comunidad hoy.', songIdx: 1 },
+        { id: 'black', color: '#111827', accent: '#4b5563', title: 'Negro', sub: 'Riesgos', script: 'Atención. Soy el Sombrero Negro. ¿Qué podría salir mal? Protejo a La Serena identificando peligros antes de actuar.', songIdx: 2 },
+        { id: 'yellow', color: '#facc15', accent: '#ca8a04', title: 'Amarillo', sub: 'Optimismo', script: '¡Todo es posible! Soy el Sombrero Amarillo. Busco los beneficios y el valor positivo de cada idea vecinal.', songIdx: 3 },
+        { id: 'green', color: '#22c55e', accent: '#15803d', title: 'Verde', sub: 'Creatividad', script: '¡Imagina! Soy el Sombrero Verde. Busco nuevas ideas y soluciones locas que transformen nuestra ciudad de Coquimbo y La Serena.', songIdx: 4 },
+        { id: 'blue', color: '#3b82f6', accent: '#1d4ed8', title: 'Azul', sub: 'Control', script: 'Soy el Sombrero Azul, el director. Organizo el pensamiento y defino los pasos a seguir para que lleguemos a buen puerto.', songIdx: 5 }
+    ];
+
+    const SONGS = [
+        { title: "Vamos a recordar y pensar", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Vamos%20a%20recordar%20y%20pensar.mp3" },
+        { title: "La cumbia de los seis sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/La%20cumbia%20de%20los%20seis%20sombreros.mp3" },
+        { title: "Sombrero heavy", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20heavy.mp3" },
+        { title: "Sombrero regalón", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20regal%C3%B3n.mp3" },
+        { title: "Blusero del jazz con sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Blusero%20del%20jazz%20con%20sombreros.mp3" },
+        { title: "Todos podemos pensar con 6 sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/todos%20podemos%20pensar%20con%206%20sombreros.mp3" }
+    ];
+
+    function App() {
+        const [activeIdx, setActiveIdx] = useState(0);
+        const [isSpeaking, setIsSpeaking] = useState(false);
+        const [isPlaying, setIsPlaying] = useState(false);
+        const [idea, setIdea] = useState("");
+        const [analyzing, setAnalyzing] = useState(false);
+        const [scripts, setScripts] = useState(null);
+        
+        const musicRef = useRef(new Audio());
+        const voiceRef = useRef(null);
+
+        const currentHat = HATS[activeIdx];
+        const displayScript = (scripts && scripts[currentHat.id]) || currentHat.script;
+
+        useEffect(() => {
+            musicRef.current.src = SONGS[currentHat.songIdx].url;
+            if (isPlaying) musicRef.current.play().catch(e => console.warn(e));
+        }, [activeIdx]);
+
+        const toggleMusic = () => {
+            if (isPlaying) musicRef.current.pause();
+            else musicRef.current.play();
+            setIsPlaying(!isPlaying);
+        };
+
+        const speak = async () => {
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                setIsSpeaking(false);
+                return;
+            }
+            setIsSpeaking(true);
+            const utter = new SpeechSynthesisUtterance(displayScript);
+            utter.lang = 'es-CL';
+            utter.onend = () => setIsSpeaking(false);
+            window.speechSynthesis.speak(utter);
+        };
+
+        const analyze = async () => {
+            if (!idea.trim()) return;
+            setAnalyzing(true);
+            try {
+                const key = "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs";
+                const prompt = `Analiza esta idea vecinal usando los 6 Sombreros de De Bono: "${idea}". Responde SOLO JSON con claves: white, red, black, yellow, green, blue. Valores: 3 líneas de texto en 1ª persona.`;
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { response_mime_type: 'application/json' } })
+                });
+                const data = await res.json();
+                const json = JSON.parse(data.candidates[0].content.parts[0].text.replace(/```json|```/gi, ""));
+                setScripts(json);
+                setActiveIdx(0);
+            } catch (e) { console.error(e); }
+            finally { setAnalyzing(false); }
+        };
+
+        return (
+            <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <header style={{ padding: '1rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <div style={{ background: currentHat.accent, width: 35, height: 35, borderRadius: 10 }}></div>
+                        <h2 style={{ margin: 0, fontSize: '1rem' }}>VLS IA: MODO PURO 6 SOMBREROS</h2>
+                    </div>
+                    <button onClick={() => window.open('https://vecinoslaserena.cl')} style={{ background: 'transparent', border: 'none', color: 'var(--accent)', cursor: 'pointer' }}>VOLVER</button>
+                </header>
+
+                <main style={{ flex: 1, display: 'flex', flexDirection: window.innerWidth < 768 ? 'column' : 'row' }}>
+                    <div className="video-container" style={{ flex: 1 }}>
+                        <video src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/models/seis_sombreros_para_prensar_serenito.mp4" autoPlay muted loop playsInline />
+                        <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(circle at bottom, ${currentHat.accent}33, transparent)`, transition: '0.5s' }} />
+                    </div>
+
+                    <div style={{ width: window.innerWidth < 768 ? '100%' : '400px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto' }}>
+                        <div className="glass card" style={{ borderColor: currentHat.accent }}>
+                            <span style={{ fontSize: '0.7rem', fontWeight: 900, color: currentHat.color, letterSpacing: 3 }}>SOMBRERO {currentHat.title.toUpperCase()}</span>
+                            <h1 style={{ margin: '0.5rem 0', color: currentHat.color }}>{currentHat.sub}</h1>
+                            <p style={{ fontStyle: 'italic', fontSize: '0.9rem', color: '#cbd5e1' }}>"{displayScript}"</p>
+                            <button className="btn-vls btn-primary" style={{ width: '100%', background: currentHat.accent, color: currentHat.id==='white'?'#000':'#fff' }} onClick={speak}>
+                                {isSpeaking ? 'SINTETIZANDO...' : 'ESCUCHAR RELATO'}
+                            </button>
+                        </div>
+
+                        <div className="glass card">
+                            <span className="music-tag">Reproductor Exclusivo</span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                                {SONGS.map((s, i) => (
+                                    <button key={i} className={`song-btn ${currentHat.songIdx === i ? 'active' : ''}`} onClick={() => { setActiveIdx(i); setIsPlaying(true); }}>
+                                        {currentHat.songIdx === i && isPlaying ? '⏸' : '▶'} {s.title}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="glass card">
+                            <span className="music-tag">VLS IA: Análisis de Idea</span>
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                                <input placeholder="Escribe tu idea..." value={idea} onChange={e => setIdea(e.target.value)} style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', color: 'white', padding: '10px', borderRadius: '10px', outline: 'none' }} />
+                                <button className="btn-vls btn-primary" onClick={analyze} disabled={analyzing}>
+                                    {analyzing ? '...' : 'OK'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginTop: 'auto' }}>
+                            {HATS.map((h, i) => (
+                                <button key={h.id} className={`hat-btn ${activeIdx === i ? 'active' : ''}`} style={{ background: h.color }} onClick={() => setActiveIdx(i)} />
+                            ))}
+                        </div>
+                    </div>
+                </main>
+            </div>
+        );
+    }
+
+    const Icon = ({ name, size=20 }) => {
+        const ref = React.useRef();
+        React.useEffect(() => { lucide.createIcons({ icons: lucide.icons, nameAttr: 'data-lucide' }); }, []);
+        return <i data-lucide={name} style={{ width: size, height: size }} />;
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+    "marqueeText": "🚨 Reporte Robos, Cortes de Luz y Faltas de Agua Rápidamente en Vecinos Smart  |  🌐 La Serena Smart City 2026: Innovación Municipal de Nivel Mundial  |  🎮 ¡Juega el Minijuego 2D y gana descuentos en el comercio local!",
+    "radioStreamUrl": "https://az11.yesstreaming.net/radio/8630/radio.mp3",
+    "links_externos": {
+        "puertaSerena": "https://puertaserena.streamlit.app/",
+        "honorarios": "https://honorarios-ls-me.streamlit.app/",
+        "faroSentinel": "https://monitor-laserena.streamlit.app/",
+        "induccion": "https://vecinoslaserenachile-cloud.github.io/portal-induccion-imls/",
+        "protocolo": "https://vecinoslaserenachile-cloud.github.io/serenito-app/",
+        "game": "/mi_juego.html"
+    }
+}

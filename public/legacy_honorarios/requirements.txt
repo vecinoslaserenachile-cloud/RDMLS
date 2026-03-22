@@ -1,0 +1,7 @@
+streamlit
+docxtpl
+streamlit-drawable-canvas
+Pillow
+pandas
+fpdf2
+numpy
