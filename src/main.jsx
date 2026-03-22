@@ -228,6 +228,9 @@ function GlobalWarning() {
 
 import BellaDashboard from './pages/BellaDashboard.jsx';
 
+const currentHost = window.location.hostname;
+const isPuertaDns = currentHost.includes('puertasmart.cl');
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
@@ -237,7 +240,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/welcome" element={<WelcomePortal />} />
           <Route path="/smart-setup" element={<SuperAdminSetup />} />
-          <Route path="/" element={<App />}>
+          <Route path="/" element={isPuertaDns ? <Navigate to="/puerta" replace /> : <App />}>
             <Route index element={<HubDashboard />} />
             <Route path="punto" element={<PuntoVecinal />} />
             <Route path="hub" element={<HubDashboard />} />
@@ -264,9 +267,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="legacy" element={<LegacyPortal />} />
             <Route path="serenamet" element={<Serenamet />} />
             <Route path="propiedades" element={<Propiedades />} />
-            <Route path="puerta" element={<PuertaSmart />} />
             <Route path="acceso" element={<PuertaSerena />} />
           </Route>
+          <Route path="/puerta" element={<PuertaSmart />} />
           <Route path="/bisabuelo" element={<GameVLS />} />
           <Route path="/radios" element={<App />}>
             <Route index element={<HubDashboard />} />

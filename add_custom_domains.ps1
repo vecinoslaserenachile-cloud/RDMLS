@@ -2,7 +2,7 @@ $Email = "Vecinoslaserenachile@gmail.com"
 $Key = "bb53aaa5c29acc38c183291529a1dd8937d18"
 $AccountId = "f106b65228e370b7be63060b3ac84dee"
 $ProjectName = "vecinos-la-serena"
-$Domains = @("vecinoslaserena.cl", "www.vecinoslaserena.cl", "vecinosmart.cl", "www.vecinosmart.cl")
+$Domains = @("vecinoslaserena.cl", "www.vecinoslaserena.cl", "vecinosmart.cl", "www.vecinosmart.cl", "puertasmart.cl", "www.puertasmart.cl", "comunasmart.cl", "www.comunasmart.cl", "entrevecinas.cl", "www.entrevecinas.cl", "farito.cl", "www.farito.cl", "radiovecinos.cl", "www.radiovecinos.cl", "rdmls.cl", "www.rdmls.cl", "vecinoschile.cl", "www.vecinoschile.cl")
 
 $Headers = @{
     "X-Auth-Email" = $Email
