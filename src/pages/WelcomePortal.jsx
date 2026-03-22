@@ -316,7 +316,7 @@ export default function WelcomePortal() {
         {/* Ancestral Serenito Welcome Figure */}
         <div style={{ position: 'relative', width: '120px', height: '120px', margin: '0 auto 1rem auto', animation: 'floatParticle 3s ease-in-out infinite alternate' }}>
             <img
-                src="file:///C:/Users/estud/.gemini/antigravity/brain/642dc90b-b3aa-4982-97e1-679134a8ef55/media__1774126645685.png"
+                src="/ancestral_serenito.png"
                 alt="Ancestral Serenito"
                 style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(56,189,248,0.4))' }}
             />

@@ -842,7 +842,7 @@ export default function HubDashboard() {
         { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', img: '/serenito_v3.png', bio: 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
         { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', img: '/avatars/don_joako_guardian.png', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
         { id: 'pampita-huertera', name: 'Pampita', role: 'Humizales & Parques', img: '/pampita_v3.png', bio: 'Guardiana de flora y fauna regional. Sabiduría de la tierra y biodiversidad.' },
-        { id: 'ancestro-bisabuelo', name: 'Ancestral Serenito (Bisabuelo)', role: 'Historia & Tradición', img: 'file:///C:/Users/estud/.gemini/antigravity/brain/642dc90b-b3aa-4982-97e1-679134a8ef55/media__1774126645685.png', bio: 'Guardián original de la ciudad con su farol de la verdad. Sabiduría de los fundadores.' },
+        { id: 'ancestro-bisabuelo', name: 'Ancestral Serenito (Bisabuelo)', role: 'Historia & Tradición', img: '/ancestral_serenito.png', bio: 'Guardián original de la ciudad con su farol de la verdad. Sabiduría de los fundadores.' },
         { id: 'farito-nav', name: 'Farito', role: 'Navegación & Guía', img: '/avatars/farito_navigator.png', bio: 'Asistente experto en geografía y clima regional. Navega el Borde Costero con el nuevo Tripo Engine Rigged.' },
         { id: 't-9a8e', name: 'Curador 3D Heritage', role: 'Arte Digital VLS', img: '/avatars/compita.png', bio: 'Maestro de la reconstrucción digital del patrimonio serenense (Tripo Engine).' }
     ];
