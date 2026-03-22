@@ -35,7 +35,7 @@ import LiveVenuesMonitor from '../components/LiveVenuesMonitor';
 import LiveIncidentsMap from '../components/LiveIncidentsMap';
 import SocialVision from '../components/SocialVision';
 import VLSMotorsSpot from '../components/VLSMotorsSpot';
-
+import VecnityPay from '../components/VecnityPay';
 
 export default function HubDashboard() {
     const navigate = useNavigate();
@@ -1475,7 +1475,7 @@ export default function HubDashboard() {
                         </h3>
                         <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(234,179,8,0.5))' }}></div>
                     </div>
-                    <VecinityPay alwaysOpen={true} />
+                    <VecnityPay alwaysOpen={true} />
                 </div>
 
                 {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
