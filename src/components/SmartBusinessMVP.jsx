@@ -264,7 +264,7 @@ export default function SmartBusinessMVP({ onClose }) {
 
             {/* Footer Watermark */}
             <div style={{ padding: '0.8rem', textAlign: 'center', background: '#e2e8f0', fontSize: '0.7rem', color: '#64748b', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-              Creado con <Zap size={10} color="#38bdf8" /> <strong>Smart Comuna VLS</strong>
+              Creado con <Zap size={10} color="#38bdf8" /> <strong>ComunaSmart VLS</strong>
             </div>
 
           </div>

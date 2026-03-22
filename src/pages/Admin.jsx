@@ -251,7 +251,7 @@ export default function Admin() {
             <header style={{ padding: '1rem 2rem', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-secondary)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <ShieldAlert color="var(--brand-primary)" />
-                    <h1 style={{ margin: 0, fontSize: '1.2rem', color: 'white' }}>Smart Comuna - Bandeja Municipal</h1>
+                    <h1 style={{ margin: 0, fontSize: '1.2rem', color: 'white' }}>ComunaSmart - Bandeja Municipal</h1>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ display: 'flex', background: 'rgba(0,0,0,0.3)', borderRadius: '8px', padding: '2px' }}>

@@ -4,7 +4,7 @@ import { X, Globe, ExternalLink, Shield, TrendingUp, Users, Landmark, Search, Sp
 const COUNTRIES_DATA = [
     { 
         id: 'cl', name: "Chile", leader: "Presidencia de la República", relation: "Sede Central", 
-        info: "Nuestra nación, con La Serena como nodo estratégico de Smart Comuna en la era de la IA.", 
+        info: "Nuestra nación, con La Serena como nodo estratégico de ComunaSmart en la era de la IA.", 
         flag: "🇨🇱", wiki: "https://es.wikipedia.org/wiki/Chile", 
         stats: { pop: "20.3M", gdp: "355B", status: "Excelente" }
     },

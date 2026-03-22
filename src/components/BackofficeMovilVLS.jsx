@@ -7,7 +7,10 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
     const [location, setLocation] = useState("Procesando GPS: Sector El Milagro...");
     const [reportStatus, setReportStatus] = useState('idle'); // idle, capturing, reviewing, sent
     const [reportType, setReportType] = useState(userType === 'neighbor' ? 'citizen_report' : 'work_checkin');
+    const [isLiveCamera, setIsLiveCamera] = useState(false);
     const fileInputRef = useRef(null);
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
 
     const handleFileUpload = (event) => {
         const file = event.target.files[0];
@@ -22,7 +25,39 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
     };
 
     const triggerCamera = () => {
+        // Prefer explicit stream if supported/requested, else fallback to native camera app
         fileInputRef.current.click();
+    };
+
+    const startLiveCapture = async () => {
+        setIsLiveCamera(true);
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
+            if (videoRef.current) videoRef.current.srcObject = stream;
+        } catch (err) {
+            console.error("Live camera failed, falling back to OS picker");
+            setIsLiveCamera(false);
+            triggerCamera();
+        }
+    };
+
+    const captureFromLive = () => {
+        if (canvasRef.current && videoRef.current) {
+            const context = canvasRef.current.getContext('2d');
+            canvasRef.current.width = videoRef.current.videoWidth;
+            canvasRef.current.height = videoRef.current.videoHeight;
+            context.drawImage(videoRef.current, 0, 0);
+            setCapturedImage(canvasRef.current.toDataURL('image/jpeg'));
+            setReportStatus('reviewing');
+            stopLiveCamera();
+        }
+    };
+
+    const stopLiveCamera = () => {
+        if (videoRef.current && videoRef.current.srcObject) {
+            videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+        }
+        setIsLiveCamera(false);
     };
 
     const sendSovereignReport = () => {
@@ -76,7 +111,16 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
 
                 {/* CAMERA INTERFACE */}
                 <div style={{ flex: 1, background: '#0f172a', borderRadius: '30px', border: '2px dashed #1e293b', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative', minHeight: '300px', overflow: 'hidden' }}>
-                    {capturedImage ? (
+                    {isLiveCamera ? (
+                        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                            <video ref={videoRef} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <canvas ref={canvasRef} style={{ display: 'none' }} />
+                            <div style={{ position: 'absolute', bottom: '20px', left: 0, right: 0, display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                                <button onClick={stopLiveCamera} style={{ background: 'rgba(239, 68, 68, 0.8)', color: 'white', border: 'none', padding: '10px 20px', borderRadius: '40px', fontWeight: 'bold' }}>CANCELAR</button>
+                                <button onClick={captureFromLive} style={{ background: 'white', width: '70px', height: '70px', borderRadius: '50%', border: '8px solid rgba(56, 189, 248, 0.5)', cursor: 'pointer', boxShadow: '0 0 30px rgba(0,0,0,0.5)' }} />
+                            </div>
+                        </div>
+                    ) : capturedImage ? (
                         <motion.img 
                             initial={{ scale: 0.9, opacity: 0 }} 
                             animate={{ scale: 1, opacity: 1 }} 
@@ -85,9 +129,9 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
                         />
                     ) : (
                         <div style={{ textAlign: 'center', color: '#334155' }}>
-                            <Camera size={60} style={{ marginBottom: '1rem' }} />
-                            <p style={{ fontSize: '0.8rem', fontWeight: 'bold' }}>ESPERANDO CAPTURA SOBERANA</p>
-                            <p style={{ fontSize: '0.6rem' }}>La imagen se georreferenciará automáticamente</p>
+                            <Camera size={60} style={{ marginBottom: '1rem', color: '#38bdf8' }} />
+                            <p style={{ fontSize: '0.9rem', fontWeight: '900', color: '#38bdf8', letterSpacing: '1px' }}>REGISTRO IN SITU</p>
+                            <p style={{ fontSize: '0.65rem', color: '#64748b' }}>LA IMAGEN SE PROTOCOLIZARÁ CON CRIPTOGRAFÍA VLS</p>
                         </div>
                     )}
                     
@@ -125,12 +169,20 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
                             </button>
                         </div>
                     ) : (
-                        <button 
-                            onClick={triggerCamera}
-                            style={{ width: '100%', padding: '25px', borderRadius: '25px', background: '#38bdf8', color: '#000', border: 'none', fontWeight: '900', fontSize: '1.1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px', boxShadow: '0 10px 30px rgba(56, 189, 248, 0.4)' }}
-                        >
-                            <Camera size={28} />{reportType === 'citizen_report' ? 'TOMAR FOTO REPORTE' : 'REGISTRAR ASISTENCIA'}
-                        </button>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                                onClick={triggerCamera}
+                                style={{ flex: 1, padding: '20px', borderRadius: '20px', background: '#1e293b', color: '#38bdf8', border: '1px solid #38bdf8', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}
+                            >
+                                <Upload size={18} /> SUBIR ARCHIVO
+                            </button>
+                            <button 
+                                onClick={startLiveCapture}
+                                style={{ flex: 2, padding: '20px', borderRadius: '20px', background: '#38bdf8', color: '#000', border: 'none', fontWeight: '900', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 8px 25px rgba(56, 189, 248, 0.4)' }}
+                            >
+                                <Camera size={24} /> {reportType === 'citizen_report' ? 'ABRIR CÁMARA' : 'REGISTRO EN VIVO'}
+                            </button>
+                        </div>
                     )}
                 </div>
             </div>
@@ -157,7 +209,7 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
 
             {/* FOOTER BRANDING */}
             <div style={{ padding: '0.8rem', textAlign: 'center', background: '#000', color: '#334155', fontSize: '0.6rem', fontWeight: 'bold' }}>
-                ADMINISTRADO POR VECINOSLASERENA.CL — © COMUNA SMART VLS
+                ADMINISTRADO POR COMUNASMART.CL — © COMUNASMART VLS 2026
             </div>
         </div>
     );

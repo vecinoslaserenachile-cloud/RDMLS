@@ -3,7 +3,7 @@ import { Calendar, Zap } from 'lucide-react';
 
 /**
  * VLSQuantumWatch — Reloj digital retro premium estilo "Quantum 5"
- * Siempre visible en el portal Smart Comuna.
+ * Siempre visible en el portal ComunaSmart.
  * Posicionado en la esquina inferior izquierda con alta visibilidad.
  * Click abre el calendario inteligente VLS.
  */

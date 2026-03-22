@@ -189,7 +189,7 @@ export default function VecinojosPortal({ onClose }) {
                 {/* Footer Status */}
                 <div style={{ padding: '0.8rem 2rem', background: '#020617', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.7rem', color: '#475569', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                     <div style={{ display: 'flex', gap: '2rem' }}>
-                        <span>SISTEMA VECINOJOS V1.0 - PROTOCOLO SMART COMUNA</span>
+                        <span>SISTEMA VECINOJOS V1.0 - PROTOCOLO ComunaSmart</span>
                         <span>ENCIPRATADO AES-256 PARA PRIVACIDAD HABITACIONAL</span>
                     </div>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>

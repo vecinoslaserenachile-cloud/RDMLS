@@ -62,7 +62,7 @@ export default function LeanStartupMaster({ onClose }) {
                                 <BookOpen size={24} color="#38bdf8" /> Análsis: El Método Lean Startup (Eric Ries)
                             </h3>
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', lineHeight: '1.8', color: '#cbd5e1' }}>
-                                <p>La clave para vender <strong>"Smart Comuna"</strong> no es el software, es el <b>Aprendizaje Validado</b>. Municipalidades como las de la Región de Coquimbo operan con incertidumbre extrema y presupuestos rígidos. El método nos propone:</p>
+                                <p>La clave para vender <strong>"ComunaSmart"</strong> no es el software, es el <b>Aprendizaje Validado</b>. Municipalidades como las de la Región de Coquimbo operan con incertidumbre extrema y presupuestos rígidos. El método nos propone:</p>
                                 <ul style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', listStyle: 'none', padding: 0, marginTop: '2rem' }}>
                                     <li style={{ background: 'rgba(0,0,0,0.3)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
                                         <b style={{ color: 'white', display: 'block', marginBottom: '0.5rem' }}>1. MVP (Producto Mínimo Viable)</b>
@@ -124,7 +124,7 @@ export default function LeanStartupMaster({ onClose }) {
                                     <div style={{ minWidth: '35px', height: '35px', borderRadius: '50%', background: '#38bdf8', color: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>2</div>
                                     <div>
                                         <b style={{ display: 'block' }}>Modelo B2G (Business to Government)</b>
-                                        Paquetizar "Smart Comuna" por tramos (Comuna Pequeña, Mediana, Grande).
+                                        Paquetizar "ComunaSmart" por tramos (Comuna Pequeña, Mediana, Grande).
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '1rem' }}>

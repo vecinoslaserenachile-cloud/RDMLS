@@ -24,7 +24,7 @@ export default function LitePortal() {
     return () => clearInterval(timer);
   }, []);
 
-  // 60+ Módulos categorizados para Smart Comuna Mosaico Guell Style
+  // 60+ Módulos categorizados para ComunaSmart Mosaico Guell Style
   const allModules = [
     // --- SMART CITIZENS ---
     { id: 'reportes', name: 'Reportes', icon: MessageSquare, color: '#ef4444', action: () => window.dispatchEvent(new CustomEvent('open-report-portal')) },
@@ -119,7 +119,7 @@ export default function LitePortal() {
           </div>
           <div>
             <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-1px' }}>V L S <span style={{ color: '#ef4444' }}>ACCESIBLE</span></h1>
-            <p style={{ margin: 0, fontSize: '1rem', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>Smart Comuna Digital Hub</p>
+            <p style={{ margin: 0, fontSize: '1rem', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>ComunaSmart Digital Hub</p>
           </div>
         </div>
         <div style={{ textAlign: 'right', color: 'white' }}>

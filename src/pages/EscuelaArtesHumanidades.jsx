@@ -239,7 +239,7 @@ export default function EscuelaArtesHumanidades() {
                                 </div>
                                 <div>
                                     <h2 style={{ fontSize: '2rem', margin: 0 }}>{selectedCourse.title}</h2>
-                                    <p style={{ color: '#94a3b8', margin: '0.3rem 0 0 0' }}>Plan de Estudios Oficial Smart Comuna</p>
+                                    <p style={{ color: '#94a3b8', margin: '0.3rem 0 0 0' }}>Plan de Estudios Oficial ComunaSmart</p>
                                 </div>
                             </div>
                             <button onClick={() => setSelectedCourse(null)} className="btn-glass" style={{ padding: '0.8rem', borderRadius: '50%' }}>✕</button>

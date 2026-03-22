@@ -107,7 +107,7 @@ export default function LiveIncidentsMap() {
                                 <div style={{ textAlign: 'center', padding: '10px', background: '#0f172a', borderRadius: '8px', border: `1px solid ${item.color}` }}>
                                     <h4 style={{ margin: '0 0 5px 0', color: item.color, fontSize: '1.1rem', fontWeight: 'bold' }}>{item.icon} {item.type.toUpperCase()}</h4>
                                     <p style={{ margin: 0, fontSize: '0.9rem', color: '#f1f5f9' }}>{item.desc}</p>
-                                    <div style={{ marginTop: '8px', fontSize: '0.7rem', color: '#64748b' }}>SISTEMA C5 - SMART COMUNA</div>
+                                    <div style={{ marginTop: '8px', fontSize: '0.7rem', color: '#64748b' }}>SISTEMA C5 - ComunaSmart</div>
                                 </div>
                             </Popup>
                         </Marker>

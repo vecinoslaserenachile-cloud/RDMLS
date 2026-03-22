@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { HeartPulse, Stethoscope, Users, Syringe, Activity, Globe, Eye, Search, PlusCircle, MapPin, Phone, MessageSquare, Clock, UserCheck, Star, Sparkles, FileCheck, Upload, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function SmartSalud() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('especialistas');
     const [regStep, setRegStep] = useState(1);
     const [uploadStatus, setUploadStatus] = useState('idle'); // idle, uploading, success
@@ -24,7 +25,33 @@ export default function SmartSalud() {
     };
 
     return (
-        <div className="page-container" style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: 'white' }}>
+        <div className="page-container" style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', color: 'white', position: 'relative' }}>
+            
+            {/* Botón Home Flotante */}
+            <button
+                onClick={() => navigate('/')}
+                style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '20px',
+                    zIndex: 2000,
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    padding: '10px 20px',
+                    borderRadius: '50px',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                }}
+            >
+                <HeartPulse size={18} color="#10b981" />
+                <span style={{ fontSize: '0.8rem', letterSpacing: '1px' }}>VOLVER AL PORTAL</span>
+            </button>
 
             {/* Cabecera Comunitaria */}
             <div className="glass-panel" style={{ padding: '2.5rem', borderRadius: '30px', marginBottom: '2rem', background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(2, 132, 199, 0.3) 100%)', border: '1px solid rgba(16, 185, 129, 0.4)', position: 'relative', overflow: 'hidden' }}>

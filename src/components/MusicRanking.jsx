@@ -115,7 +115,7 @@ export default function MusicRanking({ insideModal = false }) {
                     <Megaphone size={14} /> UTILIDAD PÚBLICA VLS
                 </div>
                 <marquee scrollamount="5" style={{ flex: 1, fontWeight: 'bold', fontSize: '0.85rem' }}>
-                    {liveAd ? `${liveAd.title}: ${liveAd.content} — REPORTA TU CASO GRATIS EN SMART COMUNA — ` : 'SISTEMA DE AVISOS GRATUITOS PARA MASCOTAS Y DOCUMENTOS EXTRAVIADOS — COMUNÍCATE CON NOSOTROS — '}
+                    {liveAd ? `${liveAd.title}: ${liveAd.content} — REPORTA TU CASO GRATIS EN ComunaSmart — ` : 'SISTEMA DE AVISOS GRATUITOS PARA MASCOTAS Y DOCUMENTOS EXTRAVIADOS — COMUNÍCATE CON NOSOTROS — '}
                 </marquee>
             </div>
 

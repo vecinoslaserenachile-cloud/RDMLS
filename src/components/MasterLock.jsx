@@ -67,7 +67,7 @@ export default function MasterLock({ onUnlock, setIsGuest, setGuestTimeLeft, set
             if (err.code === 'auth/unauthorized-domain') {
                 setError(`ERROR DE CONFIGURACIÓN: El dominio actual no está validado en la red de seguridad.`);
             } else if (err.code === 'auth/popup-closed-by-user') {
-                setError("La ventana de acceso fue cerrada prematuramente.");
+                setError("Acceso Cancelado: Parece que cerraste la ventana de identificación antes de tiempo. Vuelve a intentarlo.");
             } else {
                 setError(`Error de conexión segura. Por favor, reintente.`);
             }
@@ -127,11 +127,11 @@ export default function MasterLock({ onUnlock, setIsGuest, setGuestTimeLeft, set
                 </div>
 
                 <h1 style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', marginBottom: '0.5rem', letterSpacing: '-0.5px' }}>
-                    SEGURIDAD VECINOSMART
+                    SEGURIDAD COMUNASMART
                 </h1>
                 <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: '1.5' }}>
                     Identificación Requerida para Acceso Institucional.
-                    <br/><span style={{ opacity: 0.6 }}>Red Protegida de La Serena</span>
+                    <br/><span style={{ opacity: 0.6 }}>Red Digital Protegida de La Serena</span>
                 </p>
 
                 {error && (
@@ -228,7 +228,7 @@ export default function MasterLock({ onUnlock, setIsGuest, setGuestTimeLeft, set
             </div>
 
             <div style={{ marginTop: '2rem', color: '#475569', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px' }}>
-                INTELIGENCIA ARTIFICIAL SENTINEL FARO & VECINOSMART &copy; 2026
+                INTELIGENCIA ARTIFICIAL SENTINEL FARO & COMUNASMART &copy; 2026
             </div>
 
             <style>{`

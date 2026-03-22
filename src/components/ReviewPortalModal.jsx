@@ -38,7 +38,7 @@ export default function ReviewPortalModal({ onClose }) {
                         <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
                             <ShieldCheck size={64} color="var(--brand-primary)" style={{ margin: '0 auto 1.5rem auto' }} />
                             <h3 style={{ color: 'white', marginBottom: '1rem' }}>Identidad Requerida</h3>
-                            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: '1.6' }}>Para mantener la integridad y transparencia del sistema Smart Comuna, necesitamos que te identifiques antes de enviar tu evaluación oficial o inyectar código/mejoras.</p>
+                            <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: '1.6' }}>Para mantener la integridad y transparencia del sistema ComunaSmart, necesitamos que te identifiques antes de enviar tu evaluación oficial o inyectar código/mejoras.</p>
                             <button onClick={onClose} className="btn btn-primary" style={{ padding: '1rem 2rem', fontWeight: 'bold' }}>Cerrar y Loguearse</button>
                         </div>
                     ) : submitted ? (

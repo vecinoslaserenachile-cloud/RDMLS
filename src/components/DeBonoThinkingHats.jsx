@@ -12,12 +12,14 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SONGS = [
-    { title: "Vamos a recordar y pensar", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/Vamos%20a%20recordar%20y%20pensar.mp3", hat: "Blanco", duration: "03:45" },
-    { title: "La cumbia de los seis sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/La%20cumbia%20de%20los%20seis%20sombreros.mp3", hat: "Rojo", duration: "04:12" },
-    { title: "Sombrero heavy", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/Sombrero%20heavy.mp3", hat: "Negro", duration: "02:58" },
-    { title: "Sombrero regalón", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/Sombrero%20regal%C3%B3n.mp3", hat: "Amarillo", duration: "03:20" },
-    { title: "Blusero del jazz con sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/Blusero%20del%20jazz%20con%20sombreros.mp3", hat: "Verde", duration: "04:05" },
-    { title: "Todos podemos pensar con 6 sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/audio/todos%20podemos%20pensar%20con%206%20sombreros.mp3", hat: "Azul", duration: "03:50" }
+    { title: "Vamos a recordar y pensar", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Vamos%20a%20recordar%20y%20pensar.mp3", hat: "Blanco", duration: "03:45" },
+    { title: "La cumbia de los seis sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/La%20cumbia%20de%20los%20seis%20sombreros.mp3", hat: "Rojo", duration: "04:12" },
+    { title: "Sombrero heavy", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20heavy.mp3", hat: "Negro", duration: "02:58" },
+    { title: "Sombrero regalón", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20regal%C3%B3n.mp3", hat: "Amarillo", duration: "03:20" },
+    { title: "Blusero del jazz con sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Blusero%20del%20jazz%20con%20sombreros.mp3", hat: "Verde", duration: "04:05" },
+    { title: "Todos podemos pensar con 6 sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/todos%20podemos%20pensar%20con%206%20sombreros.mp3", hat: "Azul", duration: "03:50" },
+    { title: "Cámbiate el sombrero", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/cambiate%20el%20sombrero%20xcbrgavls26.mp3", hat: "Multi", duration: "03:15" },
+    { title: "Cámbiate Carlitos", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Cambiate%20carlitos.mp3", hat: "Multi", duration: "02:45" }
 ];
 
 const HATS = [
@@ -38,6 +40,8 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [customScripts, setCustomScripts] = useState(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const [audioProgress, setAudioProgress] = useState(0);
+    const [currentTime, setCurrentTime] = useState("0:00");
 
     const musicRef = useRef(new Audio());
 
@@ -59,12 +63,25 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
 
         window.dispatchEvent(new CustomEvent('radio-pause'));
         
+        const audio = musicRef.current;
+        const updateProgress = () => {
+            const progress = (audio.currentTime / audio.duration) * 100;
+            setAudioProgress(progress || 0);
+            
+            const mins = Math.floor(audio.currentTime / 60);
+            const secs = Math.floor(audio.currentTime % 60);
+            setCurrentTime(`${mins}:${secs < 10 ? '0' : ''}${secs}`);
+        };
+
+        audio.addEventListener('timeupdate', updateProgress);
+        
         return () => {
             window.removeEventListener('resize', handleResize);
             window.removeEventListener('vls-stop-hats', handleStop);
             window.removeEventListener('stop-all-audio', handleStop);
             window.dispatchEvent(new CustomEvent('radio-resume'));
-            musicRef.current.pause();
+            audio.removeEventListener('timeupdate', updateProgress);
+            audio.pause();
             window.speechSynthesis.cancel();
         };
     }, [onClose]);
@@ -154,7 +171,7 @@ FECHA: ${new Date().toLocaleString()}
 
 ${HATS.map(h => `${h.title} (${h.sub}):\n${customScripts[h.id] || h.script}\n`).join('\n')}
 -----------------------------------------------
-Smart Comuna 2026 - Innovación Regional
+ComunaSmart 2026 - Innovación Regional
         `;
         const blob = new Blob([content], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -332,50 +349,85 @@ Smart Comuna 2026 - Innovación Regional
                                                 />
                                             </div>
 
-                                            <div style={{ 
-                                                position: 'absolute', 
-                                                bottom: '0', left: '0', right: '0', 
-                                                padding: '2.5rem', 
-                                                background: 'linear-gradient(to top, rgba(2, 6, 23, 0.95), transparent)', 
-                                            }}>
-                                                <div style={{ fontSize: '1rem', color: hat.accent, fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '2px' }}>MODO DE PENSAMIENTO: {hat.title}</div>
-                                                <h4 style={{ fontSize: '2.2rem', margin: '0 0 1.5rem 0', color: 'white', fontWeight: 900 }}>{hat.sub}</h4>
-                                                
-                                                <div style={{ display: 'flex', gap: '1rem' }}>
-                                                    <button 
-                                                        onClick={speak} 
-                                                        className="btn-primary" 
-                                                        style={{ 
-                                                            flex: 1, 
-                                                            background: hat.accent, 
-                                                            color: hat.id === 'white' ? '#000' : '#fff', 
-                                                            borderRadius: '16px', 
-                                                            padding: '1.2rem', 
-                                                            fontWeight: 'bold', 
-                                                            fontSize: '1.1rem', 
-                                                            display: 'flex', 
-                                                            alignItems: 'center', 
-                                                            justifyContent: 'center', 
-                                                            gap: '10px', 
-                                                            border: 'none', 
-                                                            cursor: 'pointer' 
-                                                        }}
-                                                    >
-                                                        {isSpeaking ? <VolumeX size={24} /> : <Volume2 size={24} />}
-                                                        {isSpeaking ? 'DETENER RELATO' : 'ESCUCHAR SOMBRERO'}
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => toggleMusic(activeIdx)}
-                                                        style={{ 
-                                                            width: '64px', height: '64px', borderRadius: '20px', background: '#fbbf24', 
-                                                            border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                                            cursor: 'pointer', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
-                                                        }}
-                                                    >
-                                                        {isPlaying ? <Pause size={30} color="black" /> : <Play size={30} color="black" style={{ marginLeft: '4px' }} />}
-                                                    </button>
+                                                <div style={{ 
+                                                    position: 'absolute', 
+                                                    bottom: '0', left: '0', right: '0', 
+                                                    padding: isMobile ? '1.5rem' : '2.5rem', 
+                                                    background: 'linear-gradient(to top, rgba(2, 6, 23, 0.98), transparent)', 
+                                                    zIndex: 2
+                                                }}>
+                                                    <div style={{ fontSize: '0.8rem', color: hat.accent, fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '2px' }}>MODO DE PENSAMIENTO: {hat.title}</div>
+                                                    <h4 style={{ fontSize: isMobile ? '1.5rem' : '2.2rem', margin: '0 0 1rem 0', color: 'white', fontWeight: 900 }}>{hat.sub}</h4>
+                                                    
+                                                    {/* REPRODUCTOR PROPIO VLS */}
+                                                    <div style={{ 
+                                                        background: 'rgba(255,255,255,0.05)', 
+                                                        borderRadius: '24px', 
+                                                        padding: '1rem', 
+                                                        border: '1px solid rgba(255,255,255,0.1)',
+                                                        marginBottom: '1rem',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: '10px'
+                                                    }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                                <Music size={16} color="#fbbf24" />
+                                                                <div style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>{SONGS[activeIdx].title}</div>
+                                                            </div>
+                                                            <div style={{ fontSize: '0.65rem', color: '#94a3b8' }}>{currentTime} / {SONGS[activeIdx].duration}</div>
+                                                        </div>
+                                                        <div style={{ h: '4px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+                                                            <div style={{ width: `${audioProgress}%`, height: '100%', background: '#fbbf24', transition: '0.1s' }} />
+                                                        </div>
+                                                    </div>
+
+                                                    <div style={{ display: 'flex', gap: '0.8rem' }}>
+                                                        <button 
+                                                            onClick={speak} 
+                                                            className="btn-primary" 
+                                                            style={{ 
+                                                                flex: 1, 
+                                                                background: hat.id === 'green' ? '#22c55e' : (hat.id === 'white' ? '#fff' : hat.accent), 
+                                                                color: hat.id === 'white' ? '#000' : '#fff', 
+                                                                borderRadius: '16px', 
+                                                                padding: isMobile ? '0.8rem' : '1.2rem', 
+                                                                fontWeight: 'bold', 
+                                                                fontSize: isMobile ? '0.8rem' : '1.1rem', 
+                                                                display: 'flex', 
+                                                                alignItems: 'center', 
+                                                                justifyContent: 'center', 
+                                                                gap: '10px', 
+                                                                border: 'none', 
+                                                                cursor: 'pointer' 
+                                                            }}
+                                                        >
+                                                            {isSpeaking ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                                                            {isSpeaking ? 'DETENER RELATO' : 'ESCUCHAR SOMBRERO'}
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => toggleMusic(activeIdx)}
+                                                            style={{ 
+                                                                width: isMobile ? '48px' : '64px', height: isMobile ? '48px' : '64px', borderRadius: '18px', background: '#fbbf24', 
+                                                                border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                                cursor: 'pointer', boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                                                            }}
+                                                        >
+                                                            {isPlaying ? <Pause size={isMobile ? 24 : 30} color="black" /> : <Play size={isMobile ? 24 : 30} color="black" style={{ marginLeft: '4px' }} />}
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => toggleMusic((activeIdx + 1) % SONGS.length)}
+                                                            style={{ 
+                                                                width: isMobile ? '48px' : '48px', height: isMobile ? '48px' : '48px', borderRadius: '18px', background: 'rgba(255,255,255,0.1)', 
+                                                                border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                                                cursor: 'pointer'
+                                                            }}
+                                                            title="Siguiente Canción"
+                                                        >
+                                                            <SkipForward size={20} color="white" />
+                                                        </button>
+                                                    </div>
                                                 </div>
-                                            </div>
                                         </>
                                     )}
                                 </div>

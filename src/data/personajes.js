@@ -4,7 +4,7 @@ export const personajesSerena = [
     nombre: "Serenito",
     rol: "Protagonista",
     sector: "La Serena",
-    descripcion: "El joven tecnológico protagonista. Estudia informática en la universidad y es el nexo entre la ciudadanía y la innovación digital del proyecto Smart Comuna."
+    descripcion: "El joven tecnológico protagonista. Estudia informática en la universidad y es el nexo entre la ciudadanía y la innovación digital del proyecto ComunaSmart."
   },
   {
     id: "serenito_abuelo",

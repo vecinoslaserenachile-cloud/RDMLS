@@ -44,7 +44,7 @@ export default function MartinSecurityShield() {
             { msg: '---> Módulo: Farito Navigator (Navegador Web Guiado) [INTEGRADO]', time: 150 },
             { msg: 'DEFENSE: Martin Shield Anti-Spy Engine [READY]', time: 200 },
             { msg: 'SCAN: Verificando integridad de nodos criptográficos y balanceadores', time: 400 },
-            { msg: 'OK: Todos los Módulos Smart Comuna cargados y operativos', time: 300 },
+            { msg: 'OK: Todos los Módulos ComunaSmart cargados y operativos', time: 300 },
             { msg: 'MARTIN SHIELD ACTIVE: Arquitectura Zero-Trust asegurada. 2026 Safe Mode ON.', time: 500 }
         ];
 
@@ -84,7 +84,7 @@ export default function MartinSecurityShield() {
             window.dispatchEvent(new CustomEvent('open-smart-share-qr', { 
                 detail: { 
                     url: window.location.href,
-                    title: '¡Difunde la App Smart Comuna!',
+                    title: '¡Difunde la App ComunaSmart!',
                     message: 'Escanea el código para llevar la ciudad en tu bolsillo.'
                 } 
             }));
@@ -219,35 +219,46 @@ export default function MartinSecurityShield() {
     return (
         <div style={{
             position: 'fixed',
-            inset: 0,
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: '22%', // Criterio de diseño: un poco más del 15% para legibilidad del código
             zIndex: 100000,
-            background: 'rgba(5, 10, 25, 0.98)',
+            background: 'rgba(5, 10, 25, 0.9)',
+            backdropFilter: 'blur(10px)',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            flexDirection: 'column',
+            borderRight: '1px solid #10b981',
+            boxShadow: '10px 0 30px rgba(0,0,0,0.5)',
+            transformOrigin: 'left',
+            animation: 'slide-in-left 0.5s ease-out'
         }}>
+            <style>{`
+                @keyframes slide-in-left {
+                    from { transform: scaleX(0); opacity: 0; }
+                    to { transform: scaleX(1); opacity: 1; }
+                }
+            `}</style>
             <div style={{
-                width: '95%',
-                maxWidth: '1200px',
+                height: '100%',
                 background: '#0a0a0a',
-                border: '1px solid #10b981',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                boxShadow: '0 0 40px rgba(16, 185, 129, 0.2)',
-                fontFamily: 'monospace'
+                display: 'flex',
+                flexDirection: 'column',
+                fontFamily: 'monospace',
+                overflow: 'hidden'
             }}>
-                <div style={{ padding: '0.75rem 1rem', background: '#052e16', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #10b981', gap: '1rem', flexWrap: 'nowrap' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981', flex: 1, minWidth: 0 }}>
-                        <Terminal size={18} style={{ flexShrink: 0 }} />
-                        <span style={{ fontWeight: 'bold', letterSpacing: '1px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>SHIELD TERMINAL v3.0 (MARTIN SECURITY 360° ©)</span>
+                <div style={{ padding: '0.75rem', background: '#052e16', display: 'flex', flexDirection: 'column', borderBottom: '1px solid #10b981', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#10b981' }}>
+                        <Terminal size={14} />
+                        <span style={{ fontWeight: 'bold', fontSize: '0.7rem' }}>SHIELD TERMINAL v3.5</span>
                     </div>
                     {!isChecking && (
-                        <div style={{ display: 'flex', gap: '1rem' }}>
+                        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                             <button 
                                 onClick={() => setActiveTab('audit')}
-                                style={{ background: activeTab === 'audit' ? '#10b981' : 'transparent', border: '1px solid #10b981', borderRadius: '4px', color: activeTab === 'audit' ? '#000' : '#10b981', padding: '0.4rem 0.8rem', cursor: 'pointer', fontWeight: 'bold' }}
+                                style={{ background: activeTab === 'audit' ? '#10b981' : 'transparent', border: '1px solid #10b981', borderRadius: '4px', color: activeTab === 'audit' ? '#000' : '#10b981', padding: '0.2rem 0.4rem', cursor: 'pointer', fontSize: '0.6rem' }}
                             >
-                                AUDITORÍA SMART
+                                AUDIT
                             </button>
                             <button 
                                 onClick={() => setActiveTab('cloudflare')}
@@ -256,20 +267,15 @@ export default function MartinSecurityShield() {
                                     border: '1px solid #f97316', 
                                     borderRadius: '4px', 
                                     color: activeTab === 'cloudflare' ? '#000' : '#f97316', 
-                                    padding: '0.4rem 0.8rem', 
-                                    cursor: 'pointer', 
-                                    fontWeight: 'bold',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '0.5rem',
+                                    padding: '0.2rem 0.4rem', 
+                                    fontSize: '0.6rem',
+                                    cursor: 'pointer',
                                     opacity: isAuthorized ? 1 : 0.5
                                 }}
-                                title={isAuthorized ? "Gestión de Infraestructura" : "Acceso Restringido: Requiere Perfil de Superusuario"}
                             >
-                                {isAuthorized ? <Server size={14} /> : <Lock size={14} />}
-                                CLOUDFLARE ☁️
+                                CF ☁️
                             </button>
-                            <button onClick={() => setShowConsole(false)} style={{ flexShrink: 0, background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', borderRadius: '4px', color: '#ef4444', padding: '0.4rem 0.8rem', cursor: 'pointer', fontWeight: 'bold' }}>SALIR</button>
+                            <button onClick={() => setShowConsole(false)} style={{ background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', borderRadius: '4px', color: '#ef4444', padding: '0.2rem 0.4rem', fontSize: '0.6rem', cursor: 'pointer' }}>SALIR</button>
                         </div>
                     )}
                 </div>
@@ -277,18 +283,16 @@ export default function MartinSecurityShield() {
                 <div style={{ padding: '2rem', height: '80vh', maxHeight: '700px', display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto' }}>
                     {activeTab === 'audit' ? (
                         <>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', paddingBottom: '1rem', borderBottom: '1px dashed rgba(16, 185, 129, 0.3)' }}>
-                                <div style={{ overflow: 'hidden', whiteSpace: 'nowrap' }}>
-                                    <h2 style={{ margin: 0, color: '#10b981', textTransform: 'uppercase', fontSize: '1rem', overflow: 'hidden', textOverflow: 'ellipsis', letterSpacing: '0.5px' }}>
-                                        MARTIN PROTECT VECINOS - www.vecinoslaserena.cl / vecinosmart.cl
-                                    </h2>
+                            <div style={{ paddingBottom: '0.5rem', borderBottom: '1px dashed rgba(16, 185, 129, 0.3)' }}>
+                                <div style={{ fontSize: '0.6rem', color: '#10b981' }}>
+                                    MARTIN PROTECT - COMUNASMART
                                 </div>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '1rem' }}>
                                 {logs.map((log, i) => (
-                                    <div key={i} className="animate-fade-in" style={{ color: log.startsWith('OK') || log.startsWith('SHIELD') ? '#10b981' : '#38bdf8', display: 'flex', gap: '1rem', fontSize: '0.9rem' }}>
-                                        <span style={{ opacity: 0.5 }}>[{new Date().toISOString().substring(11, 23)}]</span>
+                                    <div key={i} className="animate-fade-in" style={{ color: log.startsWith('OK') || log.startsWith('SHIELD') ? '#10b981' : '#38bdf8', fontSize: '0.65rem', marginBottom: '4px' }}>
+                                        <span style={{ color: '#10b981', marginRight: '4px' }}>&gt;</span>
                                         <span>{log}</span>
                                     </div>
                                 ))}
@@ -298,34 +302,23 @@ export default function MartinSecurityShield() {
 
                                 {!isChecking && (
                                     <div className="animate-fade-in" style={{ marginTop: '2rem', borderTop: '1px dashed rgba(16, 185, 129, 0.3)', paddingTop: '2rem' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                                            <h3 style={{ margin: 0, color: '#10b981', textTransform: 'uppercase', fontSize: '1.4rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                                                <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1.5s infinite', boxShadow: '0 0 10px #ef4444' }}></div>
-                                                C5: Centro de Comando (Cámara Faro en Vivo)
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                                            <h3 style={{ margin: 0, color: '#10b981', textTransform: 'uppercase', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1.5s infinite' }}></div>
+                                                C5 LIVE M.
                                             </h3>
                                         </div>
                                         <div style={{ display: 'flex', gap: '15px', flexDirection: 'column', height: 'auto' }}>
-                                            <div style={{ flex: '1', display: 'flex', gap: '15px', height: '180px' }}>
-                                                <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                                    <div style={{ width: '400%', height: '400%', position: 'absolute', top: '-180%', left: '-100%' }}>
-                                                        <iframe src="https://www.youtube.com/embed/fUeo_EhVFTY?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=fUeo_EhVFTY&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
-                                                    </div>
-                                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (ZOOM 34x)</div>
-                                                </div>
-                                                <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                                    <div style={{ width: '350%', height: '350%', position: 'absolute', top: '-80%', left: '-40%' }}>
-                                                        <iframe src="https://www.youtube.com/embed/fUeo_EhVFTY?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=fUeo_EhVFTY&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
-                                                    </div>
-                                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (WIDE ANGLE)</div>
-                                                </div>
-                                            </div>
-                                            <div style={{ flex: '2', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000', height: '350px' }}>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #C41230', background: '#000', height: '100px' }}>
                                                 <iframe src="https://www.youtube.com/embed/fUeo_EhVFTY?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=fUeo_EhVFTY&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
-                                                <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
-                                                    <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
-                                                    <span style={{ letterSpacing: '1px' }}>C5: FARO M. EN VIVO</span>
-                                                </div>
+                                                <div style={{ position: 'absolute', bottom: '4px', left: '6px', color: '#00D4FF', fontSize: '0.5rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '1px 4px', borderRadius: '2px' }}>CAM-02</div>
                                             </div>
+                                            <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #C41230', background: '#000', height: '100px' }}>
+                                                <iframe src="https://www.youtube.com/embed/fUeo_EhVFTY?autoplay=1&mute=1&controls=0&modestbranding=1&loop=1&playlist=fUeo_EhVFTY&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
+                                                <div style={{ position: 'absolute', bottom: '4px', left: '6px', color: '#FFD700', fontSize: '0.5rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '1px 4px', borderRadius: '2px' }}>C5: FARO M.</div>
+                                            </div>
+                                        </div>
                                         </div>
                                     </div>
                                 )}

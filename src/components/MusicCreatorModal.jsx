@@ -16,7 +16,7 @@ export default function MusicCreatorModal({ onClose }) {
 Avanza firme y con visión genial,
 Hoy ${brandOrg} es un faro fenomenal.
 Conectando a los barrios sin igual,
-Nuestra Smart Comuna es la capital.
+Nuestra ComunaSmart es la capital.
 
 [Coro]
 ¡Vamos ${brandOrg}, segura y real!
@@ -293,7 +293,7 @@ vuelvo siempre a volverte a querer.
 ¡Oh mi Serena, ciudad del aire fiel!
 Tus calles llevan aroma de clavel.
 En este vals te entrego mi querer,
-la Smart Comuna te ve hoy renacer.`);
+la ComunaSmart te ve hoy renacer.`);
                                     setActiveTab('letras');
                                 }}
                                 className="btn-glass" 

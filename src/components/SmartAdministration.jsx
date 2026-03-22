@@ -20,8 +20,8 @@ export default function SmartAdministration({ onClose, currentUser }) {
     
     // E-learning status
     const [courses, setCourses] = useState([
-        { id: 'induccion', name: 'Inducción al Teletrabajo Municipal', progress: 85, completed: false, description: 'Protocolos de seguridad y uso de herramientas VLS.' },
-        { id: 'smart-city', name: 'Gestión Smart City VLS', progress: 30, completed: false, description: 'Introducción a modelos de ciudad inteligente de bajo costo.' }
+        { id: 'induccion', name: 'Inducción al Teletrabajo ComunaSmart', progress: 85, completed: false, description: 'Protocolos de seguridad y uso de herramientas digitales institucionales.' },
+        { id: 'smart-city', name: 'Gestión Smart City La Serena', progress: 30, completed: false, description: 'Introducción a modelos de ciudad inteligente y gobernanza soberana.' }
     ]);
 
     const videoRef = useRef(null);
@@ -83,7 +83,7 @@ export default function SmartAdministration({ onClose, currentUser }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <div style={{ background: '#10b981', padding: '10px', borderRadius: '12px' }}><ShieldCheck size={28} /></div>
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>SMART ADMINISTRATION VLS</h1>
+                        <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>SMART ADMINISTRATION · COMUNASMART</h1>
                         <p style={{ margin: 0, fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold' }}>SISTEMA DE GESTIÓN INTERNA MUNICIPAL (HNR / CTR)</p>
                     </div>
                 </div>

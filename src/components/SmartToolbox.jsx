@@ -79,14 +79,6 @@ export default function SmartToolbox() {
             bgColor: 'rgba(59, 130, 246, 0.2)'
         },
         { 
-            id: 'dial', 
-            icon: Mic, 
-            label: 'Radio Dial', 
-            event: 'trigger-don-radios',
-            color: '#eab308',
-            bgColor: 'rgba(234, 179, 8, 0.2)'
-        },
-        { 
             id: 'radar', 
             icon: Wifi, 
             label: 'Radar Vecinal', 

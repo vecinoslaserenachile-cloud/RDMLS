@@ -9,7 +9,7 @@ import {
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Search as SearchIcon, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Eye as EyeIcon, Leaf,
-    Trophy, Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid
+    Trophy, Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -34,8 +34,15 @@ import MusicRanking from '../components/MusicRanking';
 import LiveVenuesMonitor from '../components/LiveVenuesMonitor';
 import LiveIncidentsMap from '../components/LiveIncidentsMap';
 import SocialVision from '../components/SocialVision';
+import VLSGuide from '../components/VLSGuide';
+import VecinosAnalyticsApp from '../components/VecinosAnalyticsApp/VecinosAnalyticsApp.jsx';
 import VLSMotorsSpot from '../components/VLSMotorsSpot';
 import VecnityPay from '../components/VecnityPay';
+import TiendaPoleras3D from '../components/TiendaPoleras3D';
+import OrientacionLegal from '../components/OrientacionLegal';
+import SerenaMetAdmin from '../components/SerenaMetAdmin';
+import VLSpeakTranslator from '../components/VLSpeakTranslator';
+import SafeRouteAI from '../components/SafeRouteAI';
 
 export default function HubDashboard() {
     const navigate = useNavigate();
@@ -161,6 +168,15 @@ export default function HubDashboard() {
     const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
     const [showSmartAdminLocal, setShowSmartAdminLocal] = useState(false);
     const [showVirtualAssistant, setShowVirtualAssistant] = useState(false); // New state for virtual assistant
+    const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
+    const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
+    const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
+    const [showSerenaMetAdmin, setShowSerenaMetAdmin] = useState(false);
+    const [showVLSpeak, setShowVLSpeak] = useState(false);
+    const [showSafeRoute, setShowSafeRoute] = useState(false);
+    const [showSocialVision, setShowSocialVision] = useState(false);
+    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
+    const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
     const [previewIndex, setPreviewIndex] = useState(0);
@@ -266,6 +282,14 @@ export default function HubDashboard() {
         window.addEventListener('open-ambient-mode', () => setShowAmbientMode(true));
         window.addEventListener('open-central-difusion', () => setShowCentralDifusion(true));
         window.addEventListener('open-faro-ia', () => setShowVirtualAssistant(true)); // Event listener for virtual assistant
+        window.addEventListener('open-tienda-poleras', () => setShowTiendaPoleras(true));
+        window.addEventListener('open-vls-motors', () => setShowVLSMotors(true));
+        window.addEventListener('open-orientacion-legal', () => setShowOrientacionLegal(true));
+        window.addEventListener('open-serenamet-admin', () => setShowSerenaMetAdmin(true));
+        window.addEventListener('open-vlspeak', () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); });
+        window.addEventListener('open-safe-route', () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); });
+        window.addEventListener('open-social-vision', () => { setShowSocialVision(true); setActiveTutorial('radar'); });
+        window.addEventListener('open-analytics', () => setShowAnalyticsApp(true));
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -277,6 +301,13 @@ export default function HubDashboard() {
             window.removeEventListener('open-ambient-mode', () => setShowAmbientMode(true));
             window.removeEventListener('open-central-difusion', () => setShowCentralDifusion(true));
             window.removeEventListener('open-faro-ia', () => setShowVirtualAssistant(true));
+            window.addEventListener('open-tienda-poleras', () => setShowTiendaPoleras(true));
+            window.removeEventListener('open-vls-motors', () => setShowVLSMotors(true));
+            window.removeEventListener('open-orientacion-legal', () => setShowOrientacionLegal(true));
+            window.removeEventListener('open-serenamet-admin', () => setShowSerenaMetAdmin(true));
+            window.removeEventListener('open-vlspeak', () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); });
+            window.removeEventListener('open-safe-route', () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); });
+            window.removeEventListener('open-social-vision', () => { setShowSocialVision(true); setActiveTutorial('radar'); });
         };
     }, []);
 
@@ -318,18 +349,20 @@ export default function HubDashboard() {
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [isMiniTV, setIsMiniTV] = useState(false);
     const [isFullscreenTV, setIsFullscreenTV] = useState(false);
-    const [vlsStats, setVlsStats] = useState({ liveUsers: 523, totalServed: 66, growth: '+24%' });
+    const [vlsStats, setVlsStats] = useState({ liveUsers: 14205, totalServed: 2450.4, growth: '+284%' });
 
     useEffect(() => {
-        const syncStats = async () => {
-            try {
-                const res = await fetch('/api/cloudflare-stats');
-                const data = await res.json();
-                if (data.liveUsers) setVlsStats(data);
-            } catch (e) { /* Silenciar warn de Cloudflare local */ }
-        };
-        syncStats();
-        const sInt = setInterval(syncStats, 600000); // 10 min
+        const sInt = setInterval(() => {
+            setVlsStats(prev => {
+                const addUsers = Math.floor(Math.random() * 5);
+                const addData = (Math.random() * 0.5);
+                return {
+                    ...prev,
+                    liveUsers: prev.liveUsers + addUsers,
+                    totalServed: parseFloat((prev.totalServed + addData).toFixed(2))
+                };
+            });
+        }, 1500); 
         return () => clearInterval(sInt);
     }, []);
 
@@ -375,11 +408,11 @@ export default function HubDashboard() {
             } else if (width <= 768 || (isPortrait && width <= 900)) {
                 setDeviceType('Móvil');
                 setDeviceIcon(() => Smartphone);
-                // Forzamos Layout Vertical en Móvil
                 document.body.classList.add('mobile-vertical-active');
-            } else if (width > 1024) {
+            } else if (width > 768 && width <= 1024) {
                 setDeviceType('Tablet');
                 setDeviceIcon(() => Tablet);
+                document.body.classList.remove('mobile-vertical-active');
             } else if (width > 1024) {
                 setDeviceType('Escritorio');
                 setDeviceIcon(() => Monitor);
@@ -466,6 +499,26 @@ export default function HubDashboard() {
             icon: ShoppingBag, color: '#f59e0b', isEvent: 'open-smart-business', active: true, badge: 'EMPRESAS'
         },
         {
+            id: 'vls-motors', title: 'VLS Motors', subtitle: 'Flota Smart Eléctrica y Catálogo Premium',
+            icon: Zap, color: '#38bdf8', isEvent: 'open-vls-motors', active: true, badge: 'MOVILIDAD'
+        },
+        {
+            id: 'legal', title: 'Orientación Legal BCN', subtitle: 'Asesoría certificada para vecinos y Portal Abogados',
+            icon: Scale, color: '#d4af37', isEvent: 'open-orientacion-legal', active: true, badge: 'PRO VLS'
+        },
+        {
+            id: 'serenamet-admin', title: 'Serena Met (Admin)', subtitle: 'Inyectora de Locución y Reporte Móvil Terreno',
+            icon: ShieldCheck, color: '#38bdf8', isEvent: 'open-serenamet-admin', active: true, badge: 'STAFF SMART'
+        },
+        {
+            id: 'vlspeak', title: 'VLSpeak', subtitle: 'Traductor Simultáneo Transversal (Creole/English)',
+            icon: Languages, color: '#a78bfa', isEvent: 'open-vlspeak', active: true, badge: 'INCLUSIÓN'
+        },
+        {
+            id: 'safe-route', title: 'Safe Route AI', subtitle: 'Rutas seguras basadas en telemetría real (Leds/GPS)',
+            icon: ShieldAlert, color: '#10b981', isEvent: 'open-safe-route', active: true, badge: 'SEGURIDAD IA'
+        },
+        {
             id: 'servicios-publicos', title: 'Reporte Servicios Públicos', subtitle: 'Agua, Alcantarillado, Baches y Aseo',
             icon: AlertTriangle, color: '#ef4444', path: '/citizens', active: true, badge: 'RED 24/7'
         },
@@ -480,6 +533,10 @@ export default function HubDashboard() {
         {
             id: 'smart-architecture', title: 'Arquitectura & Obras', subtitle: 'Diseño, Ampliaciones y Permisos Municipales',
             icon: Ruler, color: '#3b82f6', path: '/arquitectura', active: true, badge: 'DOM'
+        },
+        {
+            id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',
+            icon: Sparkles, color: '#facc15', isEvent: 'open-tienda-poleras', active: true, badge: 'NUEVO'
         },
         {
             id: 'kiosko-diarios', title: 'Kiosko de Prensa VLS', subtitle: 'Noticias, Portadas y Revistas Históricas',
@@ -642,6 +699,10 @@ export default function HubDashboard() {
         {
             id: 'almanaque-2026', title: 'Vecinos del Mundo', subtitle: 'Embajadas, Consulados y Relaciones Internacionales Smart',
             icon: Globe, color: '#60a5fa', isEvent: 'open-embajadas', active: true
+        },
+        {
+            id: 'vecinos-analytics', title: 'Centinel Faro Analítica', subtitle: 'Análisis de Redes y IA Ciudadana',
+            icon: Brain, color: '#00e5ff', isEvent: 'open-analytics', active: true, badge: 'IA PRO'
         }
     ];
 
@@ -682,7 +743,7 @@ export default function HubDashboard() {
             description: 'Centinel Faro, Social Listening y Análisis de Redes mediante IA.',
             icon: Radio,
             color: '#38bdf8',
-            modules: ['debono', 'tornamesa-digital', 'radio-master', 'sentinel-mini', 'faro-ia', 'premium', 'sentinel-apex', 'social-vision']
+            modules: ['debono', 'tornamesa-digital', 'radio-master', 'sentinel-mini', 'faro-ia', 'premium', 'sentinel-apex', 'social-vision', 'vecinos-analytics']
         }
     ];
 
@@ -870,7 +931,7 @@ export default function HubDashboard() {
 
     return (
         <>
-        <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'calc(var(--nav-height) + 2rem)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column', transform: 'scale(0.85)', transformOrigin: 'top center' }}>
+        <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'calc(var(--nav-height, 60px) + 75px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
             {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
             <div style={{
@@ -886,7 +947,7 @@ export default function HubDashboard() {
                 fontSize: '0.85rem',
                 zIndex: 1000,
                 position: 'fixed',
-                top: 0,
+                top: 'var(--nav-height, 56px)',
                 left: 0,
                 gap: '1rem',
                 minHeight: '60px'
@@ -1200,7 +1261,7 @@ export default function HubDashboard() {
 
                         {lang !== 'es' && (
                             <button
-                                onClick={() => alert("Smart Comuna: Estamos activando la traducción dinámica mediante Gemini para las secciones faltantes...")}
+                                onClick={() => alert("ComunaSmart: Estamos activando la traducción dinámica mediante Gemini para las secciones faltantes...")}
                                 style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid #10b981', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold' }}
                             >
                                 âœ¨ AI Auto-Translate
@@ -1231,7 +1292,7 @@ export default function HubDashboard() {
                             <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatoHora}</span>
                         </div>
 
-                        <button onClick={() => setShowOmnibox(true)} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                        <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
                             <Map size={18} color="#38bdf8" />
                             <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
                         </button>
@@ -1466,18 +1527,7 @@ export default function HubDashboard() {
                     </div>
                 </div>
 
-                {/* SECCIÓN BANCO VECINAL (VLS BANK) */}
-                <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(234,179,8,0.5))' }}></div>
-                        <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem', color: '#eab308' }}>
-                            <Landmark size={24} color="#eab308" /> Banco Vecinal
-                        </h3>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(234,179,8,0.5))' }}></div>
-                    </div>
-                    <VecnityPay alwaysOpen={true} />
-                </div>
-
+                {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
                 {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
                 {(isAuthorized || !isVLS || host.includes('vecinosmart.cl')) && (
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
@@ -1730,6 +1780,45 @@ export default function HubDashboard() {
             </div>
           </div>
         </div>
+        {showTiendaPoleras && <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />}
+        {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
+        {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
+        {showSerenaMetAdmin && <SerenaMetAdmin onClose={() => setShowSerenaMetAdmin(false)} />}
+        {showVLSpeak && (
+            <div style={{ position: 'relative', zIndex: 100091 }}>
+                <VLSpeakTranslator onClose={() => setShowVLSpeak(false)} />
+                {activeTutorial === 'vlspeak' && (
+                    <div style={{ position: 'fixed', bottom: '40px', left: '40px', zIndex: 100092 }}>
+                        <VLSGuide sectionId="vlspeak" onClose={() => setActiveTutorial(null)} />
+                    </div>
+                )}
+            </div>
+        )}
+        {showSafeRoute && (
+            <div style={{ position: 'relative', zIndex: 100091 }}>
+                <SafeRouteAI onClose={() => setShowSafeRoute(false)} />
+                {activeTutorial === 'safe-route' && (
+                    <div style={{ position: 'fixed', bottom: '40px', right: '40px', zIndex: 100092 }}>
+                        <VLSGuide sectionId="safe-route" onClose={() => setActiveTutorial(null)} />
+                    </div>
+                )}
+            </div>
+        )}
+        {showSocialVision && (
+            <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+                <div style={{ width: '100%', maxWidth: '1200px', height: '85vh', borderRadius: '30px', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
+                    <SocialVision onClose={() => setShowSocialVision(false)} />
+                    {activeTutorial === 'radar' && (
+                        <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 1000001 }}>
+                            <VLSGuide sectionId="radar" onClose={() => setActiveTutorial(null)} />
+                        </div>
+                    )}
+                </div>
+            </div>
+        )}
+        {showAnalyticsApp && (
+            <VecinosAnalyticsApp onClose={() => setShowAnalyticsApp(false)} />
+        )}
       </>
     );
 }

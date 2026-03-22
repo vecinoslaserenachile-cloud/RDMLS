@@ -94,7 +94,7 @@ export default function MemorialHijosRegion({ onClose }) {
         const shareUrl = `${baseUrl}?m=${figura.id}`;
         
         const shareData = {
-            title: `Homenaje: ${figura.name} - Smart Comuna`,
+            title: `Homenaje: ${figura.name} - ComunaSmart`,
             text: `VLS rinde tributo a ${figura.name}. ${figura.legacy.substring(0, 120)}... Conoce su historia en:`,
             url: shareUrl,
             image: window.location.origin + figura.image 

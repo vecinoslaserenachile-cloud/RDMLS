@@ -3,7 +3,21 @@ import { X, Star, Compass, Info, Map as MapIcon, Aperture, Sparkles, Orbit } fro
 
 export default function ObservatorioSmart({ onClose }) {
     const [activeObject, setActiveObject] = useState(null);
-    const [viewMode, setViewMode] = useState('sky'); // 'sky', 'observatories', 'humboldt'
+    const [viewMode, setViewMode] = useState('sky'); // 'sky', 'observatories', 'humboldt', 'iss'
+    const [issPos, setIssPos] = useState({ lat: -29.90, lng: -71.25, alt: 408 });
+
+    // Simulación de Telemetría ISS
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setIssPos(prev => ({
+                ...prev,
+                lng: prev.lng + 0.01 > 180 ? -180 : prev.lng + 0.01,
+                lat: prev.lat + 0.005 > 90 ? -90 : prev.lat + 0.005,
+                alt: 408 + (Math.random() * 2 - 1)
+            }));
+        }, 3000);
+        return () => clearInterval(interval);
+    }, []);
 
     const constellations = [
         { id: 'crux', name: 'Cruz del Sur', info: 'La constelación más emblemática del hemisferio sur. Sirve para encontrar el polo sur celeste.', coords: { top: '60%', left: '40%' } },
@@ -61,6 +75,9 @@ export default function ObservatorioSmart({ onClose }) {
                     <button onClick={() => setViewMode('humboldt')} style={{ flex: 1, padding: '1rem', border: 'none', background: viewMode === 'humboldt' ? 'rgba(56, 189, 248, 0.1)' : 'transparent', color: viewMode === 'humboldt' ? '#38bdf8' : 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '8px' }}>
                         🌊 Efecto Humboldt & Clima
                     </button>
+                    <button onClick={() => setViewMode('iss')} style={{ flex: 1, padding: '1rem', border: 'none', background: viewMode === 'iss' ? 'rgba(56, 189, 248, 0.1)' : 'transparent', color: viewMode === 'iss' ? '#38bdf8' : 'white', fontWeight: 'bold', cursor: 'pointer', borderRadius: '8px' }}>
+                        🚀 Telemetría ISS Live
+                    </button>
                 </div>
 
                 {/* Main Content Area */}
@@ -93,8 +110,47 @@ export default function ObservatorioSmart({ onClose }) {
 
                             {/* Discovery Tip */}
                             <div style={{ position: 'absolute', top: '20px', right: '20px', maxWidth: '250px', textAlign: 'right' }}>
-                                <div style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: 'bold', marginBottom: '5px' }}>ESCUELA DE ASTRONOMÍA VLS</div>
-                                <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Nuestra Universidad local forma a los futuros científicos que descubrirán los secretos del universo en estos cielos.</p>
+                                <div style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: 'bold', marginBottom: '5px' }}>TELEMETRÍA ORBITAL</div>
+                                <div style={{ fontSize: '0.9rem', color: 'white', background: 'rgba(0,255,100,0.1)', padding: '10px', borderRadius: '12px' }}>
+                                     <strong>ISS (ZARYA)</strong> <br />
+                                     Alt: {issPos.alt.toFixed(2)} km <br />
+                                     V: 27,600 km/h
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {viewMode === 'iss' && (
+                        <div style={{ padding: '3rem', height: '100%', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
+                                <div className="glass-panel" style={{ padding: '2rem', background: '#000', border: '2px solid #38bdf8' }}>
+                                    <h3 style={{ color: '#38bdf8', marginBottom: '1.5rem' }}>Monitor de Rastreo Satelital</h3>
+                                    <div style={{ height: '300px', background: 'url(https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop) center/cover', borderRadius: '16px', position: 'relative' }}>
+                                        <div style={{ position: 'absolute', top: '40%', left: '30%', width: '40px', height: '40px', background: 'rgba(56, 189, 248, 0.4)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <Orbit size={24} color="#38bdf8" className="pulse-slow" />
+                                        </div>
+                                        <div style={{ position: 'absolute', bottom: '10px', left: '10px', background: 'black', padding: '5px 10px', fontSize: '0.7rem' }}>TRACKING: OVER SOUTH PACIFIC</div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid #38bdf8' }}>
+                                        <span style={{ fontSize: '0.7rem', color: '#38bdf8' }}>PRÓXIMO AVISTAMIENTO (LA SERENA)</span>
+                                        <div style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '10px 0' }}>22:45 <span style={{fontSize: '0.8rem'}}>HOY</span></div>
+                                        <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>Magnitud: -3.8 (Extremadamente Brillante)</p>
+                                    </div>
+                                    <div className="glass-panel" style={{ padding: '1.5rem', borderLeft: '4px solid #10b981' }}>
+                                        <span style={{ fontSize: '0.7rem', color: '#10b981' }}>ESTADO DE TELEMETRÍA</span>
+                                        <div style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '10px 0' }}>NOMINAL / EN ÓRBITA</div>
+                                        <div style={{ display: 'flex', gap: '5px' }}>
+                                            {[...Array(10)].map((_, i) => <div key={i} style={{ height: '10px', flex: 1, background: '#10b981', opacity: 0.3 + Math.random() * 0.7 }} />)}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(56, 189, 248, 0.05)' }}>
+                                <p style={{ margin: 0, color: '#38bdf8', fontSize: '0.9rem', lineHeight: '1.6' }}>
+                                    <strong>¿Sabías qué?</strong> Cuando la ISS pasa sobre La Serena, es el tercer objeto más brillante en el cielo. Gracias a la pureza de nuestra atmósfera (Humboldt), se puede ver a simple vista como una estrella que se mueve rápido y no parpadea.
+                                </p>
                             </div>
                         </div>
                     )}

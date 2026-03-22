@@ -1136,7 +1136,7 @@ function AppContent() {
             </button>
 
             <h2 style={{ color: '#10b981', fontSize: '2.5rem', margin: '0 0 1rem 0', textTransform: 'uppercase' }}>¡Misión Smart Cumplida!</h2>
-            <p style={{ color: 'white', fontSize: '1.2rem', margin: '0 0 2rem 0' }}>Lograste {gameScore} Puntos. Esta acción activa las <strong style={{ color: '#fcd34d' }}>5 "I" de Smart Comuna:</strong></p>
+            <p style={{ color: 'white', fontSize: '1.2rem', margin: '0 0 2rem 0' }}>Lograste {gameScore} Puntos. Esta acción activa las <strong style={{ color: '#fcd34d' }}>5 "I" de ComunaSmart:</strong></p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '1rem', textAlign: 'left', marginBottom: '2rem' }}>
               <div style={{ background: 'rgba(0,0,0,0.4)', padding: '1rem', borderRadius: '12px', borderLeft: '4px solid #38bdf8' }}>
@@ -1338,7 +1338,7 @@ function AppContent() {
                   </span>
                 </div>
                 <p style={{ margin: '0 0 1rem 0', fontSize: '0.8rem', color: '#94a3b8', lineHeight: '1.4' }}>
-                  Asegura el barrio compartiendo tu enlace de validación exclusivo. Cada vecino que se una expande nuestra Smart Comuna.
+                  Asegura el barrio compartiendo tu enlace de validación exclusivo. Cada vecino que se una expande nuestra ComunaSmart.
                 </p>
                 <button
                   onClick={() => {

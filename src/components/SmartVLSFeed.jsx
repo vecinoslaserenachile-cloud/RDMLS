@@ -44,7 +44,7 @@ export default function SmartVLSFeed({ onClose }) {
             desc: "Nuestro canal oficial. Reportajes, entrevistas, consejos de soberanía digital y transmisiones en vivo del municipio.",
             tag: "YouTube",
             bg: "#ff0000", // YouTube Red
-            image: "/vls_molle_animas_3d_1774012579587.png",
+            image: "/vls_motors_spot_premium.png",
             actionText: "SUSCRIBIRSE",
             link: "https://youtube.com"
         }

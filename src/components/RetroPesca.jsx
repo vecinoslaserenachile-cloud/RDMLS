@@ -328,7 +328,7 @@ export default function RetroPesca({ brightness, contrast }) {
 
                     <div style={{ flex: 1, margin: '0 15px', textAlign: 'center', background: '#fff', borderRadius: 15, padding: '10px 5px', alignSelf: 'center', boxShadow: 'inset 0 3px 10px rgba(0,0,0,0.2)' }}>
                         <h3 style={{ margin: 0, color: '#3b82f6', fontFamily: 'sans-serif', fontStyle: 'italic', fontWeight: '900', fontSize: '1rem' }}>PESCA MILAGRO LS</h3>
-                        <span style={{ color: '#94a3b8', fontSize: '0.6rem', fontWeight: 'bold' }}>SMART COMUNA</span>
+                        <span style={{ color: '#94a3b8', fontSize: '0.6rem', fontWeight: 'bold' }}>ComunaSmart</span>
                     </div>
 
                     <button

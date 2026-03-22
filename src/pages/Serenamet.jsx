@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CloudSun, Wind, Droplets, Thermometer, Map, Activity, Zap, Compass, Navigation } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Serenamet() {
+    const navigate = useNavigate();
     const systems = [
         { name: 'Red de Estaciones', status: 'Online', icon: Compass, color: '#38bdf8' },
         { name: 'Micro-turbinas VLS', status: 'Activo', icon: Wind, color: '#10b981' },
@@ -20,16 +22,43 @@ export default function Serenamet() {
         <div style={{
             minHeight: '100vh', padding: '2rem', paddingTop: '6rem',
             background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', color: 'white',
-            fontFamily: "'Inter', sans-serif"
+            fontFamily: "'Inter', sans-serif",
+            position: 'relative'
         }}>
+            {/* Botón Home Flotante */}
+            <button
+                onClick={() => navigate('/')}
+                style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '20px',
+                    zIndex: 2000,
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    padding: '10px 20px',
+                    borderRadius: '50px',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                }}
+            >
+                <CloudSun size={18} color="#38bdf8" />
+                <span style={{ fontSize: '0.8rem', letterSpacing: '1px' }}>VOLVER AL PORTAL</span>
+            </button>
+
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '3rem' }}>
                    <div style={{ background: '#38bdf820', padding: '20px', borderRadius: '25px', border: '1px solid #38bdf8' }}>
                       <CloudSun size={48} color="#38bdf8" />
                    </div>
                    <div>
-                      <h1 style={{ fontSize: '3rem', fontWeight: '900', margin: 0 }}>SERENAMET</h1>
-                      <p style={{ color: '#94a3b8', fontSize: '1.2rem' }}>Centro de Inteligencia Meteorológica Comunal</p>
+                      <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '900', margin: 0, letterSpacing: '-2px' }}>SERENAMET</h1>
+                      <p style={{ color: '#94a3b8', fontSize: '1.1rem', fontWeight: 'bold' }}>Centro de Inteligencia Meteorológica Comunal</p>
                    </div>
                 </div>
 

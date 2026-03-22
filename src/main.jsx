@@ -41,7 +41,7 @@ import ArquitecturaPage from './pages/ArquitecturaPage.jsx';
 import Serenamet from './pages/Serenamet.jsx';
 import Propiedades from './pages/Propiedades.jsx';
 import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
-import { AlertTriangle, X as CloseIcon, Calendar } from 'lucide-react';
+import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
 if ('serviceWorker' in navigator) {
@@ -131,22 +131,42 @@ class ErrorBoundary extends React.Component {
         );
       }
       return (
-        <div style={{ padding: '2rem', color: 'white', background: '#0f172a', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: 'sans-serif' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>⚠️</div>
-          <h1 style={{ color: '#ef4444', marginBottom: '1rem' }}>Algo no salió como esperábamos.</h1>
-          <p style={{ color: '#94a3b8', maxWidth: '600px', marginBottom: '2rem' }}>Se detectó una discrepancia en el empaquetado del portal tras la actualización. Por favor, realiza una recarga forzada para sincronizar tu navegador con la última versión oficial.</p>
-          <div style={{ marginBottom: '2rem', textAlign: 'left', background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '10px', maxWidth: '80%', overflow: 'auto' }}>
-            <code style={{ fontSize: '0.8rem', color: '#fda4af' }}>{this.state.error && this.state.error.toString()}</code>
+        <div style={{ padding: '2rem', color: 'white', background: '#020617', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
+          {/* Ilustración Ultra-Liviana Branding */}
+          <div style={{ position: 'relative', marginBottom: '3rem' }}>
+            <div style={{ position: 'absolute', inset: '-20px', background: 'radial-gradient(circle, #38bdf820 0%, transparent 70%)', filter: 'blur(15px)' }}></div>
+            <Activity size={80} color="#38bdf8" style={{ position: 'relative', opacity: 0.8 }} />
           </div>
-          <button 
-            onClick={() => {
-              sessionStorage.clear();
-              window.location.reload(true);
-            }} 
-            style={{ background: '#38bdf8', color: '#0f172a', border: 'none', padding: '1rem 2.5rem', borderRadius: '50px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)' }}
-          >
-            Sincronizar Última Versión
-          </button>
+
+          <div style={{ maxWidth: '500px' }}>
+            <h1 style={{ color: 'white', fontSize: '2rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-1px' }}>Sincronizando con la última versión</h1>
+            <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2.5rem' }}>
+              Estamos actualizando los módulos de la ComunaSmart para garantizar tu seguridad y la mejor experiencia en <strong>vecinoslaserena.cl</strong>.
+            </p>
+            
+            {/* Soft Debug Info */}
+            <div style={{ marginBottom: '3rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', background: 'rgba(0,0,0,0.3)', padding: '10px 20px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              DEBUG_LOG: {this.state.error && this.state.error.toString().substring(0, 50)}...
+            </div>
+
+            <button 
+              onClick={() => {
+                sessionStorage.clear();
+                window.location.reload(true);
+              }} 
+              style={{ 
+                background: 'linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%)', color: 'white', border: 'none', 
+                padding: '1.2rem 3rem', borderRadius: '20px', fontWeight: '900', fontSize: '1rem', cursor: 'pointer', 
+                boxShadow: '0 10px 30px rgba(56, 189, 248, 0.4)', transition: 'all 0.3s'
+              }}
+            >
+              SINCRONIZAR AHORA
+            </button>
+            
+            <p style={{ marginTop: '3rem', color: '#475569', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
+              Soberanía Digital La Serena 2026
+            </p>
+          </div>
         </div>
       );
     }

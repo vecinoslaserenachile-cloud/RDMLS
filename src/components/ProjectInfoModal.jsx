@@ -36,7 +36,7 @@ export default function ProjectInfoModal({ onClose }) {
                     <div style={{ flex: '1 1 min-content' }}>
                         <h2 className="text-gradient" style={{ margin: 0, fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', display: 'flex', alignItems: 'center', gap: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
                             <Star size={28} color="#fcd34d" style={{ animation: 'spin 10s linear infinite', flexShrink: 0 }} />
-                            Smart Comuna La Serena 2026
+                            ComunaSmart La Serena 2026
                         </h2>
                         <h3 style={{ margin: '0.5rem 0 0 0', color: '#fcd34d', fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', fontWeight: 'bold', letterSpacing: '1px' }}>"INNOVACIÓN MUNICIPAL DE NIVEL MUNDIAL CENTRADA EN LAS PERSONAS"</h3>
                     </div>
@@ -108,7 +108,7 @@ export default function ProjectInfoModal({ onClose }) {
                             <div style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(0,0,0,0.8) 100%)', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(236,72,153,0.4)' }}>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <h4 style={{ color: '#ec4899', fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Star size={24} /> Visión General</h4>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>Presentación de "Smart Comuna", una plataforma tecnológica de bajo costo y código cerrado/abierto mixto diseñada exclusivamente para la Ilustre Municipalidad de La Serena.</p>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>Presentación de "ComunaSmart", una plataforma tecnológica de bajo costo y código cerrado/abierto mixto diseñada exclusivamente para la Ilustre Municipalidad de La Serena.</p>
                                 </div>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <h4 style={{ color: '#ec4899', fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={24} /> El Concepto "Humano-Céntrico"</h4>
@@ -462,7 +462,7 @@ export default function ProjectInfoModal({ onClose }) {
                                 <Leaf size={100} color="rgba(56,189,248,0.1)" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
                                 <h3 style={{ color: 'white', fontSize: '2rem', margin: '0 0 1rem 0', position: 'relative', zIndex: 1 }}>Conclusión del Proyecto</h3>
                                 <p style={{ color: '#e0f2fe', fontSize: '1.3rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '800px', position: 'relative', zIndex: 1, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-                                    "La Plataforma Smart Comuna de La Serena es una inversión estratégica que pagará dividendos inmediatos en cohesión social comunitaria, seguridad urbana proactiva, eficiencia profunda del gasto público y, sobre todo, devolverá el orgullo de ser Serenense.
+                                    "La Plataforma ComunaSmart de La Serena es una inversión estratégica que pagará dividendos inmediatos en cohesión social comunitaria, seguridad urbana proactiva, eficiencia profunda del gasto público y, sobre todo, devolverá el orgullo de ser Serenense.
                                     <br /><br /><strong>La tecnología se convierte, así, en el mejor vecino de todos.</strong>"
                                 </p>
                             </div>

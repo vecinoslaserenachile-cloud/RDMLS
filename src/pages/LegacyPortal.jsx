@@ -71,6 +71,7 @@ export default function LegacyPortal() {
         }).catch(err => {
             console.error("Error logging in:", err);
             if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
+                setError("Acceso Cancelado: Se cerró la ventana de identificación. Intenta nuevamente.");
                 return;
             }
             setError(`Error de acceso Firebase: ${err.message}`);

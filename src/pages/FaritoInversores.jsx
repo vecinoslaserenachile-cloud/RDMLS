@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
     Zap, Globe, TrendingUp, Shield, Users, DollarSign, 
     ChevronRight, Star, ArrowRight, CheckCircle, Lock,
@@ -6,15 +7,17 @@ import {
     Radio, MapPin, ExternalLink, Mail, Phone,
     Music, Lightbulb, UtensilsCrossed
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function FaritoInversores() {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('b2c');
     const [counters, setCounters] = useState({ modulos: 0, municipios: 0, usuarios: 0, modelos: 0 });
     const [visibleSections, setVisibleSections] = useState(new Set());
 
     // Animación de contadores al cargar
     useEffect(() => {
-        const targets = { modulos: 64, municipios: 12, usuarios: 24500, modelos: 4 };
+        const targets = { modulos: 68, municipios: 15, usuarios: 28400, modelos: 6 };
         const duration = 2000;
         const steps = 60;
         const interval = duration / steps;
@@ -116,8 +119,36 @@ export default function FaritoInversores() {
     ];
 
     return (
-        <div style={{ minHeight: '100vh', background: '#020617', color: 'white', fontFamily: 'system-ui, -apple-system, sans-serif', overflowX: 'hidden' }}>
+        <div style={{ minHeight: '100vh', background: '#020617', color: 'white', fontFamily: "'Inter', sans-serif", overflowX: 'hidden', position: 'relative' }}>
             
+            {/* Botón Home Flotante */}
+            <motion.button
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                onClick={() => navigate('/')}
+                style={{
+                    position: 'fixed',
+                    top: '20px',
+                    left: '20px',
+                    zIndex: 200,
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(12px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    padding: '12px 24px',
+                    borderRadius: '50px',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5)'
+                }}
+            >
+                <Zap size={20} color="#f59e0b" />
+                <span style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>VOLVER AL PORTAL</span>
+            </motion.button>
+
             {/* ══════════════════════════════════════════════════════════════
                 SECCIÓN 1: HERO — EL GANCHO
             ══════════════════════════════════════════════════════════════ */}
@@ -127,18 +158,14 @@ export default function FaritoInversores() {
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(56,189,248,0.08) 1px, transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none', opacity: 0.5 }} />
                 
                 {/* Nav */}
-                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(2,6,23,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '1rem 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <img src="/vls-logo-premium.png" alt="Vecinity" style={{ height: '40px' }} />
-                        <span style={{ fontWeight: '900', fontSize: '1.1rem', color: '#38bdf8' }}>Vecinity Partners</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '20px', fontSize: '0.9rem' }}>
+                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, background: 'rgba(2,6,23,0.85)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '1rem 3rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '20px', fontSize: '0.9rem', marginRight: '30px' }}>
                         {['Problema', 'Modelo', 'Tecnología', 'Inversión'].map(s => (
-                            <a key={s} href={`#${s.toLowerCase()}`} style={{ color: '#94a3b8', textDecoration: 'none' }}>{s}</a>
+                            <a key={s} href={`#${s.toLowerCase()}`} style={{ color: '#94a3b8', textDecoration: 'none', fontWeight: 'bold' }}>{s}</a>
                         ))}
                     </div>
-                    <a href="mailto:contacto@vecinosmart.cl" style={{ background: '#38bdf8', color: '#0f172a', padding: '8px 20px', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem' }}>
-                        Contactar
+                    <a href="mailto:contacto@comunasmart.cl" style={{ background: '#38bdf8', color: '#0f172a', padding: '8px 25px', borderRadius: '30px', fontWeight: 'bold', textDecoration: 'none', fontSize: '0.9rem', boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)' }}>
+                        Contactar Incorp.
                     </a>
                 </div>
 
@@ -347,7 +374,7 @@ export default function FaritoInversores() {
                     {/* Panel de contenido */}
                     {Object.entries(monetizacion).map(([key, val]) => (
                         activeTab === key && (
-                            <div key={key} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', background: `linear-gradient(135deg, ${val.color}0D, rgba(2,6,23,0.9))`, border: `1px solid ${val.color}30`, borderRadius: '28px', padding: '3rem', alignItems: 'start' }}>
+                            <div key={key} style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 768 ? '1fr' : '1fr 1fr', gap: window.innerWidth < 768 ? '1.5rem' : '3rem', background: `linear-gradient(135deg, ${val.color}0D, rgba(2,6,23,0.9))`, border: `1px solid ${val.color}30`, borderRadius: '28px', padding: window.innerWidth < 768 ? '1.5rem' : '3rem', alignItems: 'start' }}>
                                 <div>
                                     <h3 style={{ fontSize: '1.8rem', fontWeight: '900', margin: '0 0 1rem 0', color: val.color }}>{val.titulo}</h3>
                                     <p style={{ color: '#cbd5e1', lineHeight: 1.7, marginBottom: '2rem' }}>{val.descripcion}</p>
@@ -444,7 +471,7 @@ export default function FaritoInversores() {
                             <Lock size={36} color="#38bdf8" style={{ marginBottom: '1rem' }} />
                             <h3 style={{ fontSize: '1.2rem', margin: '0 0 0.8rem 0' }}>Fondos & Inversores VC</h3>
                             <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Platanus, Broota, CORFO y family offices: accede a nuestro Data Room completo con métricas, cap table y proyecciones auditadas.</p>
-                            <a href="mailto:contacto@vecinosmart.cl?subject=Solicitud Data Room VLS" style={{ background: '#38bdf8', color: '#0f172a', padding: '1rem', borderRadius: '12px', textDecoration: 'none', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <a href="mailto:contacto@comunasmart.cl?subject=Solicitud Data Room VLS" style={{ background: '#38bdf8', color: '#0f172a', padding: '1rem', borderRadius: '12px', textDecoration: 'none', fontWeight: '900', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                 <Mail size={18} /> Solicitar Acceso al Data Room
                             </a>
                         </div>
@@ -467,7 +494,7 @@ export default function FaritoInversores() {
                             <Building2 size={36} color="#10b981" style={{ marginBottom: '1rem' }} />
                             <h3 style={{ fontSize: '1.2rem', margin: '0 0 0.8rem 0' }}>Municipios & B2G</h3>
                             <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '1.5rem', lineHeight: 1.5 }}>Alcaldes, SEREMI, GORE y directivos municipales: co-diseñemos juntos la instalación de Vecinity en tu territorio. Piloto sin costo el primer semestre.</p>
-                            <a href="mailto:contacto@vecinosmart.cl?subject=Alianza Municipal Vecinity" style={{ display: 'flex', background: '#10b981', color: '#0f172a', padding: '1rem', borderRadius: '12px', textDecoration: 'none', fontWeight: '900', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                            <a href="mailto:contacto@comunasmart.cl?subject=Alianza Municipal Vecinity" style={{ display: 'flex', background: '#10b981', color: '#0f172a', padding: '1rem', borderRadius: '12px', textDecoration: 'none', fontWeight: '900', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                 <MapPin size={18} /> Solicitar Alianza Municipal
                             </a>
                         </div>
@@ -477,7 +504,7 @@ export default function FaritoInversores() {
                     <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '2rem', display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#94a3b8' }}>
                             <Mail size={18} color="#38bdf8" />
-                            <a href="mailto:contacto@vecinosmart.cl" style={{ color: 'white', textDecoration: 'none' }}>contacto@vecinosmart.cl</a>
+                            <a href="mailto:contacto@comunasmart.cl" style={{ color: 'white', textDecoration: 'none' }}>contacto@comunasmart.cl</a>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#94a3b8' }}>
                             <Globe size={18} color="#10b981" />

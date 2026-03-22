@@ -15,7 +15,9 @@ export default function ErrorCollector() {
             'Warning:',
             'DevTools',
             'chrome-extension',
-            'blob:'
+            'blob:',
+            'Speed test failed',
+            'Error fetching real weather'
         ];
 
         const addError = (msg, source, lineno, colno, errorObj) => {

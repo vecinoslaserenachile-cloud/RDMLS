@@ -86,7 +86,7 @@ export default function CDLSPanel({ onClose }) {
                             <div style={{ background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(0, 0, 0, 0) 100%)', padding: '2rem', borderRadius: '16px', border: '1px solid rgba(220, 38, 38, 0.3)' }}>
                                 <h3 style={{ margin: '0 0 1rem 0', color: 'white', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Users size={24} color="#dc2626" /> Registro Huella Barrista & Estadio Seguro</h3>
                                 <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
-                                    Smart Comuna en alianza con CDLS integra la matriz de enrolamiento digital. Un empadronamiento de hinchas diseñado bajo la ley de violencia en los estadios, usando reconocimiento facial (Faro) para agilizar los accesos.
+                                    ComunaSmart en alianza con CDLS integra la matriz de enrolamiento digital. Un empadronamiento de hinchas diseñado bajo la ley de violencia en los estadios, usando reconocimiento facial (Faro) para agilizar los accesos.
                                 </p>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
                                     <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -279,7 +279,7 @@ export default function CDLSPanel({ onClose }) {
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
                                 {[
                                     { fuente: '@cdls_oficial', texto: "Preparando la táctica para el clásico del domingo! Nos vemos en La Portada 🔴⚪ #VamosSerena #CDLS", tiempo: "Hace 10 min", img: "https://images.unsplash.com/photo-1518605368461-1e1e25bb8a63?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" },
-                                    { fuente: 'Smart Comuna News', texto: "Nuevo refuerzo internacional llega a Club Deportes La Serena, promete asegurar los goles granates.", tiempo: "Hace 1 hora" },
+                                    { fuente: 'ComunaSmart News', texto: "Nuevo refuerzo internacional llega a Club Deportes La Serena, promete asegurar los goles granates.", tiempo: "Hace 1 hora" },
                                     { fuente: '@BarraPapayera', texto: "Ya estamos armando el carnaval. Todos a la puerta 5!!", tiempo: "Hace 2 horas" }
                                 ].map((n, i) => (
                                     <div key={i} className="glass-panel" style={{ padding: '1.5rem', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>

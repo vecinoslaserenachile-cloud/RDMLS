@@ -5,9 +5,10 @@ import {
     Fingerprint, Activity, Terminal, Layers, Command, Bell, Radio, 
     Map, Users, Sparkles, Play, Plus, FileText, Megaphone, Mic, 
     Download, Briefcase, BarChart, Mail, CalendarDays, MousePointer2, 
-    Settings, Key, Cpu, Volume2, LayoutGrid, FileSearch
+    Settings, Key, Cpu, Volume2, LayoutGrid, FileSearch, Image as ImageIcon, Presentation, Calculator
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import MicroTutorialVLS from './MicroTutorialVLS';
 
 /**
  * FaritoBrowser: Módulo Avanzado de Búsqueda Neural e Interoperabilidad institucional.
@@ -24,7 +25,7 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
     const [activeTabId, setActiveTabId] = useState(1);
     const [tabs, setTabs] = useState([
         { id: 1, title: 'Inicio - Farito', url: 'https://farito.cl', active: true },
-        { id: 2, title: 'Smart Comuna VLS', url: 'https://www.vecinoslaserena.cl', active: false }
+        { id: 2, title: 'ComunaSmart VLS', url: 'https://www.vecinoslaserena.cl', active: false }
     ]);
     const [downloads, setDownloads] = useState([
         { id: 1, name: 'manual_identidad_vls.pdf', size: '2.4 MB', status: 'Hecho', date: 'Ahora' },
@@ -39,8 +40,9 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
     const [tickerResults, setTickerResults] = useState([]);
     const [isListening, setIsListening] = useState(false);
     const [spokenText, setSpokenText] = useState('');
-    const [activeApp, setActiveApp] = useState('browser'); // browser, doc, sheet, mail, calendar, resume
+    const [activeApp, setActiveApp] = useState('browser'); // browser, doc, sheet, mail, calendar, resume, slides, photos
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [showTutorial, setShowTutorial] = useState(false);
     const browserRef = useRef(null);
 
     // Neural Engine State
@@ -315,10 +317,11 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
                     {[
                         { id: 'browser', icon: Globe, label: 'WEB' },
                         { id: 'docs', icon: FileText, label: 'DOCS' },
-                        { id: 'sheets', icon: BarChart, label: 'DATOS' },
+                        { id: 'sheets', icon: BarChart, label: 'SHEETS' },
+                        { id: 'slides', icon: Presentation, label: 'SLIDES' },
+                        { id: 'photos', icon: ImageIcon, label: 'PHOTOS' },
                         { id: 'mail', icon: Mail, label: 'MAIL' },
-                        { id: 'calendar', icon: CalendarDays, label: 'AGENDA' },
-                        { id: 'resume', icon: Briefcase, label: 'CV' }
+                        { id: 'calendar', icon: CalendarDays, label: 'AGENDA' }
                     ].map(app => (
                         <motion.div 
                             key={app.id}
@@ -335,7 +338,7 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
                             {activeApp === app.id && <motion.div layoutId="appIndicator" style={{ width: '4px', height: '4px', background: '#38bdf8', borderRadius: '50%' }} />}
                         </motion.div>
                     ))}
-                    <div style={{ marginTop: 'auto', transform: 'rotate(-90deg)', fontSize: '10px', fontWeight: '900', color: 'rgba(56, 189, 248, 0.3)', whiteSpace: 'nowrap' }}>VECINOFIS PRO v2.4</div>
+                    <div style={{ marginTop: 'auto', transform: 'rotate(-90deg)', fontSize: '10px', fontWeight: '900', color: 'rgba(56, 189, 248, 0.3)', whiteSpace: 'nowrap' }}>COMUNASMART OFFICE v3.0</div>
                 </div>
 
                 {/* 3.2 Main Content Viewport */}
@@ -413,30 +416,260 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
                                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                                     <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '50px' }}>
                                         <div>
-                                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0 }}>VECINOFIS PRO</h2>
-                                            <p style={{ color: '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '2px' }}>SUITE ESTRATÉGICA – {activeApp.toUpperCase()}</p>
+                                            <h2 style={{ fontSize: '2.5rem', fontWeight: 900, margin: 0 }}>COMUNASMART OFFICE</h2>
+                                            <p style={{ color: '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold', letterSpacing: '2px' }}>VECINOFIS PRO: LA SUITE DEL CIUDADANO – {activeApp.toUpperCase()}</p>
                                         </div>
-                                        <button onClick={() => setActiveApp('browser')} style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', padding: '10px 25px', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer' }}>VOLVER AL NAVEGADOR</button>
+                                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+                                            <button 
+                                                onClick={() => setShowTutorial(true)}
+                                                style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', padding: '10px 25px', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                            >
+                                                <HelpCircle size={18} /> ¿CÓMO USAR? (TUTORIAL)
+                                            </button>
+                                            <button onClick={() => setActiveApp('browser')} style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', padding: '10px 25px', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer' }}>VOLVER AL NAVEGADOR</button>
+                                        </div>
                                     </header>
 
-                                    {/* Simulated Work Area */}
-                                    <div style={{ background: 'rgba(56, 189, 248, 0.03)', border: '1px solid #1e293b', borderRadius: '40px', padding: '60px', textAlign: 'center', minHeight: '600px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                        <motion.div initial={{ y: 20 }} animate={{ y: 0 }} transition={{ repeat: Infinity, duration: 3, repeatType: 'reverse' }}>
-                                            {activeApp === 'docs' && <FileText size={120} color="#38bdf8" style={{ opacity: 0.2 }} />}
-                                            {activeApp === 'sheets' && <BarChart size={120} color="#38bdf8" style={{ opacity: 0.2 }} />}
-                                            {activeApp === 'mail' && <Mail size={120} color="#38bdf8" style={{ opacity: 0.2 }} />}
-                                            {activeApp === 'calendar' && <CalendarDays size={120} color="#38bdf8" style={{ opacity: 0.2 }} />}
-                                            {activeApp === 'resume' && <Briefcase size={120} color="#38bdf8" style={{ opacity: 0.2 }} />}
-                                        </motion.div>
-                                        
-                                        <h3 style={{ fontSize: '2rem', fontWeight: '900', marginTop: '30px' }}>ENTORNO_PRODUCTIVO_VLS</h3>
-                                        <p style={{ maxWidth: '500px', color: '#64748b', lineHeight: 1.8, marginTop: '20px' }}>El módulo de <b>{activeApp}</b> se encuentra sincronizado con el Hub Corporativo. Sus documentos están encriptados bajo protocolo Faro Shield v2.4.</p>
-                                        
-                                        <div style={{ display: 'flex', gap: '20px', marginTop: '40px' }}>
-                                            <button className="office-btn-primary">NUEVO ELEMENTO</button>
-                                            <button className="office-btn-secondary">PLANTILLAS VLS</button>
+                                        <div style={{ background: 'rgba(56, 189, 248, 0.03)', border: '1px solid #1e293b', borderRadius: '40px', padding: '20px', minHeight: '600px', display: 'flex', flexDirection: 'column' }}>
+                                            {/* App Toolbar */}
+                                            <div style={{ display: 'flex', gap: '15px', padding: '10px 20px', background: '#0a0a0a', borderRadius: '15px', marginBottom: '20px', border: '1px solid #334155', alignItems: 'center' }}>
+                                                <button style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}><Plus size={16} /> NUEVO</button>
+                                                
+                                                {/* MEGA EXPORT DROPDOWN */}
+                                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                                    <button 
+                                                        onClick={() => setShowShieldMenu(!showShieldMenu)} // Reusing state for simplicity in prototype
+                                                        style={{ background: '#38bdf8', color: '#000', border: 'none', padding: '8px 15px', borderRadius: '10px', fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                    >
+                                                        <Download size={16} /> EXPORTAR / DESCARGAR
+                                                    </button>
+                                                    
+                                                    {showShieldMenu && (
+                                                        <div style={{ position: 'absolute', top: '40px', left: 0, width: '220px', background: '#1e293b', borderRadius: '15px', border: '1px solid #334155', padding: '10px', zIndex: 1000, boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                                                            {[
+                                                                { fmt: 'PDF', label: 'Documento PDF (.pdf)', icon: FileSearch },
+                                                                { fmt: 'DOC', label: 'Word (.docx)', icon: FileText },
+                                                                { fmt: 'PPT', label: 'PowerPoint (.pptx)', icon: Presentation },
+                                                                { fmt: 'XLS', label: 'Excel (.xlsx)', icon: BarChart }
+                                                            ].map(f => (
+                                                                <div 
+                                                                    key={f.fmt} 
+                                                                    onClick={() => {
+                                                                        setIsLoading(true);
+                                                                        setShowShieldMenu(false);
+                                                                        setTimeout(() => {
+                                                                            setIsLoading(false);
+                                                                            const blob = new Blob(["Archivo generado por ComunaSmart Office"], { type: 'text/plain' });
+                                                                            const url = URL.createObjectURL(blob);
+                                                                            const a = document.createElement('a');
+                                                                            a.href = url;
+                                                                            a.download = `proyecto_vecino_${f.fmt.toLowerCase()}.${f.fmt.toLowerCase()}`;
+                                                                            a.click();
+                                                                        }, 1500);
+                                                                    }}
+                                                                    style={{ padding: '10px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', color: '#e2e8f0', fontSize: '0.8rem', transition: '0.2s' }}
+                                                                    onMouseEnter={(e) => e.target.style.background = 'rgba(56, 189, 248, 0.1)'}
+                                                                    onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                                                                >
+                                                                    <f.icon size={16} color="#38bdf8" /> {f.label}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                <button 
+                                                    onClick={() => alert("Sincronizando con Google Drive...")}
+                                                    style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px solid #334155', color: '#94a3b8', padding: '8px 15px', borderRadius: '10px', fontWeight: 'bold', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                >
+                                                    <Globe size={16} color="#38bdf8" /> SINCRONIZAR GOOGLE DOCS
+                                                </button>
+
+                                                <button style={{ background: 'none', border: 'none', color: '#94a3b8' }}><Users size={16} /> COMPARTIR</button>
+                                                
+                                                <div style={{ flex: 1 }}></div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontSize: '0.65rem', fontWeight: '900' }}>
+                                                    <ShieldCheck size={14} /> CLOUD SYNC ACTIVO
+                                                </div>
+                                            </div>
+
+                                            {/* AI Prompt Bar */}
+                                            <div style={{ display: 'flex', gap: '15px', padding: '15px', background: '#020617', border: '1px solid #38bdf8', borderRadius: '15px', marginBottom: '20px' }}>
+                                                <Sparkles size={20} color="#38bdf8" />
+                                                <input 
+                                                    placeholder={
+                                                        activeApp === 'docs' ? "Ej: Escribe un ensayo sobre los Humedales de La Serena..." :
+                                                        activeApp === 'slides' ? "Ej: Crea una presentación sobre Turismo en Punta de Choros..." :
+                                                        activeApp === 'sheets' ? "Ej: Tabla comparativa de biodiversidad costera..." :
+                                                        "¿Qué quieres crear hoy con IA de ComunaSmart?"
+                                                    }
+                                                    style={{ flex: 1, background: 'transparent', border: 'none', color: 'white', outline: 'none' }}
+                                                />
+                                                <button style={{ background: '#38bdf8', color: '#000', border: 'none', padding: '8px 20px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>GENERAR CON GEMINI</button>
+                                            </div>
+
+                                            {/* WYSIWYG Mock Area */}
+                                            <div style={{ flex: 1, background: 'white', borderRadius: '20px', padding: '40px', color: '#0f172a', position: 'relative', overflow: 'hidden', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.05)' }}>
+                                                {activeApp === 'docs' && (
+                                                    <div style={{ textAlign: 'left', height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid #e2e8f0', paddingBottom: '10px' }}>
+                                                            <h2 contentEditable style={{ outline: 'none', margin: 0, fontSize: '1.5rem' }}>Nuevo Documento en Blanco</h2>
+                                                            <div style={{ display: 'flex', gap: '10px' }}>
+                                                                <button 
+                                                                    onClick={handleVoiceStart}
+                                                                    style={{ background: isListening ? '#ef4444' : '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '8px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: isListening ? 'white' : '#475569', fontWeight: 'bold' }}
+                                                                >
+                                                                    <Mic size={16} /> {isListening ? 'ESCUCHANDO...' : 'DICTAR CON VOZ'}
+                                                                </button>
+                                                                <button 
+                                                                    onClick={() => {
+                                                                        const text = document.querySelector('[contentEditable="true"]').innerText;
+                                                                        if (window.speechSynthesis.speaking) {
+                                                                            window.speechSynthesis.cancel();
+                                                                        } else {
+                                                                            const utterance = new SpeechSynthesisUtterance(text);
+                                                                            utterance.lang = 'es-CL';
+                                                                            utterance.pitch = 1.1;
+                                                                            utterance.rate = 1.0;
+                                                                            window.speechSynthesis.speak(utterance);
+                                                                        }
+                                                                    }}
+                                                                    style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '8px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 'bold' }}
+                                                                    title="Escuchar Documento"
+                                                                >
+                                                                    <Volume2 size={16} color="#10b981" /> LEER
+                                                                </button>
+                                                                
+                                                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                                                    <button 
+                                                                        onClick={() => setShowShieldMenu(!showShieldMenu)} // Reuse state for language menu
+                                                                        style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '8px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: '#475569', fontWeight: 'bold' }}
+                                                                    >
+                                                                        <Globe size={16} color="#3b82f6" /> TRADUCIR
+                                                                    </button>
+                                                                    {showShieldMenu && (
+                                                                        <div style={{ position: 'absolute', top: '40px', right: 0, width: '180px', background: 'white', border: '1px solid #e2e8f0', borderRadius: '12px', padding: '10px', zIndex: 1000, boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}>
+                                                                            {['Inglés 🇺🇸', 'Francés 🇫🇷', 'Alemán 🇩🇪', 'Portugués 🇧🇷'].map(lang => (
+                                                                                <div 
+                                                                                    key={lang}
+                                                                                    onClick={() => {
+                                                                                        setIsLoading(true);
+                                                                                        setEngineStatus('PURIFYING');
+                                                                                        setShowShieldMenu(false);
+                                                                                        setTimeout(() => {
+                                                                                            setIsLoading(false);
+                                                                                            setEngineStatus('READY');
+                                                                                            alert(`DOCUMENTO TRADUCIDO AL ${lang.toUpperCase()} EXITOSAMENTE.`);
+                                                                                        }, 2000);
+                                                                                    }}
+                                                                                    style={{ padding: '8px 12px', borderRadius: '8px', cursor: 'pointer', color: '#1e293b', fontSize: '0.8rem' }}
+                                                                                    onMouseEnter={(e) => e.target.style.background = '#f1f5f9'}
+                                                                                    onMouseLeave={(e) => e.target.style.background = 'transparent'}
+                                                                                >
+                                                                                    {lang}
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+
+                                                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                                                    <button 
+                                                                        onClick={() => {
+                                                                            setIsLoading(true);
+                                                                            setEngineStatus('PURIFYING');
+                                                                            setTimeout(() => {
+                                                                                setIsLoading(false);
+                                                                                setEngineStatus('READY');
+                                                                                alert("DISEÑO INTELIGENTE APLICADO: Paleta de colores y tipografía optimizadas para su contenido.");
+                                                                            }, 2000);
+                                                                        }}
+                                                                        style={{ background: 'linear-gradient(45deg, #f59e0b, #d97706)', border: 'none', borderRadius: '10px', padding: '8px 15px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', color: 'white', fontWeight: 'bold' }}
+                                                                    >
+                                                                        <Layers size={16} /> DISEÑO IA
+                                                                    </button>
+                                                                </div>
+
+                                                                <button style={{ background: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '8px', cursor: 'pointer' }} title="Corregir con IA"><Sparkles size={16} color="#38bdf8" /></button>
+                                                            </div>
+                                                        </div>
+                                                        <div 
+                                                            contentEditable 
+                                                            style={{ 
+                                                                flex: 1, outline: 'none', fontSize: '1.1rem', lineHeight: 1.8, color: '#1e293b', padding: '20px', border: isListening ? '2px dashed #ef4444' : 'none', borderRadius: '15px' 
+                                                            }}
+                                                        >
+                                                            {isListening ? (spokenText || 'Hable ahora para dictar su documento...') : 'Empieza a escribir sobre cualquier tema o usa el generador AI superior para crear borradores automáticos. También puedes usar el micrófono para capturar tus ideas en tiempo real.'}
+                                                        </div>
+                                                        
+                                                        {isListening && (
+                                                            <motion.div 
+                                                                animate={{ opacity: [0.3, 1, 0.3] }} 
+                                                                transition={{ repeat: Infinity, duration: 1.5 }}
+                                                                style={{ position: 'absolute', bottom: '20px', right: '20px', background: '#ef4444', color: 'white', padding: '10px 20px', borderRadius: '30px', fontWeight: '900', fontSize: '0.7rem' }}
+                                                            >
+                                                                DICTADO POR VOZ COMUNA SMART ACTIVO
+                                                            </motion.div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                {activeApp === 'sheets' && (
+                                                    <div style={{ height: '100%', display: 'grid', gridTemplateColumns: '40px repeat(10, 1fr)', gridAutoRows: '30px' }}>
+                                                        {['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'].map(h => <div key={h} style={{ border: '0.5px solid #e2e8f0', background: '#f8fafc', fontWeight: '900', textAlign: 'center' }}>{h}</div>)}
+                                                        {Array(15).fill(0).map((_, r) => (
+                                                            <React.Fragment key={r}>
+                                                                <div style={{ border: '0.5px solid #e2e8f0', background: '#f8fafc', textAlign: 'center', fontSize: '0.6rem' }}>{r + 1}</div>
+                                                                {Array(10).fill(0).map((_, c) => <div key={c} contentEditable style={{ border: '0.5px solid #e2e8f0', outline: 'none' }}></div>)}
+                                                            </React.Fragment>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                {activeApp === 'slides' && (
+                                                    <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', height: '100%', gap: '20px' }}>
+                                                        <div style={{ background: '#f1f5f9', borderRadius: '10px', padding: '10px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                            <div style={{ width: '100%', height: '100px', background: 'white', border: '2px solid #38bdf8', borderRadius: '5px' }}></div>
+                                                            <div style={{ width: '100%', height: '100px', background: 'white', border: '1px solid #cbd5e1', borderRadius: '5px' }}></div>
+                                                            <div style={{ width: '100%', height: '100px', background: 'white', border: '1px solid #cbd5e1', borderRadius: '5px' }}></div>
+                                                        </div>
+                                                        <div style={{ background: '#f1f5f9', borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '40px' }}>
+                                                            <h1 contentEditable style={{ fontSize: '3.5rem', fontWeight: 900, outline: 'none' }}>TÍTULO DE DIAPOSITIVA</h1>
+                                                            <p contentEditable style={{ outline: 'none', fontSize: '1.2rem', color: '#64748b' }}>Añade subtítulo o contenido libre aquí.</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {activeApp === 'photos' && (
+                                                    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+                                                        <ImageIcon size={100} color="#cbd5e1" />
+                                                        <p style={{ marginTop: '20px', color: '#64748b', fontWeight: 'bold' }}>Arrastra fotos o documentos escaneados aquí</p>
+                                                        
+                                                        <div style={{ display: 'flex', gap: '15px' }}>
+                                                            <button style={{ marginTop: '20px', background: '#0f172a', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}>CARGAR DESDE GALERÍA</button>
+                                                            
+                                                            <button 
+                                                                onClick={() => {
+                                                                    setIsLoading(true);
+                                                                    setEngineStatus('SCANNING');
+                                                                    setTimeout(() => {
+                                                                        setIsLoading(false);
+                                                                        setEngineStatus('READY');
+                                                                        alert("OCR COMPLETO: Texto extraído con éxito. Enviando a ComunaSmart Docs...");
+                                                                        setActiveApp('docs');
+                                                                    }, 2500);
+                                                                }}
+                                                                style={{ marginTop: '20px', background: 'linear-gradient(45deg, #10b981, #059669)', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                                            >
+                                                                <FileSearch size={18} /> EXTRAER TEXTO (AI-OCR)
+                                                            </button>
+                                                        </div>
+                                                        
+                                                        <div style={{ marginTop: '30px', background: 'rgba(16, 185, 129, 0.05)', padding: '15px', borderRadius: '12px', border: '1px dashed #10b981', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                            <Sparkles size={16} color="#10b981" />
+                                                            <span style={{ fontSize: '0.75rem', color: '#059669', fontWeight: 'bold' }}>La IA de ComunaSmart puede digitalizar legajos, boletas y notas manuscritas.</span>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                    </div>
                                 </div>
                             </motion.div>
                         )}
@@ -466,6 +699,13 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* MICRO TUTORIAL OVERLAY */}
+            <MicroTutorialVLS 
+                section={activeApp === 'browser' ? 'farito' : 'vecinofis'} 
+                isOpen={showTutorial} 
+                onFinish={() => setShowTutorial(false)} 
+            />
 
             <style>{`
                 .spin { animation: spin_vls 1s linear infinite; }

@@ -20,6 +20,14 @@ const SUBS = [
     { id: 'pro_gastronomia',  label: 'Plan Gastro (Restoranes & Pubs)', priceCLP: 14990, priceUSD: 16.50, icon: '🍽️', desc: 'Eventos ilimitados + menú digital + 50 fichas/mes', popular: true, badge: 'NUEVO' },
 ];
 
+// ─── APOYO CIUDADANO (Fichas como aporte directo, sin usar la palabra "donación") ───
+const APOYO_PACKS = [
+    { id: 'apoyo_cafe',     fichas: 50,   priceCLP: 1000,    priceUSD: 1.09,  label: 'Aporte "Café"',  color: '#64748b', desc: 'Un pequeño empujón para el equipo' },
+    { id: 'apoyo_vecino',   fichas: 150,  priceCLP: 2490,    priceUSD: 2.75,  label: 'Vecino Activo',   popular: true,  color: '#38bdf8', desc: 'Gran espaldarazo a los creadores' },
+    { id: 'apoyo_comunidad',fichas: 400,  priceCLP: 5990,    priceUSD: 6.60,  label: 'Comunidad Fuerte',color: '#10b981', desc: 'Aporte de alto impacto social' },
+    { id: 'apoyo_fundador', fichas: 1200, priceCLP: 14990,   priceUSD: 16.50, label: 'Padrino Smart',   color: '#f59e0b', desc: 'Financiador VIP de VLS', badge: 'MÁXIMO PODER' },
+];
+
 // ─── MODELO FREEMIUM GASTRO (Fichas por uso extra) ───────────────────────────
 const GASTRO_FICHAS = [
     { label: 'Evento adicional en Panoramas',       fichas: 3,  icon: '📅' },
@@ -40,7 +48,9 @@ export default function VecnityPay({ onClose, currentUser }) {
     const [error, setError] = useState(null);
     const [status, setStatus] = useState(null);         // 'success' | 'error'
 
-    const items = tab === 'fichas' ? PACKS : SUBS;
+    let items = PACKS;
+    if (tab === 'subs') items = SUBS;
+    else if (tab === 'apoyo') items = APOYO_PACKS;
 
     const handlePay = async () => {
         if (!selected) return;
@@ -122,8 +132,8 @@ export default function VecnityPay({ onClose, currentUser }) {
                 </div>
 
                 {/* ── Selector de tipo de producto ───────────────────────── */}
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem' }}>
-                    {[['fichas', '🎟️ Pack de Fichas VLS'], ['subs', '🏢 Suscripciones Pro']].map(([key, label]) => (
+                <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem', flexWrap: 'wrap' }}>
+                    {[['fichas', '🎟️ Pack de Fichas VLS'], ['subs', '🏢 Suscripciones Pro'], ['apoyo', '🤝 Apoyo Ciudadano']].map(([key, label]) => (
                         <button key={key} onClick={() => { setTab(key); setSelected(null); }} style={{ ...tabBtn, background: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.05)', color: tab === key ? '#0f172a' : '#94a3b8', borderColor: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>
                             {label}
                         </button>
@@ -140,12 +150,24 @@ export default function VecnityPay({ onClose, currentUser }) {
                     </div>
                 )}
 
+                {/* ── Banner Apoyo Ciudadano ──────────────────────────── */}
+                {tab === 'apoyo' && (
+                    <div style={{ background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(56, 189, 248, 0.05))', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '16px', padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                        <Heart size={20} color="#10b981" style={{ flexShrink: 0, marginTop: '2px' }} />
+                        <div style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.5 }}>
+                            <strong style={{ color: '#10b981', display: 'block', fontSize: '0.95rem', marginBottom: '4px' }}>¡Impulsa nuestra ciudad inteligente!</strong>
+                            <em style={{ color: '#94a3b8' }}>"Oye, te queremos apoyar por lo que nos gusta lo que haces en redes sociales y en este portal, sigue creciendo, aquí va mi apoyo".</em><br/>
+                            Los aportes se acreditan directamente como <strong style={{ color: '#38bdf8' }}>Fichas VLS</strong> en tu billetera.
+                        </div>
+                    </div>
+                )}
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem' }}>
 
                     {/* ── Panel izquierdo: Lista de productos ────────────── */}
                     <div>
                         <h3 style={{ margin: '0 0 1rem 0', color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px' }}>
-                            {tab === 'fichas' ? 'SELECCIONA TU PACK' : 'PLAN PROFESIONAL MENSUAL'}
+                            {tab === 'fichas' ? 'SELECCIONA TU PACK' : (tab === 'apoyo' ? 'SELECCIONA TU APORTE' : 'PLAN PROFESIONAL MENSUAL')}
                         </h3>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                             {items.map(item => (
@@ -162,12 +184,12 @@ export default function VecnityPay({ onClose, currentUser }) {
                                         </div>
                                     )}
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        {tab === 'fichas' ? (
-                                            <div style={{ background: `${item.color}20`, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                <Ticket size={24} color={item.color} />
-                                            </div>
-                                        ) : (
+                                        {tab === 'subs' ? (
                                             <div style={{ fontSize: '2rem' }}>{item.icon}</div>
+                                        ) : (
+                                            <div style={{ background: `${item.color}20`, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {tab === 'apoyo' ? <Heart size={24} color={item.color} /> : <Ticket size={24} color={item.color} />}
+                                            </div>
                                         )}
                                         <div>
                                             <div style={{ fontWeight: '800', fontSize: '1.05rem' }}>

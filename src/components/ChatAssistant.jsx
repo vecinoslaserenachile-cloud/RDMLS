@@ -8,7 +8,7 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
     const [isListening, setIsListening] = useState(false);
     const recognitionRef = useRef(null);
     const [messages, setMessages] = useState([
-        { id: 1, sender: 'bot', text: '¡Hola! Soy **Faro IA**, tu asistente inteligente de Smart Comuna La Serena.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' }
+        { id: 1, sender: 'bot', text: '¡Hola! Soy **Faro IA**, tu asistente inteligente de ComunaSmart La Serena.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' }
     ]);
     const [inputText, setInputText] = useState('');
     const messagesEndRef = useRef(null);
@@ -142,7 +142,7 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
         try {
             const GEMINI_KEY = "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs";
             const historyText = messages.slice(-10).map(m => `${m.sender === 'user' ? 'Vecino' : 'Faro'}: ${m.text}`).join('\n');
-            const prompt = `ERES "FARO IA", asistente de SMART COMUNA VLS. Responde concisamente. Historial:\n${historyText}\nMensaje: "${inputText}"`;
+            const prompt = `ERES "FARO IA", asistente de ComunaSmart VLS. Responde concisamente. Historial:\n${historyText}\nMensaje: "${inputText}"`;
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

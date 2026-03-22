@@ -83,7 +83,7 @@ export default function ProspeccionComercial() {
                 
                 {/* Intro Pitch */}
                 <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                    <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', margin: '0 0 1rem 0', background: 'linear-gradient(to right, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', color: 'transparent', fontWeight: '900' }}>El Siguiente Nivel de Smart Comuna</h2>
+                    <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3rem)', margin: '0 0 1rem 0', background: 'linear-gradient(to right, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', color: 'transparent', fontWeight: '900' }}>El Siguiente Nivel de ComunaSmart</h2>
                     <p style={{ fontSize: '1.2rem', color: 'var(--text-secondary)', maxWidth: '700px', margin: '0 auto', lineHeight: '1.6' }}>
                         No vendemos una página web municipal. Vendemos un ecosistema de bolsillo inteligente, de uso interconectado y cero mantenimiento en tierra.
                     </p>

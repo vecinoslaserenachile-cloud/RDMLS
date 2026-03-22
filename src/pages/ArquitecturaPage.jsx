@@ -14,11 +14,11 @@ export default function ArquitecturaPage() {
                         </div>
                         <div>
                             <h1 style={{ margin: 0, fontSize: '2.5rem', fontWeight: '900', letterSpacing: '-1px' }}>ARQUITECTURA & OBRAS</h1>
-                            <p style={{ margin: 0, color: '#60a5fa', fontWeight: 'bold' }}>Soberanía Urbanística Smart City VLS</p>
+                             <p style={{ margin: 0, color: '#60a5fa', fontWeight: 'bold' }}>Soberanía Urbanística Smart City VLS (68+ Módulos)</p>
                         </div>
                     </div>
                     <div style={{ background: 'rgba(255,255,255,0.05)', padding: '10px 20px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <span style={{ color: '#10b981', fontWeight: 'bold' }}>●</span> ESTATUS: ONLINE
+                        <span style={{ color: '#10b981', fontWeight: 'bold' }}>●</span> ESTATUS: LIVE (9 DOMINIOS)
                     </div>
                 </header>
 
@@ -28,7 +28,7 @@ export default function ArquitecturaPage() {
                         <div style={{ position: 'relative', zIndex: 2 }}>
                             <h2 style={{ fontSize: '3rem', fontWeight: '900', lineHeight: '1.1', marginBottom: '1.5rem' }}>Damos forma al <span style={{ color: '#60a5fa' }}>futuro de La Serena.</span></h2>
                             <p style={{ fontSize: '1.2rem', color: '#94a3b8', lineHeight: '1.6', marginBottom: '2rem', maxWidth: '600px' }}>
-                                Desde ampliaciones residenciales hasta megaproyectos urbanos de bajo costo. Digitalizamos la DOM y transformamos la gestión de obras.
+                                Desde ampliaciones residenciales hasta megaproyectos urbanos de bajo costo. 68 módulos integrados para digitalizar la DOM y transformar la gestión de obras.
                             </p>
                             <div style={{ display: 'flex', gap: '1rem' }}>
                                 <button style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '12px 30px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -47,16 +47,16 @@ export default function ArquitecturaPage() {
                         <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#38bdf8' }}>📊 INDICADORES DE GESTIÓN</h3>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                             <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '20px', textAlign: 'center' }}>
-                                <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'white' }}>+120</div>
-                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>PERMISOS APROBADOS</div>
+                                 <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'white' }}>68+</div>
+                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>MÓDULOS ACTIVOS</div>
                             </div>
                             <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '20px', textAlign: 'center' }}>
-                                <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'white' }}>48h</div>
-                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>RESPUESTA PROMEDIO</div>
+                                <div style={{ fontSize: '1.5rem', fontWeight: '900', color: 'white' }}>9500+</div>
+                                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>VISITANTES ÚNICOS</div>
                             </div>
                         </div>
-                        <div style={{ background: 'linear-gradient(90deg, #10b981 30%, #334155 30%)', height: '10px', borderRadius: '10px' }}></div>
-                        <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: 0 }}>Meta Anual Smart Infrastructure: 30% Completado</p>
+                        <div style={{ background: 'linear-gradient(90deg, #10b981 68%, #334155 30%)', height: '10px', borderRadius: '10px' }}></div>
+                        <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: 0 }}>Meta Anual Smart Infrastructure: 68% Completado (Fase 3.2)</p>
                     </div>
                 </div>
 

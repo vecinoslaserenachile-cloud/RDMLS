@@ -41,7 +41,7 @@ const VLSMotorsSpot = ({ onClose }) => {
                     border: '1px solid rgba(255,255,255,0.1)'
                 }}>
                     <img 
-                        src="/vls_motors_spot_premium_1774121270221.png" 
+                        src="/vls_motors_spot_premium.png" 
                         alt="VLS MOTORS Premium Spot" 
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />

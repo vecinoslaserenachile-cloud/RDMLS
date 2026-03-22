@@ -89,7 +89,7 @@ export default function SmartEnfermeria({ onClose }) {
                                 ¿En qué podemos cuidarte hoy?
                             </h3>
                             <p style={{ fontSize: '1.2rem', color: '#64748b', maxWidth: '700px', margin: '0 auto' }}>
-                                Accede a servicios de salud domiciliarios y comunitarios validados por la red Smart Comuna. Calidad clínica con rostro humano.
+                                Accede a servicios de salud domiciliarios y comunitarios validados por la red ComunaSmart. Calidad clínica con rostro humano.
                             </p>
                         </div>
 

@@ -20,7 +20,7 @@ const glosarioTerms = [
     { term: "Sentinel", def: "Sistema de monitorización distribuida y Social Listening. Escucha y mapea el sentimiento ciudadano en redes sociales y servicios para prevenir conflictos y mejorar la atención.", syn: "Vigía digital, centinela social", ant: "Ceguera institucional" },
     { term: "SIG", def: "Sistemas de Información Geográfica. Herramienta para el análisis de datos rururbanos sobre mapas interactivos.", syn: "Georreferenciación, mapa inteligente", ant: "Datos planos" },
     { term: "Smart City (VLS)", def: "Modelo de ciudad que utiliza la conectividad y el Big Data para mejorar la calidad de vida. En VLS, se enfoca en el bajo costo, código abierto y soberanía digital.", syn: "Ciudad inteligente, territorio digital", ant: "Ciudad analógica" },
-    { term: "Smart Comuna", def: "Ecosistema integral que agrupa las 4 soluciones base: Smart Citizens, Smart Administration, Smart Events y Smart Listening.", syn: "Nuestra plataforma, paraguas tecnológico", ant: "Gestión silenciada" },
+    { term: "ComunaSmart", def: "Ecosistema integral que agrupa las 4 soluciones base: Smart Citizens, Smart Administration, Smart Events y Smart Listening.", syn: "Nuestra plataforma, paraguas tecnológico", ant: "Gestión silenciada" },
     { term: "Vecino Smart", def: "Ciudadano activo que utiliza la tecnología VLS para reportar, informarse y participar en la vida comunitaria, siendo un nodo humano de la red.", syn: "Ciudadano digital, vecino conectado", ant: "Vecino desconectado" },
     { term: "Ventanilla Única", def: "Modelo de atención centralizada donde el ciudadano puede realizar múltiples gestiones en un solo punto de contacto.", syn: "Servicio integrado, punto único", ant: "Fragmentación de trámites" }
 ];
