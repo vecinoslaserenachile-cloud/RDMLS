@@ -1666,6 +1666,7 @@ export default function HubDashboard() {
                         drag={!isFullscreenTV}
                         dragMomentum={false}
                         dragElastic={0.1}
+                        dragConstraints={{ left: -1000, right: 1000, top: -1000, bottom: 1000 }}
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={isFullscreenTV ? {
                             opacity: 1, scale: 1,
@@ -1683,7 +1684,7 @@ export default function HubDashboard() {
                             borderRadius: 0,
                             background: '#000',
                             overflow: 'hidden',
-                            touchAction: 'none'
+                            pointerEvents: 'auto'
                         } : {
                             position: 'fixed',
                             bottom: window.innerWidth < 768 ? '140px' : '100px',
@@ -1696,7 +1697,7 @@ export default function HubDashboard() {
                             boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
                             border: '2px solid rgba(255,255,255,0.1)',
                             background: '#000',
-                            touchAction: 'none'
+                            pointerEvents: 'auto'
                         }}
                     >
                         {/* gradient overlay bottom */}

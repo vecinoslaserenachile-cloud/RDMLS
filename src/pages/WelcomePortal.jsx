@@ -409,8 +409,13 @@ export default function WelcomePortal() {
       }}>
         {/* Featured Portal */}
         {!searchQuery && featured && (
+          <a
+            href={featured.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+          >
           <div
-            onClick={() => window.open(featured.url, '_blank')}
             style={{
               background: featured.gradient,
               borderRadius: '28px',
@@ -462,6 +467,7 @@ export default function WelcomePortal() {
               </div>
             </div>
           </div>
+          </a>
         )}
 
         {/* Rest of portals grid */}
@@ -473,8 +479,14 @@ export default function WelcomePortal() {
           {filteredPortales
             .filter(p => searchQuery || !p.featured)
             .map(portal => (
-              <div
+              <a
+                href={portal.url}
+                target="_blank"
+                rel="noopener noreferrer"
                 key={portal.id}
+                style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+              >
+              <div
                 onMouseEnter={() => setHoveredPortal(portal.id)}
                 onMouseLeave={() => setHoveredPortal(null)}
                 style={{
@@ -555,6 +567,7 @@ export default function WelcomePortal() {
                   </div>
                 </div>
               </div>
+              </a>
             ))}
         </div>
 
