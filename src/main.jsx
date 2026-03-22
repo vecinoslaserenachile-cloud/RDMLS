@@ -41,6 +41,7 @@ import ArquitecturaPage from './pages/ArquitecturaPage.jsx';
 import Serenamet from './pages/Serenamet.jsx';
 import Propiedades from './pages/Propiedades.jsx';
 import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
+import GameVLS from './pages/GameVLS.jsx';
 import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
@@ -266,6 +267,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="puerta" element={<PuertaSmart />} />
             <Route path="acceso" element={<PuertaSerena />} />
           </Route>
+          <Route path="/bisabuelo" element={<GameVLS />} />
           <Route path="/radios" element={<App />}>
             <Route index element={<HubDashboard />} />
           </Route>
