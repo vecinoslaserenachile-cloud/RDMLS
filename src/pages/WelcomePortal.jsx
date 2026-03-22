@@ -475,7 +475,6 @@ export default function WelcomePortal() {
             .map(portal => (
               <div
                 key={portal.id}
-                onClick={() => window.open(portal.url, '_blank')}
                 onMouseEnter={() => setHoveredPortal(portal.id)}
                 onMouseLeave={() => setHoveredPortal(null)}
                 style={{
