@@ -45,6 +45,8 @@ const CommunicationsMuseum = lazy(() => import('./components/CommunicationsMuseu
 const VecinojosPortal = lazy(() => import('./components/VecinojosPortal.jsx'));
 const SmartVLSFeed = lazy(() => import('./components/SmartVLSFeed.jsx'));
 const SmartBroadcasterStudio = lazy(() => import('./components/SmartBroadcasterStudio.jsx'));
+const PrecolombinoPortal = lazy(() => import('./components/PrecolombinoPortal.jsx'));
+const ParlamentoVecinal = lazy(() => import('./components/Parlamento/ParlamentoVecinal.jsx'));
 import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
 import VLSConsoleSound from './components/VLSConsoleSound.jsx';
 import DronDrigo from './components/DronDrigo.jsx';
@@ -58,7 +60,6 @@ const SmartHub3D = lazy(() => import('./components/SmartHub3D'));
 const SocialVision = lazy(() => import('./components/SocialVision'));
 const RadioIntercom = lazy(() => import('./components/RadioIntercom'));
 const AuditoriaVecinal = lazy(() => import('./components/Auditoria/AuditoriaVecinal'));
-const ParlamentoVecinal = lazy(() => import('./components/Parlamento/ParlamentoVecinal'));
 const Gimnasio3D = lazy(() => import('./components/Gimnasio3D'));
 const MotorTiempoBrowser = lazy(() => import('./components/MotorTiempoBrowser'));
 const SmartBusinessMVP = lazy(() => import('./components/SmartBusinessMVP'));
@@ -217,6 +218,7 @@ function AppContent() {
   const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+  const [showPrecolombino, setShowPrecolombino] = useState(false);
 
   // States for modals
   const [showCouncil, setShowCouncil] = useState(false);
@@ -385,7 +387,9 @@ function AppContent() {
     const handleFaritoSocial = () => setShowFaritoSocial(true);
     const handleVecnityPay   = () => setShowVecnityPay(true);
     
-    const handleFaroIA = () => setShowChat(true);
+    const handleFaroChat = () => setShowChat(true);
+    const handlePrecolombino = () => setShowPrecolombino(true);
+    const handleParlamento = () => setShowParlamento(true);
 
     window.addEventListener('open-dron-drigo', handleOpenDron);
     window.addEventListener('open-retro-tv', handleRetroTv);
@@ -397,7 +401,9 @@ function AppContent() {
     window.addEventListener('open-retro-room', handleRetroRoom);
     window.addEventListener('open-farito-social', handleFaritoSocial);
     window.addEventListener('open-vecinity-pay', handleVecnityPay);
-    window.addEventListener('open-faro-ia', handleFaroIA);
+    window.addEventListener('open-faro-ia', handleFaroChat);
+    window.addEventListener('open-precolombino', handlePrecolombino);
+    window.addEventListener('open-decision-vecinal', handleParlamento);
     
     return () => {
       window.removeEventListener('open-dron-drigo', handleOpenDron);
@@ -410,7 +416,9 @@ function AppContent() {
       window.removeEventListener('open-retro-room', handleRetroRoom);
       window.removeEventListener('open-farito-social', handleFaritoSocial);
       window.removeEventListener('open-vecinity-pay', handleVecnityPay);
-      window.removeEventListener('open-faro-ia', handleFaroIA);
+      window.removeEventListener('open-faro-ia', handleFaroChat);
+      window.removeEventListener('open-precolombino', handlePrecolombino);
+      window.removeEventListener('open-decision-vecinal', handleParlamento);
     };
   }, []);
 
@@ -556,7 +564,7 @@ function AppContent() {
     }
   };
   const handleOpenEmbajadas = () => setShowEmbajadas(true);
-  const handleOpenFaroIA = () => window.dispatchEvent(new CustomEvent('open-luz-foco'));
+  const handleOpenFaroIA = () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowChat(true); };
   const handleOpenEcumenical = () => setShowEcumenical(true);
   const handleOpenSecular = () => setShowSecular(true);
   const handleOpenSmartSkills = () => setShowSmartSkills(true);
@@ -1470,6 +1478,12 @@ function AppContent() {
       )}
       <TokenEconomyMaster />
       {showVecnityPay && <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />}
+      {showPrecolombino && (
+        <Suspense fallback={null}><PrecolombinoPortal onClose={() => setShowPrecolombino(false)} /></Suspense>
+      )}
+      {showParlamento && (
+        <Suspense fallback={null}><ParlamentoVecinal onClose={() => setShowParlamento(false)} /></Suspense>
+      )}
       <SmartShare isFloating={true} />
       <VLSQuantumWatch onCalendarClick={() => setShowCalendar(true)} />
     </div>

@@ -28,6 +28,7 @@ import VLSManifesto from '../components/VLSManifesto';
 import PrecolombinoPortal from '../components/PrecolombinoPortal';
 import AmbientModeVLS from '../components/AmbientModeVLS';
 import CentralDifusionVLS from '../components/CentralDifusionVLS';
+import ParlamentoVecinal from '../components/Parlamento/ParlamentoVecinal';
 import SmartShare from '../components/SmartShare';
 import NavieraMonitor from '../components/NavieraMonitor';
 import MusicRanking from '../components/MusicRanking';
@@ -274,40 +275,57 @@ export default function HubDashboard() {
         window.addEventListener('storage', handleStorage);
 
         const handleDecision = () => setShowPoll(true);
+        const handleGalaxia = () => setShowGalaxia(true);
+        const handleRoadmap = () => setShowRoadmap(true);
+        const handleManifesto = () => setShowManifesto(true);
+        const handlePrecolombino = () => setShowPrecolombino(true);
+        const handleAmbient = () => setShowAmbientMode(true);
+        const handleDifusion = () => setShowCentralDifusion(true);
+        const handleFaroIA = () => setShowVirtualAssistant(true);
+        const handleTienda = () => setShowTiendaPoleras(true);
+        const handleMotors = () => setShowVLSMotors(true);
+        const handleLegal = () => setShowOrientacionLegal(true);
+        const handleMetAdmin = () => setShowSerenaMetAdmin(true);
+        const handleVLSpeak = () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); };
+        const handleSafeRoute = () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); };
+        const handleSocialVision = () => { setShowSocialVision(true); setActiveTutorial('radar'); };
+        const handleAnalytics = () => setShowAnalyticsApp(true);
+
         window.addEventListener('open-decision-vecinal', handleDecision);
-        window.addEventListener('open-galaxia-disco', () => setShowGalaxia(true));
-        window.addEventListener('open-vls-roadmap', () => setShowRoadmap(true));
-        window.addEventListener('open-vls-manifesto', () => setShowManifesto(true));
-        window.addEventListener('open-precolombino', () => setShowPrecolombino(true));
-        window.addEventListener('open-ambient-mode', () => setShowAmbientMode(true));
-        window.addEventListener('open-central-difusion', () => setShowCentralDifusion(true));
-        window.addEventListener('open-faro-ia', () => setShowVirtualAssistant(true)); // Event listener for virtual assistant
-        window.addEventListener('open-tienda-poleras', () => setShowTiendaPoleras(true));
-        window.addEventListener('open-vls-motors', () => setShowVLSMotors(true));
-        window.addEventListener('open-orientacion-legal', () => setShowOrientacionLegal(true));
-        window.addEventListener('open-serenamet-admin', () => setShowSerenaMetAdmin(true));
-        window.addEventListener('open-vlspeak', () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); });
-        window.addEventListener('open-safe-route', () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); });
-        window.addEventListener('open-social-vision', () => { setShowSocialVision(true); setActiveTutorial('radar'); });
-        window.addEventListener('open-analytics', () => setShowAnalyticsApp(true));
+        window.addEventListener('open-galaxia-disco', handleGalaxia);
+        window.addEventListener('open-vls-roadmap', handleRoadmap);
+        window.addEventListener('open-vls-manifesto', handleManifesto);
+        window.addEventListener('open-precolombino', handlePrecolombino);
+        window.addEventListener('open-ambient-mode', handleAmbient);
+        window.addEventListener('open-central-difusion', handleDifusion);
+        window.addEventListener('open-faro-ia', handleFaroIA);
+        window.addEventListener('open-tienda-poleras', handleTienda);
+        window.addEventListener('open-vls-motors', handleMotors);
+        window.addEventListener('open-orientacion-legal', handleLegal);
+        window.addEventListener('open-serenamet-admin', handleMetAdmin);
+        window.addEventListener('open-vlspeak', handleVLSpeak);
+        window.addEventListener('open-safe-route', handleSafeRoute);
+        window.addEventListener('open-social-vision', handleSocialVision);
+        window.addEventListener('open-analytics', handleAnalytics);
 
         return () => {
             window.removeEventListener('storage', handleStorage);
             window.removeEventListener('open-decision-vecinal', handleDecision);
-            window.removeEventListener('open-galaxia-disco', () => setShowGalaxia(true));
-            window.removeEventListener('open-vls-roadmap', () => setShowRoadmap(true));
-            window.removeEventListener('open-vls-manifesto', () => setShowManifesto(true));
-            window.removeEventListener('open-precolombino', () => setShowPrecolombino(true));
-            window.removeEventListener('open-ambient-mode', () => setShowAmbientMode(true));
-            window.removeEventListener('open-central-difusion', () => setShowCentralDifusion(true));
-            window.removeEventListener('open-faro-ia', () => setShowVirtualAssistant(true));
-            window.addEventListener('open-tienda-poleras', () => setShowTiendaPoleras(true));
-            window.removeEventListener('open-vls-motors', () => setShowVLSMotors(true));
-            window.removeEventListener('open-orientacion-legal', () => setShowOrientacionLegal(true));
-            window.removeEventListener('open-serenamet-admin', () => setShowSerenaMetAdmin(true));
-            window.removeEventListener('open-vlspeak', () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); });
-            window.removeEventListener('open-safe-route', () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); });
-            window.removeEventListener('open-social-vision', () => { setShowSocialVision(true); setActiveTutorial('radar'); });
+            window.removeEventListener('open-galaxia-disco', handleGalaxia);
+            window.removeEventListener('open-vls-roadmap', handleRoadmap);
+            window.removeEventListener('open-vls-manifesto', handleManifesto);
+            window.removeEventListener('open-precolombino', handlePrecolombino);
+            window.removeEventListener('open-ambient-mode', handleAmbient);
+            window.removeEventListener('open-central-difusion', handleDifusion);
+            window.removeEventListener('open-faro-ia', handleFaroIA);
+            window.removeEventListener('open-tienda-poleras', handleTienda);
+            window.removeEventListener('open-vls-motors', handleMotors);
+            window.removeEventListener('open-orientacion-legal', handleLegal);
+            window.removeEventListener('open-serenamet-admin', handleMetAdmin);
+            window.removeEventListener('open-vlspeak', handleVLSpeak);
+            window.removeEventListener('open-safe-route', handleSafeRoute);
+            window.removeEventListener('open-social-vision', handleSocialVision);
+            window.removeEventListener('open-analytics', handleAnalytics);
         };
     }, []);
 
@@ -1579,7 +1597,7 @@ export default function HubDashboard() {
                                     <span style={{ display: 'block', fontSize: '0.75rem', color: '#38bdf8', fontWeight: 'bold', marginBottom: '0.8rem', padding: '2px 8px', background: 'rgba(56,189,248,0.1)', borderRadius: '10px' }}>{char.role}</span>
                                     <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.4', fontStyle: 'italic' }}>"{char.bio}"</p>
                                 </div>
-                                <button className="btn-glass" style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', fontSize: '0.8rem', color: 'white', marginTop: 'auto' }}>Hablar con {char.name}</button>
+                                <button onClick={() => setShowVirtualAssistant(true)} className="btn-glass" style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', fontSize: '0.8rem', color: 'white', marginTop: 'auto' }}>Hablar con {char.name}</button>
                             </div>
                         ))}
                     </div>
@@ -1819,6 +1837,13 @@ export default function HubDashboard() {
         {showAnalyticsApp && (
             <VecinosAnalyticsApp onClose={() => setShowAnalyticsApp(false)} />
         )}
+        {showPrecolombino && <PrecolombinoPortal onClose={() => setShowPrecolombino(false)} />}
+        {showRoadmap && <VLSRoadmap onClose={() => setShowRoadmap(false)} />}
+        {showManifesto && <VLSManifesto onClose={() => setShowManifesto(false)} />}
+        {showGalaxia && <GalaxiaDiscoteque onClose={() => setShowGalaxia(false)} />}
+        {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
+        {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
+        {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
       </>
     );
 }

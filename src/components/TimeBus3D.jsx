@@ -9,6 +9,7 @@ import VhsTVModal from './VhsTVModal';
 import RetroCubo3D from './RetroCubo3D';
 import MemoryPortalModal from './MemoryPortalModal';
 
+import PrecolombinoPortal from './PrecolombinoPortal';
 function SerenitoGuide() {
     const groupRef = React.useRef();
     const { scene, animations } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
@@ -397,7 +398,9 @@ function EpochViewer({ era, onClose }) {
 
             {/* Scenario Content */}
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {era.video ? (
+        {era.id === 'pre' ? (
+          <PrecolombinoPortal onClose={onClose} />
+        ) : era.video ? (
                     era.video.includes('youtube.com') || era.video.includes('youtu.be') ? (
                         <iframe 
                             width="100%" 

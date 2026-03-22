@@ -6,7 +6,8 @@ import {
     MessageSquare, Settings, TrendingUp, Calendar, Zap, Share2, 
     Clock, Smartphone, Shield, Star, ExternalLink, Filter, Database, 
     Activity, ChevronRight, X, AlertTriangle, Info, Coffee, HelpCircle,
-    Bell, ClipboardList, Eye, Download, ShieldClose, HardDrive
+    Bell, ClipboardList, Eye, Download, ShieldClose, HardDrive,
+    Home, ShoppingCart, Tag, Ticket, Map as MapIcon
 } from 'lucide-react';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -66,7 +67,7 @@ const AVISOS_PROMO = [
 
 export default function PuertaSmart() {
     const navigate = useNavigate();
-    const [activeView, setActiveView] = useState('citizen'); // citizen, monitor, admin
+    const [activeView, setActiveView] = useState('landing'); // landing, sales, citizen, monitor, admin
     const [activeAdminTab, setActiveAdminTab] = useState('dashboard'); // dashboard, guard, secretary, analytics, crm, logs
     
     // Configuración de Marca
@@ -231,7 +232,9 @@ export default function PuertaSmart() {
                 </div>
                 
                 {/* Navigation Desktop */}
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <TabButton active={activeView === 'landing'} label="Inicio" icon={<Home size={18} />} onClick={() => setActiveView('landing')} color={primaryColor} />
+                    <TabButton active={activeView === 'sales'} label="Catálogo & Ventas" icon={<ShoppingCart size={18} />} onClick={() => setActiveView('sales')} color={primaryColor} />
                     <TabButton active={activeView === 'citizen'} label="Ciudadano" icon={<Smartphone size={18} />} onClick={() => setActiveView('citizen')} color={primaryColor} />
                     <TabButton active={activeView === 'monitor'} label="Monitor" icon={<Eye size={18} />} onClick={() => setActiveView('monitor')} color={primaryColor} />
                     <TabButton active={activeView === 'admin'} label="Gestión" icon={<Shield size={18} />} onClick={() => setActiveView('admin')} color={primaryColor} />
@@ -239,6 +242,8 @@ export default function PuertaSmart() {
             </div>
 
             <main style={{ padding: '1rem', maxWidth: '1400px', margin: '0 auto' }}>
+                {activeView === 'landing' && <LandingNode setView={setActiveView} primaryColor={primaryColor} orgName={orgName} />}
+                {activeView === 'sales' && <SalesNode primaryColor={primaryColor} />}
                 {activeView === 'citizen' && <CitizenNode register={registerVisitor} update={updateStatus} complete={completeSession} current={waitingRoom} primaryColor={primaryColor} />}
                 {activeView === 'monitor' && <MonitorNode current={waitingRoom} primaryColor={primaryColor} />}
                 {activeView === 'admin' && (
@@ -270,8 +275,109 @@ export default function PuertaSmart() {
 }
 
 // ==================================================================================================
-// SUB-COMPONENTES (LOS 7 NODOS)
+// SUB-COMPONENTES (NODOS)
 // ==================================================================================================
+
+// --- NODO L: LANDING PAGE ---
+function LandingNode({ setView, primaryColor, orgName }) {
+    return (
+        <div className="animate-fade-in" style={{ textAlign: 'center', padding: '1rem 0' }}>
+            <div style={{ background: `linear-gradient(135deg, ${primaryColor}, #0f172a)`, padding: '4rem 2rem', borderRadius: '32px', color: 'white', marginBottom: '3rem', position: 'relative', overflow: 'hidden' }}>
+                <ShieldCheck size={80} style={{ opacity: 0.2, position: 'absolute', right: '-20px', top: '-20px', transform: 'scale(5)' }} />
+                <h2 style={{ fontSize: '3rem', fontWeight: '900', margin: '0 0 1rem 0', textTransform: 'uppercase', letterSpacing: '2px' }}>PuertaSmart: El Futuro Digital</h2>
+                <p style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto 2rem auto', opacity: 0.9 }}>
+                    Integramos seguridad inquebrantable, control de accesos descentralizado y fomento al emprendimiento local en una sola plataforma corporativa para {orgName}.
+                </p>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button onClick={() => setView('sales')} className="action-btn" style={{ background: '#f59e0b', maxWidth: '320px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', padding: '1rem' }}>
+                        <ShoppingCart size={24} /> Ver Tienda & Promos
+                    </button>
+                    <button onClick={() => setView('citizen')} className="action-btn" style={{ background: 'white', maxWidth: '320px', color: primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', padding: '1rem' }}>
+                        <Lock size={24} /> Portal de Accesos Seguro
+                    </button>
+                </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', textAlign: 'left' }}>
+                <div className="glass-panel-white">
+                    <div style={{ background: '#f0fdf4', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#10b981' }}>
+                         <Shield size={32} />
+                    </div>
+                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Control Absoluto</h3>
+                    <p style={{ color: '#64748b' }}>Monitoreo en tiempo real, trazabilidad ciudadana inteligente y evaluación de servicio en cada dependencia municipal o comercial (NPS).</p>
+                </div>
+                <div className="glass-panel-white">
+                    <div style={{ background: '#fffbeb', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#f59e0b' }}>
+                         <Tag size={32} />
+                    </div>
+                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Catálogo de Ventas</h3>
+                    <p style={{ color: '#64748b' }}>Espacios nativos para emprendedores: venta de tickets, reservas e inventarios promovidos junto al inmenso flujo de personas y visitas.</p>
+                </div>
+                <div className="glass-panel-white">
+                    <div style={{ background: '#f1f5f9', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#3b82f6' }}>
+                         <Activity size={32} />
+                    </div>
+                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Analítica Avanzada</h3>
+                    <p style={{ color: '#64748b' }}>Dashboards integrados del ecosistema que recopilan las transacciones y tiempos de respuesta brindando un control táctico.</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// --- NODO S: VENTAS Y PROMOCIÓN ---
+function SalesNode({ primaryColor }) {
+    const PROMOCIONES = [
+        { id: 1, title: 'Tour Astronómico Express', vendor: 'Turismo La Serena', price: '$15.000', icon: <Star />, color: '#8b5cf6', tag: 'Ticket Digital' },
+        { id: 2, title: 'Degustación Gastronómica', vendor: 'Recova Store', price: '$8.500', icon: <Coffee />, color: '#f59e0b', tag: 'Alimentación' },
+        { id: 3, title: 'Pase Full Estadio Portada', vendor: 'Deportes IMLS', price: '$4.000', icon: <Ticket />, color: '#10b981', tag: 'Deportes' },
+        { id: 4, title: 'Ruta de las Iglesias Doradas', vendor: 'Patrimonio VLS', price: 'GRATIS', icon: <MapIcon />, color: '#38bdf8', tag: 'Cultura' },
+        { id: 5, title: 'Reserva Cancha Avenida del Mar', vendor: 'Borde Costero', price: '$10.000 / hr', icon: <Activity />, color: '#ec4899', tag: 'Reserva' },
+    ];
+
+    return (
+        <div className="animate-fade-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                     <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: primaryColor, margin: 0 }}>Ventas & Promociones</h2>
+                     <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Impulsando la economía circular y emprendimientos.</p>
+                </div>
+                <button className="small-action-btn" style={{ background: primaryColor, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', padding: '1rem 1.5rem', borderRadius: '14px' }}>
+                     <ShoppingCart size={24} /> Ir al Checkout (0)
+                </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                {PROMOCIONES.map(p => (
+                    <div key={p.id} className="venue-card-premium" style={{ borderTop: `5px solid ${p.color}`, display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ background: `${p.color}15`, width: '100%', height: '140px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.color, marginBottom: '1rem' }}>
+                            {React.cloneElement(p.icon, { size: 56 })}
+                        </div>
+                        <span style={{ fontSize: '0.75rem', fontWeight: '900', background: '#f1f5f9', color: '#64748b', padding: '6px 10px', borderRadius: '6px', alignSelf: 'flex-start', marginBottom: '0.8rem', textTransform: 'uppercase' }}>{p.tag}</span>
+                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem', color: '#001f3f' }}>{p.title}</h4>
+                        <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: '0 0 1.5rem 0', fontWeight: 'bold' }}>Operador: {p.vendor}</p>
+                        
+                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '1.2rem' }}>
+                            <span style={{ fontSize: '1.6rem', fontWeight: '900', color: p.color }}>{p.price}</span>
+                            <button className="small-action-btn" style={{ background: p.color, display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem' }}>
+                                + AGREGAR
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            
+            <div className="promo-box" style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', gap: '2rem', background: '#f0fdf4', borderColor: '#10b981', flexWrap: 'wrap' }}>
+                <Ticket size={64} color="#10b981" />
+                <div style={{ flex: 1 }}>
+                     <h3 style={{ margin: '0 0 0.5rem 0', color: '#001f3f', fontSize: '1.5rem' }}>¿Eres emprendedor o proveedor local?</h3>
+                     <p style={{ margin: 0, color: '#64748b', fontSize: '1.1rem' }}>Suma tus tickets o catálogos a PuertaSmart y llega a cientos de vecinos diariamente mediante nuestra red de visitantes.</p>
+                </div>
+                <button className="small-action-btn" style={{ background: '#10b981', padding: '1rem 2rem', fontSize: '1.1rem' }}>ENVIAR MI CATÁLOGO</button>
+            </div>
+        </div>
+    );
+}
 
 // --- NODO I: CIUDADANO (PÓRTICO QR / REGISTRO) ---
 function CitizenNode({ register, update, complete, current, primaryColor }) {

@@ -27,12 +27,12 @@ export default function LitePortal() {
   // 60+ Módulos categorizados para ComunaSmart Mosaico Guell Style
   const allModules = [
     // --- SMART CITIZENS ---
-    { id: 'reportes', name: 'Reportes', icon: MessageSquare, color: '#ef4444', action: () => window.dispatchEvent(new CustomEvent('open-report-portal')) },
+    { id: 'reportes', name: 'Reportes', icon: MessageSquare, color: '#ef4444', action: () => window.dispatchEvent(new CustomEvent('open-auditoria')) },
     { id: 'radio', name: 'Radio VLS', icon: Radio, color: '#3b82f6', action: () => window.dispatchEvent(new CustomEvent('open-radio-master')) },
     { id: 'mapa', name: 'Mapa VLS', icon: MapPin, color: '#10b981', action: () => window.dispatchEvent(new CustomEvent('open-distances')) },
     { id: 'camaras', name: 'Cámaras', icon: Camera, color: '#f59e0b', action: () => window.dispatchEvent(new CustomEvent('open-social-vision')) },
     { id: 'centinel', name: 'Centinel', icon: Eye, color: '#6366f1' },
-    { id: 'asistente', name: 'Faro IA', icon: Zap, color: '#8b5cf6', action: () => window.dispatchEvent(new CustomEvent('open-ai-chat')) },
+    { id: 'asistente', name: 'Faro IA', icon: Zap, color: '#8b5cf6', action: () => window.dispatchEvent(new CustomEvent('open-faro')) },
     { id: 'noticias', name: 'Noticias', icon: Newspaper, color: '#ef4444' },
     { id: 'seguridad', name: 'Seguridad', icon: Shield, color: '#0f172a' },
     { id: 'salud', name: 'Salud', icon: HeartPulse, color: '#ec4899' },
@@ -55,7 +55,7 @@ export default function LitePortal() {
     { id: 'social', name: 'Escucha', icon: MessageSquare, color: '#38bdf8' },
     { id: 'faro-vids', name: 'Faro Vids', icon: Eye, color: '#6366f1' },
     // --- HISTORIA & 3D ---
-    { id: 'walk3d', name: 'Paseo 3D', icon: History, color: '#92400e', action: () => window.dispatchEvent(new CustomEvent('open-historic-walk')) },
+    { id: 'walk3d', name: 'Paseo 3D', icon: History, color: '#92400e', action: () => window.dispatchEvent(new CustomEvent('open-3d-walk')) },
     { id: 'farino3d', name: 'Fariño 3D', icon: Ghost, color: '#ec4899', action: () => window.open('https://studio.tripo3d.ai/3d-model/47f3a48d-8ae8-47fc-b259-dfccb6922ce1', '_blank') },
     { id: 'joako3d', name: 'Joako 3D', icon: User, color: '#38bdf8', action: () => window.open('https://www.hitem3d.ai/share/3d-models-generator/a/7PR9D304', '_blank') },
     { id: 'arcade', name: 'Arcade', icon: Gamepad2, color: '#f97316' },
@@ -234,7 +234,7 @@ export default function LitePortal() {
           <Search size={32} color="#94a3b8" />
         </button>
         <button 
-            onClick={() => window.dispatchEvent(new CustomEvent('open-ai-chat'))}
+            onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))}
             style={{ 
                 background: '#facc15', 
                 color: '#000', 

@@ -82,12 +82,31 @@ export default function MusicRanking({ insideModal = false }) {
         }
     };
 
+    const playPromiseRef = useRef(null);
+
     useEffect(() => {
-        if (!audioRef.current) return;
-        if (isPlaying && currentTrack) {
-            audioRef.current.play().catch(e => console.error("Audio block: ", e));
+        if (!audioRef.current || !currentTrack) return;
+        const audio = audioRef.current;
+
+        if (isPlaying) {
+            playPromiseRef.current = audio.play();
+            playPromiseRef.current.catch(error => {
+                if (error.name !== 'AbortError') {
+                    console.error("Audio block: [LoadError]", error);
+                }
+            });
         } else {
-            audioRef.current.pause();
+            if (playPromiseRef.current !== null) {
+                playPromiseRef.current
+                    .then(() => {
+                        audio.pause();
+                    })
+                    .catch(() => {
+                        audio.pause();
+                    });
+            } else {
+                audio.pause();
+            }
         }
     }, [isPlaying, currentTrack]);
 
