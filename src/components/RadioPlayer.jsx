@@ -329,7 +329,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         }
 
         audioRef.current.pause();
-        audioRef.current.removeAttribute('crossorigin');
+        audioRef.current.crossOrigin = 'anonymous'; // Requisito estricto para Web Audio API AnalyserNode
         audioRef.current.src = streamUrl;
         audioRef.current.load();
         
@@ -367,6 +367,12 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             const ctx = new AudioContext();
             audioContextRef.current = ctx;
+            
+            // Connect the <audio> element to the audio graph!
+            if (audioRef.current) {
+                sourceRef.current = ctx.createMediaElementSource(audioRef.current);
+            }
+
             analyserRef.current = ctx.createAnalyser();
             analyserRef.current.fftSize = 64;
             const frequencies = [60, 250, 1000, 4000, 12000];
@@ -379,6 +385,17 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 return filter;
             });
             filtersRef.current = filters;
+
+            // Wire the graph: source -> filters -> analyser -> destination
+            if (sourceRef.current) {
+                let currentNode = sourceRef.current;
+                filters.forEach(filter => {
+                    currentNode.connect(filter);
+                    currentNode = filter;
+                });
+                currentNode.connect(analyserRef.current);
+            }
+            
             analyserRef.current.connect(ctx.destination);
         }
         if (audioContextRef.current.state === 'suspended') audioContextRef.current.resume();
@@ -437,11 +454,10 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 rotL = -45 + (Math.min(255, avgL) / 255) * 90;
                 rotR = -45 + (Math.min(255, avgR) / 255) * 90;
             } else {
-                const base = -45;
-                const amplitude = 80 * volume;
-                rotL = base + (Math.random() * amplitude);
-                rotR = base + (Math.random() * amplitude);
-                setSpectrumLevels(prev => prev.map(() => 5 + Math.random() * (40 * volume)));
+                // Si reproduces pero no hay data real aún (ej. buffering o silencio absoluto)
+                rotL = -45;
+                rotR = -45;
+                setSpectrumLevels([5, 5, 5, 5, 5]);
             }
             meterLevelsRef.current.left += (rotL - meterLevelsRef.current.left) * 0.25;
             meterLevelsRef.current.right += (rotR - meterLevelsRef.current.right) * 0.25;
@@ -524,7 +540,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                     gap: '4px'
                 }}
             >
-                <audio ref={audioRef} loop={!currentStation.isLive}
+                <audio ref={audioRef} loop={!currentStation.isLive} crossOrigin="anonymous"
                     onPlay={() => { initAudioContext(); setIsPlaying(true); }}
                     onPause={() => setIsPlaying(false)}
                 />
@@ -673,6 +689,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             <audio 
                 ref={audioRef} 
                 loop={!currentStation.isLive} 
+                crossOrigin="anonymous"
                 onPlay={() => { initAudioContext(); setIsPlaying(true); }}
                 onPause={() => setIsPlaying(false)}
             />
