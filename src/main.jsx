@@ -237,49 +237,57 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <BrowserRouter>
         <GlobalWarning />
-        <Routes>
-          <Route path="/welcome" element={<WelcomePortal />} />
-          <Route path="/smart-setup" element={<SuperAdminSetup />} />
-          <Route path="/" element={isPuertaDns ? <Navigate to="/puerta" replace /> : <App />}>
-            <Route index element={<HubDashboard />} />
-            <Route path="punto" element={<PuntoVecinal />} />
-            <Route path="hub" element={<HubDashboard />} />
-            <Route path="vecinos" element={<VecinoDashboard />} />
-            <Route path="citizens" element={<Citizens />} />
-            <Route path="panoramas" element={<Panoramas />} />
-            <Route path="eventos" element={<Panoramas />} />
-            <Route path="emprende" element={<Emprende />} />
-            <Route path="elearning" element={<Elearning />} />
-            <Route path="senior-games" element={<SeniorGames />} />
-            <Route path="genealogy" element={<GenealogyPortal />} />
-            <Route path="musica" element={<MusicaPage />} />
-            <Route path="escuela-musica" element={<EscuelaMusicaVecinal />} />
-            <Route path="escuela-artes" element={<EscuelaArtesHumanidades />} />
-            <Route path="protocolo" element={<Protocolo />} />
-            <Route path="smart-salud" element={<SmartSalud />} />
-            <Route path="honorarios" element={<Honorarios />} />
-            <Route path="pegatinas" element={<PegatinasVecinales />} />
-            <Route path="glosario" element={<Glosario />} />
-            <Route path="mediaplus" element={<MediaPlus />} />
-            <Route path="rapido" element={<HomeLiviano />} />
-            <Route path="inversores" element={<FaritoInversores />} />
-            <Route path="arquitectura" element={<ArquitecturaPage />} />
-            <Route path="legacy" element={<LegacyPortal />} />
-            <Route path="serenamet" element={<Serenamet />} />
-            <Route path="propiedades" element={<Propiedades />} />
-            <Route path="acceso" element={<PuertaSerena />} />
-          </Route>
-          <Route path="/puerta" element={<PuertaSmart />} />
-          <Route path="/bisabuelo" element={<GameVLS />} />
-          <Route path="/radios" element={<App />}>
-            <Route index element={<HubDashboard />} />
-          </Route>
-          <Route path="/bella" element={<BellaDashboard />} />
-          <Route path="/lite" element={<LitePortal />} />
-          <Route path="/sombreros" element={<DeBonoThinkingHats />} />
-          <Route path="*" element={<Navigate to="/" />} />
-          <Route path="/desk" element={<Backoffice />} />
-        </Routes>
+        {isPuertaDns ? (
+          <Routes>
+            <Route path="/" element={<Navigate to="/puerta" replace />} />
+            <Route path="/puerta" element={<PuertaSmart />} />
+            <Route path="*" element={<Navigate to="/puerta" replace />} />
+          </Routes>
+        ) : (
+          <Routes>
+            <Route path="/welcome" element={<WelcomePortal />} />
+            <Route path="/smart-setup" element={<SuperAdminSetup />} />
+            <Route path="/" element={<App />}>
+              <Route index element={<HubDashboard />} />
+              <Route path="punto" element={<PuntoVecinal />} />
+              <Route path="hub" element={<HubDashboard />} />
+              <Route path="vecinos" element={<VecinoDashboard />} />
+              <Route path="citizens" element={<Citizens />} />
+              <Route path="panoramas" element={<Panoramas />} />
+              <Route path="eventos" element={<Panoramas />} />
+              <Route path="emprende" element={<Emprende />} />
+              <Route path="elearning" element={<Elearning />} />
+              <Route path="senior-games" element={<SeniorGames />} />
+              <Route path="genealogy" element={<GenealogyPortal />} />
+              <Route path="musica" element={<MusicaPage />} />
+              <Route path="escuela-musica" element={<EscuelaMusicaVecinal />} />
+              <Route path="escuela-artes" element={<EscuelaArtesHumanidades />} />
+              <Route path="protocolo" element={<Protocolo />} />
+              <Route path="smart-salud" element={<SmartSalud />} />
+              <Route path="honorarios" element={<Honorarios />} />
+              <Route path="pegatinas" element={<PegatinasVecinales />} />
+              <Route path="glosario" element={<Glosario />} />
+              <Route path="mediaplus" element={<MediaPlus />} />
+              <Route path="rapido" element={<HomeLiviano />} />
+              <Route path="inversores" element={<FaritoInversores />} />
+              <Route path="arquitectura" element={<ArquitecturaPage />} />
+              <Route path="legacy" element={<LegacyPortal />} />
+              <Route path="serenamet" element={<Serenamet />} />
+              <Route path="propiedades" element={<Propiedades />} />
+              <Route path="acceso" element={<PuertaSerena />} />
+            </Route>
+            <Route path="/puerta" element={<PuertaSmart />} />
+            <Route path="/bisabuelo" element={<GameVLS />} />
+            <Route path="/radios" element={<App />}>
+              <Route index element={<HubDashboard />} />
+            </Route>
+            <Route path="/bella" element={<BellaDashboard />} />
+            <Route path="/lite" element={<LitePortal />} />
+            <Route path="/sombreros" element={<DeBonoThinkingHats />} />
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/desk" element={<Backoffice />} />
+          </Routes>
+        )}
       </BrowserRouter>
     </LanguageProvider>
     </ErrorBoundary>
