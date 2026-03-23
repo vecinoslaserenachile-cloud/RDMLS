@@ -180,8 +180,12 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
     };
 
     if (gameState === 'playing' && currentQuestion) {
-      setQuestionImage(null); // Reset image for new question
-      generateImage();
+      if (currentQuestion.image) {
+        setQuestionImage(currentQuestion.image);
+      } else {
+        setQuestionImage(null); // Reset image for new question
+        generateImage();
+      }
     }
   }, [currentQuestion, gameState]);
 

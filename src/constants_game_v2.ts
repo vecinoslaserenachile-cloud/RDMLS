@@ -4,6 +4,7 @@ export interface Question {
   options: string[];
   correctIndex: number;
   explanation: string;
+  image?: string;
 }
 
 export interface Stage {
@@ -24,14 +25,16 @@ export const STAGES: Stage[] = [
         text: "¿Cuál es el ave protegida del humedal del río Elqui?",
         options: ["Pilpilén", "Pájaro carpintero", "Condorito", "Pájaro cantor"],
         correctIndex: 0,
-        explanation: "El Pilpilén es una de las aves más emblemáticas y protegidas de la zona costera y el humedal."
+        explanation: "El Pilpilén es una de las aves más emblemáticas y protegidas de la zona costera y el humedal.",
+        image: "/comic-aves.jpg"
       },
       {
         id: 2,
         text: "¿En qué año fue la primera fundación de La Serena?",
         options: ["1544", "1549", "1810", "1900"],
         correctIndex: 0,
-        explanation: "Fue fundada por primera vez en 1544 por Juan Bohón, antes de ser destruida y refundada en 1549."
+        explanation: "Fue fundada por primera vez en 1544 por Juan Bohón, antes de ser destruida y refundada en 1549.",
+        image: "/comic-patrimonio.jpg"
       },
       {
         id: 3,
