@@ -85,7 +85,7 @@ export default function SmartTV({ weather }) {
   const [isVisible, setIsVisible] = useState(true);
   const [currentChannelIdx, setCurrentChannelIdx] = useState(0);
   const [overlayData, setOverlayData] = useState({ text: 'Iniciando transmisión...', icon: Activity, color: '#10b981' });
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [isSwitching, setIsSwitching] = useState(false);
 
   const currentChannel = CHANNELS[currentChannelIdx];
@@ -197,7 +197,7 @@ export default function SmartTV({ weather }) {
             </button>
             <div style={{ width: '1px', height: '14px', background: '#334155', margin: '0 4px' }}></div>
             
-            <button onClick={() => { setIsFullScreen(!isFullScreen); setIsExpanded(true); }} style={{ background: 'transparent', border: 'none', color: '#facc15', cursor: 'pointer', padding: 0 }}>
+            <button onClick={() => { setIsFullScreen(!isFullScreen); setIsExpanded(!isFullScreen); }} style={{ background: 'transparent', border: 'none', color: '#facc15', cursor: 'pointer', padding: 0 }}>
                <Maximize2 size={14} />
             </button>
             <button onClick={() => { setIsExpanded(!isExpanded); setIsFullScreen(false); }} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}>

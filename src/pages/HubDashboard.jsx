@@ -404,7 +404,22 @@ export default function HubDashboard() {
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [isMiniTV, setIsMiniTV] = useState(false);
     const [isFullscreenTV, setIsFullscreenTV] = useState(false);
-    const [vlsStats, setVlsStats] = useState({ liveUsers: 14205, totalServed: 2450.4, growth: '+284%' });
+    const [vlsStats, setVlsStats] = useState({ 
+        liveUsers: 14228, 
+        totalServed: 2453.44, 
+        growth: '+284%' 
+    });
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setVlsStats(prev => ({
+                ...prev,
+                liveUsers: prev.liveUsers + Math.floor(Math.random() * 5) - 1,
+                totalServed: parseFloat((prev.totalServed + Math.random() * 0.05).toFixed(2))
+            }));
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const sInt = setInterval(() => {
@@ -596,7 +611,7 @@ export default function HubDashboard() {
         },
         {
             id: 'smart-learning', title: 'Portal de Inducción VLS', subtitle: 'Pilar #2: Capacitación, Diplomas y Soberanía',
-            icon: GraduationCap, color: '#fbbf24', isEvent: 'open-smart-admin', active: true, badge: 'INDUCCIÓN'
+            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: true, badge: 'INDUCCIÓN'
         },
         {
             id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',

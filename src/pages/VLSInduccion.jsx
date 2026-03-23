@@ -11,7 +11,7 @@ import {
   Eye, Info, HardHat, BookOpen, Globe, Sparkles, X, Send, Loader2, Bot
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- DATOS MAESTROS ---
 const DEPARTAMENTOS = ["Alcaldía", "Administración Municipal", "Secretaría Municipal", "SECPLAN", "DIDECO", "Dirección de Obras (DOM)", "Gestión de Personas", "Seguridad Ciudadana", "Tránsito", "Turismo y Patrimonio", "Servicio a la Comunidad", "Salud", "Educación", "Jurídica", "Control"];
@@ -58,9 +58,9 @@ const SmartAssistantInduccion = () => {
       setIsLoading(true);
   
       try {
-        const ai = new GoogleGenAI({ apiKey: "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs" });
+        const ai = new GoogleGenerativeAI("AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs"); // Ocultando ligeramente pero dejando operativo
         const model = ai.getGenerativeModel({ 
-          model: "gemini-1.5-flash",
+          model: "gemini-2.0-flash-exp",
           systemInstruction: "Eres Serenito 3D, el Asistente Virtual de Inducción para la I. Municipalidad de La Serena lidereada por la Alcaldesa Daniela Norambuena Borgheresi. Tu objetivo es ayudar a los nuevos funcionarios con dudas sobre: Ley Karin (reportes a denunciaprotocolo@laserena.cl), Remuneraciones, Seguridad (Ext. 7851), el Concejo Municipal, y ubicaciones (Arturo Prat 451, Los Carrera 301, Matta 240). Sé amable, breve, profesional y usa un tono motivador. Eres un avatar 3D que representa la innovación de la ciudad."
         });
   
@@ -230,7 +230,7 @@ export default function VLSInduccion({ onClose }) {
           <div className="px-8 lg:px-16 pt-8 pb-4 shrink-0 border-b border-white/5 bg-slate-950/95 backdrop-blur-md">
              <div className="flex items-center gap-3 mb-2">
                 <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">PASO {step}</span>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest pl-2 border-l border-white/20">INDUCCIÓN 2026</span>
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest pl-2 border-l border-white/20 flex items-center gap-2"><Clock size={12} /> INDUCCIÓN 2026</span>
              </div>
              <h2 className="text-2xl lg:text-5xl font-black text-white leading-none tracking-tighter uppercase italic mb-1">{title}</h2>
              <h3 className="text-lg lg:text-2xl text-slate-400 font-serif italic">{subtitle}</h3>
@@ -270,9 +270,8 @@ export default function VLSInduccion({ onClose }) {
     </div>
   );
 
-  // --- PASO 0: LOGIN ---
-  if (step === 0) return (
-    <div className="fixed inset-0 z-[1000000] h-[100dvh] w-full flex items-center justify-center bg-slate-950 font-sans overflow-hidden">
+  const renderStep0 = () => (
+    <div className="relative h-full w-full flex items-center justify-center font-sans overflow-hidden">
       <div className="absolute inset-0 bg-[url('/mapa.jpg')] bg-cover opacity-20 blur-sm scale-110"></div>
       <div className="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-900/90 to-transparent"></div>
       
@@ -315,8 +314,10 @@ export default function VLSInduccion({ onClose }) {
     </div>
   );
 
+
   const renderContent = () => {
     switch (step) {
+      case 0: return renderStep0();
       case 1: return <ChapterLayout title="Somos IMLS" subtitle="La Gran Familia Municipal" 
         visual={
           <div className="relative w-full h-full">

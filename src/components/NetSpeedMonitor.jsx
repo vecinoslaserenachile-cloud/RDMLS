@@ -72,7 +72,7 @@ export default function NetSpeedMonitor() {
             style={{
                 position: 'fixed',
                 bottom: window.innerWidth < 768 ? '110px' : '20px',
-                left: window.innerWidth < 768 ? '10px' : '30px',
+                left: window.innerWidth < 768 ? '10px' : '230px',
                 zIndex: 200000,
                 cursor: 'pointer',
                 fontFamily: 'system-ui, -apple-system, sans-serif'

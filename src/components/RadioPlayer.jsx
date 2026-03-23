@@ -41,6 +41,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [playerMode, setPlayerMode] = useState('compact'); // 3 estados
     const audioRef = useRef(null);
+
+    
+    
     const [volume, setVolume] = useState(0.8);
     const [eqLevels, setEqLevels] = useState([50, 50, 50, 50, 50]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);

@@ -142,52 +142,15 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
 
   // Image generation effect
   useEffect(() => {
-    const generateImage = async () => {
-      if (gameState === 'playing' && currentQuestion && !isAnswered) {
-        setIsGeneratingImage(true);
-        try {
-          const { GoogleGenAI } = await import("@google/genai");
-          const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY || (typeof process !== 'undefined' ? process.env?.GEMINI_API_KEY : undefined);
-          if (!apiKey) {
-            console.warn("No Gemini API key available for image generation.");
-            setIsGeneratingImage(false);
-            return;
-          }
-          const ai = new GoogleGenAI({ apiKey });
-          const prompt = `Una ilustración vibrante y educativa sobre: ${currentQuestion.text}. Estilo arte digital limpio, sin texto.`;
-          
-          const response = await ai.models.generateContent({
-            model: 'gemini-2.5-flash-image',
-            contents: { parts: [{ text: prompt }] },
-            config: { imageConfig: { aspectRatio: "16:9" } }
-          });
-
-          if (response.candidates?.[0]?.content?.parts) {
-            for (const part of response.candidates[0].content.parts) {
-              if (part.inlineData) {
-                setQuestionImage(`data:image/png;base64,${part.inlineData.data}`);
-                break;
-              }
-            }
-          }
-        } catch (error) {
-          console.error("Error generating image:", error);
-          // Fallback to a placeholder if needed, or just leave it null
-        } finally {
-          setIsGeneratingImage(false);
-        }
-      }
-    };
-
     if (gameState === 'playing' && currentQuestion) {
       if (currentQuestion.image) {
         setQuestionImage(currentQuestion.image);
       } else {
-        setQuestionImage(null); // Reset image for new question
-        generateImage();
+        const seed = currentQuestion.imageSeed || currentStage.imageSeed || 'serena';
+        setQuestionImage(`https://picsum.photos/seed/${seed}/1920/1080`);
       }
     }
-  }, [currentQuestion, gameState]);
+  }, [currentQuestion, gameState, currentStage]);
 
   // Check for saved game and wins on mount
   useEffect(() => {
@@ -479,7 +442,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start py-8 px-4 bg-slate-950 text-white font-sans relative overflow-y-auto">
+    <div id="vls-trivia-main-container" className="min-h-screen flex flex-col items-center justify-start py-8 px-4 bg-slate-950 text-white font-sans relative overflow-y-auto">
       {/* Magnificent Background Image: El Faro Monumental */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <img 
@@ -894,34 +857,39 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                     {questionImage ? (
                       <motion.div
                         key={questionImage}
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ 
+                          opacity: 0.4, 
+                          scale: 1.1 
+                        }}
+                        transition={{ 
+                          opacity: { duration: 1 },
+                          scale: { duration: 30, repeat: Infinity, repeatType: 'reverse', ease: "linear" } 
+                        }}
                         exit={{ opacity: 0 }}
                         className="absolute inset-0 z-0"
                       >
                         <img 
                           src={questionImage} 
-                          alt="Reinforcement" 
+                          alt="Broadcast Background" 
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-transparent to-slate-950" />
                       </motion.div>
-                    ) : isGeneratingImage ? (
-                      <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                        <RefreshCw className="w-24 h-24 animate-spin text-game-gold" />
-                      </div>
-                    ) : null}
+                    ) : (
+                      <div className="absolute inset-0 bg-slate-900/50" />
+                    )}
                   </AnimatePresence>
 
                   <div className="relative z-10 max-w-5xl">
                     <motion.h2 
                         key={currentQuestion.text}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="text-4xl md:text-5xl lg:text-7xl font-black leading-tight text-white drop-shadow-[0_0_30px_rgba(0,0,0,0.9)] mb-6 px-4"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-4xl md:text-5xl lg:text-7xl font-black leading-tight text-white drop-shadow-[0_4px_30px_rgba(0,0,0,0.9)] mb-6 px-4"
                         style={{
-                            textShadow: '0 4px 12px rgba(0,0,0,0.8), 0 0 20px rgba(255,215,0,0.2)'
+                            textShadow: '0 8px 32px rgba(0,0,0,1), 0 0 20px rgba(255,215,0,0.3)'
                         }}
                     >
                       {currentQuestion.text}
@@ -941,30 +909,59 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                       return (
                         <motion.button 
                           key={idx} 
-                          whileHover={!isAnswered && !isHidden ? { scale: 1.03, x: idx % 2 === 0 ? -10 : 10 } : {}}
-                          whileTap={!isAnswered && !isHidden ? { scale: 0.97 } : {}}
+                          whileHover={!isAnswered && !isHidden ? { scale: 1.05, x: 20 } : {}}
+                          whileTap={!isAnswered && !isHidden ? { scale: 0.95 } : {}}
                           disabled={isAnswered || isHidden} 
                           onClick={() => handleOptionClick(idx)} 
                           className={`
-                            relative p-8 rounded-full text-left transition-all border-2 flex items-center gap-6 min-h-[90px] shadow-2xl
+                            relative h-full w-full rounded-2xl md:rounded-3xl p-6 md:p-8 flex items-center shadow-2xl transition-all border-4 overflow-hidden
                             ${isHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'} 
                             ${isCorrect 
-                              ? 'bg-emerald-500/30 border-emerald-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)]' 
+                              ? 'bg-emerald-600/90 border-emerald-400 text-white shadow-[0_0_40px_rgba(16,185,129,0.5)] z-20' 
                               : isWrong 
-                                ? 'bg-red-500/30 border-red-400 text-white shadow-[0_0_30px_rgba(239,68,68,0.4)]' 
+                                ? 'bg-red-600/90 border-red-400 text-white shadow-[0_0_40px_rgba(239,68,68,0.5)] z-20' 
                                 : isSelected && !isAnswered 
-                                  ? 'bg-game-gold/30 border-game-gold text-game-gold shadow-[0_0_20px_rgba(255,215,0,0.3)] animate-pulse' 
-                                  : 'bg-game-blue/40 border-game-gold/30 text-blue-100 hover:border-game-gold hover:text-white group'
+                                  ? 'bg-game-gold/90 border-game-gold text-game-blue shadow-[0_0_30px_rgba(255,215,0,0.6)] z-20' 
+                                  : 'bg-[#0f172a]/95 border-game-gold/40 text-white hover:border-game-gold hover:shadow-[0_0_20px_rgba(255,215,0,0.2)]'
                             }
                           `}
-                          style={{
-                              clipPath: 'polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%)'
-                          }}
                         >
-                          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-2xl font-black shrink-0 shadow-lg ${isCorrect ? 'bg-emerald-500 text-white' : isWrong ? 'bg-red-500 text-white' : 'bg-game-gold text-game-blue'}`}>
+                          {/* Diamond Background Effect */}
+                          <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+                          
+                          <div style={{ 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            justifyContent: 'center', 
+                            width: '4.5rem', 
+                            height: '4.5rem', 
+                            borderRadius: '50%', 
+                            fontWeight: '900', 
+                            fontSize: '2.5rem', 
+                            background: isCorrect ? 'white' : isWrong ? 'white' : isSelected && !isAnswered ? '#0f172a' : '#FFD700',
+                            color: isCorrect ? '#059669' : isWrong ? '#dc2626' : isSelected && !isAnswered ? 'white' : '#0f172a', 
+                            marginRight: '2.5rem', 
+                            boxShadow: '0 6px 20px rgba(0,0,0,0.5)',
+                            flexShrink: 0,
+                            position: 'relative',
+                            zIndex: 5
+                          }}>
                             {String.fromCharCode(65 + idx)}
                           </div>
-                          <span className={`${option.length > 50 ? 'text-lg md:text-xl' : 'text-2xl md:text-3xl'} font-black flex-1 tracking-tight leading-tight group-hover:drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]`}>
+                          
+                          <span style={{ 
+                            fontWeight: '900', 
+                            fontSize: '2.25rem', 
+                            letterSpacing: '-0.02em', 
+                            textShadow: '0 4px 12px rgba(0,0,0,0.7)', 
+                            lineHeight: '1.1',
+                            color: '#ffffff',
+                            flex: 1,
+                            paddingLeft: '0.5rem',
+                            position: 'relative',
+                            zIndex: 5,
+                            textAlign: 'left'
+                          }} className="group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]">
                               {option}
                           </span>
                           

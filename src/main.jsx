@@ -44,6 +44,7 @@ import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
 import GameVLS from './pages/GameVLS.jsx';
 import VLSMotorsShowroom from './pages/VLSMotorsShowroom.jsx';
 import VLSInduccion from './pages/VLSInduccion.jsx';
+import VLSQuantumWatch from './components/VLSQuantumWatch';
 import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
@@ -210,7 +211,8 @@ function GlobalWarning() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flex: 1 }}>
         <AlertTriangle color="#fef08a" size={18} className="pulse-fast" style={{ flexShrink: 0 }} />
         <span style={{ fontWeight: 'bold', fontSize: '0.8rem', lineHeight: '1.2' }}>
-          SISTEMA BETA. Demostración técnica, sin validez oficial.
+          {/* Mensaje Informativo de Plataforma */}
+          WWW.VECINOSLASERENA.CL · LA SERENA SMART CITY
         </span>
       </div>
       <button 
@@ -239,10 +241,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <BrowserRouter>
         <GlobalWarning />
+        <VLSQuantumWatch />
         {isPuertaDns ? (
           <Routes>
             <Route path="/" element={<Navigate to="/puerta" replace />} />
             <Route path="/puerta" element={<PuertaSmart />} />
+            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             <Route path="*" element={<Navigate to="/puerta" replace />} />
           </Routes>
         ) : (
@@ -280,6 +284,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="propiedades" element={<Propiedades />} />
               <Route path="acceso" element={<PuertaSerena />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
+              <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             </Route>
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/bisabuelo" element={<GameVLS />} />
@@ -289,7 +294,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/bella" element={<BellaDashboard />} />
             <Route path="/lite" element={<LitePortal />} />
             <Route path="/sombreros" element={<DeBonoThinkingHats />} />
-            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/desk" element={<Backoffice />} />
           </Routes>

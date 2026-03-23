@@ -68,9 +68,9 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
             id="vls-quantum-watch-container"
             style={{
                 position: 'fixed',
-                bottom: '25px',
-                left: '25px',
-                zIndex: 99999,
+                top: '120px',
+                left: '20px',
+                zIndex: 10000000,
                 cursor: 'pointer',
                 userSelect: 'none',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

@@ -5,12 +5,14 @@ export interface Question {
   correctIndex: number;
   explanation: string;
   image?: string;
+  imageSeed?: string;
 }
 
 export interface Stage {
   id: number;
   name: string;
   description: string;
+  imageSeed?: string;
   questions: Question[];
 }
 
@@ -19,6 +21,7 @@ export const STAGES: Stage[] = [
     id: 1,
     name: "La Serena (Ciudad)",
     description: "Conoce los secretos de la ciudad de los campanarios.",
+    imageSeed: "cityscape",
     questions: [
       {
         id: 1,
@@ -63,6 +66,7 @@ export const STAGES: Stage[] = [
     id: 2,
     name: "Historia Precolombina",
     description: "Los antiguos habitantes de los valles transversales.",
+    imageSeed: "pottery",
     questions: [
       {
         id: 1,
