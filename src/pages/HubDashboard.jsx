@@ -151,6 +151,34 @@ export default function HubDashboard() {
         { text: "你好, 邻居!", sub: "我是小谢尔, 您的智慧城市指南 (SERENITO)", color: "#FFDE00", bg: "linear-gradient(135deg, #DE2910 0%, #FFDE00 100%)", flag: "🇨🇳" }
     ];
 
+    const newsFlashes = [
+        {
+            es: "COMUNA INTELIGENTE Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos.",
+            en: "SMART CITY News: The Highest Municipal Authority has led a strategic security round in the field. Real action for our neighbors' peace of mind.",
+            it: "CITTÀ INTELLIGENTE Informa: La Massima Autorità Comunale ha guidato un giro di sicurezza strategica sul campo. Azione reale per la tranquillità dei nostri vicini.",
+            fr: "COMMUNE INTELLIGENTE Informe : La Haute Autorité Comunale a mené une ronde de sécurité stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
+            zh: "智慧社区通知：最高市政当局已在实地领导了战略安保工作。为了邻居们的安宁采取真正的行动。",
+            pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidade dos nossos vizinhos."
+        },
+        {
+            es: "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
+            en: "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
+            it: "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
+            fr: "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
+            zh: "管理报告：通信主权在一匿名邻居的愿景下得到巩固。迈向精英级数字生态系统。",
+            pt: "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a um ecossistema digital de elite."
+        }
+    ];
+
+    const [currentFlashIndex, setCurrentFlashIndex] = useState(0);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentFlashIndex(prev => (prev + 1) % newsFlashes.length);
+        }, 30000);
+        return () => clearInterval(timer);
+    }, [newsFlashes.length]);
+
     useEffect(() => {
         const langToIdx = { es: 0, en: 1, pt: 2, fr: 3, it: 4, zh: 5 };
         if (langToIdx[lang] !== undefined) {
@@ -1138,6 +1166,75 @@ export default function HubDashboard() {
                                         <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
                                             {t.welcomePortales || 'Bienvenido al portal unificado de La Serena. Explora todas las herramientas ciudadanas a continuación.'}
+                                        </div>
+
+                                        {/* TRANSLATION TICKER FROM RADIO */}
+                                        <div style={{ marginTop: '15px' }}>
+                                            <style>{`
+                                                .vls-hub-wincha-container {
+                                                    width: 100%;
+                                                    background: #ef4444;
+                                                    color: white;
+                                                    overflow: hidden;
+                                                    white-space: nowrap;
+                                                    border-radius: 12px 12px 0 0;
+                                                    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
+                                                    border: 1px solid rgba(255,255,255,0.2);
+                                                    height: 32px;
+                                                    display: flex;
+                                                    align-items: center;
+                                                    position: relative;
+                                                }
+                                                .vls-hub-wincha-text {
+                                                    display: inline-block;
+                                                    padding-left: 100%;
+                                                    animation: vls-hub-marquee 40s linear infinite;
+                                                    font-size: 0.85rem;
+                                                    font-weight: 800;
+                                                    text-transform: uppercase;
+                                                    letter-spacing: 0.5px;
+                                                }
+                                                @keyframes vls-hub-marquee {
+                                                    0% { transform: translate(0, 0); }
+                                                    100% { transform: translate(-150%, 0); }
+                                                }
+                                            `}</style>
+                                            <div className="vls-hub-wincha-container" style={{ marginBottom: '0' }}>
+                                                <div className="vls-hub-wincha-text">
+                                                    {newsFlashes[currentFlashIndex][lang] || newsFlashes[currentFlashIndex]['es']}
+                                                </div>
+                                            </div>
+                                            <div style={{ 
+                                                display: 'flex', gap: '10px', padding: '4px 12px', 
+                                                background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)',
+                                                borderRadius: '0 0 12px 12px', width: '100%',
+                                                justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
+                                                borderTop: 'none', flexWrap: 'wrap'
+                                            }}>
+                                                {[
+                                                    { id: 'es', flag: '🇨🇱', label: 'CHI' },
+                                                    { id: 'en', flag: '🇺🇸', label: 'USA' },
+                                                    { id: 'it', flag: '🇮🇹', label: 'ITA' },
+                                                    { id: 'fr', flag: '🇫🇷', label: 'FRA' },
+                                                    { id: 'zh', flag: '🇨🇳', label: 'CHN' },
+                                                    { id: 'pt', flag: '🇧🇷', label: 'BRA' }
+                                                ].map(l => (
+                                                    <button 
+                                                        key={l.id} 
+                                                        onClick={() => setLang(l.id)}
+                                                        style={{
+                                                            background: lang === l.id ? '#ef4444' : 'transparent',
+                                                            border: '1px solid ' + (lang === l.id ? '#ef4444' : 'rgba(255,255,255,0.1)'),
+                                                            cursor: 'pointer', padding: '2px 8px',
+                                                            borderRadius: '6px', display: 'flex', alignItems: 'center',
+                                                            gap: '4px', transition: 'all 0.3s'
+                                                        }}
+                                                    >
+                                                        <span style={{ fontSize: '1rem' }}>{l.flag}</span>
+                                                        <span style={{ fontSize: '0.65rem', color: 'white', fontWeight: 'bold' }}>{l.label}</span>
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

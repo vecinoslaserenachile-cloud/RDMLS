@@ -431,7 +431,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const startVULoop = () => {
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
         const updateMeters = () => {
-            if (!isPlaying) return;
+            if (!audioRef.current || audioRef.current.paused) return;
             let hasRealData = false;
             let avgL = 0, avgR = 0;
             if (analyserRef.current) {
@@ -484,6 +484,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 setSpectrumLevels(prev => prev.map(l => Math.max(0, l * 0.85)));
             }, 50);
             return () => clearInterval(decay);
+        } else {
+            startVULoop();
         }
     }, [isPlaying]);
 
@@ -616,75 +618,6 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 pointerEvents: isVisible ? 'auto' : 'none'
             }}
         >
-            <style>{`
-                .vls-wincha-container {
-                    width: 100%;
-                    max-width: 100vw;
-                    background: #ef4444;
-                    color: white;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    border-radius: 12px 12px 0 0;
-                    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-                    border: 1px solid rgba(255,255,255,0.2);
-                    height: 32px;
-                    display: flex;
-                    align-items: center;
-                    position: relative;
-                }
-                .vls-wincha-text {
-                    display: inline-block;
-                    padding-left: 100%;
-                    animation: vls-marquee 40s linear infinite;
-                    font-size: 0.95rem;
-                    font-weight: 800;
-                    text-transform: uppercase;
-                    letter-spacing: 0.5px;
-                }
-                @keyframes vls-marquee {
-                    0% { transform: translate(0, 0); }
-                    100% { transform: translate(-150%, 0); }
-                }
-            `}</style>
-
-            {/* Huincha solo en compact/expanded */}
-            <div className="vls-wincha-container" style={{ marginBottom: '2px' }}>
-                <div className="vls-wincha-text">
-                    {newsFlashes[currentFlashIndex][globalLang] || newsFlashes[currentFlashIndex]['es']}
-                </div>
-            </div>
-            
-            {/* Banderas */}
-            <div style={{ 
-                display: 'flex', gap: '10px', padding: '4px 12px', 
-                background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(5px)',
-                borderRadius: '0 0 12px 12px', width: '100%',
-                justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
-                borderTop: 'none', marginBottom: '8px'
-            }}>
-                {[
-                    { id: 'es', flag: '🇨🇱', label: 'CHI' },
-                    { id: 'en', flag: '🇺🇸', label: 'USA' },
-                    { id: 'it', flag: '🇮🇹', label: 'ITA' },
-                    { id: 'fr', flag: '🇫🇷', label: 'FRA' },
-                    { id: 'zh', flag: '🇨🇳', label: 'CHN' },
-                    { id: 'pt', flag: '🇧🇷', label: 'BRA' }
-                ].map(l => (
-                    <button 
-                        key={l.id} 
-                        onClick={() => setGlobalLang(l.id)}
-                        style={{
-                            background: globalLang === l.id ? '#ef4444' : 'transparent',
-                            border: 'none', cursor: 'pointer', padding: '2px 8px',
-                            borderRadius: '6px', display: 'flex', alignItems: 'center',
-                            gap: '4px', transition: 'all 0.3s'
-                        }}
-                    >
-                        <span style={{ fontSize: '1rem' }}>{l.flag}</span>
-                        <span style={{ fontSize: '0.6rem', color: 'white', fontWeight: 'bold' }}>{l.label}</span>
-                    </button>
-                ))}
-            </div>
 
             <audio 
                 ref={audioRef} 
