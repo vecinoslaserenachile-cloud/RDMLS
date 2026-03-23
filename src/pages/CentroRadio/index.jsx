@@ -123,13 +123,14 @@ export default function CentroRadio() {
             },
             { 
                 id: 'concejo', 
-                name: 'SESIÓN CONCEJO',
+                name: 'CONCEJO MUNICIPAL',
                 dialLabel: 'CONCEJO',
-                slogan: 'TRANSPARENCIA Y GESTIÓN', 
-                url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
+                slogan: 'TRANSPARENCIA Y GESTIÓN PÚBLICA', 
+                url: "https://www.youtube.com/embed/videoseries?list=PLcyI03xWq5PSGHhbwSKp0nw0tKNPCt6RM&autoplay=1", 
                 color: '#ef4444',
                 logo: '/escudo.png',
-                badge: 'TRANSPARENCIA'
+                badge: 'TV CONCEJO',
+                isVideo: true
             }
         ] : []),
         { 
@@ -180,7 +181,11 @@ export default function CentroRadio() {
     const changeStation = (station) => {
         if (station.id === currentStation.id) return;
         setCurrentStation(station);
-        setStreamUrl(station.url);
+        if (!station.isVideo) {
+            setStreamUrl(station.url);
+        } else {
+            setStreamUrl(""); // No audio stream for videos
+        }
         setIsPlaying(false);
         // Play click sound
         try {
@@ -402,16 +407,21 @@ export default function CentroRadio() {
     // Cuando cambia la estación (streamUrl), actualizar el src pero NO auto-reproducir
     useEffect(() => {
         if (!audioRef.current) return;
-        if (isPlaying) {
-            // Si estaba reproduciendo, cambiar la señal en caliente
+        if (isPlaying && streamUrl) {
+            // Si estaba reproduciendo y hay una URL de audio válida
             audioRef.current.src = streamUrl;
             audioRef.current.load();
             audioRef.current.play()
                 .then(() => { setIsPlaying(true); syncAudioVolume(); })
                 .catch(() => setIsPlaying(false));
         } else {
-            // Solo actualizar src para que esté listo al hacer click
-            audioRef.current.src = streamUrl;
+            // Si no hay URL (es video) o no está en play, parar audio
+            if (!streamUrl) {
+                audioRef.current.pause();
+                audioRef.current.src = "";
+            } else {
+                audioRef.current.src = streamUrl;
+            }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [streamUrl]);
@@ -494,6 +504,11 @@ export default function CentroRadio() {
             setIsPlaying(false);
         } else {
             // REPRODUCIR
+            if (currentStation.isVideo) {
+                setIsPlaying(true);
+                return;
+            }
+
             audio.src = streamUrl;
             audio.load();
             syncAudioVolume(); // Aplicar volumen/mute antes de reproducir
@@ -884,24 +899,72 @@ export default function CentroRadio() {
                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%)', pointerEvents: 'none', zIndex: 6 }}></div>
                             </div>
 
-                            {/* Visualizador + VU Meters */}
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
-                                <VUMeter label="L" needleRef={vuLeftRef} />
-                                <div style={{
-                                    flex: 1, height: '140px', background: '#030303', borderRadius: '12px',
-                                    border: `3px solid ${currentStation.color}`,
-                                    position: 'relative', overflow: 'hidden',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                    boxShadow: isPlaying ? `0 0 25px ${currentStation.color}44` : 'none',
-                                    transition: 'border 0.5s ease, box-shadow 0.5s ease'
-                                }}>
-                                    <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
-                                    <div className="blink" style={{ position: 'absolute', color: currentStation.color, fontFamily: 'monospace', fontSize: isMobile ? '0.8rem' : '1rem', fontWeight: 'bold', letterSpacing: '2px', textShadow: `0 0 10px ${currentStation.color}`, textAlign: 'center' }}>
-                                        {isPlaying ? onAirMessages[msgIndex] : `${currentStation.id === 'municipal' ? (isVLS ? 'VLS' : 'RDMLS') : currentStation.id.toUpperCase()} :: STANDBY`}
-                                    </div>
-                                    <div style={{ position: 'absolute', inset: 0, background: `repeating-linear-gradient(0deg, transparent, transparent 19px, ${currentStation.color}09 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, ${currentStation.color}09 20px)`, pointerEvents: 'none' }}></div>
+                             {/* Visualizador + VU Meters / YouTube Player for Concejo */}
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', width: '100%' }}>
+                                <div className="hide-mobile">
+                                    <VUMeter label="L" needleRef={vuLeftRef} />
                                 </div>
-                                <VUMeter label="R" needleRef={vuRightRef} />
+                                
+                                <div style={{
+                                    flex: 1, 
+                                    height: currentStation.isVideo ? '240px' : '140px', 
+                                    background: '#030303', 
+                                    borderRadius: '16px',
+                                    border: `3px solid ${currentStation.color}`,
+                                    position: 'relative', 
+                                    overflow: 'hidden',
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center',
+                                    boxShadow: isPlaying ? `0 0 35px ${currentStation.color}55` : 'none',
+                                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    zIndex: 5
+                                }}>
+                                    {currentStation.isVideo ? (
+                                        <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+                                            {isPlaying ? (
+                                                <iframe 
+                                                    width="100%" 
+                                                    height="100%" 
+                                                    src={currentStation.url} 
+                                                    title="YouTube video player" 
+                                                    frameBorder="0" 
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                                    allowFullScreen
+                                                    style={{ display: 'block' }}
+                                                />
+                                            ) : (
+                                                <div style={{ 
+                                                    width: '100%', height: '100%', 
+                                                    display: 'flex', flexDirection: 'column', 
+                                                    alignItems: 'center', justifyContent: 'center',
+                                                    background: 'linear-gradient(135deg, #1a1a1a 0%, #000 100%)',
+                                                    color: 'white', gap: '1rem', textAlign: 'center', padding: '1rem'
+                                                }}>
+                                                    <div className="pulse-fast" style={{ fontSize: '3rem', opacity: 0.8 }}>🗳️</div>
+                                                    <div>
+                                                        <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#ef4444', letterSpacing: '1px' }}>TRANSMISIÓN CONCEJO MUNICIPAL</div>
+                                                        <div style={{ fontSize: '0.65rem', opacity: 0.6, marginTop: '4px' }}>Pulse PLAY para conectar señal audiovisual</div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {/* Efecto Scanlines */}
+                                            <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px)', pointerEvents: 'none', opacity: 0.3 }}></div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
+                                            <div className="blink" style={{ position: 'absolute', color: currentStation.color, fontFamily: 'monospace', fontSize: isMobile ? '0.8rem' : '1rem', fontWeight: 'bold', letterSpacing: '2px', textShadow: `0 0 10px ${currentStation.color}`, textAlign: 'center' }}>
+                                                {isPlaying ? onAirMessages[msgIndex] : `${currentStation.id === 'municipal' ? (isVLS ? 'VLS' : 'RDMLS') : currentStation.id.toUpperCase()} :: STANDBY`}
+                                            </div>
+                                            <div style={{ position: 'absolute', inset: 0, background: `repeating-linear-gradient(0deg, transparent, transparent 19px, ${currentStation.color}09 20px), repeating-linear-gradient(90deg, transparent, transparent 19px, ${currentStation.color}09 20px)`, pointerEvents: 'none' }}></div>
+                                        </>
+                                    )}
+                                </div>
+
+                                <div className="hide-mobile">
+                                    <VUMeter label="R" needleRef={vuRightRef} />
+                                </div>
                             </div>
 
                             {/* EQ Buttons */}
