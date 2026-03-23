@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 /**
  * VLSQuantumWatch — Reloj digital retro premium estilo "Quantum 5"
@@ -63,28 +64,22 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
     };
 
     return (
-        <div 
-            title="VLS Quantum Watch - Abrir Calendario"
+        <motion.div 
+            drag
+            dragMomentum={false}
+            title="VLS Quantum Watch - Arrastrable"
             id="vls-quantum-watch-container"
             style={{
                 position: 'fixed',
                 top: '120px',
                 left: '20px',
                 zIndex: 10000000,
-                cursor: 'pointer',
+                cursor: 'grab',
                 userSelect: 'none',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))',
             }}
-            className="faro-watch-hover"
-            onMouseEnter={e => {
-                e.currentTarget.style.transform = 'scale(1.1) translateY(-5px)';
-                e.currentTarget.style.filter = 'drop-shadow(0 15px 30px rgba(56,189,248,0.4))';
-            }}
-            onMouseLeave={e => {
-                e.currentTarget.style.transform = 'scale(1) translateY(0)';
-                e.currentTarget.style.filter = 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))';
-            }}
+            whileHover={{ scale: 1.05, filter: 'drop-shadow(0 15px 30px rgba(56,189,248,0.4))' }}
+            whileTap={{ cursor: 'grabbing', scale: 0.95 }}
         >
             {/* Carcasa exterior Quantum 5 */}
             <div style={{
@@ -273,6 +268,6 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
                     transform: scale(0.95);
                 }
             `}} />
-        </div>
+        </motion.div>
     );
 }
