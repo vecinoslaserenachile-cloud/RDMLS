@@ -280,7 +280,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="propiedades" element={<Propiedades />} />
               <Route path="acceso" element={<PuertaSerena />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
-              <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             </Route>
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/bisabuelo" element={<GameVLS />} />
@@ -290,6 +289,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/bella" element={<BellaDashboard />} />
             <Route path="/lite" element={<LitePortal />} />
             <Route path="/sombreros" element={<DeBonoThinkingHats />} />
+            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/desk" element={<Backoffice />} />
           </Routes>

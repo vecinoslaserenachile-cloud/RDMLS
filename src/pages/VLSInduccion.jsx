@@ -8,7 +8,7 @@ import {
   ArrowRight, Play, Radio, MessageCircle, Zap, 
   HeartHandshake, Smile, Activity, Stethoscope, AlertTriangle, Star, 
   Target, Users, Landmark, MapPin, Search, GraduationCap, Phone, 
-  Eye, Info, HardHat, BookOpen, Globe, Sparkles, X, Send, Loader2
+  Eye, Info, HardHat, BookOpen, Globe, Sparkles, X, Send, Loader2, Bot
 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenAI } from "@google/genai";

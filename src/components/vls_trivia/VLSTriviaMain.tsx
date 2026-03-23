@@ -481,10 +481,10 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
         <img 
           src="/portada_vls_trivia.jpg" 
           alt="Faro Monumental La Serena" 
-          className="w-full h-full object-cover opacity-50 scale-105 animate-slow-zoom"
+          className={`w-full h-full object-cover scale-105 animate-slow-zoom transition-opacity duration-1000 ${gameState === 'playing' ? 'opacity-0' : 'opacity-50'}`}
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/70 to-slate-950" />
+        <div className={`absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-950/70 to-slate-950 transition-opacity duration-1000 ${gameState === 'playing' ? 'opacity-0' : 'opacity-100'}`} />
       </div>
 
       {onClose && (
@@ -891,7 +891,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                       <motion.div
                         key={questionImage}
                         initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 0.3, scale: 1 }}
+                        animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
                         className="absolute inset-0 z-0"
                       >
@@ -901,7 +901,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                           className="w-full h-full object-cover"
                           referrerPolicy="no-referrer"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-transparent to-slate-950/90" />
+                        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-transparent to-slate-950" />
                       </motion.div>
                     ) : isGeneratingImage ? (
                       <div className="absolute inset-0 flex items-center justify-center opacity-20">
