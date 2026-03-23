@@ -637,6 +637,10 @@ export default function HubDashboard() {
             icon: Gamepad2, color: '#ef4444', isEvent: 'open-game', active: true
         },
         {
+            id: 'serenito-1945', title: 'Serenito 1945 Arcade', subtitle: 'Vuela, dispara y defiende nuestra ciudad',
+            icon: Gamepad2, color: '#f43f5e', isExternal: true, path: '/minijuegos/serenito-1945/', active: true, badge: 'NUEVO'
+        },
+        {
             id: 'galaxia-disco', title: 'Galaxia Discoteque', subtitle: 'Burbuja, Sundance, BCool & Fiestas de Colegio',
             icon: PartyPopper, color: '#ec4899', isEvent: 'open-galaxia-disco', active: true, badge: 'RECUERDOS'
         },
