@@ -45,6 +45,7 @@ import SerenaMetAdmin from '../components/SerenaMetAdmin';
 import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
+import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
 
 export default function HubDashboard() {
     const navigate = useNavigate();
@@ -206,6 +207,7 @@ export default function HubDashboard() {
     const [showSafeRoute, setShowSafeRoute] = useState(false);
     const [showSocialVision, setShowSocialVision] = useState(false);
     const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
+    const [showInvestigacion, setShowInvestigacion] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
@@ -320,6 +322,7 @@ export default function HubDashboard() {
         const handleSocialVision = () => { setShowSocialVision(true); setActiveTutorial('radar'); };
         const handleAnalytics = () => setShowAnalyticsApp(true);
         const handleSmartAdmin = () => setShowSmartAdminPortal(true);
+        const handleInvestigacion = () => setShowInvestigacion(true);
 
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
@@ -338,6 +341,7 @@ export default function HubDashboard() {
         window.addEventListener('open-social-vision', handleSocialVision);
         window.addEventListener('open-analytics', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
+        window.addEventListener('open-vls-investigacion', handleInvestigacion);
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -358,6 +362,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-social-vision', handleSocialVision);
             window.removeEventListener('open-analytics', handleAnalytics);
             window.removeEventListener('open-smart-admin', handleSmartAdmin);
+            window.removeEventListener('open-vls-investigacion', handleInvestigacion);
         };
     }, []);
 
@@ -544,6 +549,10 @@ export default function HubDashboard() {
     }, []);
 
     const servicios = [
+        {
+            id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026', subtitle: 'Reportaje: ¿Por qué apagamos el futuro en las aulas?',
+            icon: Newspaper, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'INVESTIGACIÓN'
+        },
         {
             id: 'vls-pyme-builder', title: 'Comercio Local Smart (PYME)', subtitle: 'Sitio Web, Radio Local y Pasarela VLS',
             icon: ShoppingBag, color: '#f59e0b', isEvent: 'open-smart-business', active: true, badge: 'EMPRESAS'
@@ -801,7 +810,7 @@ export default function HubDashboard() {
             description: 'Centinel Faro, Social Listening y Análisis de Redes mediante IA.',
             icon: Radio,
             color: '#38bdf8',
-            modules: ['debono', 'tornamesa-digital', 'radio-master', 'sentinel-mini', 'faro-ia', 'premium', 'sentinel-apex', 'social-vision', 'vecinos-analytics']
+            modules: ['debono', 'tornamesa-digital', 'radio-master', 'sentinel-mini', 'faro-ia', 'premium', 'sentinel-apex', 'social-vision', 'vecinos-analytics', 'vls-investigacion-2026']
         }
     ];
 
@@ -2052,6 +2061,7 @@ export default function HubDashboard() {
         {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
         {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
         {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
+        {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
         {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
       </>
     );
