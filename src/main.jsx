@@ -147,8 +147,8 @@ class ErrorBoundary extends React.Component {
             </p>
             
             {/* Soft Debug Info */}
-            <div style={{ marginBottom: '3rem', fontSize: '0.75rem', color: 'rgba(255,255,255,0.2)', fontFamily: 'monospace', background: 'rgba(0,0,0,0.3)', padding: '10px 20px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              DEBUG_LOG: {this.state.error && this.state.error.toString().substring(0, 50)}...
+            <div style={{ marginBottom: '3rem', fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)', fontWeight: 'bold' }}>
+              @vecinoslaserena.cl
             </div>
 
             <button 
@@ -286,6 +286,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/bella" element={<BellaDashboard />} />
             <Route path="/lite" element={<LitePortal />} />
             <Route path="/sombreros" element={<DeBonoThinkingHats />} />
+            <Route path="/juega" element={<HomeLiviano />} />
+            <Route path="/juego" element={<HomeLiviano />} />
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/desk" element={<Backoffice />} />
           </Routes>
