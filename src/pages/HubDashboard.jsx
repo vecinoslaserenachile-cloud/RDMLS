@@ -1209,11 +1209,11 @@ export default function HubDashboard() {
                                                 </div>
                                             </div>
                                             <div style={{ 
-                                                display: 'flex', gap: '10px', padding: '4px 12px', 
+                                                display: 'flex', gap: '6px', padding: '4px 8px', 
                                                 background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)',
                                                 borderRadius: '0 0 12px 12px', width: '100%',
                                                 justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
-                                                borderTop: 'none', flexWrap: 'wrap'
+                                                borderTop: 'none', flexWrap: 'nowrap'
                                             }}>
                                                 {[
                                                     { id: 'es', flag: '🇨🇱', label: 'CHI' },
