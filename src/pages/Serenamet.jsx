@@ -163,88 +163,88 @@ export default function Serenamet() {
                         </div>
                     </div>
                 </div>
-165: 
-166:                 {/* ── MOSAICO DE SATÉLITES (HEAVENS-ABOVE CONNECTION) ── */}
-167:                 <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-168:                     <Satellite size={24} color="#a855f7" /> TRAYECTORIA ESPACIAL Y SATELITAL (COORD. LA SERENA)
-169:                 </h2>
-170:                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-171:                     
-172:                     {/* SATELLITE 1: STARLINK TRAIN */}
-173:                     <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #38bdf8' }}>
-174:                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-175:                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 'bold' }}>
-176:                                 <Satellite size={20} /> STARLINK TRAIN
-177:                             </div>
-178:                             <span style={{ fontSize: '0.7rem', background: '#38bdf820', color: '#38bdf8', padding: '2px 8px', borderRadius: '50px' }}>ACTIVE</span>
-179:                         </div>
-180:                         <div style={{ margin: '15px 0' }}>
-181:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Visualización de ráfagas de satélites SpaceX. Próximo paso visible sobre la bahía.</p>
-182:                         </div>
-183:                         <a href="https://www.heavens-above.com/StarlinkLaunchPasses.aspx?lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-184:                             <button style={{ width: '100%', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf840', color: '#38bdf8', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
-185:                                 VER PASES PRÓXIMOS
-186:                             </button>
-187:                         </a>
-188:                     </div>
-189: 
-190:                     {/* SATELLITE 2: ISS & TIANGONG */}
-191:                     <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #ef4444' }}>
-192:                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-193:                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontWeight: 'bold' }}>
-194:                                 <Globe size={20} /> ISS & TIANGONG
-195:                             </div>
-196:                             <div style={{ width: '10px', height: '10px', background: '#ef4444', borderRadius: '50%', animation: 'pulse-ring 2s infinite' }}></div>
-197:                         </div>
-198:                         <div style={{ margin: '15px 0' }}>
-199:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Estación Espacial Internacional y Estación China. Avistamientos de magnitud negativa.</p>
-200:                         </div>
-201:                         <div style={{ display: 'flex', gap: '8px' }}>
-202:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
-203:                                 <button style={{ width: '100%', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef444440', color: '#ef4444', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>ISS</button>
-204:                             </a>
-205:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=48274&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
-206:                                 <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>TIANGONG</button>
-207:                             </a>
-208:                         </div>
-209:                     </div>
-210: 
-211:                     {/* SATELLITE 3: HUBBLE & JAMES WEBB */}
-212:                     <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #a855f7' }}>
-213:                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#a855f7', fontWeight: 'bold' }}>
-214:                             <Zap size={20} /> TELESCOPIOS
-215:                         </div>
-216:                         <div style={{ margin: '15px 0' }}>
-217:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Monitoreo de Hubble y seguimiento orbital de James Webb. Ciencia espacial en vivo.</p>
-218:                         </div>
-219:                         <a href="https://www.heavens-above.com/PassSummary.aspx?satid=20580&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
-220:                             <button style={{ width: '100%', background: 'rgba(168, 85, 247, 0.1)', border: '1px solid #a855f740', color: '#a855f7', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
-221:                                 TRACK HUBBLE
-222:                             </button>
-223:                         </a>
-224:                     </div>
-225: 
-226:                     {/* SATELLITE 4: FASAT-CHALLIE & DELTA (CHILE) */}
-227:                     <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #10b981' }}>
-228:                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-229:                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 'bold' }}>
-230:                                 <Navigation size={20} /> SOCHIAS / FASAT
-231:                             </div>
-232:                             <span style={{ fontSize: '0.7rem', background: '#10b98120', color: '#10b981', padding: '2px 8px', borderRadius: '50px' }}>NACIONAL</span>
-233:                         </div>
-234:                         <div style={{ margin: '15px 0' }}>
-235:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Últimos satélites del Sistema Nacional Satelital (SNSat). Soberanía espacial chilena.</p>
-236:                         </div>
-237:                         <div style={{ display: 'flex', gap: '8px' }}>
-238:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=37938&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
-239:                                 <button style={{ width: '100%', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b98140', color: '#10b981', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-C</button>
-240:                             </a>
-241:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=56985&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
-242:                                 <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-D</button>
-243:                             </a>
-244:                         </div>
-245:                     </div>
-246:                 </div>
+
+                {/* ── MOSAICO DE SATÉLITES (HEAVENS-ABOVE CONNECTION) ── */}
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Satellite size={24} color="#a855f7" /> TRAYECTORIA ESPACIAL Y SATELITAL (COORD. LA SERENA)
+                </h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                    
+                    {/* SATELLITE 1: STARLINK TRAIN */}
+                    <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #38bdf8' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 'bold' }}>
+                                <Satellite size={20} /> STARLINK TRAIN
+                            </div>
+                            <span style={{ fontSize: '0.7rem', background: '#38bdf820', color: '#38bdf8', padding: '2px 8px', borderRadius: '50px' }}>ACTIVE</span>
+                        </div>
+                        <div style={{ margin: '15px 0' }}>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Visualización de ráfagas de satélites SpaceX. Próximo paso visible sobre la bahía.</p>
+                        </div>
+                        <a href="https://www.heavens-above.com/StarlinkLaunchPasses.aspx?lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                            <button style={{ width: '100%', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf840', color: '#38bdf8', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                VER PASES PRÓXIMOS
+                            </button>
+                        </a>
+                    </div>
+
+                    {/* SATELLITE 2: ISS & TIANGONG */}
+                    <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #ef4444' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontWeight: 'bold' }}>
+                                <Globe size={20} /> ISS & TIANGONG
+                            </div>
+                            <div style={{ width: '10px', height: '10px', background: '#ef4444', borderRadius: '50%', animation: 'pulse-ring 2s infinite' }}></div>
+                        </div>
+                        <div style={{ margin: '15px 0' }}>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Estación Espacial Internacional y Estación China. Avistamientos de magnitud negativa.</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <a href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+                                <button style={{ width: '100%', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef444440', color: '#ef4444', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>ISS</button>
+                            </a>
+                            <a href="https://www.heavens-above.com/PassSummary.aspx?satid=48274&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+                                <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>TIANGONG</button>
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* SATELLITE 3: HUBBLE & JAMES WEBB */}
+                    <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #a855f7' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#a855f7', fontWeight: 'bold' }}>
+                            <Zap size={20} /> TELESCOPIOS
+                        </div>
+                        <div style={{ margin: '15px 0' }}>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Monitoreo de Hubble y seguimiento orbital de James Webb. Ciencia espacial en vivo.</p>
+                        </div>
+                        <a href="https://www.heavens-above.com/PassSummary.aspx?satid=20580&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                            <button style={{ width: '100%', background: 'rgba(168, 85, 247, 0.1)', border: '1px solid #a855f740', color: '#a855f7', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                TRACK HUBBLE
+                            </button>
+                        </a>
+                    </div>
+
+                    {/* SATELLITE 4: FASAT-CHALLIE & DELTA (CHILE) */}
+                    <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #10b981' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontWeight: 'bold' }}>
+                                <Navigation size={20} /> SOCHIAS / FASAT
+                            </div>
+                            <span style={{ fontSize: '0.7rem', background: '#10b98120', color: '#10b981', padding: '2px 8px', borderRadius: '50px' }}>NACIONAL</span>
+                        </div>
+                        <div style={{ margin: '15px 0' }}>
+                            <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Últimos satélites del Sistema Nacional Satelital (SNSat). Soberanía espacial chilena.</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <a href="https://www.heavens-above.com/PassSummary.aspx?satid=37938&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+                                <button style={{ width: '100%', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b98140', color: '#10b981', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-C</button>
+                            </a>
+                            <a href="https://www.heavens-above.com/PassSummary.aspx?satid=56985&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+                                <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-D</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
                     {/* Mapa Windy Premium */}

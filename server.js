@@ -1,6 +1,6 @@
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
-import { GoogleGenAI, SchemaType } from '@google/genai';
+import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -19,8 +19,6 @@ async function createServer() {
   if (!apiKey) {
       console.warn('WARNING: GEMINI_API_KEY not found in .env. AI modules will be simulated.');
   }
-  const ai = new GoogleGenAI(apiKey);
-  const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' }); // flash-preview might be restricted or named differently in stable SDK
 
   // Endpoint de Moderación y Análisis
   app.post('/api/moderate', async (req, res) => {
@@ -32,26 +30,20 @@ async function createServer() {
 
       const prompt = `Analiza el comentario del vecino de La Serena: "${text}". 
       Determina toxicidad (isToxic), sentimiento (alegría, enojo, preocupación, neutro) y tema principal (tráfico, seguridad, avisos, etc.).
-      IMPORTANTE: Devuelve un objeto JSON válido.`;
+      IMPORTANTE: Devuelve un objeto JSON válido con las llaves isToxic (boolean), sentiment (string) y topic (string).`;
 
-      const result = await model.generateContent({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: SchemaType.OBJECT,
-            properties: {
-              isToxic: { type: SchemaType.BOOLEAN },
-              sentiment: { type: SchemaType.STRING },
-              topic: { type: SchemaType.STRING }
-            },
-            required: ['isToxic', 'sentiment', 'topic']
-          }
-        }
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+           contents: [{ role: 'user', parts: [{ text: prompt }] }],
+           generationConfig: { responseMimeType: 'application/json' }
+        })
       });
-
-      const responseText = result.response.text();
-      res.json(JSON.parse(responseText));
+      
+      const data = await response.json();
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      res.json(JSON.parse(responseText || '{"isToxic": false, "sentiment": "neutro", "topic": "desconocido"}'));
     } catch (error) {
       console.error('Gemini Error:', error);
       res.status(500).json({ error: 'AI Processing failed', details: error.message });
@@ -66,13 +58,28 @@ async function createServer() {
           return res.json({ response: "Hola, soy Farito (Modo Simulación). Por favor configura mi API KEY para ayudarte mejor." });
       }
 
-      const chat = model.startChat({
-        history: history || [],
-        systemInstruction: "Eres 'Farito', el asistente inteligente de vecinoslaserena.cl y farito.cl. Tu rol es ser un enrutador inteligente. Si el usuario reporta un problema, sugiere los canales oficiales de la plataforma (Radar Vecinal, Reportes). Mantén un tono servicial, rápido y muy local de La Serena, Chile."
+      const systemInstruction = "Eres 'Farito', el asistente inteligente de vecinoslaserena.cl y farito.cl. Tu rol es ser un enrutador inteligente. Si el usuario reporta un problema, sugiere los canales oficiales de la plataforma (Radar Vecinal, Reportes). Mantén un tono servicial, rápido y muy local de La Serena, Chile.";
+      let contents = [];
+      if (history && Array.isArray(history)) {
+          contents = history.map(h => ({
+              role: h.role, // 'user' or 'model'
+              parts: [{ text: h.parts?.[0]?.text || '' }]
+          }));
+      }
+      contents.push({ role: 'user', parts: [{ text: message }] });
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            system_instruction: { parts: [{ text: systemInstruction }] },
+            contents: contents
+        })
       });
 
-      const result = await chat.sendMessage(message);
-      res.json({ response: result.response.text() });
+      const data = await response.json();
+      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "No pude generar respuesta.";
+      res.json({ response: reply });
     } catch (error) {
       console.error('Chat Error:', error);
       res.status(500).json({ error: 'Chat failed' });
@@ -86,7 +93,7 @@ async function createServer() {
   });
   app.use(vite.middlewares);
 
-  app.use('*', async (req, res, next) => {
+  app.use(async (req, res, next) => {
     const url = req.originalUrl;
     try {
       let template = fs.readFileSync(path.resolve(__dirname, 'index.html'), 'utf-8');

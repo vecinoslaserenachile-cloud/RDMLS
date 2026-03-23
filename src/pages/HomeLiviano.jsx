@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
     PlayCircle, Tv, Gamepad2, Radio, Cloud, Video, History, 
     Zap, Star, Radar, Pill, Dog, Rocket, Compass, 
-    Newspaper, Activity, Hash, ExternalLink, Ticket
+    Newspaper, Activity, Hash, ExternalLink, Ticket, PhoneCall
 } from 'lucide-react';
 import VecinosClipClub from '../components/VecinosClipClub';
 import VLSDiscountCard from '../components/VLSDiscountCard';
@@ -46,6 +46,9 @@ export default function HomeLiviano() {
                 { title: 'Personal Stereo', subtitle: 'Música como en el colegio', icon: Radio, color: '#fcd34d', action: () => dispatch('open-personal-stereo'), badge: '🎧' },
                 { title: 'Cine VHS', subtitle: 'TV Cassette de los 80', icon: PlayCircle, color: '#a78bfa', action: () => dispatch('open-vhs-tv'), badge: '📼' },
                 { title: 'Super Serenito Bros', subtitle: 'Plataformas 3D · Gravedad Esférica', icon: Rocket, color: '#10b981', action: () => dispatch('open-super-serenito'), badge: '🍄', ficha: true },
+                { title: 'TV Vertical Social', subtitle: 'Reels, Tiktok, IG Live', icon: Tv, color: '#ec4899', action: () => dispatch('open-vertical-tv'), badge: '📱' },
+                { title: 'Radio Master Engine', subtitle: 'Estudio y DJ Virtual AI', icon: Radio, color: '#fcd34d', action: () => dispatch('open-radio-master'), badge: '📻' },
+                { title: 'Juego VLS: ¿Quién Sabe?', subtitle: 'Gana Fichas con tu conocimiento', icon: Trophy, color: '#FFD700', action: () => dispatch('open-vls-game'), badge: 'NUEVO', featured: true },
             ]
         },
         {
@@ -56,6 +59,8 @@ export default function HomeLiviano() {
                 { title: 'Bus del Tiempo 3D', subtitle: 'La Serena antigua en 3D', icon: History, color: '#10b981', action: () => dispatch('open-time-bus'), badge: '⏱' },
                 { title: 'Red Social Farito', subtitle: 'Feed Cívico + Inbox P2P', icon: Hash, color: '#38bdf8', action: () => dispatch('open-farito-social'), badge: '📡' },
                 { title: 'Dron Drigo', subtitle: 'Patrulla C5 · Sky View', icon: Cloud, color: '#6366f1', action: () => dispatch('open-dron-drigo'), badge: '🚁' },
+                { title: 'Faro IA Asistente', subtitle: 'Chatbot Cívico y Trámites', icon: Zap, color: '#38bdf8', action: () => dispatch('open-faro-ia'), badge: '🤖' },
+                { title: 'De Bono Hats', subtitle: 'Resolución de conflictos IA', icon: Zap, color: '#a78bfa', action: () => dispatch('open-debono-hats'), badge: '🎩' }
             ]
         },
         {
@@ -68,6 +73,9 @@ export default function HomeLiviano() {
                 { title: 'Directorio Veterinario', subtitle: 'Amigos 360 · Triage Urgencias', icon: Dog, color: '#ef4444', action: () => dispatch('open-veterinaria'), badge: '🐾' },
                 { title: 'Noticias y Kiosko', subtitle: 'Diarios del día en tiempo real', icon: Newspaper, color: '#94a3b8', action: () => dispatch('open-kiosko-diarios'), badge: '📰' },
                 { title: 'Distancias a la Serena', subtitle: 'Trazado en mapa desde tu ciudad', icon: Activity, color: '#f59e0b', action: () => dispatch('open-distances'), badge: '🗺️' },
+                { title: 'Serenamet Regional', subtitle: 'Clima, Radares y Satélites', icon: Cloud, color: '#38bdf8', action: () => window.location.href = '/serenamet', badge: '🌤️' },
+                { title: 'Centro Sismológico', subtitle: 'Monitoreo Estratégico AI', icon: Activity, color: '#ef4444', action: () => dispatch('open-sismic'), badge: '🌋' },
+                { title: 'Tribunales Smart', subtitle: 'Resolución Cívica', icon: History, color: '#6366f1', action: () => dispatch('open-tribunales'), badge: '⚖️' }
             ]
         }
     ];

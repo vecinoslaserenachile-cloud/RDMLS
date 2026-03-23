@@ -8,6 +8,7 @@ export default function SismicCenter({ onClose }) {
     const [glossary, setGlossary] = useState([]);
     const [isInitialLoad, setIsInitialLoad] = useState(true);
     const [userReport, setUserReport] = useState({ mercalli: 1, perception: 'No Sentido', damage: 'Ninguno' });
+    const [daysWithoutBigQuake, setDaysWithoutBigQuake] = useState('--');
 
     // Datos simulados estadísticos para el "Monitoreo Predictivo"
     const predictionData = [
@@ -23,15 +24,36 @@ export default function SismicCenter({ onClose }) {
     useEffect(() => {
         const fetchSismoData = async () => {
             try {
-                // Nueva API - Vigilante Sismología Chile
-                const res = await fetch('/api/sismologia');
+                // Nueva API - USGS Earthquakes (Real Data for La Serena)
+                const usgsUrl = 'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&latitude=-29.9027&longitude=-71.252&maxradiuskm=600&minmagnitude=4.0&limit=30&orderby=time';
+                const res = await fetch(usgsUrl);
                 const data = await res.json();
                 
-                if (data.quakes) setQuakes(data.quakes);
-                if (data.glossary) setGlossary(data.glossary);
+                if (data.features) {
+                    const parsedQuakes = data.features.map(f => ({
+                        id: f.id,
+                        mag: f.properties.mag.toFixed(1),
+                        time: f.properties.time,
+                        place: f.properties.place,
+                        depth: f.geometry.coordinates[2].toFixed(1),
+                        lat: f.geometry.coordinates[1].toFixed(2),
+                        lng: f.geometry.coordinates[0].toFixed(2),
+                    }));
+                    setQuakes(parsedQuakes);
+                    
+                    const bigQuakes = parsedQuakes.filter(q => parseFloat(q.mag) >= 5.0);
+                    if (bigQuakes.length > 0) {
+                        const diffTime = Math.abs(new Date() - new Date(bigQuakes[0].time));
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        setDaysWithoutBigQuake(diffDays.toString());
+                    } else {
+                        setDaysWithoutBigQuake('>30');
+                    }
+                }
                 setIsInitialLoad(false);
             } catch (err) {
                 console.error("VLS Sismologia API Error:", err);
+                setDaysWithoutBigQuake('?');
             }
         };
 
@@ -185,7 +207,7 @@ export default function SismicCenter({ onClose }) {
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
                                 <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
                                     <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>DÍAS SIN SISMO {'>'} 5.0</div>
-                                    <div style={{ fontSize: '2rem', color: 'white', fontWeight: 'bold' }}>42</div>
+                                    <div style={{ fontSize: '2rem', color: 'white', fontWeight: 'bold' }}>{daysWithoutBigQuake}</div>
                                 </div>
                                 <div className="glass-panel" style={{ padding: '1rem', textAlign: 'center' }}>
                                     <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>ACUMULACIÓN ENERGÉTICA</div>

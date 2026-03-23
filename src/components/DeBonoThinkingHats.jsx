@@ -12,14 +12,14 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SONGS = [
-    { title: "Vamos a recordar y pensar", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Vamos%20a%20recordar%20y%20pensar.mp3", hat: "Blanco", duration: "03:45" },
-    { title: "La cumbia de los seis sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/La%20cumbia%20de%20los%20seis%20sombreros.mp3", hat: "Rojo", duration: "04:12" },
-    { title: "Sombrero heavy", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20heavy.mp3", hat: "Negro", duration: "02:58" },
-    { title: "Sombrero regalón", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Sombrero%20regal%C3%B3n.mp3", hat: "Amarillo", duration: "03:20" },
-    { title: "Blusero del jazz con sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Blusero%20del%20jazz%20con%20sombreros.mp3", hat: "Verde", duration: "04:05" },
-    { title: "Todos podemos pensar con 6 sombreros", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/todos%20podemos%20pensar%20con%206%20sombreros.mp3", hat: "Azul", duration: "03:50" },
-    { title: "Cámbiate el sombrero", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/cambiate%20el%20sombrero%20xcbrgavls26.mp3", hat: "Multi", duration: "03:15" },
-    { title: "Cámbiate Carlitos", url: "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/assets/audio/Cambiate%20carlitos.mp3", hat: "Multi", duration: "02:45" }
+    { title: "Tecno 6 sombreros", url: "https://cdn1.suno.ai/af1b2a23-ba3a-4567-8ea8-39610eae5687.mp3", hat: "Blanco", duration: "03:45" },
+    { title: "La cumbia de los seis sombreros", url: "https://cdn1.suno.ai/11f63327-2259-47d3-a7b0-3e297506cda2.mp3", hat: "Rojo", duration: "04:12" },
+    { title: "6 sombreros de Martin", url: "https://cdn1.suno.ai/641895c9-d926-44f9-bfc0-3e1a51b4ce79.mp3", hat: "Negro", duration: "02:58" },
+    { title: "Sombrero regalón", url: "https://cdn1.suno.ai/89aeafca-fe78-458d-8158-ebbea176e03d.mp3", hat: "Amarillo", duration: "03:20" },
+    { title: "Blusero del jazz con sombreros", url: "https://cdn1.suno.ai/4e422386-bff5-49b3-93fb-6d1287fe7376.mp3", hat: "Verde", duration: "04:05" },
+    { title: "Todos podemos pensar con 6 sombreros", url: "https://cdn1.suno.ai/6e6d5622-927d-4b3a-a103-9d10804a276b.mp3", hat: "Azul", duration: "03:50" },
+    { title: "Cámbiate el sombrero (Mashup)", url: "https://cdn1.suno.ai/9f6d7f2a-f8c4-41d2-b1f9-6ec3541bc4ad.mp3", hat: "Multi", duration: "03:15" },
+    { title: "Piensa lateral sombreros blues", url: "https://cdn1.suno.ai/9948997f-f3cb-4e62-9ee0-ec37d683059b.mp3", hat: "Multi", duration: "02:45" }
 ];
 
 const HATS = [
@@ -328,6 +328,8 @@ ComunaSmart 2026 - Innovación Regional
                                                 src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/models/seis_sombreros_para_prensar_serenito.mp4" 
                                                 autoPlay muted loop playsInline 
                                                 style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'contrast(1.1)' }} 
+                                                onLoadedData={() => console.log("Video VLS cargado correctamente")}
+                                                onError={(e) => console.error("Fallo carga video VLS", e)}
                                             />
                                             {/* Sombrero Overlay para que se note el color */}
                                             <div style={{ position: 'absolute', top: '20px', left: '20px', background: hat.accent, color: hat.id === 'white' ? '#000' : '#fff', padding: '0.8rem 2rem', borderRadius: '50px', fontWeight: '900', fontSize: '1.2rem', boxShadow: `0 10px 30px ${hat.accent}88`, border: '2px solid white', zIndex: 10 }}>

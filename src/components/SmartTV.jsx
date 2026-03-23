@@ -140,17 +140,14 @@ export default function SmartTV({ weather }) {
 
   return (
     <motion.div 
-      drag
+      drag={!isFullScreen}
       dragMomentum={false}
       initial={{ scale: 0.8, opacity: 0, y: 50 }}
       animate={{ 
         scale: 1, 
         opacity: 1, 
         y: 0,
-        bottom: isFullScreen ? '0' : (window.innerWidth < 768 ? '85px' : 'auto'),
-        right: isFullScreen ? '0' : (window.innerWidth < 768 ? '15px' : 'auto'),
-        left: isFullScreen ? '0' : (window.innerWidth < 768 ? 'auto' : '50px'),
-        top: isFullScreen ? '0' : (window.innerWidth < 768 ? 'auto' : '100px')
+        ...(isFullScreen ? { bottom: 0, right: 0, left: 0, top: 0 } : {})
       }}
       className="animate-slide-up"
       style={{
@@ -166,11 +163,17 @@ export default function SmartTV({ weather }) {
         cursor: 'default',
         resize: isExpanded && !isFullScreen && window.innerWidth >= 768 ? 'both' : 'none',
         minWidth: isFullScreen ? '100vw' : (isExpanded ? (window.innerWidth < 768 ? '260px' : '380px') : (window.innerWidth < 768 ? '100px' : '220px')),
-        minHeight: isFullScreen ? '100vh' : (isExpanded ? (window.innerWidth < 768 ? '160px' : '250px') : (window.innerWidth < 768 ? '65px' : '150px')),
+        minHeight: isFullScreen ? '100vh' : (isExpanded ? (window.innerWidth < 768 ? '146px' : '214px') : (window.innerWidth < 768 ? '56px' : '124px')),
         width: 'auto',
         height: 'auto',
         maxWidth: '100vw',
-        maxHeight: '100vh'
+        maxHeight: '100vh',
+        ...(!isFullScreen ? {
+          bottom: window.innerWidth < 768 ? '85px' : 'auto',
+          right: window.innerWidth < 768 ? '15px' : 'auto',
+          left: window.innerWidth < 768 ? 'auto' : '50px',
+          top: window.innerWidth < 768 ? 'auto' : '100px'
+        } : {})
       }}
     >
       {/* Header del Televisor - Drag Handle */}

@@ -88,6 +88,7 @@ const RightsGovernanceVLS = lazy(() => import('./components/RightsGovernanceVLS'
 const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
 const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
+const VLSGameMain = lazy(() => import('./components/VLSGameMain'));
 
 const SOVEREIGN_NAMES = [
     "vecinoslaserena.cl",
@@ -298,6 +299,7 @@ function AppContent() {
   const [showEmergencyDirectory, setShowEmergencyDirectory] = useState(false);
   const [showFaroCentinel, setShowFaroCentinel] = useState(false);
   const [showBotica, setShowBotica] = useState(false);
+  const [showVLSGame, setShowVLSGame] = useState(false);
   const [showVeterinaria, setShowVeterinaria] = useState(false);
   const [showSuperSerenito, setShowSuperSerenito] = useState(false);
   const [showSkyGuide, setShowSkyGuide] = useState(false);
@@ -724,6 +726,8 @@ function AppContent() {
     window.addEventListener('open-smart-business', () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowSmartBusiness(true); });
     window.addEventListener('open-emergency-directory', () => setShowEmergencyDirectory(true));
     window.addEventListener('open-smart-events', () => setShowSmartEvents(true));
+    window.addEventListener('open-vls-game', () => setShowVLSGame(true));
+    window.addEventListener('open-vls-play', () => setShowVLSGame(true));
 
     
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
@@ -824,18 +828,29 @@ function AppContent() {
   }, []);
 
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
+  const showMasterLock = !isAuthorized && !isGuest && !isRegistered;
+
+  if (!authInitialized) {
+      return <LoadingScreen />;
+  }
+
+  // Si requiere bloqueo maestro, NO renderizamos el Dashboard para evitar el "desfase" visual
+  if (showMasterLock) {
+      return (
+          <Suspense fallback={<LoadingScreen />}>
+              <MasterLock 
+                onUnlock={(user) => setCurrentUser(user)} 
+                setIsGuest={setIsGuest}
+                setGuestTimeLeft={setGuestTimeLeft}
+                setIsRegistered={setIsRegistered}
+              />
+          </Suspense>
+      );
+  }
 
   return (
-    <div className="app-layout">
+    <div className="app-layout animate-fade-in">
       <Suspense fallback={<div className="loading-overlay">Cargando Ecosistema VLS...</div>}>
-          {!isAuthorized && !isGuest && !isRegistered && authInitialized && (
-            <MasterLock 
-              onUnlock={(user) => setCurrentUser(user)} 
-              setIsGuest={setIsGuest}
-              setGuestTimeLeft={setGuestTimeLeft}
-              setIsRegistered={setIsRegistered}
-            />
-          )}
       </Suspense>
 
       <MartinSecurityShield />
@@ -1131,6 +1146,12 @@ function AppContent() {
       {showGame && (
         <Suspense fallback={<div/>}>
           <RetroArcadeLobby onClose={() => setShowGame(false)} />
+        </Suspense>
+      )}
+
+      {showVLSGame && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSGameMain onClose={() => setShowVLSGame(false)} />
         </Suspense>
       )}
 

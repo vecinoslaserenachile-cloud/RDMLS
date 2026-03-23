@@ -80,7 +80,7 @@ const VLSMotorsSpot = ({ onClose }) => {
                                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', padding: '2rem', textAlign: 'center' }}>
                                         <Zap size={64} color="#fcd34d" style={{ marginBottom: '1rem' }} />
                                         <h3 style={{ color: 'white', fontSize: '2rem', fontWeight: '900', margin: '0 0 1rem 0' }}>FLOTA ELÉCTRICA SMART 2026</h3>
-                                        <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '400px' }}>La nueva era de la movilidad urbana llega a La Serena. Vehículos con IA integrada y carga solar municipal.</p>
+                                        <p style={{ color: '#cbd5e1', fontSize: '1.1rem', maxWidth: '400px' }}>La nueva era de la movilidad urbana llega a La Serena. Vehículos con IA integrada y carga solar comunitaria.</p>
                                         <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                                             <span style={{ background: '#38bdf820', color: '#38bdf8', border: '1px solid #38bdf840', padding: '8px 16px', borderRadius: '50px', fontWeight: 'bold' }}>Soberanía Energética</span>
                                         </div>
@@ -88,7 +88,7 @@ const VLSMotorsSpot = ({ onClose }) => {
                                 </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1.5rem' }}>
                                     <h4 style={{ color: 'white', fontSize: '1.5rem', margin: 0 }}>Promoción Lanzamiento</h4>
-                                    <p style={{ color: '#94a3b8', lineHeight: '1.6' }}>Adquiere tu vehículo eléctrico con bono municipal y acceso gratuito a la Red de Carga Smart VLS por 2 años.</p>
+                                    <p style={{ color: '#94a3b8', lineHeight: '1.6' }}>Adquiere tu vehículo eléctrico con bono VLS y acceso gratuito a la Red de Carga Smart VLS por 2 años.</p>
                                     <ul style={{ color: 'white', listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
                                         <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><ShieldCheck size={18} color="#10b981" /> Garantía de por vida en baterías</li>
                                         <li style={{ display: 'flex', alignItems: 'center', gap: '10px' }}><ShieldCheck size={18} color="#10b981" /> Mantenimiento predictivo vía App</li>
@@ -148,7 +148,7 @@ const VLSMotorsSpot = ({ onClose }) => {
                     <div>
                         <h5 style={{ color: '#ef4444', margin: '0 0 5px 0', fontSize: '1rem', fontWeight: 'bold' }}>DISCLAIMER VLS MOTORS</h5>
                         <p style={{ color: '#fca5a5', fontSize: '0.85rem', margin: 0, lineHeight: '1.5' }}>
-                            VLS Motors actúa únicamente como una plataforma de enlace y certificación comunitaria. Los vehículos nuevos son provistos por concesionarios en convenio oficial con el ecosistema. En el módulo de usados, el municipio facilita el canal de contacto y verificación preliminar, pero no asume responsabilidad civil por la condición mecánica final o acuerdos privados entre particulares.
+                            VLS Motors actúa únicamente como una plataforma de enlace y certificación comunitaria. Los vehículos nuevos son provistos por concesionarios en convenio oficial con el ecosistema. En el módulo de usados, vecinoslaserenachile.cl facilita el canal de contacto y verificación preliminar, pero no asume responsabilidad civil por la condición mecánica final o acuerdos privados entre particulares.
                         </p>
                     </div>
                 </div>

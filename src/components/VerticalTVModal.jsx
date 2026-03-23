@@ -91,9 +91,7 @@ export default function VerticalTVModal({ onClose, inline = false }) {
                 scale: 1,
                 width: isMaximized ? '100vw' : size.width,
                 height: isMaximized ? '100vh' : 'auto',
-                top: isMaximized ? 0 : (inline ? 'auto' : '100px'),
-                left: isMaximized ? 0 : (inline ? 'auto' : 'auto'),
-                right: isMaximized ? 0 : (inline ? 'auto' : '50px'),
+                ...(isMaximized ? { top: 0, left: 0, right: 0 } : {})
             }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             style={{ 
@@ -103,7 +101,12 @@ export default function VerticalTVModal({ onClose, inline = false }) {
                 flexDirection: 'column',
                 cursor: 'default',
                 maxHeight: isMaximized ? '100vh' : '90vh',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                ...(!isMaximized ? {
+                    top: inline ? 'auto' : '100px',
+                    left: inline ? 'auto' : 'auto',
+                    right: inline ? 'auto' : '50px'
+                } : {})
             }}
         >
             {/* Header / Drag Handle */}

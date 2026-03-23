@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, User, Building2, CheckCircle, Camera, FileText, ArrowRight, X, AlertCircle, Landmark } from 'lucide-react';
+import { ShieldCheck, User, Building2, CheckCircle, Camera, FileText, ArrowRight, X, AlertCircle, Landmark, Activity } from 'lucide-react';
 
 export default function IdentityGate({ onClose, onVerified }) {
     const [mode, setMode] = useState(null); // 'citizen' or 'institution'
