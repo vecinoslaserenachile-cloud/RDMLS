@@ -181,7 +181,7 @@ export default function Serenamet() {
 180:                         <div style={{ margin: '15px 0' }}>
 181:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Visualización de ráfagas de satélites SpaceX. Próximo paso visible sobre la bahía.</p>
 182:                         </div>
-183:                         <a href="https://www.heavens-above.com/StarlinkLaunchPasses.aspx?lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+183:                         <a href="https://www.heavens-above.com/StarlinkLaunchPasses.aspx?lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
 184:                             <button style={{ width: '100%', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf840', color: '#38bdf8', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
 185:                                 VER PASES PRÓXIMOS
 186:                             </button>
@@ -200,10 +200,10 @@ export default function Serenamet() {
 199:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Estación Espacial Internacional y Estación China. Avistamientos de magnitud negativa.</p>
 200:                         </div>
 201:                         <div style={{ display: 'flex', gap: '8px' }}>
-202:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+202:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=25544&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
 203:                                 <button style={{ width: '100%', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef444440', color: '#ef4444', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>ISS</button>
 204:                             </a>
-205:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=48274&lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+205:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=48274&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
 206:                                 <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.75rem' }}>TIANGONG</button>
 207:                             </a>
 208:                         </div>
@@ -217,7 +217,7 @@ export default function Serenamet() {
 216:                         <div style={{ margin: '15px 0' }}>
 217:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Monitoreo de Hubble y seguimiento orbital de James Webb. Ciencia espacial en vivo.</p>
 218:                         </div>
-219:                         <a href="https://www.heavens-above.com/PassSummary.aspx?satid=20580&lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+219:                         <a href="https://www.heavens-above.com/PassSummary.aspx?satid=20580&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
 220:                             <button style={{ width: '100%', background: 'rgba(168, 85, 247, 0.1)', border: '1px solid #a855f740', color: '#a855f7', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.8rem' }}>
 221:                                 TRACK HUBBLE
 222:                             </button>
@@ -236,10 +236,10 @@ export default function Serenamet() {
 235:                             <p style={{ margin: 0, fontSize: '0.85rem', color: '#cbd5e1' }}>Últimos satélites del Sistema Nacional Satelital (SNSat). Soberanía espacial chilena.</p>
 236:                         </div>
 237:                         <div style={{ display: 'flex', gap: '8px' }}>
-238:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=37938&lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+238:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=37938&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
 239:                                 <button style={{ width: '100%', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b98140', color: '#10b981', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-C</button>
 240:                             </a>
-241:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=56985&lat=-29.9027&lng=-71.2520&loc=La+Serena&alt=0&tz=CLST" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
+241:                             <a href="https://www.heavens-above.com/PassSummary.aspx?satid=56985&lat=-29.9027&lng=-71.2520" target="_blank" rel="noopener noreferrer" style={{ flex: 1, textDecoration: 'none' }}>
 242:                                 <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-D</button>
 243:                             </a>
 244:                         </div>
