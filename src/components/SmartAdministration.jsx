@@ -4,6 +4,7 @@ import {
     CheckCircle2, Award, BookOpen, Video, Trash2, 
     Download, PenTool, ClipboardList, Briefcase, Smartphone, Send, History, Trophy, PlayCircle, ShieldCheck
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import SmartAdminService from '../services/SmartAdminService';
 
 /**
@@ -12,6 +13,7 @@ import SmartAdminService from '../services/SmartAdminService';
  * Cumple con Regla #4: Backoffice Móvil con Cámara.
  */
 export default function SmartAdministration({ onClose, currentUser }) {
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('reports'); // learning, reports, history
     const [reportContent, setReportContent] = useState('');
     const [capturedPhotos, setCapturedPhotos] = useState([]);
@@ -72,6 +74,12 @@ export default function SmartAdministration({ onClose, currentUser }) {
     };
 
     const handleCompleteCourse = (courseId) => {
+        if (courseId === 'induccion') {
+            // El componente VLSInduccion ya maneja el flujo completo
+            navigate('/induccion');
+            onClose();
+            return;
+        }
         SmartAdminService.completeCourse(currentUser?.id || 'VLS-USER', courseId);
         setCourses(courses.map(c => c.id === courseId ? { ...c, completed: true, progress: 100 } : c));
     };

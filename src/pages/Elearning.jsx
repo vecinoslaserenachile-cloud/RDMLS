@@ -334,7 +334,14 @@ export default function Elearning() {
                             e.currentTarget.style.transform = 'translateY(0)';
                             e.currentTarget.style.boxShadow = 'var(--glass-shadow)';
                         }}
-                        onClick={() => { setSelectedCourse(course); setIsPlaying(false); }}
+                        onClick={() => { 
+                            if (course.id === 'induccion') {
+                                navigate('/induccion');
+                                return;
+                            }
+                            setSelectedCourse(course); 
+                            setIsPlaying(false); 
+                        }}
                     >
                         <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', marginBottom: '1rem' }}>
                             <div style={{ padding: '1rem', background: `${course.color}20`, borderRadius: '12px' }}>

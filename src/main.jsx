@@ -43,6 +43,7 @@ import Propiedades from './pages/Propiedades.jsx';
 import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
 import GameVLS from './pages/GameVLS.jsx';
 import VLSMotorsShowroom from './pages/VLSMotorsShowroom.jsx';
+import VLSInduccion from './pages/VLSInduccion.jsx';
 import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
@@ -279,6 +280,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="propiedades" element={<Propiedades />} />
               <Route path="acceso" element={<PuertaSerena />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
+              <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
             </Route>
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/bisabuelo" element={<GameVLS />} />
