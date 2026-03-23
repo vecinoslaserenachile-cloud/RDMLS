@@ -524,7 +524,8 @@ export default function HubDashboard() {
         'vhs-tv', 'retro-tv', 'cine', 'debono', 'donradios',
         'escuela-musica', 'escuela-artes', 'tribunales',
         'ecumenico', 'laico', 'farito-browser', 'glosario-vls',
-        'stickers-portal', 'difundir-app', 'legacy-vls', 'red-social'
+        'stickers-portal', 'difundir-app', 'legacy-vls', 'red-social',
+        'vls-investigacion-2026'
     ];
 
     const isLockedForResident = (id) => {
