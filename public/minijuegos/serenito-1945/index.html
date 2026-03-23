@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Juego Serenito 1945</title>
+    <style>
+        /* =========================================
+           LA CAPA VISUAL (CSS)
+        ========================================= */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #111; /* Fondo oscuro exterior */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden; /* Sin scrollbars */
+            font-family: 'Arial', sans-serif;
+        }
+        #juegoCanvas {
+            background-color: #87CEEB; /* Color cielo base (útil si la imagen falla) */
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+            /* Proporción de la pantalla para simular la máquina Arcade clásica */
+            max-width: 100%;
+            max-height: 100%;
+        }
+        #uiLayer {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            pointer-events: none; /* Deja pasar los toques al canvas */
+            display: flex;
+            flex-direction: column;
+        }
+        #puntuacion {
+            color: white;
+            font-size: 28px;
+            font-weight: 900;
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.9);
+            margin: 20px;
+            pointer-events: auto; /* Para que sea seleccionable si se desea */
+            background: rgba(0, 0, 0, 0.4);
+            padding: 5px 15px;
+            border-radius: 10px;
+            align-self: flex-start;
+        }
+        #gameOverScreen {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background: rgba(15, 23, 42, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #ef4444; /* Rojo emergencia */
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            pointer-events: auto; /* Atrapa los clics para el botón */
+        }
+        #gameOverScreen h1 {
+            color: #ef4444;
+            margin-top: 0;
+            font-size: 36px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        #gameOverScreen p {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 25px;
+        }
+        button {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+            transition: transform 0.2s, background 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla Arcade -->
+    <canvas id="juegoCanvas"></canvas>
+    
+    <!-- Capa de Textos y Controles HTML superpuestos -->
+    <div id="uiLayer">
+        <div id="puntuacion">SCORE: <span id="scoreVal">0</span></div>
+        <div id="gameOverScreen">
+            <h1>¡Nave Destruida!</h1>
+            <p>Puntuación Final: <strong id="finalScore">0</strong></p>
+            <button onclick="reiniciarJuego()">Volver a Despegar</button>
+        </div>
+    </div>
+
+    <!-- =========================================
+         EL MOTOR DEL JUEGO (JAVASCRIPT PURO)
+    ========================================= -->
+    <script>
+        const canvas = document.getElementById('juegoCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreUI = document.getElementById('scoreVal');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreUI = document.getElementById('finalScore');
+
+        // Configuración de pantalla responsiva (Móvil y Escritorio)
+        function resizeCanvas() {
+            let isMobile = window.innerWidth <= 600;
+            // En móvil usa todo el ancho/alto, en PC simula pantalla vertical arcade (proporción tipo teléfono)
+            canvas.width = isMobile ? window.innerWidth : 450;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // ------------------------------------------
+        // 1. ESTADO DEL JUEGO (Variables)
+        // ------------------------------------------
+        let score = 0;
+        let gameOver = false;
+        let frames = 0;
+
+        // --- SISTEMA DE PARALLAX (FONDO EN MOVIMIENTO) ---
+        let fondoY1 = 0;
+        let fondoY2 = -canvas.height;
+        // ⭐ CAMBIA ESTO: Velocidad de desplazamiento hacia abajo del mundo
+        const velocidadFondo = 3; 
+
+        // --- SISTEMA DE IMÁGENES (PREPARADO) ---
+        // Para integrar tus gráficos reales, descomenta estas líneas e ingresa tus rutas .png
+        /*
+        const imgSerenito = new Image();
+        imgSerenito.src = "../../ruta/a/serenito.png";
+        
+        const imgEnemigo = new Image();
+        imgEnemigo.src = "../../ruta/a/enemigo.png";
+        
+        const imgFondo = new Image();
+        imgFondo.src = "../../ruta/a/mapa-laserena.jpg";
+        */
+
+        // Base de Datos de Objetos
+        const jugador = {
+            x: canvas.width / 2 - 25,
+            y: canvas.height - 120,
+            width: 50,  // ⭐ Cambia el tamaño de la nave aquí
+            height: 50,
+            velocidad: 6, // Velocidad en teclado
+            color: '#38bdf8' // Serenito Blue
+        };
+
+        let balas = [];
+        let enemigos = [];
+
+        // ------------------------------------------
+        // 2. OYENTES Y CONTROLES (Listeners)
+        // ------------------------------------------
+        const teclas = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false, Space: false };
+
+        // Teclado (Escritorio)
+        window.addEventListener('keydown', (e) => {
+            if(e.code === 'ArrowUp') teclas.ArrowUp = true;
+            if(e.code === 'ArrowDown') teclas.ArrowDown = true;
+            if(e.code === 'ArrowLeft') teclas.ArrowLeft = true;
+            if(e.code === 'ArrowRight') teclas.ArrowRight = true;
+            if(e.code === 'Space') {
+                teclas.Space = true;
+                disparar();
+            }
+        });
+        window.addEventListener('keyup', (e) => {
+            if(e.code === 'ArrowUp') teclas.ArrowUp = false;
+            if(e.code === 'ArrowDown') teclas.ArrowDown = false;
+            if(e.code === 'ArrowLeft') teclas.ArrowLeft = false;
+            if(e.code === 'ArrowRight') teclas.ArrowRight = false;
+            if(e.code === 'Space') teclas.Space = false;
+        });
+
+        // Controles Táctiles (Móviles)
+        let tocando = false;
+        canvas.addEventListener('touchstart', (e) => {
+            tocando = true;
+            moverTactil(e);
+        });
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // Detiene el scroll de la página al deslizar el dedo
+            moverTactil(e);
+        }, { passive: false });
+        canvas.addEventListener('touchend', () => {
+            tocando = false;
+        });
+
+        function moverTactil(e) {
+            if(gameOver) return;
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            // La nave sigue exactamente el centro del dedo
+            jugador.x = Math.max(0, Math.min(canvas.width - jugador.width, touch.clientX - rect.left - (jugador.width / 2)));
+            // Permitimos mover la nave en el eje Y también, pero con límites
+            jugador.y = Math.max(0, Math.min(canvas.height - jugador.height, touch.clientY - rect.top - (jugador.height / 2)));
+        }
+
+        // ------------------------------------------
+        // 3. FÍSICA Y GESTIÓN DE ELEMENTOS
+        // ------------------------------------------
+        function disparar() {
+            if(gameOver) return;
+            balas.push({
+                x: jugador.x + (jugador.width / 2) - 4, // Sale desde el centro de la nave
+                y: jugador.y,
+                width: 8,
+                height: 18,
+                velocidad: 12, // ⭐ Velocidad de la bala
+                color: '#facc15' // Amarillo eléctrico
+            });
+        }
+
+        function generarEnemigos() {
+            // Cada 50 fotogramas suelta un nuevo enemigo (A mayor número = Menos enemigos salen)
+            if (frames % 50 === 0) {
+                let size = Math.random() * 20 + 35; // Tamaño del enemigo variable entre 35 y 55
+                let posX = Math.random() * (canvas.width - size);
+                let vel = Math.random() * 3 + 2; // Velocidad de caída variable
+                
+                enemigos.push({
+                    x: posX,
+                    y: -size, // Aparece escondido justo sobre el borde superior
+                    width: size,
+                    height: size,
+                    velocidad: vel,
+                    color: '#ef4444' // Rojo Enemigo
+                });
+            }
+        }
+
+        // Función matemática para revisar si dos cajas rectangulares están sobrepuestas
+        function colision(rect1, rect2) {
+            return (
+                rect1.x < rect2.x + rect2.width &&
+                rect1.x + rect1.width > rect2.x &&
+                rect1.y < rect2.y + rect2.height &&
+                rect1.y + rect1.height > rect2.y
+            );
+        }
+
+        function detectarColisiones() {
+            // Se revisa cada enemigo en la pantalla
+            enemigos.forEach((enemigo, eIndex) => {
+                
+                // IMPACTOS DE BALAS (Bala vs Enemigo)
+                balas.forEach((bala, bIndex) => {
+                    if (colision(bala, enemigo)) {
+                        // Al impactar, ambos elementos se eliminan de la memoria (Explosión)
+                        setTimeout(() => {
+                            enemigos.splice(eIndex, 1);
+                            balas.splice(bIndex, 1);
+                        }, 0);
+                        score += 50; // ¡Sumar puntos!
+                    }
+                });
+
+                // CHOQUES TRÁGICOS (Nave vs Enemigo) => GAME OVER
+                // Hacemos el hitbox (caja de choque) ligeramente más pequeño que la nave gráfica para que sea justo
+                let hitboxJugador = {
+                    x: jugador.x + 8,
+                    y: jugador.y + 8,
+                    width: jugador.width - 16,
+                    height: jugador.height - 16
+                };
+
+                if (colision(hitboxJugador, enemigo)) {
+                    terminarJuego();
+                }
+            });
+        }
+
+        // ------------------------------------------
+        // 4. BUCLE PRINCIPAL (MATH + DRAW)
+        // ------------------------------------------
+        function actualizar() {
+            if(gameOver) return;
+            
+            // 4.1. Actualizar el fondo ilusorio (Parallax hacia abajo)
+            fondoY1 += velocidadFondo;
+            fondoY2 += velocidadFondo;
+            if(fondoY1 >= canvas.height) fondoY1 = fondoY2 - canvas.height;
+            if(fondoY2 >= canvas.height) fondoY2 = fondoY1 - canvas.height;
+
+            // 4.2. Traducir el Teclado a Coordenadas
+            if(teclas.ArrowLeft && jugador.x > 0) jugador.x -= jugador.velocidad;
+            if(teclas.ArrowRight && jugador.x < canvas.width - jugador.width) jugador.x += jugador.velocidad;
+            if(teclas.ArrowUp && jugador.y > 0) jugador.y -= jugador.velocidad;
+            if(teclas.ArrowDown && jugador.y < canvas.height - jugador.height) jugador.y += jugador.velocidad;
+
+            // 4.3. Disparo Automático para Celulares (Escupe una bala cada 10 frames si está tocando)
+            if(tocando && frames % 10 === 0) {
+                disparar();
+            }
+
+            // 4.4. Mover y limpiar las Balas y Enemigos
+            balas.forEach((bala, index) => {
+                bala.y -= bala.velocidad; // Se restan coordenadas Y para que suban volando
+                if(bala.y < -bala.height) balas.splice(index, 1); // Borrar para liberar RAM si sale de la pantalla
+            });
+
+            enemigos.forEach((enemigo, index) => {
+                enemigo.y += enemigo.velocidad; // Suman en Y para que caigan
+                if(enemigo.y > canvas.height) enemigos.splice(index, 1); // Se escapó vivo, lo borramos igual
+            });
+
+            // 4.5. Procesar Físicas
+            generarEnemigos();
+            detectarColisiones();
+            
+            // 4.6. Impulso a los UI y Reloj
+            scoreUI.innerText = score;
+            frames++;
+        }
+
+        function dibujar() {
+            // 1. Limpiar pantalla con colores base de Parallax
+            // (Si usaste "imgFondo", haz: ctx.drawImage(imgFondo, 0, fondoY1...))
+            
+            // Pasto de La Serena
+            ctx.fillStyle = '#0f766e'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Simular el Río Elqui atravesando verticalmente (Efecto Mosaico Paralelogramo)
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(canvas.width * 0.3, fondoY1, canvas.width * 0.4, canvas.height);
+            ctx.fillRect(canvas.width * 0.3, fondoY2, canvas.width * 0.4, canvas.height);
+            
+            // Calles simuladas
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(canvas.width * 0.1, fondoY1, 20, canvas.height);
+            ctx.fillRect(canvas.width * 0.1, fondoY2, 20, canvas.height);
+            ctx.fillRect(canvas.width * 0.85, fondoY1, 20, canvas.height);
+            ctx.fillRect(canvas.width * 0.85, fondoY2, 20, canvas.height);
+
+            // 2. Dibujar Jugador (Serenito Provisorio - Rectángulo Avatar)
+            // Cuando la imagen este lista: ctx.drawImage(imgSerenito, jugador.x, jugador.y, jugador.width, jugador.height);
+            ctx.fillStyle = jugador.color;
+            ctx.fillRect(jugador.x, jugador.y, jugador.width, jugador.height);
+            // Detalles divertidos del avatar básico (Dos ojitos)
+            ctx.fillStyle = '#fff';
+            ctx.beginPath(); ctx.arc(jugador.x + 15, jugador.y + 15, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(jugador.x + 35, jugador.y + 15, 5, 0, Math.PI * 2); ctx.fill();
+
+            // 3. Dibujar balas (Lasers de Neón)
+            balas.forEach(bala => {
+                ctx.fillStyle = bala.color;
+                ctx.beginPath();
+                ctx.roundRect(bala.x, bala.y, bala.width, bala.height, 5); // Bordes suavizados
+                ctx.fill();
+                
+                // Efecto de brillo de láser
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = bala.color;
+                ctx.fillStyle = "white";
+                ctx.fillRect(bala.x + 2, bala.y, bala.width - 4, bala.height);
+                ctx.shadowBlur = 0; // Apagar glow
+            });
+
+            // 4. Dibujar Enemigos
+            // Cuando la imagen este lista: ctx.drawImage(imgEnemigo, enemigo.x, enemigo.y, enemigo.width, enemigo.height);
+            enemigos.forEach(enemigo => {
+                ctx.fillStyle = enemigo.color;
+                ctx.beginPath();
+                ctx.roundRect(enemigo.x, enemigo.y, enemigo.width, enemigo.height, 8);
+                ctx.fill();
+                
+                // Detalles de la nave enemiga
+                ctx.fillStyle = '#991b1b';
+                ctx.fillRect(enemigo.x + 10, enemigo.y, enemigo.width - 20, enemigo.height);
+                ctx.fillStyle = '#fca5a5';
+                ctx.fillRect(enemigo.x + 10, enemigo.y + 10, 8, 8);
+                ctx.fillRect(enemigo.x + enemigo.width - 18, enemigo.y + 10, 8, 8);
+            });
+        }
+
+        // CONTROL OFICIAL DE GAME OVER
+        function terminarJuego() {
+            gameOver = true;
+            gameOverScreen.style.display = 'block';
+            finalScoreUI.innerText = score;
+        }
+
+        // Bucle Animador (A 60 FPS inyectado por el navegador)
+        function loop() {
+            actualizar();
+            if(!gameOver) {
+                dibujar();
+            }
+            requestAnimationFrame(loop); // Pide el siguiente fotograma infinitamente
+        }
+
+        // ------------------------------------------
+        // 5. REINICIO DE SISTEMA
+        // ------------------------------------------
+        function reiniciarJuego() {
+            score = 0;
+            frames = 0;
+            enemigos = [];
+            balas = [];
+            // Devolver al centro del eje X, y abajito en el eje Y
+            jugador.x = canvas.width / 2 - (jugador.width / 2);
+            jugador.y = canvas.height - 120;
+            gameOver = false;
+            gameOverScreen.style.display = 'none';
+        }
+
+        // Arrancar el motor apenas carga
+        loop();
+    </script>
+</body>
+</html>
