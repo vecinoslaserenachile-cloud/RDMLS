@@ -1,0 +1,5 @@
+{
+  "name": "¿Quién quiere estar informado?",
+  "description": "Un juego de trivia sobre La Serena al estilo de un famoso programa de televisión.",
+  "requestFramePermissions": ["camera", "microphone"]
+}

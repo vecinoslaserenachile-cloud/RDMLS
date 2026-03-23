@@ -115,9 +115,17 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
                 const directUrl = SONGS[idx].url;
                 musicRef.current.src = directUrl;
                 musicRef.current.load();
+                
+                // Use a proper promise handling for play()
                 playPromiseRef.current = musicRef.current.play();
-                await playPromiseRef.current;
-                setIsPlaying(true);
+                if (playPromiseRef.current !== undefined) {
+                    playPromiseRef.current.then(() => {
+                        setIsPlaying(true);
+                    }).catch(error => {
+                        console.error("Audio playback failed:", error);
+                        setIsPlaying(false);
+                    });
+                }
             }
         } catch (err) {
             if (err.name !== 'AbortError') {
@@ -325,7 +333,7 @@ ComunaSmart 2026 - Innovación Regional
                                     ) : (
                                         <>
                                             <video 
-                                                src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/models/seis_sombreros_para_prensar_serenito.mp4" 
+                                                src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/models/seis_sombreros_para_pensar_serenito.mp4" 
                                                 autoPlay muted loop playsInline 
                                                 style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'contrast(1.1)' }} 
                                                 onLoadedData={() => console.log("Video VLS cargado correctamente")}
@@ -345,9 +353,10 @@ ComunaSmart 2026 - Innovación Regional
                                                 zIndex: 10
                                             }}>
                                                 <img 
-                                                    src="file:///C:/Users/estud/.gemini/antigravity/brain/642dc90b-b3aa-4982-97e1-679134a8ef55/six_3d_thinking_hats_vls_1774126847642.png" 
+                                                    src="/six_3d_thinking_hats_vls.png" 
                                                     alt="Thinking Hat 3D"
                                                     style={{ width: '200%', height: '200%', objectFit: 'cover', transform: 'translate(-25%, -25%)' }}
+                                                    onError={(e) => { e.target.src = "https://placehold.co/200x200/000/38bdf8?text=VLS+HATS"; }}
                                                 />
                                             </div>
 

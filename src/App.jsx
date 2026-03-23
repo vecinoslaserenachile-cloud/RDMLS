@@ -88,7 +88,7 @@ const RightsGovernanceVLS = lazy(() => import('./components/RightsGovernanceVLS'
 const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
 const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
-const VLSGameMain = lazy(() => import('./components/VLSGameMain'));
+import VLSGameMain from './components/VLSGameMain';
 
 const SOVEREIGN_NAMES = [
     "vecinoslaserena.cl",
@@ -894,24 +894,6 @@ function AppContent() {
         />
       )}
 
-       {/* Banner Temporal Auto-Dismiss (10s) — Solo en portales vecinos, no en el master */}
-       {showAlert && !isMasterDomain && (
-         <div className="animate-slide-up" style={{ 
-            position: 'fixed', top: 'env(safe-area-inset-top, 0)', left: 0, right: 0, 
-            zIndex: 999999, background: 'linear-gradient(90deg, #ef4444, #b91c1c)', 
-            color: 'white', padding: '0.8rem', textAlign: 'center', 
-            boxShadow: '0 4px 20px rgba(239, 68, 68, 0.5)', borderBottom: '2px solid #fca5a5', 
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '5px' 
-         }}>
-           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
-             <ShieldAlert size={20} color="#fca5a5" className="animate-pulse" /> 
-             ALERTA VECINAL: TUVIMOS UN TERREMOTO DIGITAL
-           </div>
-           <span style={{ fontSize: '0.85rem', opacity: 0.9 }}>
-             Estamos poniendo de pie la casa nuevamente. Disculpe las intermitencias mientras estabilizamos <strong>vecinoslaserena.cl</strong>. Su paciencia reconstruye nuestra comuna. 🚧🏗️
-           </span>
-         </div>
-       )}
 
       {/* Top Header — Branding dinámico según dominio */}
       <header className="app-header glass-panel" style={{
@@ -1150,9 +1132,7 @@ function AppContent() {
       )}
 
       {showVLSGame && (
-        <Suspense fallback={<LoadingScreen />}>
           <VLSGameMain onClose={() => setShowVLSGame(false)} />
-        </Suspense>
       )}
 
       {/* Game KPI Impact screen */}

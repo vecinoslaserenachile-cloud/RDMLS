@@ -9,7 +9,7 @@ import {
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Search as SearchIcon, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Eye as EyeIcon, Leaf,
-    Trophy, Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -44,6 +44,7 @@ import OrientacionLegal from '../components/OrientacionLegal';
 import SerenaMetAdmin from '../components/SerenaMetAdmin';
 import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
+import SmartAdminPortal from '../components/SmartAdminPortal';
 
 export default function HubDashboard() {
     const navigate = useNavigate();
@@ -195,7 +196,7 @@ export default function HubDashboard() {
     const [showCentralDifusion, setShowCentralDifusion] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
     const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
-    const [showSmartAdminLocal, setShowSmartAdminLocal] = useState(false);
+    const [showSmartAdminPortal, setShowSmartAdminPortal] = useState(false);
     const [showVirtualAssistant, setShowVirtualAssistant] = useState(false); // New state for virtual assistant
     const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
     const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
@@ -318,6 +319,7 @@ export default function HubDashboard() {
         const handleSafeRoute = () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); };
         const handleSocialVision = () => { setShowSocialVision(true); setActiveTutorial('radar'); };
         const handleAnalytics = () => setShowAnalyticsApp(true);
+        const handleSmartAdmin = () => setShowSmartAdminPortal(true);
 
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
@@ -335,6 +337,7 @@ export default function HubDashboard() {
         window.addEventListener('open-safe-route', handleSafeRoute);
         window.addEventListener('open-social-vision', handleSocialVision);
         window.addEventListener('open-analytics', handleAnalytics);
+        window.addEventListener('open-smart-admin', handleSmartAdmin);
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -354,6 +357,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-safe-route', handleSafeRoute);
             window.removeEventListener('open-social-vision', handleSocialVision);
             window.removeEventListener('open-analytics', handleAnalytics);
+            window.removeEventListener('open-smart-admin', handleSmartAdmin);
         };
     }, []);
 
@@ -581,6 +585,10 @@ export default function HubDashboard() {
             icon: Ruler, color: '#3b82f6', path: '/arquitectura', active: true, badge: 'DOM'
         },
         {
+            id: 'smart-learning', title: 'Portal de Inducción VLS', subtitle: 'Pilar #2: Capacitación, Diplomas y Soberanía',
+            icon: GraduationCap, color: '#fbbf24', isEvent: 'open-smart-admin', active: true, badge: 'INDUCCIÓN'
+        },
+        {
             id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',
             icon: Sparkles, color: '#facc15', isEvent: 'open-tienda-poleras', active: true, badge: 'NUEVO'
         },
@@ -666,7 +674,7 @@ export default function HubDashboard() {
         },
         {
             id: 'cdls-club', title: 'Club Deportes La Serena', subtitle: 'Beneficios Vecinales y Pasión Granate',
-            icon: Trophy, color: '#dc2626', isEvent: 'open-cdls', active: true
+            icon: Award, color: '#dc2626', isEvent: 'open-cdls', active: true
         },
         {
             id: 'estudio-musical', title: 'Estudio Musical IA', subtitle: 'Crea Letras y Acordes con Inteligencia',
@@ -728,8 +736,8 @@ export default function HubDashboard() {
 
     const internalTools = [
         {
-            id: 'honorarios', title: 'Honorarios & Contrata', subtitle: 'Digitalización y Firma de Informes Mensuales',
-            icon: FileSignature, color: '#10b981', path: '/honorarios', active: true, badge: 'INTERNO'
+            id: 'smart-admin-internal', title: 'Gestión RRHH & Inducción', subtitle: 'Digitalización de Informes (Honorarios) y Firma',
+            icon: ShieldCheck, color: '#10b981', isEvent: 'open-smart-admin', active: true, badge: 'PILAR #2'
         },
         {
             id: 'protocolo', title: 'Monitor de Precedencias', subtitle: 'Gestión Protocolar y Eventos de Autoridad',
@@ -981,7 +989,7 @@ export default function HubDashboard() {
 
     return (
         <>
-        <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'calc(var(--nav-height, 60px) + 75px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
             {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
             <div style={{
@@ -996,11 +1004,13 @@ export default function HubDashboard() {
                 color: 'white',
                 fontSize: '0.85rem',
                 zIndex: 1000,
-                position: 'fixed',
-                top: 'var(--nav-height, 56px)',
-                left: 0,
+                position: 'relative',
                 gap: '1rem',
-                minHeight: '60px'
+                minHeight: '60px',
+                overflowX: 'auto',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none'
             }}>
                 {/* Botón 3D Movido para no solapar mensajes activos */}
                 <div style={{
@@ -1076,14 +1086,16 @@ export default function HubDashboard() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.75rem',
-                    textAlign: 'center',
-                    maxWidth: window.innerWidth < 768 ? '100%' : '70%'
+                    textAlign: 'left',
+                    minWidth: '280px',
+                    maxWidth: '100%',
+                    padding: '0 0.5rem'
                 }}>
                     <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50` }}>
                         {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
                     </div>
-                    <span style={{ lineHeight: '1.2', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem' }}>
-                        <span style={{ width: '6px', height: '6px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
+                    <span style={{ lineHeight: '1.2', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', flex: 1 }}>
+                        <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
                         {CurrentMessage.text}
                     </span>
                 </div>
@@ -1099,14 +1111,14 @@ export default function HubDashboard() {
                 borderBottom: '2px solid rgba(255,215,0,0.4)',
                 padding: '0.75rem 1rem',
                 display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
                 gap: '0.75rem',
                 boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
             }}>
 
                 {/* Tarjeta 1: SMART JUEGAPRENDE */}
                 <div
-                    onClick={() => window.dispatchEvent(new CustomEvent('open-vls-game'))}
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
                     style={{
                         background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
                         border: '1px solid rgba(255,215,0,0.4)',
@@ -1126,7 +1138,7 @@ export default function HubDashboard() {
                 >
                     <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
                     <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(255,215,0,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
-                        <Trophy size={22} color="#0f172a" />
+                        <Award size={22} color="#0f172a" />
                     </div>
                     <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
@@ -1232,16 +1244,17 @@ export default function HubDashboard() {
                                                 animate={{ opacity: 1, x: 0 }}
                                                 exit={{ opacity: 0, x: -20 }}
                                                 transition={{ duration: 0.5 }}
+                                                style={{ overflow: 'visible', width: '100%' }}
                                             >
                                                 <h1 style={{
                                                     color: 'white',
-                                                    fontSize: 'clamp(2.5rem, 6vw, 4rem)',
+                                                    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
                                                     fontWeight: '950',
-                                                    letterSpacing: '-2px',
+                                                    letterSpacing: '-1.5px',
                                                     margin: 0,
                                                     fontFamily: '"Outfit", sans-serif',
-                                                    lineHeight: '1',
-                                                    textShadow: '0 10px 20px rgba(0,0,0,0.5)'
+                                                    lineHeight: '1.1',
+                                                    textShadow: '0 8px 16px rgba(0,0,0,0.5)'
                                                 }}>
                                                     {greetings[greetingIdx].text.split(',')[0]}, 
                                                     <span style={{ 
@@ -1251,12 +1264,12 @@ export default function HubDashboard() {
                                                         WebkitTextFillColor: 'transparent',
                                                         padding: '0 5px'
                                                     }}>
-                                                        {greetings[greetingIdx].text.split(',')[1]}
+                                                        {greetings[greetingIdx].text.split(',')[1] || ''}
                                                     </span>
                                                 </h1>
-                                                <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.4rem 0", letterSpacing: "2px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <span style={{ fontSize: '1.2rem', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.3))' }}>{greetings[greetingIdx].flag}</span>
-                                                    {greetings[greetingIdx].sub}
+                                                <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.5rem 0", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
+                                                    <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.4))', flexShrink: 0 }}>{greetings[greetingIdx].flag}</span>
+                                                    <span style={{ flex: 1 }}>{greetings[greetingIdx].sub}</span>
                                                 </p>
                                             </motion.div>
                                         </AnimatePresence>
@@ -2039,6 +2052,7 @@ export default function HubDashboard() {
         {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
         {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
         {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
+        {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
       </>
     );
 }

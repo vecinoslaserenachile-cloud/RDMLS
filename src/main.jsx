@@ -270,6 +270,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="glosario" element={<Glosario />} />
               <Route path="mediaplus" element={<MediaPlus />} />
               <Route path="rapido" element={<HomeLiviano />} />
+              <Route path="juega" element={<HomeLiviano />} />
+              <Route path="juego" element={<HomeLiviano />} />
               <Route path="inversores" element={<FaritoInversores />} />
               <Route path="arquitectura" element={<ArquitecturaPage />} />
               <Route path="legacy" element={<LegacyPortal />} />
@@ -286,8 +288,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <Route path="/bella" element={<BellaDashboard />} />
             <Route path="/lite" element={<LitePortal />} />
             <Route path="/sombreros" element={<DeBonoThinkingHats />} />
-            <Route path="/juega" element={<HomeLiviano />} />
-            <Route path="/juego" element={<HomeLiviano />} />
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/desk" element={<Backoffice />} />
           </Routes>

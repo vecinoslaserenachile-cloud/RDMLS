@@ -1,0 +1,77 @@
+{
+  "routes": [
+    {
+      "routePath": "/api/vecinity-pay/create-order",
+      "mountPath": "/api/vecinity-pay",
+      "method": "OPTIONS",
+      "module": [
+        "api/vecinity-pay/create-order.js:onRequestOptions"
+      ]
+    },
+    {
+      "routePath": "/api/vecinity-pay/create-order",
+      "mountPath": "/api/vecinity-pay",
+      "method": "POST",
+      "module": [
+        "api/vecinity-pay/create-order.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/vecinity-pay/webhook",
+      "mountPath": "/api/vecinity-pay",
+      "method": "POST",
+      "module": [
+        "api/vecinity-pay/webhook.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/chat",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/chat.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/moderate",
+      "mountPath": "/api",
+      "method": "POST",
+      "module": [
+        "api/moderate.js:onRequestPost"
+      ]
+    },
+    {
+      "routePath": "/api/airport-monitoring",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/airport-monitoring.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/cloudflare-stats",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/cloudflare-stats.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/port-monitoring",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/port-monitoring.js:onRequest"
+      ]
+    },
+    {
+      "routePath": "/api/sismologia",
+      "mountPath": "/api",
+      "method": "",
+      "module": [
+        "api/sismologia.js:onRequest"
+      ]
+    }
+  ],
+  "baseURL": "/"
+}

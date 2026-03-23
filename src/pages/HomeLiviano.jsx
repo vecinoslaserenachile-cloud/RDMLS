@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
     PlayCircle, Tv, Gamepad2, Radio, Cloud, Video, History, 
     Zap, Star, Radar, Pill, Dog, Rocket, Compass, 
-    Newspaper, Activity, Hash, ExternalLink, Ticket, PhoneCall
+    Newspaper, Activity, Hash, ExternalLink, Ticket, PhoneCall, Award
 } from 'lucide-react';
 import VecinosClipClub from '../components/VecinosClipClub';
 import VLSDiscountCard from '../components/VLSDiscountCard';
@@ -48,7 +48,7 @@ export default function HomeLiviano() {
                 { title: 'Super Serenito Bros', subtitle: 'Plataformas 3D · Gravedad Esférica', icon: Rocket, color: '#10b981', action: () => dispatch('open-super-serenito'), badge: '🍄', ficha: true },
                 { title: 'TV Vertical Social', subtitle: 'Reels, Tiktok, IG Live', icon: Tv, color: '#ec4899', action: () => dispatch('open-vertical-tv'), badge: '📱' },
                 { title: 'Radio Master Engine', subtitle: 'Estudio y DJ Virtual AI', icon: Radio, color: '#fcd34d', action: () => dispatch('open-radio-master'), badge: '📻' },
-                { title: 'Juego VLS: ¿Quién Sabe?', subtitle: 'Gana Fichas con tu conocimiento', icon: Trophy, color: '#FFD700', action: () => dispatch('open-vls-game'), badge: 'NUEVO', featured: true },
+                { title: 'Juego VLS: ¿Quién Sabe?', subtitle: 'Gana Fichas con tu conocimiento', icon: Award, color: '#FFD700', action: () => dispatch('open-vls-game'), badge: 'NUEVO', featured: true },
             ]
         },
         {
