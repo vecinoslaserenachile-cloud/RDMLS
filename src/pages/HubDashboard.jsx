@@ -1089,6 +1089,99 @@ export default function HubDashboard() {
                 </div>
             </div>
 
+            {/* ══════════════════════════════════════════════════ */}
+            {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
+            {/* ══════════════════════════════════════════════════ */}
+            <div style={{
+                width: '100%',
+                background: '#050d1a',
+                borderTop: '1px solid rgba(255,215,0,0.2)',
+                borderBottom: '2px solid rgba(255,215,0,0.4)',
+                padding: '0.75rem 1rem',
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '0.75rem',
+                boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
+            }}>
+
+                {/* Tarjeta 1: SMART JUEGAPRENDE */}
+                <div
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-vls-game'))}
+                    style={{
+                        background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+                        border: '1px solid rgba(255,215,0,0.4)',
+                        borderRadius: '16px',
+                        padding: '0.9rem 1rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.25s ease',
+                        boxShadow: '0 0 20px rgba(255,215,0,0.1)',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(255,215,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.8)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(255,215,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.4)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(255,215,0,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
+                        <Trophy size={22} color="#0f172a" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SMART JUEGAPRENDE</span>
+                            <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>NUEVO</span>
+                        </div>
+                        <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            Trivia La Serena · Gana Fichas VLS
+                        </p>
+                    </div>
+                    <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
+                        <Gamepad2 size={14} /> JUGAR ▶
+                    </div>
+                </div>
+
+                {/* Tarjeta 2: SERENITO 1945 */}
+                <div
+                    onClick={() => window.open('/minijuegos/serenito-1945/', '_blank')}
+                    style={{
+                        background: 'linear-gradient(135deg, #1a0a00 0%, #0f172a 100%)',
+                        border: '1px solid rgba(239,68,68,0.4)',
+                        borderRadius: '16px',
+                        padding: '0.9rem 1rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.25s ease',
+                        boxShadow: '0 0 20px rgba(239,68,68,0.1)',
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.35)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(239,68,68,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(239,68,68,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
+                        <Rocket size={22} color="white" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#f87171', textShadow: '0 0 12px rgba(239,68,68,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SERENITO 1945</span>
+                            <span style={{ background: 'linear-gradient(90deg,#7c3aed,#4f46e5)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>ARCADE</span>
+                        </div>
+                        <p style={{ color: 'rgba(248,113,113,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            Vuela, dispara y defiende La Serena
+                        </p>
+                    </div>
+                    <div style={{ background: 'linear-gradient(135deg,#ef4444,#991b1b)', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
+                        <Rocket size={14} /> VOLAR ▶
+                    </div>
+                </div>
+            </div>
+
+
             <div style={{ padding: '0 1rem 2rem 1rem' }}>
 
                 <header className="page-header" style={{ marginBottom: '2.5rem', textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
