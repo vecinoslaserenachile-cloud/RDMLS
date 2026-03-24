@@ -505,6 +505,9 @@ function AppContent() {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
       setCurrentUser(result.user);
+      setIsGuest(false);
+      localStorage.removeItem('smart_is_guest');
+      localStorage.removeItem('smart_logout');
       window.dispatchEvent(new CustomEvent('grant-welcome-tokens'));
     }).catch(err => {
       console.error("Error logging in:", err);
@@ -1382,7 +1385,7 @@ function AppContent() {
             )}
 
             {currentUser ? (
-              <button onClick={() => { signOut(auth).then(() => { setIsGuest(false); setGuestTimeLeft(0); localStorage.removeItem('smart_is_guest'); window.location.reload(); }); }} className="btn" style={{ width: '100%', padding: '1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '12px', fontWeight: 'bold', marginTop: '0.5rem' }}>
+              <button onClick={() => { signOut(auth).then(() => { setIsGuest(false); setGuestTimeLeft(0); localStorage.removeItem('smart_is_guest'); localStorage.setItem('smart_logout', 'true'); window.location.reload(); }); }} className="btn" style={{ width: '100%', padding: '1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '12px', fontWeight: 'bold', marginTop: '0.5rem' }}>
                 Cerrar Sesión de Red
               </button>
             ) : (
@@ -1396,6 +1399,7 @@ function AppContent() {
                       setIsGuest(false);
                       setGuestTimeLeft(0);
                       localStorage.removeItem('smart_is_guest');
+                      localStorage.setItem('smart_logout', 'true');
                       window.location.reload();
                     }}
                     className="btn-glass"
