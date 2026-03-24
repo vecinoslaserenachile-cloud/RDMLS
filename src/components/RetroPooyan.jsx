@@ -39,7 +39,7 @@ export default function RetroPooyan({ brightness, contrast }) {
         }
 
         const imgHero = new Image();
-        imgHero.src = '/serenito.png';
+        imgHero.src = '/serenito_v3.png';
 
         const drawPirate = (x, y) => {
             ctx.font = '24px Arial';

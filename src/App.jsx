@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity } from 'lucide-react';
+import { ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn } from 'lucide-react';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
 
 // Lazy Loaded Components (Bandwidth Optimization)
@@ -711,17 +711,41 @@ function AppContent() {
     // Clima real y preciso de La Serena (Timezone Adjusted) - Actualización cada 5 min
     // Clima real unificado (v3.5) - Dispara evento para GlobalAnnouncer y Radio
     const fetchWeather = () => {
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2520&current=temperature_2m,relative_humidity_2m&timezone=America%2FSantiago')
-        .then(res => res.json())
-        .then(data => {
-          if (data?.current) {
-            const newTemp = Math.round(data.current.temperature_2m);
-            setWeather(prev => ({ ...prev, temp: newTemp, humidity: data.current.relative_humidity_2m }));
+      // Clima y Calidad del Aire unificado (v4.0)
+      Promise.all([
+        fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2520&current=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m&timezone=America%2FSantiago').then(r => r.json()),
+        fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=-29.9027&longitude=-71.2520&current=pm2_5').then(r => r.json())
+      ])
+        .then(([weatherData, aqData]) => {
+          if (weatherData?.current) {
+            const newTemp = Math.round(weatherData.current.temperature_2m);
+            const wind = weatherData.current.wind_speed_10m;
+            const hum = weatherData.current.relative_humidity_2m;
+            const pm25 = aqData?.current?.pm2_5 || '--';
+            
+            const getWindDirection = (degree) => {
+                const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+                return directions[Math.round(degree / 22.5) % 16];
+            };
+            const windDir = getWindDirection(weatherData.current.wind_direction_10m);
+
+            setWeather(prev => ({ 
+                ...prev, 
+                temp: newTemp, 
+                humidity: hum,
+                windSpeed: wind,
+                windDirection: windDir,
+                pm25: pm25,
+                lastUpdated: new Date().toLocaleTimeString()
+            }));
+
             // Sincronizar GlobalAnnouncer y otros componentes
-            window.dispatchEvent(new CustomEvent('vls-weather-sync', { detail: { temp: newTemp } }));
+            window.dispatchEvent(new CustomEvent('vls-weather-sync', { 
+                detail: { temp: newTemp, humidity: hum, wind: wind, windDir: windDir, pm25: pm25 } 
+            }));
           }
         })
-        .catch(() => {});
+        .catch(console.error);
     };
 
     fetchWeather();
@@ -1158,7 +1182,7 @@ function AppContent() {
       )}
 
       <main className="page-content container" style={{ paddingBottom: isInduccion ? 0 : '4rem', paddingTop: isInduccion ? 0 : 'var(--nav-height)' }}>
-        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t }} />
+        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser }} />
         {!isInduccion && (
           <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
             <p>© 2026 {isVLS ? 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA' : 'ILUSTRE MUNICIPALIDAD DE LA SERENA · COMUNICACIONES ESTRATÉGICAS'}</p>

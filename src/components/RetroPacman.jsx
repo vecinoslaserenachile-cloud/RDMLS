@@ -8,7 +8,7 @@ export default function RetroPacman({ brightness = 100, contrast = 100 }) {
     const heroImg = useRef(new Image());
 
     useEffect(() => {
-        heroImg.current.src = '/serenito.png';
+        heroImg.current.src = '/serenito_v3.png';
         const canvas = canvasRef.current;
         const ctx = canvas.getContext('2d');
         const W = 400;

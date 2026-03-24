@@ -179,7 +179,7 @@ export default function Glosario() {
 
                     {/* Footer Serenito */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem' }}>
-                        <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#38bdf8' }} />
+                        <img src="/avatars/serenito_v3.png" alt="Serenito" style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#38bdf8' }} />
                         <p style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold', margin: 0 }}>
                             ¿Tienes dudas? Consulta con el Tatarabuelo Alpino en el Bus del Tiempo.
                         </p>

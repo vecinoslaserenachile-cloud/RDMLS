@@ -10,7 +10,10 @@ const TIPS = [
     "La seguridad la construimos entre todos. Utilice el sistema Centinel para reportar anomalías.",
     "Smart Salud: Ya puede solicitar servicios de enfermería a domicilio a través del portal vecinal.",
     "Cultura VLS: No se pierda el nuevo ciclo de cine en el Teatro Municipal Digital.",
-    "Sostenibilidad: El monitoreo de playas y humedales indica un estado de conservación óptimo hoy."
+    "Sostenibilidad: El monitoreo de playas y humedales indica un estado de conservación óptimo hoy.",
+    "INVESTIGACIÓN: Ya está disponible el informe 'La Paradoja 2026' sobre el futuro de la educación técnica en Chile.",
+    "ALERTA VLS: El Efecto Poduje está impactando el acceso a la vivienda. Lea el análisis completo en la Sala de Inteligencia.",
+    "ECONOMÍA: ¿Por qué pagamos bencina de primer mundo? Revise nuestra investigación sobre el Espejismo Americano."
 ];
 
 const ALERTS = [

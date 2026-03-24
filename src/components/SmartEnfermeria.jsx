@@ -139,7 +139,7 @@ export default function SmartEnfermeria({ onClose }) {
                                     borderRadius: '50%', border: '8px solid #10b981',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center'
                                 }}>
-                                    <img src="/perfil_serenito.png" style={{ height: '140px' }} alt="Serenito" />
+                                    <img src="/serenito_v3.png" style={{ height: '140px' }} alt="Serenito" />
                                 </div>
                                 <div style={{ position: 'absolute', top: 0, right: 0, background: '#10b981', color: 'white', padding: '10px', borderRadius: '50%' }}>
                                     <Sparkles size={24} />

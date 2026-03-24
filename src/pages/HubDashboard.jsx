@@ -14,9 +14,11 @@ const PLAYLIST_INSTITUTIONAL = [
 ];
 
 const PLAYLIST_LUDIC = [
-    { id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', title: 'VECINOS LA SERENA - BLOQUE A', isPlaylist: true },
-    { id: 'PLg_9ltHJC-01E9YPJtqiGosY2Hd3XHHSl', title: 'VECINOS LA SERENA - BLOQUE B', isPlaylist: true },
-    { id: 'PLg_9ltHJC-03q4F0yNQ3idDvPCqtwoRsy', title: 'VECINOS LA SERENA - BLOQUE C', isPlaylist: true }
+    { url: 'https://www.instagram.com/reel/DWJTy7WjtXi/embed', title: 'IG REEL: @vecinoslaserena', platform: 'Instagram' },
+    { url: 'https://twitframe.com/show?url=https://x.com/i/status/2019962765981655395', title: 'X: @vecinoslaserena', platform: 'Twitter' },
+    { url: 'https://www.tiktok.com/embed/v2/7612606054030904597', title: 'TIKTOK VLS', platform: 'TikTok' },
+    { url: 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/share/v/1DXH72bPCw/&show_text=0&width=240', title: 'FB VIDEO 1', platform: 'Facebook' },
+    { url: 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/share/v/1AtYd7iEgM/&show_text=0&width=240', title: 'FB VIDEO 2', platform: 'Facebook' }
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
@@ -24,9 +26,9 @@ import {
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, Clock, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
-    ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Search as SearchIcon, Database, Share2,
-    Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Eye as EyeIcon, Leaf,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages
+    ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
+    Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf,
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -64,6 +66,12 @@ import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
 import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
+import VLSNewsBencinazo from '../components/VLSNewsBencinazo';
+import VLSNewsSentinel from '../components/VLSNewsSentinel';
+import VLSNewsPoduje from '../components/VLSNewsPoduje';
+import VLSNotesGallery from '../components/VLSNotesGallery';
+import VLSRoadmap from '../components/VLSRoadmap';
+import VLSManifesto from '../components/VLSManifesto';
 
 export default function HubDashboard() {
     const host = window.location.hostname.toLowerCase();
@@ -75,8 +83,8 @@ export default function HubDashboard() {
     const dict = {
         es: {
             title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
-            citizensTitle: "Smart Citizens", citizensSub: "Reportes, Mapas y Radio Digital",
-            adminTitle: "Smart Administration", adminSub: "Gestión Interna, Diploma E-learning e Informes",
+            citizensTitle: "Smart Citizens", citizensSub: "Atención Ciudadana y Radio Digital",
+            adminTitle: "Escuelas y Oficios", adminSub: "Formación Ciudadana, E-learning e Iniciativas de Empleo",
             newsAlert: isRDMLS 
                 ? "INFORMATIVO MUNICIPAL: La Ilustre Municipalidad de La Serena informa despliegue de equipos en terreno para mantención urbana. Siga la señal de RDMLS.cl para más detalles."
                 : "COMUNA SMART Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos a través de vecinosmart.cl.",
@@ -229,8 +237,11 @@ export default function HubDashboard() {
     const [showVLSpeak, setShowVLSpeak] = useState(false);
     const [showSafeRoute, setShowSafeRoute] = useState(false);
     const [showSocialVision, setShowSocialVision] = useState(false);
-    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
     const [showInvestigacion, setShowInvestigacion] = useState(false);
+    const [showBencinazo, setShowBencinazo] = useState(false);
+    const [showSentinelNote, setShowSentinelNote] = useState(false);
+    const [showPoduje, setShowPoduje] = useState(false);
+    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
@@ -343,6 +354,8 @@ export default function HubDashboard() {
         const handleAnalytics = () => setShowAnalyticsApp(true);
         const handleSmartAdmin = () => setShowSmartAdminPortal(true);
         const handleInvestigacion = () => setShowInvestigacion(true);
+        const handleBencinazo = () => setShowBencinazo(true);
+        const handleSentinelNote = () => setShowSentinelNote(true);
 
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
@@ -362,6 +375,8 @@ export default function HubDashboard() {
         window.addEventListener('open-analytics', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
         window.addEventListener('open-vls-investigacion', handleInvestigacion);
+        window.addEventListener('open-vls-bencinazo', handleBencinazo);
+        window.addEventListener('open-vls-sentinel', handleSentinelNote);
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -383,6 +398,8 @@ export default function HubDashboard() {
             window.removeEventListener('open-analytics', handleAnalytics);
             window.removeEventListener('open-smart-admin', handleSmartAdmin);
             window.removeEventListener('open-vls-investigacion', handleInvestigacion);
+            window.removeEventListener('open-vls-bencinazo', handleBencinazo);
+            window.removeEventListener('open-vls-sentinel', handleSentinelNote);
         };
     }, []);
 
@@ -396,9 +413,9 @@ export default function HubDashboard() {
                 } catch (e) { }
             } else if (window.innerWidth > 1024) {
                 setOfficialNews([
-                    { title: "Campaña de Limpieza Histórica en Casco Central", date: "10 de Marzo, 2026", category: "Patrimonio", desc: "La Dirección de Aseo y Ornato despliega un operativo masivo para restaurar fachadas de monumentos y calles emblemáticas.", iconStr: "Building", color: "#f59e0b" },
-                    { title: "Licitación para Nuevos CESFAM Inteligentes Aprobada", date: "09 de Marzo, 2026", category: "Salud Comunal", desc: "El concejo aprueba fondos extraordinarios para equipamiento de telemedicina en periféricos de la ciudad.", iconStr: "Stethoscope", color: "#10b981" },
-                    { title: "Despliegue de Seguridad Preventiva Fin de Semana", date: "08 de Marzo, 2026", category: "Puerta Serena", desc: "Más de 40 inspectores y drones apoyarán el circuito gastronómico y borde costero para brindar seguridad integral.", iconStr: "ShieldAlert", color: "#38bdf8" }
+                    { title: "Centinel Faro: El Ojo Social Predictivo", date: "24 de Marzo, 2026", category: "INTELIGENCIA", desc: "Cómo la IA de VLS detecta crisis antes de que ocurran.", iconStr: "Brain", color: "#38bdf8", eventId: "open-vls-sentinel" },
+                    { title: "La Serena en Alerta: El Bencinazo de Quiroz", date: "24 de Marzo, 2026", category: "ALERTA VLS", desc: "Análisis profundo sobre el alza de combustibles y su impacto local.", iconStr: "Fuel", color: "#fbbf24", eventId: "open-vls-bencinazo" },
+                    { title: "La Gran Paradoja del 2026: El Futuro Apagado", date: "23 de Marzo, 2026", category: "INVESTIGACIÓN VLS", desc: "Reportaje Especial sobre la crisis educativa y tecnológica.", iconStr: "Newspaper", color: "#ef4444", eventId: "open-vls-investigacion" }
                 ]);
             }
         };
@@ -551,7 +568,7 @@ export default function HubDashboard() {
     const formatoHora = currentTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
 
-    const { weather, isAuthorized, isGuest, isRegistered } = useOutletContext();
+    const { weather, isAuthorized, isGuest, isRegistered, currentUser } = useOutletContext();
 
     const RESIDENT_ALLOWED_IDS = [
         'vhs-tv', 'retro-tv', 'cine', 'debono', 'donradios',
@@ -584,8 +601,8 @@ export default function HubDashboard() {
 
     const servicios = [
         {
-            id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026', subtitle: 'Reportaje: ¿Por qué apagamos el futuro en las aulas?',
-            icon: Newspaper, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'INVESTIGACIÓN'
+            id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
+            icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
         },
         {
             id: 'vls-pyme-builder', title: 'Comercio Local Smart (PYME)', subtitle: 'Sitio Web, Radio Local y Pasarela VLS',
@@ -623,10 +640,7 @@ export default function HubDashboard() {
             id: 'smart-real-estate', title: 'Corretaje Propiedades Smart', subtitle: 'Arriendos y Ventas con Trazabilidad VLS',
             icon: HomeIcon, color: '#f59e0b', path: '/propiedades', active: true, badge: 'CORRETAJE'
         },
-        {
-            id: 'vls-investigacion-2026', title: 'La Paradoja 2026', subtitle: 'Reportaje: ¿Por qué la educación apagó el supercomputador?',
-            icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
-        },
+
         {
             id: 'smart-architecture', title: 'Arquitectura & Obras', subtitle: 'Diseño, Ampliaciones y Permisos Municipales',
             icon: Ruler, color: '#3b82f6', path: '/arquitectura', active: true, badge: 'DOM'
@@ -880,11 +894,11 @@ export default function HubDashboard() {
         },
         {
             id: 'admin',
-            name: 'Smart Administration (Gestión Interna)',
-            description: 'Portal de inducción E-learning y digitalización de informes vecinales.',
-            icon: Briefcase,
+            name: 'ESCUELAS Y OFICIOS (FORMACIÓN CIUDADANA)',
+            description: 'Portal de inducción E-learning, Escuelas de Música/Artes y diplomados vecinales.',
+            icon: GraduationCap,
             color: '#10b981',
-            modules: ['admin', 'smart-admin', 'web-builder', 'escuela-musica', 'escuela-artes', 'almanaque-mundial', 'elearning', 'vls-crm-admin']
+            modules: ['smart-learning', 'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales', 'smart-admin-internal', 'web-builder', 'vls-crm-admin']
         },
         {
             id: 'events',
@@ -997,44 +1011,24 @@ export default function HubDashboard() {
     });
 
     useEffect(() => {
-        // Fetch real conditions unconditionally for the dashboard messages and omnibox
-        fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2520&current=temperature_2m,wind_speed_10m,wind_direction_10m,relative_humidity_2m&timezone=America%2FSantiago')
-            .then(res => res.json())
-            .then(data => {
-                if (data?.current) {
-                    const temp = data.current.temperature_2m;
-                    const wind = data.current.wind_speed_10m;
-                    const hum = data.current.relative_humidity_2m;
+        if (weather && weather.temp !== undefined) {
+            const { temp, windSpeed, windDirection, pm25, humidity } = weather;
+            
+            setRealtimeData({
+                temp,
+                wind: windSpeed || '--',
+                windDir: windDirection || '--',
+                pm25: pm25 || '--',
+                humidity: humidity || '--'
+            });
 
-                    const getWindDirection = (degree) => {
-                        const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
-                        return directions[Math.round(degree / 22.5) % 16];
-                    };
-                    const windDir = getWindDirection(data.current.wind_direction_10m);
-
-                    fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=-29.9027&longitude=-71.2520&current=pm2_5')
-                        .then(res => res.json())
-                        .then(aqData => {
-                            const pm25 = aqData?.current?.pm2_5 || '--';
-
-                            setRealtimeData({
-                                temp,
-                                wind,
-                                windDir,
-                                pm25,
-                                humidity: hum
-                            });
-
-                            setImpactMessages(prev => [
-                                { icon: Globe, color: '#38bdf8', text: `[Meteorología SERENAMET]: Condiciones en vivo: ${temp}°C, Viento ${windDir} a ${wind} km/h, Humedad: ${hum}%.` },
-                                { icon: Leaf, color: '#10b981', text: `[Monitoreo Ambiental]: Calidad del Aire PM2.5 = ${pm25} µg/m³. Valores seguros para actividades al aire libre validados por IA.` },
-                                ...prev
-                            ]);
-                        });
-                }
-            })
-            .catch(console.error);
-    }, []);
+            setImpactMessages(prev => [
+                { icon: Globe, color: '#38bdf8', text: `[Meteorología SERENAMET]: Condiciones en vivo: ${temp}°C, Viento ${windDirection} a ${windSpeed} km/h, Humedad: ${humidity}%.` },
+                { icon: Leaf, color: '#10b981', text: `[Monitoreo Ambiental]: Calidad del Aire PM2.5 = ${pm25} µg/m³. Valores seguros para actividades al aire libre validados por IA.` },
+                ...prev
+            ]);
+        }
+    }, [weather]);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -1088,6 +1082,12 @@ export default function HubDashboard() {
 
     return (
         <>
+            <style>{`
+                .btn-vls-action-light { background: #38bdf8; color: #000; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+                .btn-vls-action-yellow { background: #fbbf24; color: #000; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+                .btn-vls-action-white { background: #fff; color: #ef4444; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
+                .btn-vls-action-light:hover, .btn-vls-action-yellow:hover, .btn-vls-action-white:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+            `}</style>
             <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
                 {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
@@ -1328,7 +1328,7 @@ export default function HubDashboard() {
                                     {isVLS ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
-                                                <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <img src="/avatars/serenito_v3.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             </div>
                                             <div style={{ textAlign: 'left', maxWidth: '400px' }}>
                                                 <AnimatePresence mode="wait">
@@ -1504,6 +1504,205 @@ export default function HubDashboard() {
                             </div>
                         </div>
                     )}
+
+                    {/* SALA DE INTELIGENCIA - 3 Pillars Grid Investigations */}
+                    <div style={{ maxWidth: '1400px', margin: '4rem auto 1rem auto', width: '100%', padding: '0 2rem' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2½rem' }}>
+                            <div style={{ background: 'linear-gradient(45deg, #1e3a8a, #38bdf8)', padding: '12px', borderRadius: '15px', color: 'white' }}>
+                                <Brain size={28} />
+                            </div>
+                            <div>
+                                <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>SALA DE INTELIGENCIA</h2>
+                                <p style={{ color: '#38bdf8', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>CENTINEL FARO : INVESTIGACIÓN ESPECIAL VLS</p>
+                            </div>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #38bdf8, transparent)' }}></div>
+                         </div>
+                         
+                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+                            {/* SENTINEL PREDICTIVE REPORT */}
+                            <div 
+                                onClick={() => setShowSentinelNote(true)}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', 
+                                    padding: '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(56,189,248,0.4)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <Radar size={220} color="#38bdf8" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div style={{ width: '8px', height: '100%', background: '#38bdf8', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
+                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>INTELIGENCIA IA</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: '#38bdf8', opacity: 0.8 }}>
+                                            <Play size={18} />
+                                            <Volume2 size={18} />
+                                        </div>
+                                    </div>
+                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>CENTINEL FARO 2026</h1>
+                                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                                        Ojo Social Predictivo: El sistema que está detectando las crisis antes de que ocurran en la Serena.
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
+                                        <button className="btn-vls-action-light">ANALIZAR DATOS</button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                            <TrendingUp size={16} /> RADAR ACTIVO
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* BENCINAZO REPORT */}
+                            <div 
+                                onClick={() => setShowBencinazo(true)}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)', 
+                                    padding: '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid #fbbf2460',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <Fuel size={220} color="#fbbf24" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div style={{ width: '8px', height: '100%', background: '#fbbf24', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
+                                            <span style={{ background: '#fbbf24', color: '#000', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>ALERTA ECONÓMICA</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: '#fbbf24', opacity: 0.8 }}>
+                                            <Play size={18} />
+                                            <Volume2 size={18} />
+                                        </div>
+                                    </div>
+                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>ESPEJISMO AMERICANO</h1>
+                                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
+                                        ¿Bencina de Primer Mundo con sueldos de tercero? El choque de realidades del Ministro Quiroz.
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
+                                        <button className="btn-vls-action-yellow text-black" style={{ background: '#fbbf24', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none' }}>VER REPORTE</button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                            <AlertCircle size={16} /> 88% CRÍTICO
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* PARADOJA REPORT */}
+                            <div 
+                                onClick={() => setShowInvestigacion(true)}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%)', 
+                                    padding: '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <Newspaper size={200} color="white" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div style={{ width: '8px', height: '100%', background: 'white', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
+                                            <span style={{ background: 'white', color: '#ef4444', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>INVESTIGACIÓN CENTRAL</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: 'white', opacity: 0.8 }}>
+                                            <Play size={18} />
+                                            <Volume2 size={18} />
+                                        </div>
+                                    </div>
+                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>LA PARADOJA 2026</h1>
+                                    <p style={{ color: 'white', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                                    ¿Por qué la educación apagó el supercomputador del futuro? Una crisis pedagógica silenciada.
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
+                                        <button className="btn-vls-action-white text-danger" style={{ background: 'white', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none', color: '#ef4444' }}>LEER AHORA</button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                            <Zap size={16} /> EDICIÓN ESPECIAL
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* PODUJE REPORT */}
+                            <div 
+                                onClick={() => setShowPoduje(true)}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%)', 
+                                    padding: '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(255,255,255,0.2)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <HomeIcon size={200} color="white" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div style={{ width: '8px', height: '100%', background: 'white', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
+                                            <span style={{ background: 'white', color: '#8b5cf6', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>VIVIENDA Y TERRITORIO</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: 'white', opacity: 0.8 }}>
+                                            <Play size={18} />
+                                            <Volume2 size={18} />
+                                        </div>
+                                    </div>
+                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>EL DILEMA DE LA VIVIENDA</h1>
+                                    <p style={{ color: 'white', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
+                                    ¿Por qué nadie compra casas hoy? La paradoja de la vivienda sin IVA que congeló el mercado nacional.
+                                    </p>
+                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
+                                        <button className="btn-vls-action-white" style={{ background: 'white', color: '#8b5cf6', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none' }}>VER INVESTIGACIÓN</button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem' }}>
+                                            <Scale size={16} /> ALERTA MERCADO
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+
+                    {/* VOCES VECINALES & HEMEROTECA SECTION */}
+                    <div style={{ maxWidth: '1400px', margin: '6rem auto 4rem auto', width: '100%', padding: '0 2rem' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '3rem' }}>
+                            <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
+                                <Mic size={28} />
+                            </div>
+                            <div>
+                                <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>VOCES Y ARCHIVOS</h2>
+                                <p style={{ color: '#f59e0b', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>HEMEROTECA DIGITAL · PORTAL DE LA MEMORIA VLS</p>
+                            </div>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #f59e0b, transparent)' }}></div>
+                         </div>
+
+                         <VLSNotesGallery />
+                    </div>
 
                     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
                         {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
@@ -1792,7 +1991,7 @@ export default function HubDashboard() {
 
                             {isVideoPlaying && (
                                 <AnimatePresence>
-                                    {/* TV 1: SUPERIOR (Lúdico/Panorámico) */}
+                                    {/* TV 1: SUPERIOR (SMART SOCIAL VISOR - Vertical 9:16) */}
                                     <motion.div
                                         key="tvls-player-top"
                                         drag
@@ -1801,24 +2000,41 @@ export default function HubDashboard() {
                                         animate={{ opacity: 1, y: 0 }}
                                         style={{
                                             position: 'fixed',
-                                            top: '120px',
+                                            top: '140px',
                                             right: '40px',
-                                            width: '320px',
-                                            height: '180px',
+                                            width: '240px',
+                                            aspectRatio: '9/16',
                                             zIndex: 10000,
-                                            borderRadius: '16px',
+                                            borderRadius: '24px',
                                             overflow: 'hidden',
-                                            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-                                            border: '2px solid rgba(16, 185, 129, 0.4)',
+                                            boxShadow: '0 30px 60px rgba(0,0,0,0.9), 0 0 20px rgba(16, 185, 129, 0.3)',
+                                            border: '3px solid rgba(16, 185, 129, 0.6)',
                                             background: '#000',
-                                            cursor: 'grab'
+                                            cursor: 'grab',
+                                            resize: 'horizontal', // Permite achicar/agrandar manteniendo proporción
+                                            minWidth: '150px',
+                                            maxWidth: '400px'
                                         }}
                                     >
-                                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS LÚDICO</div>
-                                        <video
-                                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]?.url || ""}
-                                            autoPlay loop muted={isMuted} playsInline
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 10, fontSize: '0.65rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.8)', padding: '4px 10px', borderRadius: '50px', border: '1px solid rgba(16, 185, 129, 0.5)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                            <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
+                                            SMART SOCIAL VISOR
+                                        </div>
+                                        <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', zIndex: 10, textAlign: 'center' }}>
+                                            <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '10px' }}>
+                                                {PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].title}
+                                            </span>
+                                        </div>
+                                        
+                                        {/* Overlay transparente para capturar eventos de drag y resize sin que el iframe los bloquee */}
+                                        <div style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'grab' }} />
+                                        
+                                        <iframe
+                                            width="100%" height="100%"
+                                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].url}
+                                            frameBorder="0"
+                                            allow="autoplay; encrypted-media; fullscreen"
+                                            style={{ objectFit: 'cover', transform: 'scale(1.05)', background: '#fff' }}
                                         />
                                     </motion.div>
 
@@ -1927,6 +2143,9 @@ export default function HubDashboard() {
             {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
             {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
             {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
+            {showBencinazo && <VLSNewsBencinazo onClose={() => setShowBencinazo(false)} />}
+            {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
+            {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
             {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
         </>
     );

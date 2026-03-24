@@ -193,6 +193,30 @@ export default function KioskoDiarios({ onClose }) {
             price: '$500'
         },
         { 
+            id: 'paradoja_2026', 
+            name: 'VLS: LA PARADOJA 2026', 
+            region: 'Regional', 
+            type: 'Investigación', 
+            color: '#ef4444', 
+            url: '/hub', // Link to hub where investigations are
+            headline: '¿Por qué la educación apagó el supercomputador del futuro?',
+            cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop',
+            legacyTag: 'INVESTIGACIÓN ESPECIAL',
+            price: 'FREE'
+        },
+        { 
+            id: 'poduje_effect', 
+            name: 'VLS: EFECTO PODUJE', 
+            region: 'Regional', 
+            type: 'Vivienda', 
+            color: '#8b5cf6', 
+            url: '/hub',
+            headline: 'El 19% que congeló el sueño de la casa propia',
+            cover: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop',
+            legacyTag: 'ALERTA INMOBILIARIA',
+            price: 'FREE'
+        },
+        { 
             id: 'entre_vecinas', 
             name: 'Revista Entre Vecinas', 
             region: 'Comunidad', 

@@ -11,7 +11,7 @@ export default function RetroPesca({ brightness, contrast }) {
         const H = canvas.height = 800;
 
         const serenitoImg = new Image();
-        serenitoImg.src = '/serenito.png';
+        serenitoImg.src = '/serenito_v3.png';
 
         let items = [];
         for (let i = 0; i < 8; i++) {

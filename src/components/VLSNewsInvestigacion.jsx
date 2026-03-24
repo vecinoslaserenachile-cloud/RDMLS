@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Clock, Share2, Printer, Bookmark, MessageSquare, Twitter, Facebook, Linkedin, ArrowDown, Cpu, Microscope, Globe, AlertTriangle, BookOpen, Quote, Target, Brain, Shield, Layers } from 'lucide-react';
+import CommentSection from './CommentSection';
 
 export default function VLSNewsInvestigacion({ onClose }) {
   const [activePoll, setActivePoll] = useState(null);
@@ -87,9 +88,9 @@ export default function VLSNewsInvestigacion({ onClose }) {
         }}>
           <div style={{ position: 'absolute', inset: 0, opacity: 0.6 }}>
             <img 
-              src="/vls_education_paradox_2026_1774293294206.png" 
+              src="/vls_chile_map.jpg" 
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              alt="Paradox"
+              alt="Paradox 2026"
             />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a0a0a 10%, transparent 70%)' }} />
           </div>
@@ -139,9 +140,9 @@ export default function VLSNewsInvestigacion({ onClose }) {
         {/* Article Body */}
         <article style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 2rem', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '6rem' }}>
           
-          <div style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#374151', fontFamily: "'Charter', 'Georgia', serif" }}>
+          <div style={{ position: 'relative', zIndex: 1, fontSize: '1.2rem', lineHeight: '1.8', color: '#111827', fontFamily: "'Charter', 'Georgia', serif" }}>
             
-            <p className="intro-news" style={{ fontSize: '1.5rem', lineHeight: '1.6', color: '#111827', fontWeight: '400', marginBottom: '3rem' }}>
+            <p className="intro-news" style={{ fontSize: '1.5rem', lineHeight: '1.6', color: '#000', fontWeight: '400', marginBottom: '3rem' }}>
               Hace 30 años, el mayor sueño de la equidad educativa era lograr poner un computador en el pupitre de cada alumno. En aquel entonces, era una utopía inalcanzable. Hoy, en 2026, esa utopía no solo se cumplió, sino que fue superada: cada estudiante lleva en su bolsillo un supercomputador táctil, conectado a la biblioteca mundial del conocimiento.
             </p>
 
@@ -237,9 +238,9 @@ export default function VLSNewsInvestigacion({ onClose }) {
             </div>
 
             <img 
-              src="/vls_motors_showroom_concept_1773634044555.png" 
+              src="/vls_motors_spot_premium.png" 
               style={{ width: '100%', borderRadius: '2rem', margin: '4rem 0', boxShadow: '0 20px 50px rgba(0,0,0,0.1)' }} 
-              alt="Visualización"
+              alt="Futuro VLS Motors"
             />
 
             <p style={{ marginBottom: '2rem' }}>
@@ -260,6 +261,9 @@ export default function VLSNewsInvestigacion({ onClose }) {
                   >Integración Proactiva</button>
                </div>
             </div>
+
+            {/* Comment Section Integration */}
+            <CommentSection themeColor="#ef4444" reportTitle="La Paradoja 2026" />
 
           </div>
 

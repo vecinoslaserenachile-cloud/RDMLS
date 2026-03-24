@@ -393,7 +393,7 @@ export default function VLSInduccion({ onClose }) {
       case 1: return <ChapterLayout title="Somos IMLS" subtitle="La Gran Familia Municipal" 
         visual={
           <div className="relative w-full h-full">
-            <img src="/serenito.png" className="absolute bottom-0 right-0 h-[90%] object-contain z-10 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
+            <img src="/serenito_v3.png" className="absolute bottom-0 right-0 h-[90%] object-contain z-10 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
             <div className="absolute inset-0 bg-gradient-to-t from-red-600/20 to-transparent"></div>
             <div className="p-12 h-full flex flex-col justify-start">
               <span className="text-white font-black text-6xl italic leading-none opacity-10">VLS<br/>2026</span>

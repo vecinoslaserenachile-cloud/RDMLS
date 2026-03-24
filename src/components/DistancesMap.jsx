@@ -20,7 +20,7 @@ const MapController = ({ selectedRoute }) => {
 };
 
 const serenitoIcon = new L.Icon({
-    iconUrl: '/serenito.png', // Avatar de serenito público
+    iconUrl: '/serenito_v3.png', // Avatar de serenito público
     iconSize: [60, 60],
     iconAnchor: [30, 60],
     popupAnchor: [0, -60]

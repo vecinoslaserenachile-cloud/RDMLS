@@ -125,7 +125,7 @@ export default function LiveVenuesMonitor({ detailed = false, showPrintQR = fals
                                 background: 'linear-gradient(to bottom, transparent 0%, rgba(5, 11, 20, 1) 100%)'
                             }}></div>
 
-                            <img src="/serenito.png" alt="Serenito" style={{
+                            <img src="/serenito_v3.png" alt="Serenito" style={{
                                 position: 'absolute', bottom: '-10px', left: '20px', height: '120px',
                                 filter: 'drop-shadow(0 0 10px rgba(0,229,255,0.5))', zIndex: 2
                             }} />

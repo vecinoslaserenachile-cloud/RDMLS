@@ -7,7 +7,7 @@ export default function StickerManager() {
             id: 1, 
             name: 'Serenito & Vecinos (WhatsApp)', 
             stickers: [
-                { id: 101, url: '/avatars/serenito.png', label: 'Hola Vecino' },
+                { id: 101, url: '/avatars/serenito_v3.png', label: 'Hola Vecino' },
                 { id: 102, url: '/avatars/farino.png', label: 'Todo Ok' },
                 { id: 103, url: '/avatars/compita.png', label: 'Música Maestro' }
             ],

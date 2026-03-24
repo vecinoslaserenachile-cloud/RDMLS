@@ -29,7 +29,7 @@ export default function Emprende() {
 
             {step === 'welcome' && (
                 <div className="glass-panel animate-slide-up" style={{ padding: '2.5rem 1.5rem', textAlign: 'center' }}>
-                    <img src="/serenito.png" alt="Serenito Guía" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #10b981', marginBottom: '1.5rem', animation: 'float 3s ease-in-out infinite' }} />
+                    <img src="/serenito_v3.png" alt="Serenito Guía" style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '3px solid #10b981', marginBottom: '1.5rem', animation: 'float 3s ease-in-out infinite' }} />
                     <h3 style={{ fontSize: '1.5rem', marginBottom: '1rem', color: 'white' }}>Emprendimiento y Servicios Locales</h3>
                     <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem', lineHeight: '1.6' }}>
                         Selecciona el área que deseas consultar o tramitar:

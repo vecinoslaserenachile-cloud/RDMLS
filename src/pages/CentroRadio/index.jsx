@@ -113,7 +113,8 @@ export default function CentroRadio() {
         "EN VIVO", "TRANSMITIENDO", "ONLINE", "ON AIR", "SONANDO",
         "CONNECTÉ", "DIFFUSION", "EMITINDO", "AO VIVO", "LIVE NOW"
     ];
-    const radioStations = [
+
+    const radioStations = [
         ...(!isVLS ? [
             { 
                 id: 'municipal', 

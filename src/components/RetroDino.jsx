@@ -7,7 +7,7 @@ export default function RetroDino({ brightness, contrast }) {
     const bgImg = useRef(new Image());
 
     useEffect(() => {
-        heroImg.current.src = '/serenito.png';
+        heroImg.current.src = '/serenito_v3.png';
         bgImg.current.src = '/comic-playa.jpg'; // Using existing beach asset
 
         const canvas = canvasRef.current;

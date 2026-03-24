@@ -140,7 +140,7 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
         const loadingId = Date.now() + 1;
         setMessages(prev => [...prev, { id: loadingId, sender: 'operator', text: '...', isLoading: true }]);
         try {
-            const GEMINI_KEY = "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs";
+            const GEMINI_KEY = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs";
             const historyText = messages.slice(-10).map(m => `${m.sender === 'user' ? 'Vecino' : 'Faro'}: ${m.text}`).join('\n');
             const prompt = `ERES "FARO IA", asistente de ComunaSmart VLS. Responde concisamente. Historial:\n${historyText}\nMensaje: "${inputText}"`;
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_KEY}`, {

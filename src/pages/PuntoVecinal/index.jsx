@@ -68,10 +68,10 @@ export default function PuntoVecinal() {
             ];
         } catch(e) {
             return [
-                { title: "Municipio lanza plan de recambio de luminarias", date: "Hace 2 horas", type: "Obras" },
-                { title: "Nuevas cámaras conectadas a Faro C5", date: "Hace 5 horas", type: "Seguridad" },
-                { title: "Corte de calle programado en sector Las Compañías", date: "Ayer", type: "Tránsito" },
-                { title: "Abiertas postulaciones a capital semilla comunal", date: "Ayer", type: "Fomento" }
+                { title: "INFORME: La Paradoja 2026 y la crisis del supercomputador", date: "Hoy", type: "Investigación" },
+                { title: "ALERTA: El Efecto Poduje congela el mercado inmobiliario", date: "Hoy", type: "Vivienda" },
+                { title: "ESPECIAL: ¿Bencina de primer mundo con sueldos de tercero?", date: "Hoy", type: "Economía" },
+                { title: "Nuevas cámaras conectadas a Faro C5 en casco histórico", date: "Hace 5 horas", type: "Seguridad" }
             ];
         }
     });
