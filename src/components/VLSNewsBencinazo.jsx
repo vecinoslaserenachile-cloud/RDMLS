@@ -201,7 +201,7 @@ export default function VLSNewsBencinazo({ onClose }) {
                <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#000', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>
                   Capítulo I: La "Frase de la Discordia" y el Choque de Realidades
                </h2>
-               <p style={{ marginBottom: '2rem' }}>
+               <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
                   El ministro de Hacienda, Jorge Quiroz, no solo anunció el fin de los subsidios; lanzó un dardo directo a la lógica del consumidor chileno. Al defender el ahorro de <strong>US$ 200 millones semanales</strong> para el fisco, disparó una comparación que hoy recorre cada fila en las bencineras de La Serena:
                </p>
                
@@ -213,7 +213,7 @@ export default function VLSNewsBencinazo({ onClose }) {
                   <p style={{ color: '#fbbf24', fontWeight: 'bold', marginTop: '2rem', textAlign: 'right', fontSize: '1rem' }}>— Jorge Quiroz, Ministro de Hacienda (Marzo 2026)</p>
                </div>
 
-               <p>
+               <p style={{ color: '#1e293b', fontWeight: 500 }}>
                   A simple vista, la frase suena a "justicia fiscal". Pero, al analizarla con lupa, la comparación es, para muchos expertos, una falacia técnica que ignora la estructura de impuestos y el poder adquisitivo real entre ambos países.
                </p>
             </section>
@@ -223,14 +223,14 @@ export default function VLSNewsBencinazo({ onClose }) {
               <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#7c2d12', marginBottom: '2rem', fontFamily: "'Outfit', sans-serif" }}>
                 Capítulo III: La "Mochila" de 1986
               </h2>
-              <p style={{ marginBottom: '2rem' }}>
+              <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
                 Para el vecino de Las Compañías o de los barrios residenciales de La Serena, la pregunta es una sola: ¿Por qué la bencina es tan cara? La respuesta tiene fecha: <strong>1986</strong>. Mediante la Ley 18.502, se creó el Impuesto Específico para reconstruir los caminos tras el terremoto de 1985. Fue una medida "transitoria" que hoy, 40 años después, sigue vigente.
               </p>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
                  <div style={{ background: '#fff', padding: '2rem', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                     <h4 style={{ color: '#7c2d12', fontWeight: '900', marginBottom: '1rem' }}>LA PARADOJA FINAL</h4>
-                    <p style={{ fontSize: '1.1rem', margin: 0 }}>Pagamos peajes en carreteras concesionadas (que ya están construidas) y, además, pagamos el impuesto que originalmente iba a construirlas.</p>
+                    <p style={{ fontSize: '1.1rem', margin: 0, color: '#334155' }}>Pagamos peajes en carreteras concesionadas (que ya están construidas) y, además, pagamos el impuesto que originalmente iba a construirlas.</p>
                  </div>
                  <div style={{ background: '#000', padding: '2rem', borderRadius: '24px', color: '#fbbf24' }}>
                     <h4 style={{ color: '#fff', fontWeight: '900', marginBottom: '1rem' }}>EFECO ELIMINACIÓN</h4>

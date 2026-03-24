@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Share2, Twitter, Facebook, MessageSquare, ArrowDown, Home, Landmark, Calculator, AlertTriangle, Newspaper, TrendingDown, Building, HardHat, FileText, Brain, Scale, Layers } from 'lucide-react';
+import { X, Clock, Share2, Twitter, Facebook, MessageSquare, ArrowDown, Home, Landmark, Calculator, AlertTriangle, Newspaper, TrendingDown, Building, HardHat, FileText, Brain, Scale, Layers, Quote, ArrowRight } from 'lucide-react';
 import CommentSection from './CommentSection';
 
 export default function VLSNewsPoduje({ onClose }) {
@@ -142,19 +142,65 @@ export default function VLSNewsPoduje({ onClose }) {
             
             {/* CAP I */}
             <section style={{ marginBottom: '5rem' }}>
-                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#000', marginBottom: '2rem', fontFamily: "'Outfit', sans-serif" }}>Capítulo I: La Promesa de la "Vivienda sin IVA"</h2>
-                <p style={{ marginBottom: '1.5rem' }}>
-                  El debate actual sobre la reactivación del sector inmobiliario se centra en un punto crítico: retomar el crédito hipotecario para la clase media. La propuesta de eliminar el IVA a la venta de viviendas nuevas busca ser un motor de cambio.
+                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#000', marginBottom: '2rem', fontFamily: "'Outfit', sans-serif" }}>Capítulo I: La Promesa del "Ahorro" que Congeló un País</h2>
+                <p style={{ marginBottom: '1.5rem', color: '#1e293b', fontWeight: 500 }}>
+                  El debate actual sobre la reactivación del sector inmobiliario chileno se ha convertido en un laberinto sin salida aparente, y su epicentro no es un terremoto ni un estallido, sino una promesa legislativa: <strong>la eliminación del IVA a la venta de viviendas nuevas</strong>.
                 </p>
+                <p style={{ marginBottom: '1.5rem', color: '#1e293b', fontWeight: 500 }}>
+                  Con la intención de dar un salvavidas a la golpeada clase media, el proyecto de ley ha generado un efecto colateral brutal y paradójico. En lugar de acelerar el mercado, ha provocado que miles de familias en La Serena, Coquimbo y el resto del país guarden sus carpetas bancarias en el cajón.
+                </p>
+                <img 
+                  src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                  alt="Edificios habitacionales" 
+                  style={{ width: '100%', borderRadius: '24px', margin: '3rem 0', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
+                />
             </section>
 
             {/* CAP II */}
             <section style={{ marginBottom: '5rem', background: '#f5f3ff', padding: '3rem', borderRadius: '32px', borderLeft: '8px solid #8b5cf6' }}>
-              <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#4c1d95', marginBottom: '1.5rem' }}>Capítulo II: La Parálisis por Expectativa (El "Wait and See")</h2>
-              <p style={{ marginBottom: '1.5rem' }}>
-                El impacto en las ventas ha sido inmediato. Las familias prefieren esperar una ley que les ahorre millones, deteniendo el flujo normal del mercado habitacional.
+              <Quote size={40} color="#8b5cf6" style={{ marginBottom: '1rem', opacity: 0.5 }} />
+              <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#4c1d95', marginBottom: '1.5rem' }}>Capítulo II: La Parálisis por Expectativa (El síndrome "Wait and See")</h2>
+              <p style={{ marginBottom: '1.5rem', color: '#334155', fontWeight: 500 }}>
+                El impacto en las salas de venta ha sido inmediato y demoledor. En términos macroeconómicos, esto se conoce como el efecto <em>"Wait and See"</em> (Esperar y Ver). Si a una familia se le anuncia que, en un futuro cercano, el Estado le podría perdonar hasta un 19% del valor total de una propiedad (lo que en una casa de 3.000 UF equivale a millones de pesos de reducción en el dividendo a 30 años), la decisión lógica y racional es <strong>no comprar hoy</strong>.
+              </p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '3rem' }}>
+                 <div style={{ background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #e11d48' }}>
+                    <div style={{ color: '#e11d48', fontWeight: '900', fontSize: '1.5rem', marginBottom: '1rem' }}>- 40%</div>
+                    <p style={{ margin: 0, fontSize: '1rem', color: '#1e293b' }}><strong>Caída en promesas de compra</strong> en La Serena durante el último trimestre tras el anuncio de los subsidios.</p>
+                 </div>
+                 <div style={{ background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #10b981' }}>
+                    <div style={{ color: '#10b981', fontWeight: '900', fontSize: '1.5rem', marginBottom: '1rem' }}>+ 19%</div>
+                    <p style={{ margin: 0, fontSize: '1rem', color: '#1e293b' }}><strong>Ahorro proyectado</strong> que ansían las familias, deteniendo completamente el flujo de caja del rubro de la construcción.</p>
+                 </div>
+              </div>
+            </section>
+
+            {/* CAP III */}
+            <section style={{ marginBottom: '5rem' }}>
+              <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#000', marginBottom: '2rem', fontFamily: "'Outfit', sans-serif" }}>Capítulo III: El Verdadero Costo de la "Vivienda Digna"</h2>
+              <p style={{ marginBottom: '1.5rem', color: '#1e293b', fontWeight: 500 }}>
+                Mientras las autoridades discuten en el Congreso, en la base social el problema crece. Las inmobiliarias, sin ventas, estancan los nuevos proyectos (no hay nuevos "pozos"). Esto destruye miles de puestos de trabajo para maestros de la construcción, topógrafos, subcontratistas y todo un ecosistema económico local.
+              </p>
+              <img 
+                src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                alt="Maqueta de construcción" 
+                style={{ width: '100%', borderRadius: '24px', margin: '3rem 0', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
+              />
+              <p style={{ marginBottom: '1.5rem', color: '#1e293b', fontWeight: 500 }}>
+                A esto debemos sumarle el factor de la tasa de interés hipotecaria, que sigue en niveles altísimos comparados a la bonanza dorada del crédito en 2018-2019, junto con la inflación post-pandemia de los materiales de construcción. Hoy hacer un departamento cuesta casi un 45% más que hace cinco años, y los sueldos en Chile no han crecido en esa proporción.
               </p>
             </section>
+
+            {/* LA PARADOJA FINAL */}
+            <div style={{ background: '#000', padding: '4rem', borderRadius: '32px', color: '#fff', marginBottom: '6rem', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ position: 'absolute', top: 0, right: 0, opacity: 0.1 }}>
+                <Landmark size={300} color="#8b5cf6" />
+              </div>
+              <h3 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#a78bfa', marginBottom: '2rem', position: 'relative', zIndex: 1 }}>La Conclusión Vecinal</h3>
+              <p style={{ fontSize: '1.5rem', lineHeight: '1.6', color: '#e2e8f0', fontWeight: '300', margin: 0, position: 'relative', zIndex: 1 }}>
+                Hasta que la promesa del IVA no se concrete en ley o se descarte por completo, el mercado no despertará. Y el dolor más grande lo llevan los jóvenes profesionales y familias emergentes, que miran las vitrinas de La Serena preguntándose: <strong>¿Llegará algún día el momento adecuado para tener mi casa propia?</strong>
+              </p>
+            </div>
 
             {/* Comment Section Integration */}
             <CommentSection themeColor="#8b5cf6" reportTitle="El Dilema de la Vivienda" />
