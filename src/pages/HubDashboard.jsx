@@ -1237,6 +1237,10 @@ export default function HubDashboard() {
 
                     {/* Nueva Identidad Visual: Integración de Logo VLS */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '900px', boxSizing: 'border-box' }}>
+                        {/* RadioHomeWidget: siempre visible en el portal principal */}
+                        <div style={{ width: '100%' }}>
+                            <RadioHomeWidget />
+                        </div>
                         {!window.location.hostname.includes('vecinoslaserena.cl') && !window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('localhost') ? (
                             <>
                                 <div className="neocolonial-frame" style={{ border: '2px solid #ef4444', padding: '2rem', background: 'rgba(0,0,0,0.8)', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -1269,7 +1273,7 @@ export default function HubDashboard() {
                             </>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0', textAlign: 'center', width: '100%' }}>
-                                <RadioHomeWidget />
+                                {/* contenido del portal principal */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                     <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
                                         <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />

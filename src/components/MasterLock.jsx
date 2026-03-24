@@ -7,7 +7,9 @@ const ALLOWED_ADMINS = [
     'directorio@vecinosmart.cl', 
     'admin@vecinosmart.cl',
     'soporte@vecinosmart.cl',
-    'master@vecinosmart.cl'
+    'master@vecinosmart.cl',
+    'vecinossmart@gmail.com',
+    'vecinoslaserenachile@gmail.com'
 ];
 
 const PROMO_SLIDES = [
@@ -54,13 +56,14 @@ export default function MasterLock({ onUnlock, setIsGuest, setGuestTimeLeft, set
         try {
             const result = await signInWithPopup(auth, provider);
             const user = result.user;
+            // Limpiar bandera de logout al iniciar sesión exitosamente
+            localStorage.removeItem('smart_logout');
+            localStorage.removeItem('smart_is_guest');
             if (ALLOWED_ADMINS.some(admin => admin.toLowerCase() === user.email.toLowerCase())) {
                 onUnlock(user);
             } else {
-                // Not an admin -> automatic resident access
-                setIsGuest(true);
-                setGuestTimeLeft(3600); // Give them 1 hr
-                localStorage.setItem('smart_is_guest', 'true');
+                // Usuario Google no-admin → acceso como vecino registrado
+                onUnlock(user);
             }
         } catch (err) {
             console.error("MasterLock Error:", err);
@@ -77,6 +80,8 @@ export default function MasterLock({ onUnlock, setIsGuest, setGuestTimeLeft, set
     };
 
     const enterAsGuest = () => {
+        // Limpiar bandera de logout para permitir sesión de invitado
+        localStorage.removeItem('smart_logout');
         setIsGuest(true);
         setGuestTimeLeft(600); // 10 minutes (600 seconds)
         localStorage.setItem('smart_is_guest', 'true');

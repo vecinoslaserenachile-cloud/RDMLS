@@ -337,7 +337,9 @@ function AppContent() {
         if (!showRadioMaster) setShowRadioMaster(true);
     }
 
-    if (isDirectDomain && !currentUser && !localStorage.getItem('smart_logout') && !isGuest) {
+    // Auto-guest en dominio directo (NO si acaba de hacer logout)
+    const hasLoggedOut = localStorage.getItem('smart_logout') === 'true';
+    if (isDirectDomain && !currentUser && !hasLoggedOut && !isGuest) {
         setIsGuest(true);
         localStorage.setItem('smart_is_guest', 'true');
     }
@@ -348,8 +350,9 @@ function AppContent() {
         }
     }
 
+    // Restaurar modo invitado desde storage SOLO si no hubo logout explícito
     const storedGuest = localStorage.getItem('smart_is_guest') === 'true';
-    if (storedGuest && !isGuest) {
+    if (storedGuest && !isGuest && !hasLoggedOut) {
         setIsGuest(true);
     }
 
@@ -833,7 +836,9 @@ function AppContent() {
   }, []);
 
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
-  const showMasterLock = !isAuthorized && !isGuest && !isRegistered;
+  // Un usuario de Google no-admin también puede acceder (como vecino registrado)
+  const isGoogleUser = currentUser && !isAuthorized;
+  const showMasterLock = !isAuthorized && !isGoogleUser && !isGuest && !isRegistered;
 
   if (!authInitialized) {
       return <LoadingScreen />;
