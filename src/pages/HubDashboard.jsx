@@ -1269,6 +1269,7 @@ export default function HubDashboard() {
                             </>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0', textAlign: 'center', width: '100%' }}>
+                                <RadioHomeWidget />
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                     <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
                                         <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -1385,8 +1386,6 @@ export default function HubDashboard() {
                                         </div>
                                     </div>
                                 </div>
-
-                                <RadioHomeWidget />
 
                                 {/* BUSCADOR INTEGRADO */}
                                 <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
