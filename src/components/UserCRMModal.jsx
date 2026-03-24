@@ -26,25 +26,12 @@ export default function UserCRMModal({ onClose, currentUser }) {
     }, []);
 
     const handleLogout = () => {
-        if (auth && typeof signOut === 'function') {
-            signOut(auth).then(() => {
-                localStorage.removeItem('smart_is_guest');
-                localStorage.setItem('smart_logout', 'true');
-                window.location.reload();
-                onClose();
-            }).catch(() => {
-                localStorage.removeItem('smart_is_guest');
-                localStorage.setItem('smart_logout', 'true');
-                window.location.reload();
-                onClose();
-            });
-        } else {
-            localStorage.removeItem('smart_is_guest');
-            localStorage.setItem('smart_logout', 'true');
-            window.location.reload();
-            onClose();
-        }
+        // Disparar evento centralizado manejado por App.jsx
+        // Esto evita el window.location.reload() que causa race conditions
+        window.dispatchEvent(new CustomEvent('vls-logout-request'));
+        onClose();
     };
+
 
     const crmData = [
         { id: 'VLS-1045', date: '05 Mar 2026', type: 'Reporte Vecinal', status: 'Resuelto', title: 'Iluminación Sector El Milagro' },

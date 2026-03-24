@@ -313,9 +313,8 @@ function AppContent() {
   const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl'); 
 
   useEffect(() => {
-    // Título y Favicon Dinámico
+    // Título y Favicon Dinámico (solo depende de dominio/ruta, no de auth)
     let pageTitle = 'vecinoslaserena.cl';
-    // FAVICON RESTAURADO: Cristal Biselado VLS (Rojo/Blanco)
     let favIconUrl = '/vls-crystal-icon.svg'; 
 
     if (isMasterDomain) {
@@ -337,28 +336,30 @@ function AppContent() {
         if (!showRadioMaster) setShowRadioMaster(true);
     }
 
-    // Auto-guest en dominio directo (NO si acaba de hacer logout)
-    const hasLoggedOut = localStorage.getItem('smart_logout') === 'true';
-    if (isDirectDomain && !currentUser && !hasLoggedOut && !isGuest) {
-        setIsGuest(true);
-        localStorage.setItem('smart_is_guest', 'true');
-    }
-
     if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !host.includes('localhost') && !host.includes('127.0.0.1')) {
         if (location.pathname !== '/welcome') {
             navigate('/welcome');
         }
     }
 
-    // Restaurar modo invitado desde storage SOLO si no hubo logout explícito
-    const storedGuest = localStorage.getItem('smart_is_guest') === 'true';
-    if (storedGuest && !isGuest && !hasLoggedOut) {
-        setIsGuest(true);
-    }
-
     const saved = localStorage.getItem('smart_notifications');
     if (saved) setNotifications(JSON.parse(saved));
-  }, [navigate, location.pathname, isGuest, currentUser]);
+  }, [navigate, location.pathname]);
+
+  // ── Efecto de auto-invitado: corre SOLO al montar (una vez) ──
+  // Si ya hay currentUser (logueo real), NUNCA activar modo invitado.
+  useEffect(() => {
+    // Si Firebase ya confirmó un usuario real → ignorar lógica de guest
+    if (currentUser) return;
+
+    const hasLoggedOut = localStorage.getItem('smart_logout') === 'true';
+    const storedGuest = localStorage.getItem('smart_is_guest') === 'true';
+
+    // Restaurar sesión de invitado guardada (solo si no hizo logout explícito)
+    if (storedGuest && !hasLoggedOut) {
+        setIsGuest(true);
+    }
+  }, [currentUser]); // Solo re-ejecutar si cambia currentUser (ej: login/logout de Firebase)
 
   useEffect(() => {
     if (!auth) {
@@ -1025,27 +1026,24 @@ function AppContent() {
             {vlsTokens} FICHAS
             <span style={{ fontSize: '0.6rem', background: '#f59e0b', color: '#0f172a', padding: '1px 4px', borderRadius: '4px' }}>CARGAR</span>
           </button>
-
           <button 
             onClick={() => {
-              if (currentUser) {
-                signOut(auth).then(() => {
-                  setIsGuest(false);
-                  setGuestTimeLeft(0);
-                  localStorage.removeItem('smart_is_guest');
-                  localStorage.setItem('smart_logout', 'true');
-                  setShowUserProfile(false);
-                  window.location.reload();
-                }).catch(err => {
-                   console.error("Logout error:", err);
-                   window.location.reload(); 
-                });
-              } else {
+              const doLogout = () => {
                 setIsGuest(false);
+                setCurrentUser(null);
                 setGuestTimeLeft(0);
                 localStorage.removeItem('smart_is_guest');
                 localStorage.setItem('smart_logout', 'true');
-                window.location.reload();
+                setShowUserProfile(false);
+                window.location.href = '/';
+              };
+              if (currentUser) {
+                signOut(auth).then(doLogout).catch(err => {
+                   console.error("Logout error:", err);
+                   doLogout();
+                });
+              } else {
+                doLogout();
               }
             }}
             className="btn-glass pulse"
@@ -1417,7 +1415,21 @@ function AppContent() {
             )}
 
             {currentUser ? (
-              <button onClick={() => { signOut(auth).then(() => { setIsGuest(false); setGuestTimeLeft(0); localStorage.removeItem('smart_is_guest'); localStorage.setItem('smart_logout', 'true'); window.location.reload(); }); }} className="btn" style={{ width: '100%', padding: '1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '12px', fontWeight: 'bold', marginTop: '0.5rem' }}>
+              <button onClick={() => {
+                const doLogout = () => {
+                  setCurrentUser(null);
+                  setIsGuest(false);
+                  setGuestTimeLeft(0);
+                  localStorage.removeItem('smart_is_guest');
+                  localStorage.setItem('smart_logout', 'true');
+                  setShowUserProfile(false);
+                  window.location.href = '/';
+                };
+                signOut(auth).then(doLogout).catch(err => {
+                  console.error("Logout error:", err);
+                  doLogout();
+                });
+              }} className="btn" style={{ width: '100%', padding: '1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '12px', fontWeight: 'bold', marginTop: '0.5rem' }}>
                 Cerrar Sesión de Red
               </button>
             ) : (
@@ -1429,10 +1441,12 @@ function AppContent() {
                   <button 
                     onClick={() => {
                       setIsGuest(false);
+                      setCurrentUser(null);
                       setGuestTimeLeft(0);
                       localStorage.removeItem('smart_is_guest');
                       localStorage.setItem('smart_logout', 'true');
-                      window.location.reload();
+                      setShowUserProfile(false);
+                      window.location.href = '/';
                     }}
                     className="btn-glass"
                     style={{ width: '100%', padding: '0.8rem', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)', fontWeight: 'bold' }}

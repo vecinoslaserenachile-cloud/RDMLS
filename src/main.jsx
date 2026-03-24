@@ -234,6 +234,7 @@ import BellaDashboard from './pages/BellaDashboard.jsx';
 
 const currentHost = window.location.hostname;
 const isPuertaDns = currentHost.includes('puertasmart.cl');
+const isRdmlsDns = currentHost.includes('rdmls') || currentHost.includes('rdmls.cl');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -242,7 +243,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <BrowserRouter>
         <GlobalWarning />
         {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
-        {isPuertaDns ? (
+        {isRdmlsDns ? (
+          <Routes>
+            <Route path="/" element={<CentroRadio />} />
+            <Route path="/admin" element={<App />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        ) : isPuertaDns ? (
           <Routes>
             <Route path="/" element={<Navigate to="/puerta" replace />} />
             <Route path="/puerta" element={<PuertaSmart />} />
