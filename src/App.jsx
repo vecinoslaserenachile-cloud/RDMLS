@@ -369,9 +369,18 @@ function AppContent() {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
         setCurrentUser(u);
         setAuthInitialized(true);
+        if (u) {
+            window.dispatchEvent(new CustomEvent('vls-start-radio'));
+        }
     });
     return () => unsubscribe();
   }, [auth]);
+
+  useEffect(() => {
+    if (isGuest && authInitialized) {
+        window.dispatchEvent(new CustomEvent('vls-start-radio'));
+    }
+  }, [isGuest, authInitialized]);
 
   useEffect(() => {
     if (showAlert) {

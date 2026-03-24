@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Clock, Share2, Printer, Bookmark, MessageSquare, Twitter, Facebook, Linkedin, ArrowDown, Cpu, Microscope, Globe, AlertTriangle, BookOpen, Quote, Target, Brain, Shield } from 'lucide-react';
+import { X, Clock, Share2, Printer, Bookmark, MessageSquare, Twitter, Facebook, Linkedin, ArrowDown, Cpu, Microscope, Globe, AlertTriangle, BookOpen, Quote, Target, Brain, Shield, Layers } from 'lucide-react';
 
 export default function VLSNewsInvestigacion({ onClose }) {
   const [activePoll, setActivePoll] = useState(null);
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    console.log("VLSNewsInvestigacion Mounted OK");
     const handleScroll = () => {
       const el = document.getElementById('article-scroll-container');
       if (el) {
@@ -300,7 +301,7 @@ export default function VLSNewsInvestigacion({ onClose }) {
 
         {/* Footer Content */}
         <footer style={{ background: '#000', color: 'white', padding: '4rem 6rem' }}>
-           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', pb: '2rem', marginBottom: '3rem' }}>
+           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '2rem', marginBottom: '3rem' }}>
               <div>
                 <h2 style={{ fontSize: '2rem', fontWeight: '900' }}>VLS Investigative Unit</h2>
                 <p style={{ color: '#9ca3af' }}>Periodismo libre e inteligente para una comuna soberana.</p>

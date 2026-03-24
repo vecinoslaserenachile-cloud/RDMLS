@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Home, Radio, Clock, CloudSun, Calendar, MessageCircle, Music, Info, MonitorPlay, Gamepad2, Volume2, VolumeX, Maximize, ExternalLink, Download, Settings, FileText, GraduationCap, Youtube } from 'lucide-react';
+import { 
+    Home, Radio, Clock, CloudSun, Calendar, MessageCircle, Music, Info, MonitorPlay, Gamepad2, 
+    Volume2, VolumeX, Maximize, ExternalLink, Download, Settings, FileText, GraduationCap, 
+    Youtube, ChevronUp, ChevronDown, Activity, GripHorizontal, Globe, Play, Pause, RefreshCw, Zap
+} from 'lucide-react';
 import OldTVModal from '../../components/OldTVModal';
 import VhsTVModal from '../../components/VhsTVModal';
 import RetroArcadeLobby from '../../components/RetroArcadeLobby';
@@ -62,7 +66,7 @@ export default function CentroRadio() {
     const vuRightRef = useRef(null);
     const host = window.location.hostname.toLowerCase();
     const isVLS = host.includes('vecinoslaserena');
-    const isRDMLS = host.includes('rdmls') || host.includes('laserena.cl');
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinoslaserena'));
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
     useEffect(() => {
@@ -178,6 +182,19 @@ export default function CentroRadio() {
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
 
     // Handle station change by knob or buttons
+    useEffect(() => {
+        const fetchWeather = async () => {
+            try {
+                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2519&current_weather=true");
+                const data = await res.json();
+                setWeather(data);
+            } catch (e) { console.error(e); }
+        };
+        fetchWeather();
+        const interval = setInterval(fetchWeather, 600000);
+        return () => clearInterval(interval);
+    }, []);
+
     const changeStation = (station) => {
         if (station.id === currentStation.id) return;
         setCurrentStation(station);
@@ -824,8 +841,8 @@ export default function CentroRadio() {
                                     gap: '3px',
                                     boxShadow: currentStation.id === s.id ? `0 0 20px ${s.color}88` : 'none'
                                 }}>
-                                    <span style={{ fontSize: '1.1rem' }}>{s.badge}</span>
-                                    <span style={{ letterSpacing: '1px' }}>{s.id === 'municipal' ? (isVLS ? 'VLS' : 'RDMLS') : s.id.toUpperCase()}</span>
+                                    <span style={{ fontSize: '1.2rem', marginBottom: '4px' }}>{s.badge === 'OFICIAL' ? '⚡' : s.badge === 'TV CONCEJO' ? '📺' : '📻'}</span>
+                                    <span style={{ letterSpacing: '1px' }}>{s.dialLabel}</span>
                                 </button>
                             ))}
                         </div>
@@ -1296,7 +1313,36 @@ export default function CentroRadio() {
                             onError={e => { e.target.style.display = 'none'; }}
                         />
                         <h3 style={{ margin: '0 0 0.3rem', color: '#FFD700', letterSpacing: '2px', fontSize: '1rem' }}>{isVLS ? 'VLS RADIO COMUNITARIA - PORTAL VLS' : 'RDMLS RADIO DIGITAL MUNICIPAL'}</h3>
-                        <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>
+                        <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>                {/* 4. CLIMA Y JUEGOS VECINALES (Básico RDMLS) */}
+                <section id="extras-section" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr', gap: '2rem', marginTop: '2rem' }}>
+                    <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
+                         <CloudSun size={48} color="#fcd34d" />
+                         <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '900', color: 'white' }}>{weather?.current_weather?.temperature || '17'}°C</div>
+                            <div style={{ fontSize: '0.8rem', color: '#fcd34d', fontWeight: 'bold', letterSpacing: '2px' }}>LA SERENA · HOY</div>
+                         </div>
+                    </div>
+
+                    <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <div style={{ fontSize: '0.8rem', fontWeight: '900', color: '#FFD700', marginBottom: '1rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <Gamepad2 size={16} /> ENTRETENCIÓN VECINAL
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <RefreshCw size={24} color="#38bdf8" />
+                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>RUBIK 3D</span>
+                            </button>
+                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <Zap size={24} color="#ef4444" />
+                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>PINBALL</span>
+                            </button>
+                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <Volume2 size={24} color="#10b981" />
+                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>PIANO</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
 
                         {/* Links */}
                         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start' }}>

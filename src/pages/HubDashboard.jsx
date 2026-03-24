@@ -15,9 +15,9 @@ const PLAYLIST_LUDIC = [
     { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_d.mp4', title: 'Noche en La Serena' },
     { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videl.mp4', title: 'Museo Gabriel González Videla' }
 ];
-import { 
-    Search, Mic, CloudSun, Radio, Sliders, Volume2, 
-    VolumeX, ChevronUp, ChevronDown, Activity, 
+import {
+    Search, Mic, CloudSun, Radio, Sliders, Volume2,
+    VolumeX, ChevronUp, ChevronDown, Activity,
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, Clock, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
@@ -65,7 +65,7 @@ import RadioHomeWidget from '../components/RadioHomeWidget';
 export default function HubDashboard() {
     const navigate = useNavigate();
     const { lang, setLang, t: baseT } = useTranslation();
-    
+
     const dict = {
         es: {
             title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
@@ -89,7 +89,7 @@ export default function HubDashboard() {
             sentinelTitle: "Centinel Faro IA", sentinelSub: "Monitoreo Avanzado de Redes y Seguridad",
             welcomePortales: "Bienvenido al portal unificado de Vecinos La Serena. Explora todas las herramientas ciudadanas a continuación."
         },
-        en: { 
+        en: {
             title: "Smart Communications & Citizenship Hub - VLS Unified Portal",
             citizensTitle: "Smart Citizens", citizensSub: "Reports, Maps and Digital Radio",
             adminTitle: "Smart Administration", adminSub: "Internal Management, E-learning & Reports",
@@ -229,7 +229,7 @@ export default function HubDashboard() {
     const [isMuted, setIsMuted] = useState(true);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [videoSelected, setVideoSelected] = useState(false);
-    
+
     const [currentPlaylist, setCurrentPlaylist] = useState('institutional'); // 'institutional' or 'ludic'
     const [previewIndex, setPreviewIndex] = useState(0);
 
@@ -306,7 +306,7 @@ export default function HubDashboard() {
         if (videoSelected) return;
         const interval = setInterval(() => {
             setPreviewIndex(prev => (prev + 1) % TVLS_VIDEOS.length);
-        }, 10000); 
+        }, 10000);
         return () => clearInterval(interval);
     }, [videoSelected, currentPlaylist, TVLS_VIDEOS.length]);
 
@@ -416,10 +416,10 @@ export default function HubDashboard() {
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [isMiniTV, setIsMiniTV] = useState(false);
     const [isFullscreenTV, setIsFullscreenTV] = useState(false);
-    const [vlsStats, setVlsStats] = useState({ 
-        liveUsers: 14228, 
-        totalServed: 2453.44, 
-        growth: '+284%' 
+    const [vlsStats, setVlsStats] = useState({
+        liveUsers: 14228,
+        totalServed: 2453.44,
+        growth: '+284%'
     });
 
     useEffect(() => {
@@ -444,7 +444,7 @@ export default function HubDashboard() {
                     totalServed: parseFloat((prev.totalServed + addData).toFixed(2))
                 };
             });
-        }, 1500); 
+        }, 1500);
         return () => clearInterval(sInt);
     }, []);
 
@@ -850,7 +850,7 @@ export default function HubDashboard() {
     const AppCard = ({ app }) => {
         const locked = isLockedForResident(app.id);
         const isPinned = pinnedApps.includes(app.id);
-        
+
         return (
             <motion.div
                 drag
@@ -1026,303 +1026,303 @@ export default function HubDashboard() {
 
     return (
         <>
-        <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
-            {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
-            <div style={{
-                width: '100%',
-                background: 'linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)',
-                borderBottom: '2px solid #ef4444',
-                padding: '0.5rem 1rem',
-                display: 'flex',
-                flexDirection: window.innerWidth < 768 ? 'column' : 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: '0.85rem',
-                zIndex: 1000,
-                position: 'relative',
-                gap: '1rem',
-                minHeight: '60px',
-                overflowX: 'auto',
-                WebkitOverflowScrolling: 'touch',
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none'
-            }}>
-                {/* Botón 3D Movido para no solapar mensajes activos */}
+                {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
                 <div style={{
-                    position: window.innerWidth < 768 ? 'static' : 'absolute',
-                    right: '1rem',
-                    top: '50%',
-                    transform: window.innerWidth < 768 ? 'none' : 'translateY(-50%)',
-                    zIndex: 1001,
+                    width: '100%',
+                    background: 'linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)',
+                    borderBottom: '2px solid #ef4444',
+                    padding: '0.5rem 1rem',
                     display: 'flex',
-                    gap: '10px'
-                }}>
-                    <button
-                        onClick={() => navigate('/glosario')}
-                        className="btn-glass"
-                        style={{
-                            background: 'rgba(255,255,255,0.1)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                        }}
-                    >
-                        <Book size={14} /> {t.glosario || 'GLOSARIO'}
-                    </button>
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
-                        className="btn-glass animate-pulse-slow"
-                        style={{
-                            background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
-                        <Zap size={14} /> {t.smartFeed || 'SMART FEED'}
-                    </button>
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
-                        className="btn-glass animate-pulse-slow"
-                        style={{
-                            background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
-                        <Sparkles size={14} /> {t.city3d || 'CIUDAD 3D'}
-                    </button>
-                </div>
-
-                <div key={msgIndex} className="animate-slide-up" style={{
-                    display: 'flex',
+                    flexDirection: window.innerWidth < 768 ? 'column' : 'row',
                     alignItems: 'center',
-                    gap: '0.75rem',
-                    textAlign: 'left',
-                    minWidth: '280px',
-                    maxWidth: '100%',
-                    padding: '0 0.5rem'
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '0.85rem',
+                    zIndex: 1000,
+                    position: 'relative',
+                    gap: '1rem',
+                    minHeight: '60px',
+                    overflowX: 'auto',
+                    WebkitOverflowScrolling: 'touch',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none'
                 }}>
-                    <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50` }}>
-                        {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
+                    {/* Botón 3D Movido para no solapar mensajes activos */}
+                    <div style={{
+                        position: window.innerWidth < 768 ? 'static' : 'absolute',
+                        right: '1rem',
+                        top: '50%',
+                        transform: window.innerWidth < 768 ? 'none' : 'translateY(-50%)',
+                        zIndex: 1001,
+                        display: 'flex',
+                        gap: '10px'
+                    }}>
+                        <button
+                            onClick={() => navigate('/glosario')}
+                            className="btn-glass"
+                            style={{
+                                background: 'rgba(255,255,255,0.1)',
+                                border: '1px solid rgba(255,255,255,0.3)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px'
+                            }}
+                        >
+                            <Book size={14} /> {t.glosario || 'GLOSARIO'}
+                        </button>
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
+                            className="btn-glass animate-pulse-slow"
+                            style={{
+                                background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                                border: '1px solid rgba(255,255,255,0.3)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            <Zap size={14} /> {t.smartFeed || 'SMART FEED'}
+                        </button>
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
+                            className="btn-glass animate-pulse-slow"
+                            style={{
+                                background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
+                                border: '1px solid rgba(255,255,255,0.3)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: 'white',
+                                fontWeight: 'bold',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            <Sparkles size={14} /> {t.city3d || 'CIUDAD 3D'}
+                        </button>
                     </div>
-                    <span style={{ lineHeight: '1.2', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', flex: 1 }}>
-                        <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
-                        {CurrentMessage.text}
-                    </span>
-                </div>
-            </div>
 
-            {/* ══════════════════════════════════════════════════ */}
-            {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
-            {/* ══════════════════════════════════════════════════ */}
-            <div style={{
-                width: '100%',
-                background: '#050d1a',
-                borderTop: '1px solid rgba(255,215,0,0.2)',
-                borderBottom: '2px solid rgba(255,215,0,0.4)',
-                padding: '0.75rem 1rem',
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '0.75rem',
-                boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
-            }}>
-
-                {/* Tarjeta 1: SMART JUEGAPRENDE */}
-                <div
-                    onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
-                    style={{
-                        background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
-                        border: '1px solid rgba(255,215,0,0.4)',
-                        borderRadius: '16px',
-                        padding: '0.9rem 1rem',
-                        cursor: 'pointer',
+                    <div key={msgIndex} className="animate-slide-up" style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: '0.75rem',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.25s ease',
-                        boxShadow: '0 0 20px rgba(255,215,0,0.1)',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(255,215,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.8)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(255,215,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.4)'; }}
-                >
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
-                    <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(255,215,0,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
-                        <Award size={22} color="#0f172a" />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SMART JUEGAPRENDE</span>
-                            <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>NUEVO</span>
+                        textAlign: 'left',
+                        minWidth: '280px',
+                        maxWidth: '100%',
+                        padding: '0 0.5rem'
+                    }}>
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50` }}>
+                            {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
                         </div>
-                        <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            Trivia La Serena · Gana Fichas VLS
-                        </p>
-                    </div>
-                    <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
-                        <Gamepad2 size={14} /> JUGAR ▶
+                        <span style={{ lineHeight: '1.2', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', flex: 1 }}>
+                            <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
+                            {CurrentMessage.text}
+                        </span>
                     </div>
                 </div>
 
-                {/* Tarjeta 2: SERENITO 1945 */}
-                <div
-                    onClick={() => window.open('/minijuegos/serenito-1945/', '_blank')}
-                    style={{
-                        background: 'linear-gradient(135deg, #1a0a00 0%, #0f172a 100%)',
-                        border: '1px solid rgba(239,68,68,0.4)',
-                        borderRadius: '16px',
-                        padding: '0.9rem 1rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.25s ease',
-                        boxShadow: '0 0 20px rgba(239,68,68,0.1)',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.35)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
-                >
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(239,68,68,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
-                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(239,68,68,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
-                        <Rocket size={22} color="white" />
-                    </div>
-                    <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                            <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#f87171', textShadow: '0 0 12px rgba(239,68,68,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SERENITO 1945</span>
-                            <span style={{ background: 'linear-gradient(90deg,#7c3aed,#4f46e5)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>ARCADE</span>
+                {/* ══════════════════════════════════════════════════ */}
+                {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
+                {/* ══════════════════════════════════════════════════ */}
+                <div style={{
+                    width: '100%',
+                    background: '#050d1a',
+                    borderTop: '1px solid rgba(255,215,0,0.2)',
+                    borderBottom: '2px solid rgba(255,215,0,0.4)',
+                    padding: '0.75rem 1rem',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '0.75rem',
+                    boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
+                }}>
+
+                    {/* Tarjeta 1: SMART JUEGAPRENDE */}
+                    <div
+                        onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
+                        style={{
+                            background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+                            border: '1px solid rgba(255,215,0,0.4)',
+                            borderRadius: '16px',
+                            padding: '0.9rem 1rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.25s ease',
+                            boxShadow: '0 0 20px rgba(255,215,0,0.1)',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(255,215,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.8)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(255,215,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.4)'; }}
+                    >
+                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
+                        <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(255,215,0,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
+                            <Award size={22} color="#0f172a" />
                         </div>
-                        <p style={{ color: 'rgba(248,113,113,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            Vuela, dispara y defiende La Serena
-                        </p>
+                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SMART JUEGAPRENDE</span>
+                                <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>NUEVO</span>
+                            </div>
+                            <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                Trivia La Serena · Gana Fichas VLS
+                            </p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
+                            <Gamepad2 size={14} /> JUGAR ▶
+                        </div>
                     </div>
-                    <div style={{ background: 'linear-gradient(135deg,#ef4444,#991b1b)', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
-                        <Rocket size={14} /> VOLAR ▶
+
+                    {/* Tarjeta 2: SERENITO 1945 */}
+                    <div
+                        onClick={() => window.open('/minijuegos/serenito-1945/', '_blank')}
+                        style={{
+                            background: 'linear-gradient(135deg, #1a0a00 0%, #0f172a 100%)',
+                            border: '1px solid rgba(239,68,68,0.4)',
+                            borderRadius: '16px',
+                            padding: '0.9rem 1rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.25s ease',
+                            boxShadow: '0 0 20px rgba(239,68,68,0.1)',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.35)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
+                    >
+                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(239,68,68,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
+                        <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(239,68,68,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
+                            <Rocket size={22} color="white" />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#f87171', textShadow: '0 0 12px rgba(239,68,68,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SERENITO 1945</span>
+                                <span style={{ background: 'linear-gradient(90deg,#7c3aed,#4f46e5)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>ARCADE</span>
+                            </div>
+                            <p style={{ color: 'rgba(248,113,113,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                Vuela, dispara y defiende La Serena
+                            </p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg,#ef4444,#991b1b)', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
+                            <Rocket size={14} /> VOLAR ▶
+                        </div>
                     </div>
                 </div>
-            </div>
 
 
-            <div style={{ padding: '0 1rem 2rem 1rem' }}>
+                <div style={{ padding: '0 1rem 2rem 1rem' }}>
 
-                <header className="page-header" style={{ marginBottom: '2.5rem', textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <header className="page-header" style={{ marginBottom: '2.5rem', textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
 
-                    {/* Nueva Identidad Visual: Integración de Logo VLS */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '900px', boxSizing: 'border-box' }}>
-                        {/* RadioHomeWidget: siempre visible en el portal principal */}
-                        <div style={{ width: '100%', position: 'relative', zIndex: 100001 }}>
-                            <RadioHomeWidget />
-                        </div>
-                        {!window.location.hostname.includes('vecinoslaserena.cl') && !window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('localhost') ? (
-                            <>
-                                <div className="neocolonial-frame" style={{ border: '2px solid #ef4444', padding: '2rem', background: 'rgba(0,0,0,0.8)', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <img src="/vls_chile_map.jpg" alt="Vecinossmart Chile" style={{ maxHeight: '140px', maxWidth: '90%', height: 'auto', borderRadius: '12px', boxShadow: '0 0 20px rgba(255,255,255,0.2)' }} />
-                                </div>
-                                <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <img src="/vls_red_square.jpg" alt="VLS Logo" style={{ maxHeight: '80px', width: 'auto', borderRadius: '8px' }} />
-                                    <img src="/vls_white_banner.jpg" alt="VLS Banner" style={{ maxHeight: '40px', width: 'auto', opacity: 0.9 }} />
-                                </div>
-
-                                <div className="picasso-fractal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '100%', maxWidth: '800px', marginBottom: '2rem', padding: '2rem', borderRadius: '20px' }}>
-                                    <h2 className="serena-title-glow" style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', margin: '0', textAlign: 'center' }}>LA SERENA</h2>
-                                    <h3 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)', margin: '0', fontWeight: 'bold' }}>{t.title}</h3>
-                                    <p style={{ fontWeight: 'bold', margin: '0', fontSize: '1.1rem', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '2px' }}>{t.subtitle}</p>
-                                    <button
-                                        className="btn btn-primary animate-pulse"
-                                        style={{
-                                            width: '100%', maxWidth: '400px', marginTop: '1.5rem', padding: '1rem',
-                                            fontSize: '1.2rem', fontWeight: 'bold', borderRadius: '50px',
-                                            background: 'linear-gradient(90deg, #d4af37, #f59e0b)',
-                                            color: 'black', border: 'none',
-                                            boxShadow: '0 10px 30px rgba(212, 175, 55, 0.5)'
-                                        }}
-                                        onClick={() => window.location.href = 'https://tramites.laserena.cl'}
-                                    >
-                                        <Globe size={24} style={{ marginRight: '10px' }} />
-                                        Trámites Municipales
-                                    </button>
-                                </div>
-                            </>
-                        ) : (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0', textAlign: 'center', width: '100%' }}>
-                                {/* contenido del portal principal */}
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
-                                        <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {/* Nueva Identidad Visual: Integración de Logo VLS */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '900px', boxSizing: 'border-box' }}>
+                            {/* RadioHomeWidget: siempre visible en el portal principal */}
+                            <div style={{ width: '100%', position: 'relative', zIndex: 100001 }}>
+                                <RadioHomeWidget />
+                            </div>
+                            {!window.location.hostname.includes('vecinoslaserena.cl') && !window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('localhost') ? (
+                                <>
+                                    <div className="neocolonial-frame" style={{ border: '2px solid #ef4444', padding: '2rem', background: 'rgba(0,0,0,0.8)', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                        <img src="/vls_chile_map.jpg" alt="Vecinossmart Chile" style={{ maxHeight: '140px', maxWidth: '90%', height: 'auto', borderRadius: '12px', boxShadow: '0 0 20px rgba(255,255,255,0.2)' }} />
                                     </div>
-                                    <div style={{ textAlign: 'left', maxWidth: '400px' }}>
-                                        <AnimatePresence mode="wait">
-                                            <motion.div
-                                                key={greetingIdx}
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                                transition={{ duration: 0.5 }}
-                                                style={{ overflow: 'visible', width: '100%' }}
-                                            >
-                                                <h1 style={{
-                                                    color: 'white',
-                                                    fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                                                    fontWeight: '950',
-                                                    letterSpacing: '-1.5px',
-                                                    margin: 0,
-                                                    fontFamily: '"Outfit", sans-serif',
-                                                    lineHeight: '1.1',
-                                                    textShadow: '0 8px 16px rgba(0,0,0,0.5)'
-                                                }}>
-                                                    {greetings[greetingIdx].text.split(',')[0]}, 
-                                                    <span style={{ 
-                                                        color: greetings[greetingIdx].color,
-                                                        background: greetings[greetingIdx].bg,
-                                                        WebkitBackgroundClip: 'text',
-                                                        WebkitTextFillColor: 'transparent',
-                                                        padding: '0 5px'
-                                                    }}>
-                                                        {greetings[greetingIdx].text.split(',')[1] || ''}
-                                                    </span>
-                                                </h1>
-                                                <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.5rem 0", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
-                                                    <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.4))', flexShrink: 0 }}>{greetings[greetingIdx].flag}</span>
-                                                    <span style={{ flex: 1 }}>{greetings[greetingIdx].sub}</span>
-                                                </p>
-                                            </motion.div>
-                                        </AnimatePresence>
-                                        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
-                                            {t.welcomePortales || 'Bienvenido al portal unificado de La Serena. Explora todas las herramientas ciudadanas a continuación.'}
-                                        </div>
+                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                        <img src="/vls_red_square.jpg" alt="VLS Logo" style={{ maxHeight: '80px', width: 'auto', borderRadius: '8px' }} />
+                                        <img src="/vls_white_banner.jpg" alt="VLS Banner" style={{ maxHeight: '40px', width: 'auto', opacity: 0.9 }} />
+                                    </div>
 
-                                        {/* TRANSLATION TICKER FROM RADIO */}
-                                        <div style={{ marginTop: '15px' }}>
-                                            <style>{`
+                                    <div className="picasso-fractal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '100%', maxWidth: '800px', marginBottom: '2rem', padding: '2rem', borderRadius: '20px' }}>
+                                        <h2 className="serena-title-glow" style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', margin: '0', textAlign: 'center' }}>LA SERENA</h2>
+                                        <h3 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)', margin: '0', fontWeight: 'bold' }}>{t.title}</h3>
+                                        <p style={{ fontWeight: 'bold', margin: '0', fontSize: '1.1rem', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '2px' }}>{t.subtitle}</p>
+                                        <button
+                                            className="btn btn-primary animate-pulse"
+                                            style={{
+                                                width: '100%', maxWidth: '400px', marginTop: '1.5rem', padding: '1rem',
+                                                fontSize: '1.2rem', fontWeight: 'bold', borderRadius: '50px',
+                                                background: 'linear-gradient(90deg, #d4af37, #f59e0b)',
+                                                color: 'black', border: 'none',
+                                                boxShadow: '0 10px 30px rgba(212, 175, 55, 0.5)'
+                                            }}
+                                            onClick={() => window.location.href = 'https://tramites.laserena.cl'}
+                                        >
+                                            <Globe size={24} style={{ marginRight: '10px' }} />
+                                            Trámites Municipales
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0', textAlign: 'center', width: '100%' }}>
+                                    {/* contenido del portal principal */}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                        <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
+                                            <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        </div>
+                                        <div style={{ textAlign: 'left', maxWidth: '400px' }}>
+                                            <AnimatePresence mode="wait">
+                                                <motion.div
+                                                    key={greetingIdx}
+                                                    initial={{ opacity: 0, x: 20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, x: -20 }}
+                                                    transition={{ duration: 0.5 }}
+                                                    style={{ overflow: 'visible', width: '100%' }}
+                                                >
+                                                    <h1 style={{
+                                                        color: 'white',
+                                                        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                                                        fontWeight: '950',
+                                                        letterSpacing: '-1.5px',
+                                                        margin: 0,
+                                                        fontFamily: '"Outfit", sans-serif',
+                                                        lineHeight: '1.1',
+                                                        textShadow: '0 8px 16px rgba(0,0,0,0.5)'
+                                                    }}>
+                                                        {greetings[greetingIdx].text.split(',')[0]},
+                                                        <span style={{
+                                                            color: greetings[greetingIdx].color,
+                                                            background: greetings[greetingIdx].bg,
+                                                            WebkitBackgroundClip: 'text',
+                                                            WebkitTextFillColor: 'transparent',
+                                                            padding: '0 5px'
+                                                        }}>
+                                                            {greetings[greetingIdx].text.split(',')[1] || ''}
+                                                        </span>
+                                                    </h1>
+                                                    <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.5rem 0", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
+                                                        <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.4))', flexShrink: 0 }}>{greetings[greetingIdx].flag}</span>
+                                                        <span style={{ flex: 1 }}>{greetings[greetingIdx].sub}</span>
+                                                    </p>
+                                                </motion.div>
+                                            </AnimatePresence>
+                                            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
+                                                {t.welcomePortales || 'Bienvenido al portal unificado de La Serena. Explora todas las herramientas ciudadanas a continuación.'}
+                                            </div>
+
+                                            {/* TRANSLATION TICKER FROM RADIO */}
+                                            <div style={{ marginTop: '15px' }}>
+                                                <style>{`
                                                 .vls-hub-wincha-container {
                                                     width: 100%;
                                                     background: #ef4444;
@@ -1351,677 +1351,687 @@ export default function HubDashboard() {
                                                     100% { transform: translate(-150%, 0); }
                                                 }
                                             `}</style>
-                                            <div className="vls-hub-wincha-container" style={{ marginBottom: '0' }}>
-                                                <div className="vls-hub-wincha-text">
-                                                    {newsFlashes[currentFlashIndex][lang] || newsFlashes[currentFlashIndex]['es']}
+                                                <div className="vls-hub-wincha-container" style={{ marginBottom: '0' }}>
+                                                    <div className="vls-hub-wincha-text">
+                                                        {newsFlashes[currentFlashIndex][lang] || newsFlashes[currentFlashIndex]['es']}
+                                                    </div>
+                                                </div>
+                                                <div style={{
+                                                    display: 'flex', gap: '6px', padding: '4px 8px',
+                                                    background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)',
+                                                    borderRadius: '0 0 12px 12px', width: '100%',
+                                                    justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
+                                                    borderTop: 'none', flexWrap: 'nowrap'
+                                                }}>
+                                                    {[
+                                                        { id: 'es', flag: '🇨🇱', label: 'CHI' },
+                                                        { id: 'en', flag: '🇺🇸', label: 'USA' },
+                                                        { id: 'it', flag: '🇮🇹', label: 'ITA' },
+                                                        { id: 'fr', flag: '🇫🇷', label: 'FRA' },
+                                                        { id: 'zh', flag: '🇨🇳', label: 'CHN' },
+                                                        { id: 'pt', flag: '🇧🇷', label: 'BRA' }
+                                                    ].map(l => (
+                                                        <button
+                                                            key={l.id}
+                                                            onClick={() => setLang(l.id)}
+                                                            style={{
+                                                                background: lang === l.id ? '#ef4444' : 'transparent',
+                                                                border: '1px solid ' + (lang === l.id ? '#ef4444' : 'rgba(255,255,255,0.1)'),
+                                                                cursor: 'pointer', padding: '2px 8px',
+                                                                borderRadius: '6px', display: 'flex', alignItems: 'center',
+                                                                gap: '4px', transition: 'all 0.3s'
+                                                            }}
+                                                        >
+                                                            <span style={{ fontSize: '1rem' }}>{l.flag}</span>
+                                                            <span style={{ fontSize: '0.65rem', color: 'white', fontWeight: 'bold' }}>{l.label}</span>
+                                                        </button>
+                                                    ))}
                                                 </div>
                                             </div>
-                                            <div style={{ 
-                                                display: 'flex', gap: '6px', padding: '4px 8px', 
-                                                background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)',
-                                                borderRadius: '0 0 12px 12px', width: '100%',
-                                                justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
-                                                borderTop: 'none', flexWrap: 'nowrap'
-                                            }}>
-                                                {[
-                                                    { id: 'es', flag: '🇨🇱', label: 'CHI' },
-                                                    { id: 'en', flag: '🇺🇸', label: 'USA' },
-                                                    { id: 'it', flag: '🇮🇹', label: 'ITA' },
-                                                    { id: 'fr', flag: '🇫🇷', label: 'FRA' },
-                                                    { id: 'zh', flag: '🇨🇳', label: 'CHN' },
-                                                    { id: 'pt', flag: '🇧🇷', label: 'BRA' }
-                                                ].map(l => (
-                                                    <button 
-                                                        key={l.id} 
-                                                        onClick={() => setLang(l.id)}
-                                                        style={{
-                                                            background: lang === l.id ? '#ef4444' : 'transparent',
-                                                            border: '1px solid ' + (lang === l.id ? '#ef4444' : 'rgba(255,255,255,0.1)'),
-                                                            cursor: 'pointer', padding: '2px 8px',
-                                                            borderRadius: '6px', display: 'flex', alignItems: 'center',
-                                                            gap: '4px', transition: 'all 0.3s'
-                                                        }}
-                                                    >
-                                                        <span style={{ fontSize: '1rem' }}>{l.flag}</span>
-                                                        <span style={{ fontSize: '0.65rem', color: 'white', fontWeight: 'bold' }}>{l.label}</span>
-                                                    </button>
-                                                ))}
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                {/* BUSCADOR INTEGRADO */}
-                                <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
-                                    <Search size={20} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                                    <input
-                                        type="text"
-                                        placeholder="O busca un servicio específico aquí..."
-                                        value={searchTerm}
-                                        onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
-                                        onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(searchTerm); }}
-                                        style={{ width: '100%', padding: '1rem 1.2rem 1rem 3.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '25px', color: 'white', fontSize: '1rem', outline: 'none', backdropFilter: 'blur(10px)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
-                                    />
-                                    <button
-                                        onClick={startVoiceSearch}
-                                        style={{
-                                            position: 'absolute',
-                                            right: '1.2rem',
-                                            top: '50%',
-                                            transform: 'translateY(-50%)',
-                                            background: 'none',
-                                            border: 'none',
-                                            cursor: 'pointer',
-                                            color: '#94a3b8',
-                                            padding: '0',
-                                            display: 'flex',
-                                            alignItems: 'center'
-                                        }}
-                                        title="Búsqueda por voz"
-                                    >
-                                        <Mic size={20} />
-                                    </button>
-                                </div>
-
-                                {/* VLS LIVE METRICS: SUCCESS CELEBRATION */}
-                                <motion.div 
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    style={{ 
-                                        display: 'flex', flexDirection: 'column', alignItems: 'center', 
-                                        gap: '10px', marginTop: '20px', padding: '15px 30px',
-                                        background: 'rgba(56, 189, 248, 0.03)', borderTop: '1px solid rgba(56, 189, 248, 0.1)',
-                                        borderBottom: '1px solid rgba(56, 189, 248, 0.1)', minWidth: '100%'
-                                    }}
-                                >
-                                    <span style={{ fontSize: '0.8rem', fontWeight: '950', color: '#38bdf8', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
-                                        VLS LIVE: {vlsStats.liveUsers} VECINOS ACTIVOS • {vlsStats.totalServed}GB SERVIDOS TODAY
-                                    </span>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.1)', padding: '4px 12px', borderRadius: '20px' }}>
-                                        <TrendingUp size={14} color="#38bdf8" />
-                                        <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#38bdf8', letterSpacing: '2px' }}>
-                                            CRECIMIENTO SOCIAL: {vlsStats.growth} VS SEMANA-1
-                                        </span>
-                                    </div>
-                                </motion.div>
-
-                                {/* GALERÍA DE LOS 4 PILARES (REGLA #2) */}
-                                <div style={{
-                                    display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                                    gap: '1.5rem',
-                                    width: '100%',
-                                    maxWidth: '1200px',
-                                    marginTop: '0.5rem'
-                                }}>
-                                    {categories.map(pillar => (
-                                        <div
-                                            key={pillar.id}
-                                            onClick={() => {
-                                                setSearchTerm("");
-                                                const element = document.getElementById(`cat-section-${pillar.id}`);
-                                                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                            }}
-                                            className="glass-panel gaudi-curves hover-lift"
+                                    {/* BUSCADOR INTEGRADO */}
+                                    <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
+                                        <Search size={20} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                        <input
+                                            type="text"
+                                            placeholder="O busca un servicio específico aquí..."
+                                            value={searchTerm}
+                                            onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
+                                            onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(searchTerm); }}
+                                            style={{ width: '100%', padding: '1rem 1.2rem 1rem 3.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '25px', color: 'white', fontSize: '1rem', outline: 'none', backdropFilter: 'blur(10px)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+                                        />
+                                        <button
+                                            onClick={startVoiceSearch}
                                             style={{
-                                                padding: '2rem',
-                                                borderRadius: '32px',
-                                                border: `1.5px solid ${pillar.color}50`,
-                                                background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`,
+                                                position: 'absolute',
+                                                right: '1.2rem',
+                                                top: '50%',
+                                                transform: 'translateY(-50%)',
+                                                background: 'none',
+                                                border: 'none',
                                                 cursor: 'pointer',
-                                                textAlign: 'center',
+                                                color: '#94a3b8',
+                                                padding: '0',
                                                 display: 'flex',
-                                                flexDirection: 'column',
-                                                alignItems: 'center',
-                                                gap: '1.2rem',
-                                                boxShadow: `0 20px 40px rgba(0,0,0,0.4)`
+                                                alignItems: 'center'
+                                            }}
+                                            title="Búsqueda por voz"
+                                        >
+                                            <Mic size={20} />
+                                        </button>
+                                    </div>
+
+                                    {/* VLS LIVE METRICS: SUCCESS CELEBRATION */}
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        style={{
+                                            display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                            gap: '10px', marginTop: '20px', padding: '15px 30px',
+                                            background: 'rgba(56, 189, 248, 0.03)', borderTop: '1px solid rgba(56, 189, 248, 0.1)',
+                                            borderBottom: '1px solid rgba(56, 189, 248, 0.1)', minWidth: '100%'
+                                        }}
+                                    >
+                                        <span style={{ fontSize: '0.8rem', fontWeight: '950', color: '#38bdf8', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
+                                            VLS LIVE: {vlsStats.liveUsers} VECINOS ACTIVOS • {vlsStats.totalServed}GB SERVIDOS TODAY
+                                        </span>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.1)', padding: '4px 12px', borderRadius: '20px' }}>
+                                            <TrendingUp size={14} color="#38bdf8" />
+                                            <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#38bdf8', letterSpacing: '2px' }}>
+                                                CRECIMIENTO SOCIAL: {vlsStats.growth} VS SEMANA-1
+                                            </span>
+                                        </div>
+                                    </motion.div>
+
+                                    {/* GALERÍA DE LOS 4 PILARES (REGLA #2) */}
+                                    <div style={{
+                                        display: 'grid',
+                                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                                        gap: '1.5rem',
+                                        width: '100%',
+                                        maxWidth: '1200px',
+                                        marginTop: '0.5rem'
+                                    }}>
+                                        {categories.map(pillar => (
+                                            <div
+                                                key={pillar.id}
+                                                onClick={() => {
+                                                    setSearchTerm("");
+                                                    const element = document.getElementById(`cat-section-${pillar.id}`);
+                                                    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                                }}
+                                                className="glass-panel gaudi-curves hover-lift"
+                                                style={{
+                                                    padding: '2rem',
+                                                    borderRadius: '32px',
+                                                    border: `1.5px solid ${pillar.color}50`,
+                                                    background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`,
+                                                    cursor: 'pointer',
+                                                    textAlign: 'center',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    gap: '1.2rem',
+                                                    boxShadow: `0 20px 40px rgba(0,0,0,0.4)`
+                                                }}
+                                            >
+                                                <div style={{
+                                                    background: pillar.color,
+                                                    padding: '1.2rem',
+                                                    borderRadius: '24px',
+                                                    color: pillar.id === 'citizens' ? 'black' : 'white',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    boxShadow: `0 10px 20px ${pillar.color}44`
+                                                }}>
+                                                    <pillar.icon size={36} />
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{t[`${pillar.id}Title`] || pillar.name}</h4>
+                                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{t[`${pillar.id}Sub`] || pillar.description}</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'white', fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <Globe size={18} color="var(--brand-primary)" />
+                                <select
+                                    value={lang}
+                                    onChange={(e) => setLang(e.target.value)}
+                                    style={{
+                                        background: 'transparent',
+                                        color: 'white',
+                                        border: 'none',
+                                        outline: 'none',
+                                        cursor: 'pointer',
+                                        fontWeight: 'bold',
+                                        fontFamily: lang === 'zh' ? '"Microsoft YaHei", "PingFang SC", sans-serif' : 'inherit'
+                                    }}>
+                                    <option value="es" style={{ color: '#000' }}>Español (ES)</option>
+                                    <option value="en" style={{ color: '#000' }}>English (EN)</option>
+                                    <option value="fr" style={{ color: '#000' }}>Français (FR)</option>
+                                    <option value="it" style={{ color: '#000' }}>Italiano (IT)</option>
+                                    <option value="pt" style={{ color: '#000' }}>Português (PT)</option>
+                                    <option value="zh" style={{ color: '#000' }}>中文 (ZH)</option>
+                                    <option value="ht" style={{ color: '#000' }}>Kreyòl (HT)</option>
+                                    <option value="arn" style={{ color: '#000' }}>Mapudungun (ARN)</option>
+                                </select>
+                            </div>
+
+                            {lang !== 'es' && (
+                                <button
+                                    onClick={() => alert("ComunaSmart: Estamos activando la traducción dinámica mediante Gemini para las secciones faltantes...")}
+                                    style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid #10b981', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold' }}
+                                >
+                                    âœ¨ AI Auto-Translate
+                                </button>
+                            )}
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'var(--text-secondary)', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <DeviceIcon size={16} />
+                                <span style={{ fontWeight: 'bold' }}>Modo {deviceType}</span>
+                            </div>
+
+                            <button
+                                className="btn-glass"
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', transition: 'all 0.3s' }}
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-smart-share'))}
+                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
+                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
+                            >
+                                <QRCodeSVG value={window.location.hostname.includes('rdmls') ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl"} size={35} level={"L"} />
+                                <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{t.qrText}</span>
+                            </button>
+
+                            <SmartShare renderAsHiddenObserver={true} />
+
+                            {/* Reloj en vivo */}
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{formatoFecha}</span>
+                                <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatoHora}</span>
+                            </div>
+
+                            <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                                <Map size={18} color="#38bdf8" />
+                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
+                            </button>
+
+                            <button onClick={() => navigate('/inversores')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(245, 158, 11, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                                <Zap size={18} color="#f59e0b" />
+                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>PITCH INVERSORES</span>
+                            </button>
+
+                            <button onClick={() => navigate('/sombreros')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(167, 139, 250, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                                <Star size={18} color="#a78bfa" />
+                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>LAB. IDEAS</span>
+                            </button>
+                        </div>
+                    </header>
+
+                    {/* Pinned Apps Bar (Los Elegidos) */}
+                    {pinnedApps.length > 0 && (
+                        <div className="fade-in" style={{
+                            maxWidth: '1200px', margin: '0 auto 2.5rem auto', width: '95%', padding: '0 1rem',
+                            display: 'flex', flexDirection: 'column', gap: '1rem'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Pin size={18} color="#fbbf24" fill="#fbbf24" style={{ filter: 'drop-shadow(0 0 5px #fbbf24)' }} />
+                                <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900' }}>Tus Elegidos</h3>
+                                <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(251,191,36,0.5), transparent)' }}></div>
+                            </div>
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+                                gap: '12px'
+                            }}>
+                                {pinnedApps.map(id => {
+                                    const app = allApps.find(a => a.id === id);
+                                    if (!app) return null;
+                                    return (
+                                        <div
+                                            key={id}
+                                            onClick={() => {
+                                                if (app.id === 'premium') { setShowPremiumClub(true); return; }
+                                                if (app.id === 'galaxia-disco') { setShowGalaxia(true); return; }
+                                                if (app.isEvent) window.dispatchEvent(new CustomEvent(app.isEvent));
+                                                else if (app.isExternal) window.open(app.path, '_blank');
+                                                else navigate(app.path);
+                                            }}
+                                            className="glass-panel hover-lift"
+                                            style={{
+                                                padding: '0.8rem 1.2rem', borderRadius: '18px', cursor: 'pointer',
+                                                display: 'flex', alignItems: 'center', gap: '12px',
+                                                background: `linear-gradient(135deg, ${app.color}25, rgba(0,0,0,0.6))`,
+                                                border: `1px solid ${app.color}40`,
+                                                boxShadow: `0 4px 15px ${app.color}15`,
+                                                position: 'relative',
+                                                overflow: 'hidden'
                                             }}
                                         >
-                                            <div style={{
-                                                background: pillar.color,
-                                                padding: '1.2rem',
-                                                borderRadius: '24px',
-                                                color: pillar.id === 'citizens' ? 'black' : 'white',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                boxShadow: `0 10px 20px ${pillar.color}44`
-                                            }}>
-                                                <pillar.icon size={36} />
-                                            </div>
-                                            <div>
-                                                <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{t[`${pillar.id}Title`] || pillar.name}</h4>
-                                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{t[`${pillar.id}Sub`] || pillar.description}</p>
-                                            </div>
+                                            <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: app.color }}></div>
+                                            <app.icon size={20} color={app.color} />
+                                            <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{app.title}</span>
                                         </div>
-                                    ))}
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+
+                    <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
+                        {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', width: '100%' }}>
+                            <div style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
+                                <Search size={20} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                <input
+                                    type="text"
+                                    placeholder="Buscar módulo, trámite o servicio..."
+                                    value={searchTerm}
+                                    onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
+                                    style={{ width: '100%', padding: '1rem 1rem 1rem 3.2rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', color: 'white', fontSize: '1rem', outline: 'none' }}
+                                />
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.8rem' }}>
+                                <button onClick={() => setViewMode('personalized')} style={{ background: viewMode === 'personalized' ? '#fbbf24' : 'rgba(255,255,255,0.05)', color: viewMode === 'personalized' ? '#000' : '#fff', padding: '0.8rem 1.4rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                    <Pin size={18} /> Mi Top 5
+                                </button>
+                                <button onClick={() => setViewMode('full')} style={{ background: viewMode === 'full' ? 'var(--brand-primary)' : 'rgba(255,255,255,0.05)', color: 'white', padding: '0.8rem 1.4rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                    <LayoutGrid size={18} /> Mosaicos
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* VISTA FILTRADA / PERSONALIZADA */}
+                        {(viewMode === 'personalized' || searchTerm !== "") && (
+                            <div style={{ marginBottom: '4rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                                    <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, #fbbf24)' }}></div>
+                                    <h3 style={{ color: '#fbbf24', margin: 0, fontSize: '1.4rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        {viewMode === 'personalized' ? <Pin size={24} /> : <Search size={24} />}
+                                        {viewMode === 'personalized' ? 'MI PANEL PERSONALIZADO (TOP 5)' : `RESULTADOS DE BÚSQUEDA (${filteredApps.length})`}
+                                    </h3>
+                                    <div style={{ height: '2px', flex: 1, background: 'linear-gradient(-90deg, transparent, #fbbf24)' }}></div>
                                 </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                                    {displayApps.map(app => <AppCard key={app.id} app={app} />)}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* VISTA POR MOSAICOS (FULL) */}
+                        {viewMode === 'full' && searchTerm === "" && (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '5rem' }}>
+                                {categories.map(cat => (
+                                    <div key={cat.id} id={`cat-section-${cat.id}`} style={{ scrollMarginTop: '100px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: '900', fontFamily: '"Outfit", sans-serif' }}>
+                                                {cat.name}
+                                            </h3>
+                                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(255,255,255,0.2), transparent)' }}></div>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                                            {allApps
+                                                .filter(app => cat.modules.includes(app.id))
+                                                .map(app => <AppCard key={app.id} app={app} />)
+                                            }
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         )}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'white', fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <Globe size={18} color="var(--brand-primary)" />
-                            <select
-                                value={lang}
-                                onChange={(e) => setLang(e.target.value)}
-                                style={{
-                                    background: 'transparent',
-                                    color: 'white',
-                                    border: 'none',
-                                    outline: 'none',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    fontFamily: lang === 'zh' ? '"Microsoft YaHei", "PingFang SC", sans-serif' : 'inherit'
-                                }}>
-                                <option value="es" style={{ color: '#000' }}>Español (ES)</option>
-                                <option value="en" style={{ color: '#000' }}>English (EN)</option>
-                                <option value="fr" style={{ color: '#000' }}>Français (FR)</option>
-                                <option value="it" style={{ color: '#000' }}>Italiano (IT)</option>
-                                <option value="pt" style={{ color: '#000' }}>Português (PT)</option>
-                                <option value="zh" style={{ color: '#000' }}>中文 (ZH)</option>
-                                <option value="ht" style={{ color: '#000' }}>Kreyòl (HT)</option>
-                                <option value="arn" style={{ color: '#000' }}>Mapudungun (ARN)</option>
-                            </select>
+                    <div style={{ height: '6rem' }} />
+
+                    <div style={{ height: '5rem' }} />
+
+                    <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.5))' }}></div>
+                            <h3 style={{ color: '#ec4899', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <ShieldAlert size={20} color="#ec4899" />
+                                Noticias Oficiales (laserena.cl)
+                            </h3>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(236, 72, 153, 0.5))' }}></div>
                         </div>
 
-                        {lang !== 'es' && (
-                            <button
-                                onClick={() => alert("ComunaSmart: Estamos activando la traducción dinámica mediante Gemini para las secciones faltantes...")}
-                                style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid #10b981', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold' }}
-                            >
-                                âœ¨ AI Auto-Translate
-                            </button>
-                        )}
-
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'var(--text-secondary)', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <DeviceIcon size={16} />
-                            <span style={{ fontWeight: 'bold' }}>Modo {deviceType}</span>
-                        </div>
-
-                        <button
-                            className="btn-glass"
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', transition: 'all 0.3s' }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-smart-share'))}
-                            onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
-                        >
-                            <QRCodeSVG value={window.location.hostname.includes('rdmls') ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl"} size={35} level={"L"} />
-                            <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{t.qrText}</span>
-                        </button>
-
-                        <SmartShare renderAsHiddenObserver={true} />
-
-                        {/* Reloj en vivo */}
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{formatoFecha}</span>
-                            <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatoHora}</span>
-                        </div>
-
-                        <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                            <Map size={18} color="#38bdf8" />
-                            <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
-                        </button>
-
-                        <button onClick={() => navigate('/inversores')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(245, 158, 11, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                            <Zap size={18} color="#f59e0b" />
-                            <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>PITCH INVERSORES</span>
-                        </button>
-
-                        <button onClick={() => navigate('/sombreros')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(167, 139, 250, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                            <Star size={18} color="#a78bfa" />
-                            <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>LAB. IDEAS</span>
-                        </button>
-                    </div>
-                </header>
-
-                {/* Pinned Apps Bar (Los Elegidos) */}
-                {pinnedApps.length > 0 && (
-                    <div className="fade-in" style={{
-                        maxWidth: '1200px', margin: '0 auto 2.5rem auto', width: '95%', padding: '0 1rem',
-                        display: 'flex', flexDirection: 'column', gap: '1rem'
-                    }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Pin size={18} color="#fbbf24" fill="#fbbf24" style={{ filter: 'drop-shadow(0 0 5px #fbbf24)' }} />
-                            <h3 style={{ margin: 0, fontSize: '0.9rem', color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: '900' }}>Tus Elegidos</h3>
-                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(251,191,36,0.5), transparent)' }}></div>
-                        </div>
-                        <div style={{ 
-                            display: 'grid', 
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', 
-                            gap: '12px' 
-                        }}>
-                            {pinnedApps.map(id => {
-                                const app = allApps.find(a => a.id === id);
-                                if (!app) return null;
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                            {officialNews.map((news, idx) => {
+                                const IconCmp = getIconComponent(news.iconStr);
                                 return (
                                     <div 
-                                        key={id}
-                                        onClick={() => {
-                                            if (app.id === 'premium') { setShowPremiumClub(true); return; }
-                                            if (app.id === 'galaxia-disco') { setShowGalaxia(true); return; }
-                                            if (app.isEvent) window.dispatchEvent(new CustomEvent(app.isEvent));
-                                            else if (app.isExternal) window.open(app.path, '_blank');
-                                            else navigate(app.path);
-                                        }}
-                                        className="glass-panel hover-lift"
-                                        style={{ 
-                                            padding: '0.8rem 1.2rem', borderRadius: '18px', cursor: 'pointer',
-                                            display: 'flex', alignItems: 'center', gap: '12px',
-                                            background: `linear-gradient(135deg, ${app.color}25, rgba(0,0,0,0.6))`,
-                                            border: `1px solid ${app.color}40`,
-                                            boxShadow: `0 4px 15px ${app.color}15`,
-                                            position: 'relative',
-                                            overflow: 'hidden'
-                                        }}
-                                    >
-                                        <div style={{ position: 'absolute', top: 0, left: 0, width: '4px', height: '100%', background: app.color }}></div>
-                                        <app.icon size={20} color={app.color} />
-                                        <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{app.title}</span>
+                                    key={idx} 
+                                    className="glass-panel gaudi-curves hover-lift" 
+                                    onClick={() => {
+                                        if (news.eventId) window.dispatchEvent(new CustomEvent(news.eventId));
+                                        else if (news.url) window.open(news.url, '_blank');
+                                    }}
+                                    style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', border: `1px solid ${news.color}30`, background: `linear-gradient(135deg, ${news.color}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer' }}
+                                >
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news.color, padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                                {news.category}
+                                            </span>
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news.date}</span>
+                                        </div>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news.title}</h4>
+                                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news.desc}</p>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news.color, fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
+                                            {IconCmp ? <IconCmp size={16} /> : <BookOpen size={16} />}
+                                            Leer Nota Completa <SkipForward size={14} style={{ marginLeft: 'auto' }} />
+                                        </div>
                                     </div>
                                 );
                             })}
                         </div>
-                    </div>
-                )}
-
-                <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
-                    {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '3rem', width: '100%' }}>
-                        <div style={{ position: 'relative', flex: 1, minWidth: '300px' }}>
-                            <Search size={20} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                            <input
-                                type="text"
-                                placeholder="Buscar módulo, trámite o servicio..."
-                                value={searchTerm}
-                                onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
-                                style={{ width: '100%', padding: '1rem 1rem 1rem 3.2rem', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', color: 'white', fontSize: '1rem', outline: 'none' }}
-                            />
-                        </div>
-                        <div style={{ display: 'flex', gap: '0.8rem' }}>
-                            <button onClick={() => setViewMode('personalized')} style={{ background: viewMode === 'personalized' ? '#fbbf24' : 'rgba(255,255,255,0.05)', color: viewMode === 'personalized' ? '#000' : '#fff', padding: '0.8rem 1.4rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                <Pin size={18} /> Mi Top 5
-                            </button>
-                            <button onClick={() => setViewMode('full')} style={{ background: viewMode === 'full' ? 'var(--brand-primary)' : 'rgba(255,255,255,0.05)', color: 'white', padding: '0.8rem 1.4rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                                <LayoutGrid size={18} /> Mosaicos
-                            </button>
+                        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                            <button onClick={() => window.open('https://laserena.cl/noticias', '_blank')} className="btn-glass" style={{ fontSize: '0.9rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}>Ver Archivo de Noticias (laserena.cl) <Globe size={14} style={{ marginLeft: '5px' }} /></button>
                         </div>
                     </div>
 
-                    {/* VISTA FILTRADA / PERSONALIZADA */}
-                    {(viewMode === 'personalized' || searchTerm !== "") && (
-                        <div style={{ marginBottom: '4rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
-                                <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, #fbbf24)' }}></div>
-                                <h3 style={{ color: '#fbbf24', margin: 0, fontSize: '1.4rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    {viewMode === 'personalized' ? <Pin size={24} /> : <Search size={24} />}
-                                    {viewMode === 'personalized' ? 'MI PANEL PERSONALIZADO (TOP 5)' : `RESULTADOS DE BÚSQUEDA (${filteredApps.length})`}
-                                </h3>
-                                <div style={{ height: '2px', flex: 1, background: 'linear-gradient(-90deg, transparent, #fbbf24)' }}></div>
-                            </div>
+                    {/* Featured Business Spotlight - VLS MOTORS */}
+                    <VLSMotorsSpot />
 
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                                {displayApps.map(app => <AppCard key={app.id} app={app} />)}
-                            </div>
+                    <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2))' }}></div>
+                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Catálogo de Servicios Smart</h3>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(255,255,255,0.2))' }}></div>
                         </div>
-                    )}
-
-                    {/* VISTA POR MOSAICOS (FULL) */}
-                    {viewMode === 'full' && searchTerm === "" && (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5rem' }}>
-                            {categories.map(cat => (
-                                <div key={cat.id} id={`cat-section-${cat.id}`} style={{ scrollMarginTop: '100px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
-                                        <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: '900', fontFamily: '"Outfit", sans-serif' }}>
-                                            {cat.name}
-                                        </h3>
-                                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(255,255,255,0.2), transparent)' }}></div>
-                                    </div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                                        {allApps
-                                            .filter(app => cat.modules.includes(app.id))
-                                            .map(app => <AppCard key={app.id} app={app} />)
-                                        }
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-
-                <div style={{ height: '6rem' }} />
-
-                <div style={{ height: '5rem' }} />
-
-                <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.5))' }}></div>
-                        <h3 style={{ color: '#ec4899', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                            <ShieldAlert size={20} color="#ec4899" />
-                            Noticias Oficiales (laserena.cl)
-                        </h3>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(236, 72, 153, 0.5))' }}></div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                        {officialNews.map((news, idx) => {
-                            const IconCmp = getIconComponent(news.iconStr);
-                            return (
-                                <div key={idx} className="glass-panel gaudi-curves hover-lift" style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', border: `1px solid ${news.color}30`, background: `linear-gradient(135deg, ${news.color}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                        <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news.color, padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
-                                            {news.category}
-                                        </span>
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news.date}</span>
-                                    </div>
-                                    <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news.title}</h4>
-                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news.desc}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news.color, fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
-                                        {IconCmp ? <IconCmp size={16} /> : <BookOpen size={16} />}
-                                        Leer Nota Completa <SkipForward size={14} style={{ marginLeft: 'auto' }} />
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                        <button onClick={() => window.open('https://laserena.cl/noticias', '_blank')} className="btn-glass" style={{ fontSize: '0.9rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}>Ver Archivo de Noticias (laserena.cl) <Globe size={14} style={{ marginLeft: '5px' }} /></button>
-                    </div>
-                </div>
-
-                {/* Featured Business Spotlight - VLS MOTORS */}
-                <VLSMotorsSpot />
-
-                <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2))' }}></div>
-                        <h3 style={{ color: 'white', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Catálogo de Servicios Smart</h3>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(255,255,255,0.2))' }}></div>
-                    </div>
-                    <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                        gap: '1.2rem'
-                    }}>
-                        {servicios.map((srv) => {
-                            const locked = isLockedForResident(srv.id);
-                            return (
-                                <button
-                                    key={srv.id}
-                                    className="glass-panel"
-                                    onClick={() => {
-                                        if (locked) {
-                                            alert('Modulo Reservado: Este espacio requiere credenciales de Directorio / Admin para acceso total.');
-                                            return;
-                                        }
-                                        if (srv.isEvent) {
-                                            window.dispatchEvent(new CustomEvent(srv.isEvent));
-                                        } else if (srv.isExternal) {
-                                            window.open(srv.path, '_blank');
-                                        } else if (window.innerWidth > 1024) {
-                                            navigate(srv.path);
-                                        }
-                                    }}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem',
-                                        border: locked ? '1px solid rgba(255,50,50,0.2)' : '1px solid rgba(255, 255, 255, 0.1)',
-                                        background: locked ? 'rgba(0,0,0,0.6)' : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%)',
-                                        cursor: locked ? 'not-allowed' : 'pointer', transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                        borderRadius: '16px', position: 'relative', overflow: 'hidden', textAlign: 'left',
-                                        filter: locked ? 'grayscale(1) opacity(0.6)' : 'none'
-                                    }}
-                                >
-                                    {locked && (
-                                        <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '2px', padding: '1px 6px', borderRadius: '50px', fontSize: '0.6rem', fontWeight: 'bold' }}>
-                                            <Lock size={8} /> ADMIN
-                                        </div>
-                                    )}
-                                    <div style={{ background: locked ? '#1e293b' : `${srv.color}20`, padding: srv.customLogo ? '0.5rem' : '1rem', borderRadius: '12px', border: `1px solid ${locked ? 'rgba(255,255,255,0.1)' : `${srv.color}40`}`, flexShrink: 0, width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        {srv.customLogo ? (
-                                            <img src={srv.customLogo} alt={srv.title} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: locked ? 'grayscale(1)' : `drop-shadow(0 0 5px ${srv.color})` }} />
-                                        ) : (
-                                            <srv.icon size={26} color={locked ? '#475569' : srv.color} />
+                        <div style={{
+                            display: 'grid',
+                            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                            gap: '1.2rem'
+                        }}>
+                            {servicios.map((srv) => {
+                                const locked = isLockedForResident(srv.id);
+                                return (
+                                    <button
+                                        key={srv.id}
+                                        className="glass-panel"
+                                        onClick={() => {
+                                            if (locked) {
+                                                alert('Modulo Reservado: Este espacio requiere credenciales de Directorio / Admin para acceso total.');
+                                                return;
+                                            }
+                                            if (srv.id === 'vls-investigacion-2026') {
+                                                setShowInvestigacion(true);
+                                            } else if (srv.isEvent) {
+                                                window.dispatchEvent(new CustomEvent(srv.isEvent));
+                                            } else if (srv.isExternal) {
+                                                window.open(srv.path, '_blank');
+                                            } else if (window.innerWidth > 1024) {
+                                                navigate(srv.path);
+                                            }
+                                        }}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem',
+                                            border: locked ? '1px solid rgba(255,50,50,0.2)' : '1px solid rgba(255, 255, 255, 0.1)',
+                                            background: locked ? 'rgba(0,0,0,0.6)' : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%)',
+                                            cursor: locked ? 'not-allowed' : 'pointer', transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                            borderRadius: '16px', position: 'relative', overflow: 'hidden', textAlign: 'left',
+                                            filter: locked ? 'grayscale(1) opacity(0.6)' : 'none'
+                                        }}
+                                    >
+                                        {locked && (
+                                            <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '2px', padding: '1px 6px', borderRadius: '50px', fontSize: '0.6rem', fontWeight: 'bold' }}>
+                                                <Lock size={8} /> ADMIN
+                                            </div>
                                         )}
-                                    </div>
-                                    <div style={{ zIndex: 1 }}>
-                                        <span style={{ color: locked ? '#64748b' : 'white', fontWeight: 'bold', display: 'block', fontSize: '1.15rem', marginBottom: '0.3rem' }}>{srv.title}</span>
-                                        <span style={{ color: locked ? '#475569' : 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4', display: 'block' }}>{srv.subtitle}</span>
-                                    </div>
-                                </button>
-                            );
-                        })}
+                                        <div style={{ background: locked ? '#1e293b' : `${srv.color}20`, padding: srv.customLogo ? '0.5rem' : '1rem', borderRadius: '12px', border: `1px solid ${locked ? 'rgba(255,255,255,0.1)' : `${srv.color}40`}`, flexShrink: 0, width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            {srv.customLogo ? (
+                                                <img src={srv.customLogo} alt={srv.title} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: locked ? 'grayscale(1)' : `drop-shadow(0 0 5px ${srv.color})` }} />
+                                            ) : (
+                                                <srv.icon size={26} color={locked ? '#475569' : srv.color} />
+                                            )}
+                                        </div>
+                                        <div style={{ zIndex: 1 }}>
+                                            <span style={{ color: locked ? '#64748b' : 'white', fontWeight: 'bold', display: 'block', fontSize: '1.15rem', marginBottom: '0.3rem' }}>{srv.title}</span>
+                                            <span style={{ color: locked ? '#475569' : 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4', display: 'block' }}>{srv.subtitle}</span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
 
-                {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
-                {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
-                {(isAuthorized || !isVLS || host.includes('vecinosmart.cl')) && (
+                    {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
+                    {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
+                    {(isAuthorized || !isVLS || host.includes('vecinosmart.cl')) && (
+                        <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
+                                <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.5))' }}></div>
+                                <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.6rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <Lock size={20} color="#38bdf8" /> Gestión Interna VLS
+                                </h3>
+                                <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(56,189,248,0.5))' }}></div>
+                            </div>
+                            {/* Main Content Grid */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
+                                {internalTools.map(app => (
+                                    <AppCard key={app.id} app={app} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                    {/* MONITOREO NAVIERO EN TIEMPO REAL */}
+                    <NavieraMonitor />
+
+                    {/* RANKING MUSICAL SERENENSE */}
+                    <MusicRanking />
+
+                    {/* POLIDEPORTIVO VECINAL - Ligas, ATP, etc. */}
+                    <PolideportivoVecinal />
+
+                    {/* TUERCA VECINOS - Mecánica y protocolos */}
+                    <TuercaVecinos />
+
+                    {/* SECCIÓN GUARDIANES DE LA REGIÓN (Personajes 3D) */}
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.5))' }}></div>
-                            <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.6rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                <Lock size={20} color="#38bdf8" /> Gestión Interna VLS
+                            <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <Sparkles size={24} color="#38bdf8" /> Guardianes de la Región
                             </h3>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(56,189,248,0.5))' }}></div>
                         </div>
-                {/* Main Content Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
-                            {internalTools.map(app => (
-                                <AppCard key={app.id} app={app} />
+
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+                            {guardianes.map((char) => (
+                                <div key={char.id} className="glass-panel gaudi-curves hover-scale" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.8) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transform: 'scale(0.92)' }}>
+                                    <div style={{ position: 'relative', width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(56,189,248,0.3)', background: 'rgba(0,0,0,0.5)', boxShadow: '0 0 20px rgba(56,189,248,0.2)' }}>
+                                        <img src={char.img} alt={char.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    </div>
+                                    <div style={{ transform: 'scale(0.95)' }}>
+                                        <h4 style={{ color: '#d4af37', margin: '0 0 0.2rem 0', fontSize: '1.2rem', letterSpacing: '1px' }}>{char.name.toUpperCase()}</h4>
+                                        <span style={{ display: 'block', fontSize: '0.75rem', color: '#38bdf8', fontWeight: 'bold', marginBottom: '0.8rem', padding: '2px 8px', background: 'rgba(56,189,248,0.1)', borderRadius: '10px' }}>{char.role}</span>
+                                        <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.4', fontStyle: 'italic' }}>"{char.bio}"</p>
+                                    </div>
+                                    <button onClick={() => setShowVirtualAssistant(true)} className="btn-glass" style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', fontSize: '0.8rem', color: 'white', marginTop: 'auto' }}>Hablar con {char.name}</button>
+                                </div>
                             ))}
                         </div>
                     </div>
-                )}
-                {/* MONITOREO NAVIERO EN TIEMPO REAL */}
-                <NavieraMonitor />
 
-                {/* RANKING MUSICAL SERENENSE */}
-                <MusicRanking />
+                    {/* NUEVA SECCIÓN CÁMARAS EN VIVO C5 */}
+                    <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5))' }}></div>
+                            <h3 style={{ color: '#10b981', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1.5s infinite', boxShadow: '0 0 10px #ef4444' }}></div>
+                                Cámaras C5 en Vivo (Faro & Radio Municipal)
+                            </h3>
+                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(16,185,129,0.5))' }}></div>
+                        </div>
+                        <div className="glass-panel scale-in" style={{ background: 'rgba(0,0,0,0.6)', borderRadius: '24px', padding: '2rem', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                            <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '1.5rem', maxWidth: '850px', margin: '0 auto 1.5rem auto', fontSize: '1.1rem', lineHeight: '1.6' }}>
+                                <strong>Centro de Comando, Control, Cómputo, Comunicaciones y Contacto Ciudadano (C5):</strong> Infraestructura tecnológica avanzada y neutral de seguridad pública, fundamental para la videovigilancia, coordinación de emergencias y contacto ciudadano en tiempo real para cualquier institución protectora.
+                            </p>
 
-                {/* POLIDEPORTIVO VECINAL - Ligas, ATP, etc. */}
-                <PolideportivoVecinal />
-
-                {/* TUERCA VECINOS - Mecánica y protocolos */}
-                <TuercaVecinos />
-
-                {/* SECCIÓN GUARDIANES DE LA REGIÓN (Personajes 3D) */}
-                <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.5))' }}></div>
-                        <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.8rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <Sparkles size={24} color="#38bdf8" /> Guardianes de la Región
-                        </h3>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(56,189,248,0.5))' }}></div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
-                        {guardianes.map((char) => (
-                            <div key={char.id} className="glass-panel gaudi-curves hover-scale" style={{ padding: '1.5rem', textAlign: 'center', border: '1px solid rgba(255,255,255,0.1)', background: 'linear-gradient(180deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.8) 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', transform: 'scale(0.92)' }}>
-                                <div style={{ position: 'relative', width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '3px solid rgba(56,189,248,0.3)', background: 'rgba(0,0,0,0.5)', boxShadow: '0 0 20px rgba(56,189,248,0.2)' }}>
-                                    <img src={char.img} alt={char.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <div style={{ display: 'flex', gap: '15px', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: window.innerWidth < 768 ? 'auto' : '450px' }}>
+                                <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
+                                    <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
+                                        <video
+                                            src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compa%c3%b1ias.mp4"
+                                            autoPlay loop muted playsInline
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (C5)</div>
+                                    </div>
+                                    <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
+                                        <video
+                                            src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4"
+                                            autoPlay loop muted playsInline
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                        <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (C5)</div>
+                                    </div>
                                 </div>
-                                <div style={{ transform: 'scale(0.95)' }}>
-                                    <h4 style={{ color: '#d4af37', margin: '0 0 0.2rem 0', fontSize: '1.2rem', letterSpacing: '1px' }}>{char.name.toUpperCase()}</h4>
-                                    <span style={{ display: 'block', fontSize: '0.75rem', color: '#38bdf8', fontWeight: 'bold', marginBottom: '0.8rem', padding: '2px 8px', background: 'rgba(56,189,248,0.1)', borderRadius: '10px' }}>{char.role}</span>
-                                    <p style={{ margin: 0, color: 'var(--text-secondary)', fontSize: '0.8rem', lineHeight: '1.4', fontStyle: 'italic' }}>"{char.bio}"</p>
-                                </div>
-                                <button onClick={() => setShowVirtualAssistant(true)} className="btn-glass" style={{ width: '100%', padding: '0.5rem', borderRadius: '10px', fontSize: '0.8rem', color: 'white', marginTop: 'auto' }}>Hablar con {char.name}</button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* NUEVA SECCIÓN CÁMARAS EN VIVO C5 */}
-                <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5))' }}></div>
-                        <h3 style={{ color: '#10b981', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                            <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1.5s infinite', boxShadow: '0 0 10px #ef4444' }}></div>
-                            Cámaras C5 en Vivo (Faro & Radio Municipal)
-                        </h3>
-                        <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(16,185,129,0.5))' }}></div>
-                    </div>
-                    <div className="glass-panel scale-in" style={{ background: 'rgba(0,0,0,0.6)', borderRadius: '24px', padding: '2rem', border: '1px solid rgba(16,185,129,0.3)', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
-                        <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '1.5rem', maxWidth: '850px', margin: '0 auto 1.5rem auto', fontSize: '1.1rem', lineHeight: '1.6' }}>
-                            <strong>Centro de Comando, Control, Cómputo, Comunicaciones y Contacto Ciudadano (C5):</strong> Infraestructura tecnológica avanzada y neutral de seguridad pública, fundamental para la videovigilancia, coordinación de emergencias y contacto ciudadano en tiempo real para cualquier institución protectora.
-                        </p>
-
-                        <div style={{ display: 'flex', gap: '15px', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: window.innerWidth < 768 ? 'auto' : '450px' }}>
-                            <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
-                                <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                    <video 
-                                        src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compa%c3%b1ias.mp4"
-                                        autoPlay loop muted playsInline 
+                                <div style={{ flex: '2', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
+                                    <video
+                                        src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4"
+                                        autoPlay loop muted playsInline
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
-                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (C5)</div>
-                                </div>
-                                <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                    <video 
-                                        src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4"
-                                        autoPlay loop muted playsInline 
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                    />
-                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (C5)</div>
+                                    <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
+                                        <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
+                                        <span style={{ letterSpacing: '1px' }}>C5: SERENITO EN TERRENO</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div style={{ flex: '2', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
-                                <video 
-                                    src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4"
-                                    autoPlay loop muted playsInline 
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                                <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
-                                    <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
-                                    <span style={{ letterSpacing: '1px' }}>C5: SERENITO EN TERRENO</span>
-                                </div>
+
+                            <BitacoraC5 />
+
+                            {isVideoPlaying && (
+                                <AnimatePresence>
+                                    {/* TV 1: SUPERIOR (Lúdico/Panorámico) */}
+                                    <motion.div
+                                        key="tvls-player-top"
+                                        drag
+                                        dragMomentum={false}
+                                        initial={{ opacity: 0, y: 100 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        style={{
+                                            position: 'fixed',
+                                            top: '120px',
+                                            right: '40px',
+                                            width: '320px',
+                                            height: '180px',
+                                            zIndex: 10000,
+                                            borderRadius: '16px',
+                                            overflow: 'hidden',
+                                            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+                                            border: '2px solid rgba(16, 185, 129, 0.4)',
+                                            background: '#000',
+                                            cursor: 'grab'
+                                        }}
+                                    >
+                                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS LÚDICO</div>
+                                        <video
+                                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]?.url || ""}
+                                            autoPlay loop muted={isMuted} playsInline
+                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                        />
+                                    </motion.div>
+
+                                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE */}
+                                    <motion.div
+                                        key="tvls-player-bottom"
+                                        drag
+                                        dragMomentum={false}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        style={{
+                                            position: 'fixed',
+                                            bottom: '100px',
+                                            right: '25px',
+                                            width: '280px',
+                                            height: '158px',
+                                            zIndex: 10000,
+                                            borderRadius: '16px',
+                                            overflow: 'hidden',
+                                            boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
+                                            border: '2px solid rgba(239, 68, 68, 0.4)',
+                                            background: '#000',
+                                            cursor: 'grab'
+                                        }}
+                                    >
+                                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
+                                        <iframe
+                                            width="100%" height="100%"
+                                            src={`https://www.youtube.com/embed/${PLAYLIST_INSTITUTIONAL[0].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${PLAYLIST_INSTITUTIONAL[0].id}`}
+                                            title="TVLS Institutional"
+                                            frameBorder="0"
+                                            allow="autoplay; encrypted-media; fullscreen"
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
+                            )}
+                            {/* End of TV Section */}
+                            <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
                             </div>
                         </div>
-
-                        <BitacoraC5 />
-
-                                {isVideoPlaying && (
-                <AnimatePresence>
-                    {/* TV 1: SUPERIOR (Lúdico/Panorámico) */}
-                    <motion.div
-                        key="tvls-player-top"
-                        drag
-                        dragMomentum={false}
-                        initial={{ opacity: 0, y: 100 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        style={{
-                            position: 'fixed',
-                            top: '120px',
-                            right: '40px',
-                            width: '320px',
-                            height: '180px',
-                            zIndex: 10000,
-                            borderRadius: '16px',
-                            overflow: 'hidden',
-                            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
-                            border: '2px solid rgba(16, 185, 129, 0.4)',
-                            background: '#000',
-                            cursor: 'grab'
-                        }}
-                    >
-                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS LÚDICO</div>
-                        <video 
-                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]?.url || ""}
-                            autoPlay loop muted={isMuted} playsInline
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                    </motion.div>
-
-                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE */}
-                    <motion.div
-                        key="tvls-player-bottom"
-                        drag
-                        dragMomentum={false}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        style={{
-                            position: 'fixed',
-                            bottom: '100px',
-                            right: '25px',
-                            width: '280px',
-                            height: '158px',
-                            zIndex: 10000,
-                            borderRadius: '16px',
-                            overflow: 'hidden',
-                            boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
-                            border: '2px solid rgba(239, 68, 68, 0.4)',
-                            background: '#000',
-                            cursor: 'grab'
-                        }}
-                    >
-                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
-                        <iframe
-                            width="100%" height="100%"
-                            src={`https://www.youtube.com/embed/${PLAYLIST_INSTITUTIONAL[0].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${PLAYLIST_INSTITUTIONAL[0].id}`}
-                            title="TVLS Institutional"
-                            frameBorder="0"
-                            allow="autoplay; encrypted-media; fullscreen"
-                        />
-                    </motion.div>
-                </AnimatePresence>
-            )}
-                    {/* End of TV Section */}
-                <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                    <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
-                </div>
+                    </div>
                 </div>
             </div>
-          </div>
-        </div>
-        {showTiendaPoleras && <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />}
-        {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
-        {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
-        {showSerenaMetAdmin && <SerenaMetAdmin onClose={() => setShowSerenaMetAdmin(false)} />}
-        {showVLSpeak && (
-            <div style={{ position: 'relative', zIndex: 100091 }}>
-                <VLSpeakTranslator onClose={() => setShowVLSpeak(false)} />
-                {activeTutorial === 'vlspeak' && (
-                    <div style={{ position: 'fixed', bottom: '40px', left: '40px', zIndex: 100092 }}>
-                        <VLSGuide sectionId="vlspeak" onClose={() => setActiveTutorial(null)} />
-                    </div>
-                )}
-            </div>
-        )}
-        {showSafeRoute && (
-            <div style={{ position: 'relative', zIndex: 100091 }}>
-                <SafeRouteAI onClose={() => setShowSafeRoute(false)} />
-                {activeTutorial === 'safe-route' && (
-                    <div style={{ position: 'fixed', bottom: '40px', right: '40px', zIndex: 100092 }}>
-                        <VLSGuide sectionId="safe-route" onClose={() => setActiveTutorial(null)} />
-                    </div>
-                )}
-            </div>
-        )}
-        {showSocialVision && (
-            <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
-                <div style={{ width: '100%', maxWidth: '1200px', height: '85vh', borderRadius: '30px', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
-                    <SocialVision onClose={() => setShowSocialVision(false)} />
-                    {activeTutorial === 'radar' && (
-                        <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 1000001 }}>
-                            <VLSGuide sectionId="radar" onClose={() => setActiveTutorial(null)} />
+            {showTiendaPoleras && <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />}
+            {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
+            {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
+            {showSerenaMetAdmin && <SerenaMetAdmin onClose={() => setShowSerenaMetAdmin(false)} />}
+            {showVLSpeak && (
+                <div style={{ position: 'relative', zIndex: 100091 }}>
+                    <VLSpeakTranslator onClose={() => setShowVLSpeak(false)} />
+                    {activeTutorial === 'vlspeak' && (
+                        <div style={{ position: 'fixed', bottom: '40px', left: '40px', zIndex: 100092 }}>
+                            <VLSGuide sectionId="vlspeak" onClose={() => setActiveTutorial(null)} />
                         </div>
                     )}
                 </div>
-            </div>
-        )}
-        {showAnalyticsApp && (
-            <VecinosAnalyticsApp onClose={() => setShowAnalyticsApp(false)} />
-        )}
-        {showPrecolombino && <PrecolombinoPortal onClose={() => setShowPrecolombino(false)} />}
-        {showRoadmap && <VLSRoadmap onClose={() => setShowRoadmap(false)} />}
-        {showManifesto && <VLSManifesto onClose={() => setShowManifesto(false)} />}
-        {showGalaxia && <GalaxiaDiscoteque onClose={() => setShowGalaxia(false)} />}
-        {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
-        {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
-        {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
-        {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
-        {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
-      </>
+            )}
+            {showSafeRoute && (
+                <div style={{ position: 'relative', zIndex: 100091 }}>
+                    <SafeRouteAI onClose={() => setShowSafeRoute(false)} />
+                    {activeTutorial === 'safe-route' && (
+                        <div style={{ position: 'fixed', bottom: '40px', right: '40px', zIndex: 100092 }}>
+                            <VLSGuide sectionId="safe-route" onClose={() => setActiveTutorial(null)} />
+                        </div>
+                    )}
+                </div>
+            )}
+            {showSocialVision && (
+                <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+                    <div style={{ width: '100%', maxWidth: '1200px', height: '85vh', borderRadius: '30px', overflow: 'hidden', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
+                        <SocialVision onClose={() => setShowSocialVision(false)} />
+                        {activeTutorial === 'radar' && (
+                            <div style={{ position: 'absolute', bottom: '20px', left: '20px', zIndex: 1000001 }}>
+                                <VLSGuide sectionId="radar" onClose={() => setActiveTutorial(null)} />
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+            {showAnalyticsApp && (
+                <VecinosAnalyticsApp onClose={() => setShowAnalyticsApp(false)} />
+            )}
+            {showPrecolombino && <PrecolombinoPortal onClose={() => setShowPrecolombino(false)} />}
+            {showRoadmap && <VLSRoadmap onClose={() => setShowRoadmap(false)} />}
+            {showManifesto && <VLSManifesto onClose={() => setShowManifesto(false)} />}
+            {showGalaxia && <GalaxiaDiscoteque onClose={() => setShowGalaxia(false)} />}
+            {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
+            {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
+            {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
+            {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
+            {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
+        </>
     );
 }

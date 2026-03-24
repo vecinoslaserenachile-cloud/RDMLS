@@ -141,12 +141,19 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
   useEffect(() => {
     if (gameState === 'playing' && currentQuestion) {
       setIsGeneratingImage(true);
-      // Simulating IA API for dynamic context images
+      // Logic for question-specific images OR stage-specific seeds
       const topics = currentQuestion.text.split(' ').filter(w => w.length > 4).slice(0, 3).join(',');
-      const seed = currentQuestion.imageSeed || currentStage.imageSeed || topics || 'serena';
-      setQuestionImage(`https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920&auto=format&fit=crop`); 
-      // En una implementación real usaríamos una API Gemini / DALL-E aquí.
-       setTimeout(() => setIsGeneratingImage(false), 1000);
+      const seed = currentQuestion.image || currentQuestion.imageSeed || currentStage.imageSeed || topics || 'serena';
+      
+      // If it starts with / it's a local file, otherwise we generate a dynamic Unsplash one
+      if (seed.startsWith('/')) {
+        setQuestionImage(seed);
+      } else {
+        // Dynamic search based on topics to give it that "AI Studio" feeling of contextual generation
+        const searchTags = topics || seed || 'la serena chile';
+        setQuestionImage(`https://source.unsplash.com/featured/1200x800?${encodeURIComponent(searchTags)}`); 
+      }
+      setTimeout(() => setIsGeneratingImage(false), 800);
     }
   }, [currentQuestion, gameState, currentStage]);
 
@@ -396,7 +403,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
   };
 
   // ─── LÓGICA DE RENDERIZADO MAESTRO (MASTER CEO EDITION) ───
-  if (gameState === 'playing' && currentQuestion) {
+  if (['playing', 'lifeline_phone', 'lifeline_audience'].includes(gameState) && currentQuestion) {
     return (
       <div className="fixed inset-0 z-[100000] bg-[#020617] overflow-hidden flex flex-col font-sans">
         <AnimatePresence mode="wait">
@@ -426,24 +433,88 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
             <motion.div animate={timer < 11 ? { scale: [1, 1.1, 1] } : {}} className={`w-28 h-28 lg:w-36 lg:h-36 rounded-full border-[8px] flex items-center justify-center text-5xl lg:text-7xl font-black shadow-3xl backdrop-blur-2xl ${timer < 11 ? 'border-red-600 text-red-500 bg-red-950/20' : 'border-game-gold text-game-gold bg-black/40'}`}>{timer}</motion.div>
           </div>
 
-          <div className="flex flex-col items-end gap-4 pointer-events-auto">
-             <div className="bg-game-gold text-slate-950 px-12 py-5 rounded-[2rem] font-black text-2xl lg:text-4xl italic shadow-2xl border-b-[6px] border-yellow-700/50">{PRIZES[currentStageId - 1]}</div>
-             <button onClick={() => setIsMuted(!isMuted)} className="w-14 h-14 bg-white/5 hover:bg-white/10 rounded-2xl border border-white/10 transition-all flex items-center justify-center text-white/50"><Volume2 size={24} /></button>
+          <div className="flex flex-col items-end gap-6 pointer-events-auto">
+             <div className="bg-game-gold text-slate-950 px-14 py-6 rounded-[2.5rem] font-black text-3xl lg:text-5xl italic shadow-2xl border-b-[8px] border-yellow-700/50 flex flex-col items-center">
+                <span className="text-[10px] font-bold not-italic tracking-[0.3em] uppercase opacity-70 mb-1">RECOMPENSA</span>
+                {PRIZES[currentStageId - 1].reward}
+             </div>
+             
+             <div className="flex gap-4 p-4 bg-black/40 backdrop-blur-3xl rounded-[2rem] border border-white/10 shadow-3xl">
+                <button 
+                    onClick={() => setIsVoiceMode(!isVoiceMode)} 
+                    className={`w-16 h-16 rounded-2xl border transition-all flex items-center justify-center ${isVoiceMode ? 'bg-red-600 border-red-400 text-white shadow-lg active-pulse' : 'bg-white/5 border-white/10 text-slate-400'}`}
+                    title="Modo Voz"
+                >
+                    <Mic size={28} />
+                </button>
+                <button 
+                    onClick={() => setIsMuted(!isMuted)} 
+                    className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 transition-all flex items-center justify-center"
+                    title="Silenciar"
+                >
+                    {isMuted ? <VolumeX size={28} /> : <Volume2 size={28} />}
+                </button>
+                <button 
+                    onClick={() => setGameState('start')} 
+                    className="w-16 h-16 rounded-2xl bg-red-600/20 border border-red-600/30 text-red-500 hover:bg-red-600 hover:text-white transition-all flex items-center justify-center"
+                    title="Abandonar"
+                >
+                    <X size={28} />
+                </button>
+             </div>
           </div>
         </div>
 
         <main className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 max-w-7xl mx-auto w-full mb-32 lg:mb-40">
-          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full bg-[#0f172a]/70 backdrop-blur-3xl border border-white/10 p-12 lg:p-20 rounded-[4rem] shadow-3xl text-center">
-            <h2 className="text-3xl lg:text-6xl font-black text-white leading-tight uppercase italic drop-shadow-2xl">"{currentQuestion.text}"</h2>
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="w-full bg-[#0f172a]/70 backdrop-blur-3xl border border-white/10 p-12 lg:p-16 rounded-[4rem] shadow-3xl text-center flex flex-col items-center gap-10">
+            {questionImage && (
+              <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="w-full max-w-2xl aspect-video rounded-[2.5rem] overflow-hidden border-4 border-white/10 shadow-2xl">
+                <img src={questionImage} className="w-full h-full object-cover" alt="Ilustración IA" />
+              </motion.div>
+            )}
+            <h2 className="text-3xl lg:text-5xl font-black text-white leading-tight uppercase italic drop-shadow-2xl">"{currentQuestion.text}"</h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-16 w-full max-w-6xl">
-            {currentQuestion.options.map((option, idx) => (
-              <motion.button key={idx} onClick={() => handleOptionClick(idx)} disabled={isAnswered || hiddenOptions.includes(idx)} className={`relative h-28 lg:h-36 rounded-[2.5rem] border-2 p-10 font-black text-2xl lg:text-3xl transition-all flex items-center group overflow-hidden ${isAnswered && idx === currentQuestion.correctIndex ? 'bg-emerald-600 border-emerald-400 text-white shadow-2xl scale-105 z-20' : isAnswered && selectedOption === idx ? 'bg-red-600 border-red-500 text-white' : 'bg-[#1e293b]/50 backdrop-blur-2xl border-white/10 hover:border-game-gold hover:bg-white/10 text-slate-300'} ${hiddenOptions.includes(idx) ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-                <div className={`w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 mr-8 text-game-gold font-black group-hover:bg-game-gold group-hover:text-slate-900`}>{String.fromCharCode(65 + idx)}</div>
-                <span className="flex-1 text-left tracking-tight">{option}</span>
-              </motion.button>
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full mt-12 max-w-6xl">
+            {currentQuestion.options.map((option, idx) => {
+              const isHidden = hiddenOptions.includes(idx);
+              const isSelected = selectedOption === idx;
+              const isCorrect = isAnswered && idx === currentQuestion.correctIndex;
+              const isWrong = isAnswered && isSelected && idx !== currentQuestion.correctIndex;
+
+              return (
+                <motion.button
+                  key={idx}
+                  disabled={isAnswered || isHidden}
+                  onClick={() => handleOptionClick(idx)}
+                  whileHover={!isAnswered && !isHidden ? { scale: 1.02, x: 10 } : {}}
+                  whileTap={!isAnswered && !isHidden ? { scale: 0.98 } : {}}
+                  className={`
+                    relative p-8 rounded-[2.5rem] border-2 text-left transition-all duration-500 overflow-hidden group
+                    ${isHidden ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                    ${isSelected && !isAnswered ? 'bg-game-gold/20 border-game-gold shadow-[0_0_30px_rgba(255,215,0,0.3)]' : ''}
+                    ${isCorrect ? 'bg-green-600 border-green-400 shadow-[0_0_40px_rgba(34,197,94,0.4)] text-white' : ''}
+                    ${isWrong ? 'bg-red-600 border-red-400 shadow-[0_0_40px_rgba(220,38,38,0.4)] text-white' : ''}
+                    ${!isSelected && !isCorrect && !isWrong ? 'bg-slate-900/60 border-white/10 hover:border-game-gold/50 text-slate-100' : ''}
+                  `}
+                >
+                  <div className="flex items-center gap-6">
+                    <div className={`
+                      w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl italic
+                      ${isSelected || isCorrect || isWrong ? 'bg-white text-slate-900' : 'bg-white/5 text-game-gold'}
+                    `}>
+                      {String.fromCharCode(65 + idx)}
+                    </div>
+                    <span className="text-xl lg:text-3xl font-bold tracking-tight">{option}</span>
+                  </div>
+                  
+                  {/* Decorative shimmers */}
+                  {(isSelected || isCorrect) && (
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-shimmer" />
+                  )}
+                </motion.button>
+              );
+            })}
           </div>
         </main>
 
@@ -477,6 +548,34 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
       </div>
 
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="max-w-6xl w-full z-10 flex flex-col items-center text-center mt-20">
+          <div className="absolute top-12 right-12 flex gap-6 p-4 bg-black/40 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 shadow-2xl">
+              <button 
+                  onClick={() => setIsVoiceMode(!isVoiceMode)} 
+                  className={`w-20 h-20 rounded-[1.5rem] border transition-all flex flex-col items-center justify-center gap-1 ${isVoiceMode ? 'bg-red-600 border-red-500 text-white shadow-lg animate-pulse' : 'bg-white/5 border-white/10 text-slate-400'}`}
+                  title="Modo Voz"
+              >
+                  <Mic size={32} />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">VOZ</span>
+              </button>
+              <button 
+                  onClick={() => setIsMuted(!isMuted)} 
+                  className="w-20 h-20 rounded-[1.5rem] bg-white/5 border border-white/10 text-slate-400 hover:bg-white/10 transition-all flex flex-col items-center justify-center gap-1"
+                  title="Silenciar"
+              >
+                  {isMuted ? <VolumeX size={32} /> : <Volume2 size={32} />}
+                  <span className="text-[9px] font-bold uppercase tracking-widest">AUDIO</span>
+              </button>
+              <button 
+                  onClick={() => setGameState('start')} 
+                  className="w-20 h-20 rounded-[1.5rem] bg-red-600/10 border border-red-600/30 text-red-500 hover:bg-red-600 hover:text-white transition-all flex flex-col items-center justify-center gap-1"
+                  title="Abandonar"
+              >
+                  <X size={32} />
+                  <span className="text-[9px] font-bold uppercase tracking-widest">SALIR</span>
+              </button>
+          </div>
+
+          <div className="max-w-6xl w-full flex flex-col items-center">
         <div className="relative mb-16"><FaroIcon size={200} className="text-red-600 drop-shadow-[0_0_50px_rgba(220,38,38,0.6)]" /></div>
         <h1 className="text-6xl lg:text-[8rem] font-black leading-[0.85] italic uppercase tracking-tighter mb-6 text-white drop-shadow-3xl">¿QUIÉN QUIERE ESTAR<br/><span className="text-red-600 not-italic">INFORMADO?</span></h1>
         <p className="text-xl lg:text-3xl font-light text-slate-400 max-w-4xl mb-24 uppercase tracking-[0.5em] leading-relaxed italic">EDICIÓN REGIONAL VLS SMART CITY 2026</p>
@@ -485,6 +584,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                 <button onClick={() => startGame(true)} className="flex-1 bg-white/5 hover:bg-white/10 p-12 rounded-[4rem] border border-white/10 transition-all flex flex-col items-center gap-6"><RefreshCw size={50} className="text-blue-500" /><span className="text-2xl font-black uppercase italic">Reanudar</span></button>
             )}
             <button onClick={() => startGame(false)} className="flex-1 bg-red-600 p-12 rounded-[4rem] shadow-3xl hover:bg-red-500 transition-all flex flex-col items-center gap-6"><Play size={50} fill="white" /><span className="text-2xl font-black uppercase italic">Nuevo Legado</span></button>
+          </div>
         </div>
       </motion.div>
 
