@@ -579,8 +579,8 @@ function AppContent() {
 
   const handleLogin = () => {
     if (!auth || !auth.app) {
-      console.warn('Firebase / Auth object might be mocked');
-      setCurrentUser({ displayName: 'Usuario Test', email: 'test@laserena.cl' });
+      console.error('CRÍTICO: El motor de Identidad VLS no se ha inicializado correctamente.');
+      alert("⚠️ El sistema de autenticación no está listo. Por favor, recargue la página.");
       return;
     }
     const provider = new GoogleAuthProvider();
