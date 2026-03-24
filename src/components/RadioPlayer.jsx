@@ -131,6 +131,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const hasAutoplayAttempted = useRef(false);
 
     useEffect(() => {
+        const ACTIVITY_EVENTS = ['click', 'mousedown', 'touchstart', 'keydown', 'scroll'];
+
         const tryAutoplay = () => {
             if (hasAutoplayAttempted.current) return;
             hasAutoplayAttempted.current = true;
@@ -150,7 +152,20 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             ACTIVITY_EVENTS.forEach(evt => window.removeEventListener(evt, tryAutoplay));
         };
 
-        const ACTIVITY_EVENTS = ['click', 'mousedown', 'touchstart', 'keydown', 'scroll']; // Removido mousemove para evitar falso trigger si solo pasa el mouse
+        const handleExternalStart = () => {
+            if (audioRef.current && audioRef.current.paused) {
+                initAudioContext();
+                setupStreamAndPlay();
+            }
+        };
+
+        const handleGlobalToggle = () => {
+            togglePlay();
+        };
+
+        window.addEventListener('vls-start-radio', handleExternalStart);
+        window.addEventListener('vls-toggle-radio-global', handleGlobalToggle);
+        
         ACTIVITY_EVENTS.forEach(evt => window.addEventListener(evt, tryAutoplay, { once: true }));
 
         const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -159,8 +174,17 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         return () => {
             ACTIVITY_EVENTS.forEach(evt => window.removeEventListener(evt, tryAutoplay));
             window.removeEventListener('resize', handleResize);
+            window.removeEventListener('vls-start-radio', handleExternalStart);
+            window.removeEventListener('vls-toggle-radio-global', handleGlobalToggle);
         };
     }, []);
+
+    // Sincronizar estado con el Home Widget
+    useEffect(() => {
+        window.dispatchEvent(new CustomEvent('vls-radio-state-sync', { 
+            detail: { playing: isPlaying, station: currentStation } 
+        }));
+    }, [isPlaying, currentStation]);
 
     const [humanVoice, setHumanVoice] = useState(null);
 

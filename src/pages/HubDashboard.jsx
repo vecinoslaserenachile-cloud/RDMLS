@@ -60,6 +60,7 @@ import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
 import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
+import RadioHomeWidget from '../components/RadioHomeWidget';
 
 export default function HubDashboard() {
     const navigate = useNavigate();
@@ -1438,6 +1439,8 @@ export default function HubDashboard() {
                                         </span>
                                     </div>
                                 </motion.div>
+
+                                <RadioHomeWidget />
 
                                 {/* GALERÍA DE LOS 4 PILARES (REGLA #2) */}
                                 <div style={{

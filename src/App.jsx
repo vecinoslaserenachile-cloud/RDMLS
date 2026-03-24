@@ -503,25 +503,27 @@ function AppContent() {
       return;
     }
     const provider = new GoogleAuthProvider();
+    localStorage.removeItem('smart_logout');
     signInWithPopup(auth, provider).then((result) => {
       setCurrentUser(result.user);
       setIsGuest(false);
       localStorage.removeItem('smart_is_guest');
       localStorage.removeItem('smart_logout');
-      window.dispatchEvent(new CustomEvent('grant-welcome-tokens'));
-    }).catch(err => {
-      console.error("Error logging in:", err);
-      if (err.code === 'auth/popup-closed-by-user' || err.code === 'auth/cancelled-popup-request') {
-        console.warn('Popup action cancelled by user.');
-        return;
-      }
-      if (err.code === 'auth/unauthorized-domain') {
-        alert('Tu dominio actual (vecinosmart.cl) no ha sido autorizado en la consola de Firebase. Por favor, agregalo en Firebase -> Authentication -> Settings -> Authorized domains.\n\nIngresando en Modo Vecino por ahora...');
+      window.dispatchEvent(new CustomEvent('vls-start-radio'));
+    }).catch((err) => {
+      console.error("Auth Error:", err);
+      // Fallback radical ante bloqueos o fallos de conexión
+      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-by-user' || err.code === 'auth/popup-closed-by-user') {
+        signInWithRedirect(auth, provider).catch(redirErr => {
+          console.error("Redirect Error:", redirErr);
+          setCurrentUser({ displayName: 'Vecino Smart', email: 'vecino@vecinosmart.cl', photoURL: '/serenito-avatar.png' });
+          window.dispatchEvent(new CustomEvent('vls-start-radio'));
+        });
       } else {
-        alert(`Aviso: Hubo un problema de conexión o bloqueo de ventanas emergentes (Firebase). \n\nCódigo: ${err.code}\nIngresando en Modo Vecino para que puedas probar la plataforma...`);
+        alert(`Aviso: Hubo un problema de conexión (${err.code}). Accediendo con Perfil de Respaldo...`);
+        setCurrentUser({ displayName: 'Vecino Smart', email: 'vecino@vecinosmart.cl' });
+        window.dispatchEvent(new CustomEvent('vls-start-radio'));
       }
-      setCurrentUser({ displayName: 'Vecino Smart', email: 'vecino@vecinosmart.cl' });
-      setIsGuest(false);
     });
   };
 
@@ -1536,6 +1538,9 @@ function AppLoginOverlay({ handleLogin, setIsGuest, setGuestTimeLeft, navigate }
           onClick={() => { 
             setIsGuest(true);
             setGuestTimeLeft(3600); // 1 hour for trial sessions
+            localStorage.setItem('smart_is_guest', 'true');
+            localStorage.removeItem('smart_logout');
+            window.dispatchEvent(new CustomEvent('vls-start-radio'));
           }}
           className="btn-glass hover-lift"
           style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontSize: '1rem', width: '100%', fontWeight: 'bold' }}
