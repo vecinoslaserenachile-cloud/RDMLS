@@ -201,7 +201,7 @@ function GlobalWarning() {
 
   return (
     <div className="animate-slide-up" style={{ 
-      position: 'fixed', top: '15px', right: '15px', maxWidth: '350px',
+      position: 'fixed', top: '75px', right: '15px', maxWidth: '350px',
       background: 'rgba(220, 38, 38, 0.95)', border: '1px solid #ef4444', 
       borderRadius: '12px', padding: '0.6rem 0.8rem', textAlign: 'left', 
       zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'space-between', 

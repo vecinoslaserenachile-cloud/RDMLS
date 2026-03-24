@@ -1386,6 +1386,8 @@ export default function HubDashboard() {
                                     </div>
                                 </div>
 
+                                <RadioHomeWidget />
+
                                 {/* BUSCADOR INTEGRADO */}
                                 <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
                                     <Search size={20} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
@@ -1439,8 +1441,6 @@ export default function HubDashboard() {
                                         </span>
                                     </div>
                                 </motion.div>
-
-                                <RadioHomeWidget />
 
                                 {/* GALERÍA DE LOS 4 PILARES (REGLA #2) */}
                                 <div style={{

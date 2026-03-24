@@ -1023,20 +1023,41 @@ function AppContent() {
 
           <button 
             onClick={() => {
-              if (currentUser) signOut(auth);
-              setIsGuest(false);
-              setGuestTimeLeft(0);
-              localStorage.removeItem('smart_is_guest');
-              localStorage.setItem('smart_logout', 'true');
-              setShowUserProfile(false);
-              // Opcionalmente, recargar para asegurar un estado limpio
-              window.location.reload();
+              if (currentUser) {
+                signOut(auth).then(() => {
+                  setIsGuest(false);
+                  setGuestTimeLeft(0);
+                  localStorage.removeItem('smart_is_guest');
+                  localStorage.setItem('smart_logout', 'true');
+                  setShowUserProfile(false);
+                  window.location.reload();
+                }).catch(err => {
+                   console.error("Logout error:", err);
+                   window.location.reload(); 
+                });
+              } else {
+                setIsGuest(false);
+                setGuestTimeLeft(0);
+                localStorage.removeItem('smart_is_guest');
+                localStorage.setItem('smart_logout', 'true');
+                window.location.reload();
+              }
             }}
-            className="btn-glass"
-            style={{ padding: '0.4rem 0.8rem', borderRadius: '50px', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', color: 'white' }}
+            className="btn-glass pulse"
+            style={{ 
+              padding: '0.6rem 1.2rem', 
+              borderRadius: '50px', 
+              background: 'rgba(239, 68, 68, 0.4)', 
+              border: '2px solid #ef4444', 
+              color: 'white',
+              fontWeight: '900',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
           >
-            <CloseIcon size={18} color="#ef4444" />
-            <span style={{ fontSize: '0.8rem' }}>SALIR</span>
+            <CloseIcon size={20} color="white" />
+            <span style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>SALIR</span>
           </button>
         </div>
 
