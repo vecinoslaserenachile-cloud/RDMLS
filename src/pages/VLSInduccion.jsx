@@ -203,71 +203,139 @@ export default function VLSInduccion({ onClose }) {
     setShowVideo(false); 
   }, [step]);
 
-  const goNext = () => canAdvance && setStep(s => Math.min(s + 1, 13));
-  const goBack = () => setStep(s => Math.max(0, s - 1));
+  // --- MOTOR DE SONIDO INDUCCIÓN (Tipo Juego) ---
+  const inductionSound = {
+    playSelect: () => {
+      const audio = new Audio("https://actions.google.com/sounds/v1/science_fiction/typing_industrial.ogg");
+      audio.volume = 0.2;
+      audio.play().catch(() => {});
+    },
+    playSuccess: () => {
+      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/clime_up_the_ladder.ogg");
+      audio.volume = 0.3;
+      audio.play().catch(() => {});
+    },
+    playNext: () => {
+      const audio = new Audio("https://actions.google.com/sounds/v1/workflow/clutter_noise.ogg");
+      audio.volume = 0.15;
+      audio.play().catch(() => {});
+    },
+    playCertify: () => {
+      const audio = new Audio("https://actions.google.com/sounds/v1/cartoon/fanfare.ogg");
+      audio.volume = 0.4;
+      audio.play().catch(() => {});
+    }
+  };
+
+  const goNext = () => {
+    if (canAdvance) {
+      if (step === 12) inductionSound.playCertify();
+      else inductionSound.playNext();
+      setStep(s => Math.min(s + 1, 13));
+    }
+  };
+  const goBack = () => {
+    inductionSound.playSelect();
+    setStep(s => Math.max(0, s - 1));
+  };
 
   const handleAnswer = (idx) => {
     if (quizState !== 'waiting') return;
     if (idx === QUESTIONS[quizIndex].ans) {
+      inductionSound.playSuccess();
       setQuizState('correct');
       setScore(s => s + 1);
     } else {
+      inductionSound.playSelect(); // Sonido de click/error
       setQuizState('wrong');
     }
   };
 
-  // --- LAYOUT ---
+  // --- LAYOUT MASTER CEO INDUCCIÓN ---
   const ChapterLayout = ({ title, subtitle, content, visual }) => (
-    <div className="fixed inset-0 z-[1000000] flex flex-col h-[100dvh] w-full bg-slate-950 text-slate-100 font-sans overflow-hidden">
-      <div className="fixed top-0 left-0 w-full h-1.5 bg-slate-800 z-[1002]">
-        <div className="h-full bg-gradient-to-r from-red-600 to-orange-500 shadow-[0_0_20px_red] transition-all duration-700" style={{ width: `${(step / 13) * 100}%` }}></div>
+    <div className="fixed inset-0 z-[1000000] flex flex-col h-[100dvh] w-full bg-[#020617] text-slate-100 font-sans overflow-hidden">
+      {/* Barra de Progreso Premium */}
+      <div className="fixed top-0 left-0 w-full h-[4px] bg-white/5 z-[1002]">
+        <motion.div 
+          className="h-full bg-gradient-to-r from-red-600 via-orange-500 to-emerald-400 shadow-[0_0_20px_rgba(239,68,68,0.5)]" 
+          initial={{ width: 0 }}
+          animate={{ width: `${(step / 13) * 100}%` }}
+          transition={{ duration: 1, ease: "circOut" }}
+        />
       </div>
       
       <div className="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
-        <div className="w-full lg:w-1/2 h-[40vh] lg:h-full bg-slate-900 flex items-center justify-center p-0 lg:p-12 relative border-b lg:border-b-0 lg:border-r border-white/5 z-10">
-           <div className="w-full h-full lg:rounded-[3rem] overflow-hidden shadow-2xl bg-black border border-white/10 flex items-center justify-center relative">
-             {visual}
+        {/* Panel Visual - Serenito Premium / Media Area */}
+        <div className="w-full lg:w-5/12 h-[35vh] lg:h-full bg-slate-900/40 flex items-center justify-center p-0 lg:p-12 relative border-b lg:border-b-0 lg:border-r border-white/5 z-10 backdrop-blur-xl">
+           <div className="w-full h-full lg:rounded-[3rem] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.8)] bg-black/60 border border-white/10 flex items-center justify-center relative group">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent opacity-60" />
+              {visual}
+              <div className="absolute bottom-6 left-6 text-[10px] font-black text-white/10 uppercase tracking-[6px] border border-white/5 px-4 py-2 rounded-lg backdrop-blur-md">VLS-SMART-CORE</div>
            </div>
         </div>
 
-        <div className="w-full lg:w-1/2 flex flex-col h-[60vh] lg:h-full bg-slate-950 overflow-hidden relative z-20">
-          <div className="px-8 lg:px-16 pt-8 pb-4 shrink-0 border-b border-white/5 bg-slate-950/95 backdrop-blur-md">
-             <div className="flex items-center gap-3 mb-2">
-                <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">PASO {step}</span>
-                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-widest pl-2 border-l border-white/20 flex items-center gap-2"><Clock size={12} /> INDUCCIÓN 2026</span>
+        {/* Panel de Contenido / Texto Master Design */}
+        <div className="w-full lg:w-7/12 flex flex-col h-[65vh] lg:h-full bg-[#020617] overflow-hidden relative z-20">
+          <div className="px-8 lg:px-24 pt-16 pb-8 shrink-0 border-b border-white/5 bg-[#020617]/95 backdrop-blur-3xl">
+             <div className="flex items-center gap-4 mb-6">
+                <span className="bg-red-600/20 text-red-500 text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-[0.3em] border border-red-600/30">MÓDULO {step}</span>
+                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                <span className="text-slate-500 text-[10px] font-bold uppercase tracking-[4px] flex items-center gap-3"><Bot size={16} className="text-red-600 animate-pulse" /> IA TUTOR ACTIVE</span>
              </div>
-             <h2 className="text-2xl lg:text-5xl font-black text-white leading-none tracking-tighter uppercase italic mb-1">{title}</h2>
-             <h3 className="text-lg lg:text-2xl text-slate-400 font-serif italic">{subtitle}</h3>
+             <motion.h2 
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                className="text-4xl lg:text-7xl font-black text-white leading-none tracking-tighter uppercase italic mb-2 drop-shadow-2xl"
+             >
+                {title}
+             </motion.h2>
+             <h3 className="text-xl lg:text-3xl text-emerald-400/80 font-serif italic">{subtitle}</h3>
           </div>
 
-          <div onScroll={handleScroll} ref={scrollRef} className="flex-1 overflow-y-auto px-8 lg:px-16 py-8 scroll-smooth">
-            <div className="space-y-10 text-xl lg:text-2xl text-slate-300 font-light leading-relaxed text-justify pb-32">
+          <div onScroll={handleScroll} ref={scrollRef} className="flex-1 overflow-y-auto px-8 lg:px-24 py-12 scroll-smooth custom-scrollbar">
+            <div className="space-y-16 text-xl lg:text-3xl text-slate-300 font-light leading-relaxed pb-60">
               {content}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="h-24 lg:h-28 shrink-0 bg-slate-900/95 backdrop-blur-xl border-t border-white/10 px-8 lg:px-20 flex items-center justify-between z-[1001] absolute bottom-0 w-full shadow-2xl">
-          <button onClick={step === 0 ? onClose : goBack} className="text-slate-500 hover:text-white font-black text-xs uppercase flex items-center gap-2 p-4 transition-colors">
-            <ChevronLeft size={20}/> {step === 0 ? 'SALIR' : 'ATRÁS'}
+      {/* FOOTER CONTROL BAR - MASTER CEO EXPERIENCE */}
+      <div className="h-32 lg:h-40 shrink-0 bg-[#020617]/90 backdrop-blur-3xl border-t border-white/10 px-8 lg:px-32 flex items-center justify-between z-[1001] absolute bottom-0 w-full shadow-[0_-20px_100px_rgba(0,0,0,0.8)]">
+          <button 
+            onClick={step === 0 ? onClose : goBack} 
+            className="group px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-[2rem] transition-all flex items-center gap-4 font-black text-[11px] uppercase tracking-[0.2em] text-slate-500 hover:text-white"
+          >
+            <ChevronLeft size={24} className="group-hover:-translate-x-2 transition-transform" />
+            {step === 0 ? 'Abortar' : 'Atrás'}
           </button>
           
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-12">
             {!canAdvance && (
-               <div className="hidden sm:flex items-center gap-2 text-red-500 text-[10px] font-black uppercase tracking-widest animate-pulse">
-                 <ChevronDown size={20}/> Desliza para leer todo
-               </div>
+               <motion.div 
+                 animate={{ opacity: [0.3, 1, 0.3], y: [0, 5, 0] }}
+                 transition={{ repeat: Infinity, duration: 2 }}
+                 className="hidden sm:flex items-center gap-4 text-emerald-500 text-[11px] font-black uppercase tracking-[4px]"
+               >
+                 <ChevronDown size={28}/> Desbloqueando con Lectura
+               </motion.div>
             )}
+            
             <button 
               onClick={goNext} 
               disabled={!canAdvance}
-              className={`px-10 py-4 lg:px-14 lg:py-5 rounded-2xl font-black shadow-2xl transition-all flex items-center gap-3 text-xs lg:text-sm uppercase tracking-[0.2em] transform 
-                ${canAdvance ? 'bg-red-600 text-white hover:bg-red-500 hover:-translate-y-1 shadow-red-900/50' : 'bg-white/10 text-slate-600 cursor-not-allowed'}
+              className={`relative px-16 py-8 lg:px-32 rounded-[2.5rem] font-black transition-all flex items-center gap-6 text-sm lg:text-xl uppercase tracking-[0.4em] overflow-hidden group
+                ${canAdvance 
+                  ? 'bg-red-600 text-white shadow-[0_25px_80px_rgba(220,38,38,0.5)] hover:scale-105 active:scale-95 border border-white/20' 
+                  : 'bg-white/5 text-slate-800 border border-white/5 cursor-not-allowed opacity-40'}
               `}
             >
-              {canAdvance && <CheckCircle size={18} className="text-white animate-bounce"/>}
-              SIGUIENTE <ArrowRight size={18} />
+              {canAdvance && (
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer" />
+              )}
+              {canAdvance ? <Zap size={24} className="text-yellow-400 fill-yellow-400" /> : <Clock size={24} />}
+              <span className="relative">{step === 12 ? 'FINALIZAR' : 'SIGUIENTE'}</span>
+              <ArrowRight size={28} className={canAdvance ? "group-hover:translate-x-4 transition-transform" : ""} />
             </button>
           </div>
       </div>

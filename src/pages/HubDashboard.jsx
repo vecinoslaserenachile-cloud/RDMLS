@@ -1238,7 +1238,7 @@ export default function HubDashboard() {
                     {/* Nueva Identidad Visual: Integración de Logo VLS */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '900px', boxSizing: 'border-box' }}>
                         {/* RadioHomeWidget: siempre visible en el portal principal */}
-                        <div style={{ width: '100%' }}>
+                        <div style={{ width: '100%', position: 'relative', zIndex: 100001 }}>
                             <RadioHomeWidget />
                         </div>
                         {!window.location.hostname.includes('vecinoslaserena.cl') && !window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('localhost') ? (
@@ -1903,179 +1903,70 @@ export default function HubDashboard() {
 
                                 {isVideoPlaying && (
                 <AnimatePresence>
-                    {/* ─── TVLS SMART PLAYER ─── */}
-                    {isFullscreenTV && (
-                        // BACKDROP dim overlay
-                        <motion.div
-                            key="tvls-backdrop"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setIsFullscreenTV(false)}
-                            style={{
-                                position: 'fixed', inset: 0, zIndex: 9998,
-                                background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(6px)'
-                            }}
-                        />
-                    )}
+                    {/* TV 1: SUPERIOR (Lúdico/Panorámico) */}
                     <motion.div
-                        key="tvls-player"
-                        drag={!isFullscreenTV}
+                        key="tvls-player-top"
+                        drag
                         dragMomentum={false}
-                        dragElastic={0.1}
-                        dragConstraints={{ left: -1000, right: 1000, top: -1000, bottom: 1000 }}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={isFullscreenTV ? {
-                            opacity: 1, scale: 1,
-                            width: '100vw', height: '100vh'
-                        } : {
-                            opacity: 1, scale: 1,
-                            width: window.innerWidth < 768 ? (isMiniTV ? '60px' : '160px') : (isMiniTV ? '80px' : '280px'),
-                            height: window.innerWidth < 768 ? (isMiniTV ? '60px' : '90px') : (isMiniTV ? '60px' : '158px')
-                        }}
-                        exit={{ opacity: 0, scale: 0.5 }}
-                        whileHover={!isFullscreenTV ? { scale: 1.02 } : {}}
-                        style={isFullscreenTV ? {
-                            position: 'fixed', inset: 0,
-                            zIndex: 9999,
-                            borderRadius: 0,
-                            background: '#000',
-                            overflow: 'hidden',
-                            pointerEvents: 'auto'
-                        } : {
+                        initial={{ opacity: 0, y: 100 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        style={{
                             position: 'fixed',
-                            bottom: window.innerWidth < 768 ? '140px' : '100px',
+                            top: '120px',
+                            right: '40px',
+                            width: '320px',
+                            height: '180px',
+                            zIndex: 10000,
+                            borderRadius: '16px',
+                            overflow: 'hidden',
+                            boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+                            border: '2px solid rgba(16, 185, 129, 0.4)',
+                            background: '#000',
+                            cursor: 'grab'
+                        }}
+                    >
+                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS LÚDICO</div>
+                        <video 
+                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]?.url || ""}
+                            autoPlay loop muted={isMuted} playsInline
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                    </motion.div>
+
+                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE */}
+                    <motion.div
+                        key="tvls-player-bottom"
+                        drag
+                        dragMomentum={false}
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        style={{
+                            position: 'fixed',
+                            bottom: '100px',
                             right: '25px',
-                            width: window.innerWidth < 768 ? '160px' : '280px',
-                            height: window.innerWidth < 768 ? '90px' : '158px',
+                            width: '280px',
+                            height: '158px',
                             zIndex: 10000,
                             borderRadius: '16px',
                             overflow: 'hidden',
                             boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
-                            border: '2px solid rgba(255,255,255,0.1)',
+                            border: '2px solid rgba(239, 68, 68, 0.4)',
                             background: '#000',
-                            pointerEvents: 'auto'
+                            cursor: 'grab'
                         }}
                     >
-                        {/* gradient overlay bottom */}
-                        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 40%)', zIndex: 1 }}></div>
-
-                        {/* ─── CONTROL BAR (always visible) ─── */}
-                        <div style={{
-                            position: 'absolute', top: isFullscreenTV ? '16px' : '6px',
-                            right: isFullscreenTV ? '16px' : '6px',
-                            zIndex: 10, display: 'flex', gap: isFullscreenTV ? '8px' : '4px',
-                            background: 'rgba(0,0,0,0.65)', borderRadius: '20px',
-                            padding: isFullscreenTV ? '6px 10px' : '3px 5px',
-                            backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255,255,255,0.15)'
-                        }}>
-                            {/* MINIMIZAR */}
-                            {!isFullscreenTV && (
-                                <button
-                                    onClick={() => { setIsMiniTV(!isMiniTV); setIsFullscreenTV(false); }}
-                                    title={isMiniTV ? 'Expandir' : 'Minimizar'}
-                                    style={{ padding: '4px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: isFullscreenTV ? '32px' : '22px', height: isFullscreenTV ? '32px' : '22px' }}
-                                >
-                                    {isMiniTV ? <Maximize size={isFullscreenTV ? 16 : 11} /> : <Minimize size={isFullscreenTV ? 16 : 11} />}
-                                </button>
-                            )}
-                            {/* PANTALLA COMPLETA */}
-                            <button
-                                onClick={() => { setIsFullscreenTV(!isFullscreenTV); setIsMiniTV(false); }}
-                                title={isFullscreenTV ? 'Salir de pantalla completa' : 'Pantalla completa'}
-                                style={{ padding: '4px', borderRadius: '50%', background: isFullscreenTV ? 'rgba(239,68,68,0.4)' : 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: isFullscreenTV ? '32px' : '22px', height: isFullscreenTV ? '32px' : '22px' }}
-                            >
-                                <Maximize size={isFullscreenTV ? 16 : 11} />
-                            </button>
-                            {/* MUTE */}
-                            <button
-                                onClick={toggleMute}
-                                title={isMuted ? 'Activar audio TVLS' : 'Silenciar TVLS'}
-                                style={{ padding: '4px', borderRadius: '50%', background: isMuted ? '#ef4444' : 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: isFullscreenTV ? '32px' : '22px', height: isFullscreenTV ? '32px' : '22px' }}
-                            >
-                                {isMuted ? <VolumeX size={isFullscreenTV ? 16 : 11} /> : <Volume2 size={isFullscreenTV ? 16 : 11} />}
-                            </button>
-                            {/* CERRAR */}
-                            <button
-                                onClick={() => { setIsVideoPlaying(false); setIsFullscreenTV(false); setIsMiniTV(false); }}
-                                title="Cerrar TVLS"
-                                style={{ padding: '4px', borderRadius: '50%', background: 'rgba(239, 68, 68, 0.7)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: isFullscreenTV ? '32px' : '22px', height: isFullscreenTV ? '32px' : '22px' }}
-                            >
-                                <X size={isFullscreenTV ? 16 : 11} />
-                            </button>
-                        </div>
-
-                        {/* ─── CHANNEL BAR (always visible) ─── */}
-                        <div style={{
-                            position: 'absolute',
-                            bottom: isFullscreenTV ? '24px' : '6px',
-                            left: '50%', transform: 'translateX(-50%)',
-                            zIndex: 10, display: 'flex', alignItems: 'center', gap: '8px',
-                            background: 'rgba(0,0,0,0.75)', padding: isFullscreenTV ? '6px 20px' : '2px 8px',
-                            borderRadius: '20px', backdropFilter: 'blur(10px)',
-                            border: '1px solid rgba(255,255,255,0.15)', whiteSpace: 'nowrap'
-                        }}>
-                            <button onClick={nextVideo} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 4px' }}>
-                                <ChevronLeft size={isFullscreenTV ? 18 : 12} />
-                            </button>
-                            <div style={{ width: '1px', height: isFullscreenTV ? '14px' : '8px', background: 'rgba(255,255,255,0.2)' }}></div>
-                            
-                            <button 
-                                onClick={() => { setCurrentPlaylist(currentPlaylist === 'institutional' ? 'ludic' : 'institutional'); setPreviewIndex(0); }}
-                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isFullscreenTV ? '1rem' : '0.55rem', fontWeight: '900', color: currentPlaylist === 'institutional' ? '#ef4444' : '#10b981', letterSpacing: '0.5px' }}
-                            >
-                                {currentPlaylist === 'institutional' ? 'INSTITUCIONAL' : 'LÚDICO (SERENITO)'}
-                            </button>
-
-                            {isFullscreenTV && (
-                                <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {TVLS_VIDEOS[previewIndex]?.title || 'Canal Local'}
-                                </span>
-                            )}
-                            <div style={{ width: '1px', height: isFullscreenTV ? '14px' : '8px', background: 'rgba(255,255,255,0.2)' }}></div>
-                            <button onClick={nextVideo} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 4px' }}>
-                                <ChevronRight size={isFullscreenTV ? 18 : 12} />
-                            </button>
-                        </div>
-
-                        {/* ─── VIDEO / IFRAME ─── */}
-                        <div style={{ width: '100%', height: '100%', pointerEvents: 'none', position: 'relative' }}>
-                            {isMuted && (
-                                <div onClick={toggleMute} style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, cursor: 'pointer', pointerEvents: 'auto', display: 'flex' }}>
-                                    <div className="animate-pulse-slow" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(6px)', padding: '6px 12px', borderRadius: '20px', color: 'white', fontWeight: '900', fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 15px rgba(0,0,0,0.3)' }}>
-                                        <VolumeX size={14} color="#ef4444" /> ACTIVAR AUDIO
-                                    </div>
-                                </div>
-                            )}
-                            {TVLS_VIDEOS[previewIndex].url ? (
-                                <video 
-                                    key={TVLS_VIDEOS[previewIndex].url}
-                                    src={TVLS_VIDEOS[previewIndex].url}
-                                    autoPlay 
-                                    loop 
-                                    muted={isMuted}
-                                    playsInline
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                />
-                            ) : (
-                                <iframe
-                                    ref={iframeRefActive}
-                                    width="100%" height="100%"
-                                    src={TVLS_VIDEOS[previewIndex].isPlaylist 
-                                        ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
-                                        : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
-                                    }
-                                    title="TVLS Preview"
-                                    frameBorder="0"
-                                    style={{ transform: isFullscreenTV ? 'scale(1)' : 'scale(1.1)' }}
-                                    allow="autoplay; encrypted-media; fullscreen"
-                                />
-                            )}
-                        </div>
+                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
+                        <iframe
+                            width="100%" height="100%"
+                            src={`https://www.youtube.com/embed/${PLAYLIST_INSTITUTIONAL[0].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${PLAYLIST_INSTITUTIONAL[0].id}`}
+                            title="TVLS Institutional"
+                            frameBorder="0"
+                            allow="autoplay; encrypted-media; fullscreen"
+                        />
                     </motion.div>
                 </AnimatePresence>
             )}
+                    {/* End of TV Section */}
                 <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                     <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
                 </div>

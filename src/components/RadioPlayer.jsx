@@ -105,7 +105,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         return () => clearInterval(timer);
     }, [newsFlashes.length]);
     
-    const [weatherData, setWeatherData] = useState({ temp: '17.4', condition: 'Despejado' });
+    const [weatherData, setWeatherData] = useState({ temp: '17.4', condition: 'Estado VLS' });
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -115,11 +115,12 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 if (data.current_weather) {
                     setWeatherData({
                         temp: Math.round(data.current_weather.temperature).toString(),
-                        condition: 'Despejado'
+                        condition: 'Sincronizado'
                     });
                 }
             } catch (e) { 
-                setWeatherData(prev => ({ ...prev, temp: (20 + (Math.random() * 0.5)).toFixed(1) }));
+                // Fallback silencioso sin reporte de grados falsos
+                setWeatherData(prev => ({ ...prev, temp: '--' }));
             }
         };
         fetchWeather();
@@ -278,13 +279,13 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 const tips = [
                     `VLS informa: Son las ${hours} con ${minutes}. Estás escuchando el bloque "${getCurrentShow()}".`,
                     `Relatos Soberanos: Acompaña a Sofia y Lucas en su próximo viaje por el Paseo Histórico 3D.`,
-                    `Spot Publicitario VLS: Ven al Nuevo Peregrino, ese lugar especial de La Serena. Pub y restaurante con más de 20 años de tradición musical.`,
+                    `Spot Publicitario VLS: Ven al Nuevo Peregrino, ese lugar especial de La Serena... más de 20 años de música.`,
                     `Dato VLS: Sofia y Lucas nos recuerdan que la soberanía empieza en la educación de nuestros hijos.`,
-                    `Faro News: El Arquitecto Invisible reporta una optimización del 40% en los nodos de seguridad comunal.`,
+                    `Faro News: El Arquitecto Invisible reporta una optimización en los nodos de seguridad comunal.`,
                     "Actualidad Local: Se confirma la mediación exitosa en el primer caso de Derechos Soberanos del mes.",
-                    "Recomendación VLS: Si buscas un refugio de bohemia y buena mesa, visita El Nuevo Peregrino en Balmaceda 2936. Un cuarto de siglo de historias y música chilena nos respaldan.",
-                    "Homenaje: Recordamos la melodía inconclusa de un gran maestro, un tesoro de nuestra memoria que hoy rescatamos en formato digital para todos los vecinos.",
-                    "Próximamente: El Master Plan 2026 incluye un nuevo Teatro Regional. Apoyamos el arte local con producciones de la escena regional."
+                    "Recomendación VLS: Si buscas un refugio de bohemia y buena mesa, visita El Nuevo Peregrino en Balmaceda 2936.",
+                    "Homenaje: Recordamos la melodía inconclusa de un gran maestro, un tesoro de nuestra memoria.",
+                    "Próximamente: El Master Plan 2026 incluye un nuevo Teatro Regional. Apoyamos el arte local."
                 ];
                 const nextIndex = (currentTipIndex + 1) % tips.length;
                 setCurrentTipIndex(nextIndex);

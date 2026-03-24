@@ -11,6 +11,9 @@ import { motion } from 'framer-motion';
 export default function VLSQuantumWatch({ onCalendarClick }) {
     const [time, setTime] = useState(new Date());
     const [blink, setBlink] = useState(true);
+    const [isMinimized, setIsMinimized] = useState(() => {
+        return localStorage.getItem('vls_quantum_minimized') === 'true';
+    });
     
     // Temas de color para el reloj
     const themes = [
@@ -26,6 +29,13 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
     const [currentThemeId, setCurrentThemeId] = useState(() => {
         return localStorage.getItem('vls_quantum_watch_theme') || 'blue';
     });
+
+    const toggleMinimize = (e) => {
+        e.stopPropagation();
+        const newState = !isMinimized;
+        setIsMinimized(newState);
+        localStorage.setItem('vls_quantum_minimized', newState.toString());
+    };
 
     const handleThemeChange = (id, e) => {
         e.stopPropagation(); // Don't trigger calendar
@@ -67,91 +77,92 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
         <motion.div 
             drag
             dragMomentum={false}
-            title="VLS Quantum Watch - Arrastrable"
+            title={isMinimized ? "VLS Quantum (Minimizado) - Arrastrable" : "VLS Quantum Watch - Arrastrable"}
             id="vls-quantum-watch-container"
             style={{
                 position: 'fixed',
-                top: '220px',
-                left: '20px',
+                top: isMinimized ? '25px' : '220px',
+                left: isMinimized ? 'auto' : '20px',
+                right: isMinimized ? '480px' : 'auto',
                 zIndex: 10000000,
                 cursor: 'grab',
                 userSelect: 'none',
                 filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))',
+                width: isMinimized ? 'auto' : '170px'
             }}
-            whileHover={{ scale: 1.05, filter: 'drop-shadow(0 15px 30px rgba(56,189,248,0.4))' }}
+            animate={{ 
+                scale: isMinimized ? 1 : 1.05,
+                y: isMinimized ? 0 : [0, -4, 0] 
+            }}
+            transition={{ y: { duration: 4, repeat: Infinity, ease: 'easeInOut' } }}
+            whileHover={{ scale: 1.08 }}
             whileTap={{ cursor: 'grabbing', scale: 0.95 }}
         >
             {/* Carcasa exterior Quantum 5 */}
             <div style={{
                 background: 'linear-gradient(145deg, #1e293b 0%, #0f172a 100%)',
-                borderRadius: '12px',
-                padding: '4px',
-                border: '2px solid #334155',
+                borderRadius: isMinimized ? '30px' : '12px',
+                padding: '3px',
+                border: '1px solid #334155',
                 position: 'relative',
+                display: 'flex',
+                alignItems: 'center'
             }}>
-                {/* Tornillos decorativos */}
-                <div style={{ position: 'absolute', top: '4px', left: '4px', width: '3px', height: '3px', background: '#475569', borderRadius: '50%' }} />
-                <div style={{ position: 'absolute', top: '4px', right: '4px', width: '3px', height: '3px', background: '#475569', borderRadius: '50%' }} />
-                <div style={{ position: 'absolute', bottom: '4px', left: '4px', width: '3px', height: '3px', background: '#475569', borderRadius: '50%' }} />
-                <div style={{ position: 'absolute', bottom: '4px', right: '4px', width: '3px', height: '3px', background: '#475569', borderRadius: '50%' }} />
-
                 {/* Marco interior metalizado */}
                 <div style={{
                     background: 'linear-gradient(180deg, #64748b 0%, #334155 100%)',
-                    borderRadius: '8px',
-                    padding: '2px',
+                    borderRadius: isMinimized ? '28px' : '8px',
+                    padding: '1px',
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center'
                 }}>
                     {/* Pantalla LCD */}
                     <div 
-                        onClick={handleClick}
+                        onClick={isMinimized ? toggleMinimize : handleClick}
                         style={{
                         background: currentTheme.bg,
-                        borderRadius: '6px',
-                        padding: '8px 12px',
+                        borderRadius: isMinimized ? '25px' : '6px',
+                        padding: isMinimized ? '4px 12px' : '8px 12px',
                         position: 'relative',
-                        minWidth: '150px',
+                        minWidth: isMinimized ? '120px' : '150px',
                         boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)',
-                        cursor: 'pointer'
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: isMinimized ? 'row' : 'column',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        gap: isMinimized ? '10px' : '0'
                     }}>
                         {/* LCD Flare */}
                         <div style={{
                             position: 'absolute',
                             top: 0, left: 0, right: 0, bottom: 0,
-                            background: 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%)',
-                            borderRadius: '6px',
+                            background: 'linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 50%)',
+                            borderRadius: isMinimized ? '25px' : '6px',
                             pointerEvents: 'none'
                         }} />
 
-                        {/* Top Info */}
-                        <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            marginBottom: '4px',
-                        }}>
-                            <span style={{
-                                fontFamily: '"Courier New", monospace',
-                                fontSize: '0.65rem',
-                                fontWeight: 'bold',
-                                color: currentTheme.subText,
-                                letterSpacing: '1px',
-                                textShadow: '0 1px 2px rgba(0,0,0,0.5)'
-                            }}>
-                                {dayName}
-                            </span>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                <Zap size={10} color="#fde047" fill="#fde047" />
-                                <span style={{
-                                    fontFamily: '"Courier New", monospace',
-                                    fontSize: '0.65rem',
-                                    fontWeight: 'bold',
-                                    color: currentTheme.subText,
-                                    letterSpacing: '1px',
+                        {!isMinimized ? (
+                            <>
+                                {/* Top Info */}
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    marginBottom: '4px',
+                                    width: '100%'
                                 }}>
-                                    {dayNum} {monthName}
-                                </span>
-                            </div>
-                        </div>
+                                    <span style={{ fontFamily: '"Courier New", monospace', fontSize: '0.65rem', fontWeight: 'bold', color: currentTheme.subText }}>{dayName}</span>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }} onClick={toggleMinimize}>
+                                        <Zap size={10} color="#fde047" fill="#fde047" className="animate-pulse" />
+                                        <span style={{ fontSize: '0.5rem', color: 'white', opacity: 0.6 }}>MIN</span>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <Zap size={12} color="#fde047" fill="#fde047" />
+                        )}
 
                         {/* Middle: Time */}
                         <div style={{
