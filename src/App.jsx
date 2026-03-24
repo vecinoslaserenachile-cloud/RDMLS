@@ -192,7 +192,7 @@ function AppContent() {
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
   const [authInitialized, setAuthInitialized] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [showRadio, setShowRadio] = useState(false);
+  const [showRadio, setShowRadio] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
@@ -1025,6 +1025,7 @@ function AppContent() {
               setIsGuest(false);
               setGuestTimeLeft(0);
               localStorage.removeItem('smart_is_guest');
+              localStorage.setItem('smart_logout', 'true');
               setShowUserProfile(false);
               // Opcionalmente, recargar para asegurar un estado limpio
               window.location.reload();
