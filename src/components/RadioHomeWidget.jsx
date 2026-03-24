@@ -28,7 +28,11 @@ export default function RadioHomeWidget() {
     const vuRightRef = useRef(null);
     const analyzerRef = useRef(null);
     const animationRef = useRef(null);
-    const [currentStation, setCurrentStation] = useState({ name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3' });
+    const isRDMLS = window.location.hostname.includes('rdmls');
+    const [currentStation, setCurrentStation] = useState({ 
+        name: isRDMLS ? 'RDMLS Señal Oficial' : 'VLS Señal Principal', 
+        stream: isRDMLS ? 'https://az11.yesstreaming.net:8590/radio.mp3' : 'https://az11.yesstreaming.net:8630/radio.mp3' 
+    });
 
     useEffect(() => {
         const handleRadioState = (e) => {
@@ -88,7 +92,9 @@ export default function RadioHomeWidget() {
                         <Radio size={24} color="white" />
                     </div>
                     <div>
-                        <h3 style={{ margin: 0, color: 'white', fontSize: '1.1rem', fontWeight: '900' }}>RADIO VECINOS LA SERENA</h3>
+                        <h3 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>
+                            {isRDMLS ? 'RDMLS - RADIO DIGITAL MUNICIPAL' : 'RADIO VECINOS LA SERENA'}
+                        </h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ fontSize: '0.75rem', color: isPlaying ? '#ef4444' : '#64748b', fontWeight: 'bold' }}>
                                 {isPlaying ? 'SINTONIZADA • EN VIVO' : 'SINTONIZADA • PAUSADA'}

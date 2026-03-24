@@ -907,8 +907,8 @@ function AppContent() {
         </button>
       )}
 
-      {/* VLSound — solo portales VLS, no RDMLS */}
-      {!isRDMLS && !isInduccion && (
+      {/* VLSound — Transversal para VLS y RDMLS */}
+      {!isInduccion && (
         <VLSConsoleSound 
            onOpenRadio={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRadio(true); }} 
            onOpenTV={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRetroTV(true); }}

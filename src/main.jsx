@@ -45,6 +45,7 @@ import GameVLS from './pages/GameVLS.jsx';
 import VLSMotorsShowroom from './pages/VLSMotorsShowroom.jsx';
 import VLSInduccion from './pages/VLSInduccion.jsx';
 import VLSQuantumWatch from './components/VLSQuantumWatch';
+import VLSConsoleSound from './components/VLSConsoleSound'; // Added import for VLSConsoleSound
 import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
@@ -120,6 +121,7 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
+    const isRDMLS = window.location.hostname.includes('rdmls'); // Define isRDMLS here for use in render
     if (this.state.hasError) {
       if (this.state.isChunkError) {
         return (
@@ -142,7 +144,10 @@ class ErrorBoundary extends React.Component {
             <Activity size={80} color="#38bdf8" style={{ position: 'relative', opacity: 0.8 }} />
           </div>
 
-          <div style={{ maxWidth: '500px' }}>
+                    <div>
+                        <h3 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>
+                            {isRDMLS ? 'RDMLS - RADIO DIGITAL MUNICIPAL' : 'RADIO VECINOS LA SERENA'}
+                        </h3>
             <h1 style={{ color: 'white', fontSize: '2rem', fontWeight: '900', marginBottom: '1rem', letterSpacing: '-1px' }}>Sincronizando con la última versión</h1>
             <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2.5rem' }}>
               Estamos actualizando los módulos de la ComunaSmart para garantizar tu seguridad y la mejor experiencia en <strong>vecinoslaserena.cl</strong>.
@@ -150,7 +155,15 @@ class ErrorBoundary extends React.Component {
             
             {/* Soft Debug Info */}
             <div style={{ marginBottom: '3rem', fontSize: '0.9rem', color: 'rgba(255,255,255,0.4)', fontWeight: 'bold' }}>
-              @vecinoslaserena.cl
+             {/* VLSound — siempre encendido para VLS y RDMLS */}
+      {!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls') && (
+        <VLSConsoleSound 
+           onOpenRadio={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); /* setShowRadio(true); */ }} 
+           onOpenTV={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); /* setShowRetroTV(true); */ }}
+           onClose={() => {}}
+           isRDMLS={isRDMLS} // Pass isRDMLS prop
+        />
+      )}
             </div>
 
             <button 
@@ -245,7 +258,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
         {isRdmlsDns ? (
           <Routes>
-            <Route path="/" element={<CentroRadio />} />
+            <Route path="/radio-portal" element={<CentroRadio />} />
+            <Route path="/" element={<App />}>
+              <Route index element={<HubDashboard />} />
+            </Route>
             <Route path="/admin" element={<App />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
