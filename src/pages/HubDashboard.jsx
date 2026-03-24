@@ -211,17 +211,28 @@ export default function HubDashboard() {
     const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-    const [previewIndex, setPreviewIndex] = useState(0);
     const [isMuted, setIsMuted] = useState(true);
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [videoSelected, setVideoSelected] = useState(false);
     
-    // Lista de videos para el módulo flotante TVLS
-    const TVLS_VIDEOS = [
-        { id: 'b9LTH4muxR8', title: 'C5 FARO LIVE' },
-        { id: 'jfKfPfyJRdk', title: 'TURISMO LA SERENA' },
-        { id: '6S6vOa-D0Z0', title: 'PATRIMONIO VLS' }
+    // Listas de reproducción diferenciadas por pilares
+    const PLAYLIST_INSTITUTIONAL = [
+        { id: 'b9LTH4muxR8', title: 'FARO LIVE (MUNICIPALIDAD DE LA SERENA)', zoom: true },
+        { id: 'EQUdyb-YVxM', title: 'ENTREVISTA: Nueva Era de Soberanía Regional' },
+        { id: 'q9X6P4I-Y_o', title: 'IMLS: Gestión y Modernización 2026' }
     ];
+
+    const PLAYLIST_LUDIC = [
+        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
+        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
+        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_d.mp4', title: 'Noche en La Serena' },
+        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videl.mp4', title: 'Museo Gabriel González Videla' }
+    ];
+
+    const [currentPlaylist, setCurrentPlaylist] = useState('institutional'); // 'institutional' or 'ludic'
+    const [previewIndex, setPreviewIndex] = useState(0);
+
+    const TVLS_VIDEOS = currentPlaylist === 'institutional' ? PLAYLIST_INSTITUTIONAL : PLAYLIST_LUDIC;
 
     const iframeRefActive = useRef(null);
     const customPlayerRef = useRef(null);
@@ -1853,23 +1864,31 @@ export default function HubDashboard() {
                         <div style={{ display: 'flex', gap: '15px', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: window.innerWidth < 768 ? 'auto' : '450px' }}>
                             <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
                                 <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                    <div style={{ width: '400%', height: '400%', position: 'absolute', top: '-180%', left: '-100%' }}>
-                                        <iframe src="https://www.youtube.com/embed/b9LTH4muxR8?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&loop=1&playlist=b9LTH4muxR8&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
-                                    </div>
-                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (ZOOM 34x)</div>
+                                    <video 
+                                        src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compa%c3%b1ias.mp4"
+                                        autoPlay loop muted playsInline 
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (C5)</div>
                                 </div>
                                 <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
-                                    <div style={{ width: '350%', height: '350%', position: 'absolute', top: '-80%', left: '-40%' }}>
-                                        <iframe src="https://www.youtube.com/embed/b9LTH4muxR8?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&loop=1&playlist=b9LTH4muxR8&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
-                                    </div>
-                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (WIDE ANGLE)</div>
+                                    <video 
+                                        src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4"
+                                        autoPlay loop muted playsInline 
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                    />
+                                    <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (C5)</div>
                                 </div>
                             </div>
                             <div style={{ flex: '2', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
-                                <iframe src="https://www.youtube.com/embed/b9LTH4muxR8?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&loop=1&playlist=b9LTH4muxR8&vq=hd1080" frameBorder="0" style={{ width: '100%', height: '140%', position: 'absolute', top: '-20%', left: 0, pointerEvents: 'none' }} allow="autoplay; encrypted-media"></iframe>
+                                <video 
+                                    src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4"
+                                    autoPlay loop muted playsInline 
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
                                 <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
                                     <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
-                                    <span style={{ letterSpacing: '1px' }}>C5: FARO M. EN VIVO</span>
+                                    <span style={{ letterSpacing: '1px' }}>C5: SERENITO EN TERRENO</span>
                                 </div>
                             </div>
                         </div>
@@ -1993,10 +2012,16 @@ export default function HubDashboard() {
                         }}>
                             <button onClick={nextVideo} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 4px' }}>
                                 <ChevronLeft size={isFullscreenTV ? 18 : 12} />
-                                <span style={{ fontSize: isFullscreenTV ? '0.75rem' : '0.55rem', fontWeight: 'bold' }}>CH-</span>
                             </button>
                             <div style={{ width: '1px', height: isFullscreenTV ? '14px' : '8px', background: 'rgba(255,255,255,0.2)' }}></div>
-                            <span style={{ fontSize: isFullscreenTV ? '1rem' : '0.55rem', fontWeight: '900', color: '#ef4444', letterSpacing: '0.5px' }}>TVLS</span>
+                            
+                            <button 
+                                onClick={() => { setCurrentPlaylist(currentPlaylist === 'institutional' ? 'ludic' : 'institutional'); setPreviewIndex(0); }}
+                                style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: isFullscreenTV ? '1rem' : '0.55rem', fontWeight: '900', color: currentPlaylist === 'institutional' ? '#ef4444' : '#10b981', letterSpacing: '0.5px' }}
+                            >
+                                {currentPlaylist === 'institutional' ? 'INSTITUCIONAL' : 'LÚDICO (SERENITO)'}
+                            </button>
+
                             {isFullscreenTV && (
                                 <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.6)', maxWidth: '300px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                     {TVLS_VIDEOS[previewIndex]?.title || 'Canal Local'}
@@ -2004,22 +2029,40 @@ export default function HubDashboard() {
                             )}
                             <div style={{ width: '1px', height: isFullscreenTV ? '14px' : '8px', background: 'rgba(255,255,255,0.2)' }}></div>
                             <button onClick={nextVideo} style={{ background: 'none', border: 'none', color: '#cbd5e1', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '0 4px' }}>
-                                <span style={{ fontSize: isFullscreenTV ? '0.75rem' : '0.55rem', fontWeight: 'bold' }}>CH+</span>
                                 <ChevronRight size={isFullscreenTV ? 18 : 12} />
                             </button>
                         </div>
 
-                        {/* ─── IFRAME ─── */}
-                        <div style={{ width: '100%', height: '100%', pointerEvents: 'none' }}>
-                            <iframe
-                                ref={iframeRefActive}
-                                width="100%" height="100%"
-                                src={`https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`}
-                                title="TVLS Preview"
-                                frameBorder="0"
-                                style={{ transform: isFullscreenTV ? 'scale(1)' : 'scale(1.1)' }}
-                                allow="autoplay; encrypted-media; fullscreen"
-                            />
+                        {/* ─── VIDEO / IFRAME ─── */}
+                        <div style={{ width: '100%', height: '100%', pointerEvents: 'none', position: 'relative' }}>
+                            {isMuted && (
+                                <div onClick={toggleMute} style={{ position: 'absolute', inset: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)', cursor: 'pointer', pointerEvents: 'auto' }}>
+                                    <div style={{ background: 'rgba(239, 68, 68, 0.8)', padding: '10px 20px', borderRadius: '30px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <VolumeX size={16} /> CLIC PARA ACTIVAR AUDIO
+                                    </div>
+                                </div>
+                            )}
+                            {TVLS_VIDEOS[previewIndex].url ? (
+                                <video 
+                                    key={TVLS_VIDEOS[previewIndex].url}
+                                    src={TVLS_VIDEOS[previewIndex].url}
+                                    autoPlay 
+                                    loop 
+                                    muted={isMuted}
+                                    playsInline
+                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                />
+                            ) : (
+                                <iframe
+                                    ref={iframeRefActive}
+                                    width="100%" height="100%"
+                                    src={`https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`}
+                                    title="TVLS Preview"
+                                    frameBorder="0"
+                                    style={{ transform: isFullscreenTV ? 'scale(1)' : 'scale(1.1)' }}
+                                    allow="autoplay; encrypted-media; fullscreen"
+                                />
+                            )}
                         </div>
                     </motion.div>
                 </AnimatePresence>

@@ -895,16 +895,21 @@ function AppContent() {
 
 
       {/* Top Header — Branding dinámico según dominio */}
-      <header className="app-header glass-panel" style={{
-        width: '100%',
-        borderBottom: isRDMLS ? '3px solid #f59e0b' : '1px solid rgba(255,255,255,0.05)',
-        background: isRDMLS ? 'rgba(80, 5, 5, 0.97)' : 'rgba(15, 23, 42, 0.95)',
-        padding: '0 0.5rem',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        boxSizing: 'border-box'
-      }}>
+      {!isInduccion && (
+        <header 
+          className="glass-header animate-fade-in" 
+          style={{ 
+            position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, 
+            height: 'var(--nav-height)', 
+            borderBottom: isRDMLS ? '3px solid #f59e0b' : '1px solid rgba(255,255,255,0.05)',
+            background: isRDMLS ? 'rgba(80, 5, 5, 0.97)' : 'rgba(15, 23, 42, 0.95)',
+            padding: '0 0.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxSizing: 'border-box'
+          }}
+        >
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', overflow: 'hidden', flexShrink: 1 }}>
           <button onClick={() => navigate('/')} className="btn-glass" style={{ padding: '0.35rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', flexShrink: 0 }} title="Inicio">
             <Home size={16} color="white" />
@@ -1047,13 +1052,16 @@ function AppContent() {
           </div>
         )}
       </header>
+      )}
 
-      <main className="page-content container" style={{ paddingBottom: '4rem' }}>
+      <main className="page-content container" style={{ paddingBottom: isInduccion ? 0 : '4rem', paddingTop: isInduccion ? 0 : 'var(--nav-height)' }}>
         <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t }} />
-        <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
-          <p>© 2026 {isVLS ? 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA' : 'ILUSTRE MUNICIPALIDAD DE LA SERENA · COMUNICACIONES ESTRATÉGICAS'}</p>
-          <p>Contacto: <a href="mailto:contacto@vecinosmart.cl" style={{ color: '#FFD700' }}>contacto@vecinosmart.cl</a></p>
-        </footer>
+        {!isInduccion && (
+          <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
+            <p>© 2026 {isVLS ? 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA' : 'ILUSTRE MUNICIPALIDAD DE LA SERENA · COMUNICACIONES ESTRATÉGICAS'}</p>
+            <p>Contacto: <a href="mailto:contacto@vecinosmart.cl" style={{ color: '#FFD700' }}>contacto@vecinosmart.cl</a></p>
+          </footer>
+        )}
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
@@ -1066,12 +1074,16 @@ function AppContent() {
         </Suspense>
       )}
 
-      <Suspense fallback={<div/>}>
-         <SmartTV weather={weather} />
-      </Suspense>
+      {!isInduccion && (
+        <>
+          <Suspense fallback={<div/>}>
+             <SmartTV weather={weather} />
+          </Suspense>
 
-      <GlobalAnnouncer />
-      <RadioPlayer globalWeather={weather} isVisible={showRadio} />
+          <GlobalAnnouncer />
+          <RadioPlayer globalWeather={weather} isVisible={showRadio} />
+        </>
+      )}
       
       {/* Smart Hub 3D (Sistema Simplificado) */}
       {showHub3D && <SmartHub3D onClose={() => setShowHub3D(false)} />}

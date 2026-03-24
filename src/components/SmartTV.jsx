@@ -4,6 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CHANNELS = [
     { 
+        url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', 
+        title: 'SERENITO & JUANÍN', 
+        desc: 'Serenito disfrutando de la playa con su gato Juanín.',
+        icon: Tv,
+        color: '#f43f5e'
+    },
+    { 
+        url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', 
+        title: 'AVENIDA DEL MAR', 
+        desc: 'Recorrido por la emblemática Avenida del Mar.',
+        icon: Tv,
+        color: '#38bdf8'
+    },
+    { 
         id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', 
         title: 'TVLS CONTENIDOS 1', 
         desc: 'Producción original VLS - Bloque A.',
@@ -35,32 +49,11 @@ const CHANNELS = [
         color: '#38bdf8'
     },
     { 
-        id: 'jfKfPfyJRdk', 
-        title: 'LOFI VIBES VLS', 
-        desc: 'Música para el laboratorio de ideas.',
-        icon: Star,
-        color: '#a78bfa'
-    },
-    { 
-        id: '2B3Pq2xP810', 
-        title: 'MONITOREO PUERTO', 
-        desc: 'Actividad portuaria en tiempo real.',
-        icon: Tv,
-        color: '#3b82f6'
-    },
-    { 
         id: 'uQ4G15nZ1z0', 
         title: 'AEROPUERTO LIVE', 
         desc: 'Tráfico aéreo y pistas.',
         icon: Activity,
         color: '#10b981'
-    },
-    {
-        id: 'sJ82z5f2E_M', // generic placeholder for serenamet or weather if not specific live
-        title: 'SERENAMET COMPLETO',
-        desc: 'Radar y meteorología zonal.',
-        icon: CloudSun,
-        color: '#eab308'
     }
 ];
 
@@ -209,22 +202,33 @@ export default function SmartTV({ weather }) {
          </div>
       </div>
 
-      {/* Pantalla (Contenido YouTube + Overlays) */}
+      {/* Pantalla (Contenido YouTube/Video + Overlays) */}
       <div style={{ flex: 1, position: 'relative', background: '#000', pointerEvents: 'none' }}>
-        {/* Video Background - Refined URL to hide logos/controls as much as possible */}
-        <iframe 
-          key={currentChannel.id}
-          width="100%" 
-          height="100%" 
-          src={currentChannel.isPlaylist 
-            ? `https://www.youtube.com/embed/videoseries?list=${currentChannel.id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
-            : `https://www.youtube.com/embed/${currentChannel.id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${currentChannel.id}&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
-          }
-          title={currentChannel.title}
-          frameBorder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          style={{ position: 'absolute', inset: 0, opacity: 0.9, pointerEvents: 'none' }}
-        ></iframe>
+        {currentChannel.url ? (
+            <video 
+                key={currentChannel.url}
+                src={currentChannel.url}
+                autoPlay 
+                loop 
+                muted={isMuted}
+                playsInline
+                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }}
+            />
+        ) : (
+            <iframe 
+                key={currentChannel.id}
+                width="100%" 
+                height="100%" 
+                src={currentChannel.isPlaylist 
+                    ? `https://www.youtube.com/embed/videoseries?list=${currentChannel.id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
+                    : `https://www.youtube.com/embed/${currentChannel.id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${currentChannel.id}&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
+                }
+                title={currentChannel.title}
+                frameBorder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                style={{ position: 'absolute', inset: 0, opacity: 0.9, pointerEvents: 'none' }}
+            ></iframe>
+        )}
 
         {/* Estática de cambio de canal */}
         <AnimatePresence>

@@ -241,7 +241,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <BrowserRouter>
         <GlobalWarning />
-        <VLSQuantumWatch />
+        {!window.location.pathname.includes('/induccion') && <VLSQuantumWatch />}
         {isPuertaDns ? (
           <Routes>
             <Route path="/" element={<Navigate to="/puerta" replace />} />

@@ -58,7 +58,7 @@ const SmartAssistantInduccion = () => {
       setIsLoading(true);
   
       try {
-        const ai = new GoogleGenerativeAI("AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs"); // Ocultando ligeramente pero dejando operativo
+        const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs");
         const model = ai.getGenerativeModel({ 
           model: "gemini-2.0-flash-exp",
           systemInstruction: "Eres Serenito 3D, el Asistente Virtual de Inducción para la I. Municipalidad de La Serena lidereada por la Alcaldesa Daniela Norambuena Borgheresi. Tu objetivo es ayudar a los nuevos funcionarios con dudas sobre: Ley Karin (reportes a denunciaprotocolo@laserena.cl), Remuneraciones, Seguridad (Ext. 7851), el Concejo Municipal, y ubicaciones (Arturo Prat 451, Los Carrera 301, Matta 240). Sé amable, breve, profesional y usa un tono motivador. Eres un avatar 3D que representa la innovación de la ciudad."
@@ -86,19 +86,23 @@ const SmartAssistantInduccion = () => {
     return (
       <>
         <button 
+          type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-24 right-8 z-[2000] bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center gap-2 group border-2 border-white/20"
+          className="fixed bottom-8 right-8 z-[1000001] bg-red-600 hover:bg-red-700 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center gap-2 group border-2 border-white/20"
         >
           <Sparkles size={24} className="animate-pulse" />
           <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap font-black uppercase text-xs tracking-widest">Pregunta a Serenito 3D</span>
         </button>
   
         {isOpen && (
-          <div className="fixed bottom-44 right-8 z-[2000] w-80 md:w-96 h-[500px] bg-slate-900 rounded-[2rem] shadow-2xl border border-white/10 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+          <div className="fixed bottom-24 right-8 z-[1000001] w-80 md:w-96 h-[500px] bg-slate-900 rounded-[2rem] shadow-2xl border border-white/10 flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
             <div className="bg-slate-950 p-5 flex justify-between items-center text-white border-b border-white/10">
               <div className="flex items-center gap-3">
-                <div className="bg-red-600 p-2 rounded-xl">
-                  <Bot size={20} />
+                <div className="relative">
+                  <div className="bg-red-600 p-0.5 rounded-full overflow-hidden border-2 border-white/20 w-12 h-12">
+                    <img src="/serenito_3d_avatar_premium_1774312066289.png" alt="Serenito 3D" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-slate-950 animate-pulse"></div>
                 </div>
                 <div>
                   <h3 className="font-black text-sm uppercase tracking-tighter">Serenito Virtual</h3>
@@ -282,7 +286,7 @@ export default function VLSInduccion({ onClose }) {
             animate={{ scale: 1, opacity: 1 }}
             src="/escudo.png" className="h-32 lg:h-48 mx-auto md:mx-0 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
           />
-          <h1 className="text-6xl lg:text-[7rem] font-black text-white leading-[0.8] tracking-tighter uppercase italic">
+          <h1 className="text-5xl lg:text-[5rem] font-black text-white leading-[1] tracking-tighter uppercase italic">
             PORTAL <br/><span className="text-red-600 font-normal italic">INDUCCIÓN 2026</span>
           </h1>
           <p className="text-slate-400 font-extrabold uppercase tracking-[0.5em] text-xs pl-4 border-l-4 border-red-600 mt-6 mt-12 bg-slate-900/50 py-3 rounded-r-lg">
