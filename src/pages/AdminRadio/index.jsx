@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Settings, Shield, Plus, Trash2, Edit2, CheckCircle, Smartphone, Users } from 'lucide-react';
 import { auth, db } from '../../utils/firebase';
-import { signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
 
 export default function AdminRadio() {
     const [user, setUser] = useState(null);
@@ -38,8 +38,8 @@ export default function AdminRadio() {
         const bypass = sessionStorage.getItem('rdmls_admin_bypass');
         if (bypass) {
             setUser({ email: bypass, role: 'director' });
-        } else if (auth && auth.onAuthStateChanged) {
-            const unsubscribe = auth.onAuthStateChanged(u => {
+        } else if (auth) {
+            const unsubscribe = onAuthStateChanged(auth, u => {
                 if (u) setUser(u);
             });
             return () => unsubscribe();

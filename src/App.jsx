@@ -160,7 +160,7 @@ const SecurityHoneypot = () => {
 
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
 import { auth } from './utils/firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
 import GlobalAnnouncer from './components/GlobalAnnouncer';
 
 const LoadingScreen = () => <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#020617', color: '#38bdf8' }}>Cargando VLS OS...</div>;
@@ -185,19 +185,20 @@ function App() {
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
   const { t, lang, setLang } = useTranslation();
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
   const [authInitialized, setAuthInitialized] = useState(false);
   const [notifications, setNotifications] = useState([]);
-  const [showRadio, setShowRadio] = useState(true);
+  const [showRadio, setShowRadio] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showRadioMaster, setShowRadioMaster] = useState(false);
   const [showHub3D, setShowHub3D] = useState(false);
-  const [showAlert, setShowAlert] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
   const [weather, setWeather] = useState(null);
   const [gameScore, setGameScore] = useState(0);
   const [isRegistered, setIsRegistered] = useState(false);
@@ -357,16 +358,16 @@ function AppContent() {
   }, [navigate, location.pathname, isGuest, currentUser]);
 
   useEffect(() => {
-    if (auth && typeof auth.onAuthStateChanged === 'function') {
-      const unsubscribe = auth.onAuthStateChanged(u => {
+    if (!auth) {
+        setAuthInitialized(true);
+        return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (u) => {
         setCurrentUser(u);
         setAuthInitialized(true);
-      });
-      return () => unsubscribe();
-    } else {
-      setAuthInitialized(true);
-    }
-  }, []);
+    });
+    return () => unsubscribe();
+  }, [auth]);
 
   useEffect(() => {
     if (showAlert) {
@@ -853,39 +854,41 @@ function AppContent() {
       </Suspense>
 
       <MartinSecurityShield />
-      <NetSpeedMonitor />
+      {!isInduccion && <NetSpeedMonitor />}
       <SerenitoSecurityGuard />
       <SecurityHoneypot />
       <SmartShare renderAsHiddenObserver={true} />
-      <FloatingActionPanel />
+      {!isInduccion && <FloatingActionPanel />}
       <ErrorCollector />
 
       {/* Módulo Vertical RRSS (Transversal) */}
-      <button 
-        onClick={() => {
-            window.dispatchEvent(new CustomEvent('open-vls-feed'));
-            window.dispatchEvent(new CustomEvent('stop-all-audio'));
-        }}
-        className="btn-glass hover-lift"
-        style={{
-          position: 'fixed', right: '0', top: '50%', transform: 'translateY(-50%)',
-          zIndex: 99999, background: 'rgba(15, 23, 42, 0.95)', 
-          border: '1px solid #38bdf8', borderRight: 'none',
-          padding: '15px 8px', borderRadius: '16px 0 0 16px',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
-          boxShadow: '-4px 0 20px rgba(56, 189, 248, 0.3)',
-          cursor: 'pointer'
-        }}
-        title="Abrir Radar Vertical (5 Redes)"
-      >
-        <div style={{ fontSize: '0.7rem', color: '#white', writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontWeight: '900', letterSpacing: '2px', textShadow: '0 0 5px rgba(56, 189, 248, 0.8)' }}>
-            RADAR SOCIAL
-        </div>
-        <Sparkles size={18} color="#38bdf8" className="pulse-slow" />
-      </button>
+      {!isInduccion && (
+        <button 
+          onClick={() => {
+              window.dispatchEvent(new CustomEvent('open-vls-feed'));
+              window.dispatchEvent(new CustomEvent('stop-all-audio'));
+          }}
+          className="btn-glass hover-lift"
+          style={{
+            position: 'fixed', right: '0', top: '50%', transform: 'translateY(-50%)',
+            zIndex: 99999, background: 'rgba(15, 23, 42, 0.95)', 
+            border: '1px solid #38bdf8', borderRight: 'none',
+            padding: '15px 8px', borderRadius: '16px 0 0 16px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px',
+            boxShadow: '-4px 0 20px rgba(56, 189, 248, 0.3)',
+            cursor: 'pointer'
+          }}
+          title="Abrir Radar Vertical (5 Redes)"
+        >
+          <div style={{ fontSize: '0.7rem', color: '#white', writingMode: 'vertical-rl', transform: 'rotate(180deg)', fontWeight: '900', letterSpacing: '2px', textShadow: '0 0 5px rgba(56, 189, 248, 0.8)' }}>
+              RADAR SOCIAL
+          </div>
+          <Sparkles size={18} color="#38bdf8" className="pulse-slow" />
+        </button>
+      )}
 
       {/* VLSound — solo portales VLS, no RDMLS */}
-      {!isRDMLS && (
+      {!isRDMLS && !isInduccion && (
         <VLSConsoleSound 
            onOpenRadio={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRadio(true); }} 
            onOpenTV={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRetroTV(true); }}
@@ -1065,7 +1068,7 @@ function AppContent() {
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
-      <SmartToolbox />
+      {!isInduccion && <SmartToolbox />}
 
       {/* Chat Botón y Panel */}
       {showChat && (
@@ -1088,7 +1091,7 @@ function AppContent() {
       {/* Smart Hub 3D (Sistema Simplificado) */}
       {showHub3D && <SmartHub3D onClose={() => setShowHub3D(false)} />}
 
-      <PianoCompita />
+      {!isInduccion && <PianoCompita />}
 
       {/* Modal Distancias */}
       {showDistances && (
@@ -1238,7 +1241,11 @@ function AppContent() {
       {showTribunales && <TribunalesVecinales onClose={() => setShowTribunales(false)} />}
       {showDonRadios && <DonRadios onComplete={() => setShowDonRadios(false)} />}
       {showRetroRoom && <RetroGamerRoom onClose={() => setShowRetroRoom(false)} />}
-      {showCalendar && <SmartCalendar onClose={() => setShowCalendar(false)} />}
+      {showCalendar && (
+        <Suspense fallback={null}>
+          <SmartCalendar onClose={() => setShowCalendar(false)} />
+        </Suspense>
+      )}
       {showLeanMaster && <LeanStartupMaster onClose={() => setShowLeanMaster(false)} />}
       {showAuditoria && <Suspense fallback={<div/>}><AuditoriaVecinal onClose={() => setShowAuditoria(false)} /></Suspense>}
       {showParlamento && <Suspense fallback={<div/>}><ParlamentoVecinal onClose={() => setShowParlamento(false)} /></Suspense>}
@@ -1483,11 +1490,7 @@ function AppContent() {
       {showSkyGuide && (
         <Suspense fallback={null}><SkyGuideRA onClose={() => setShowSkyGuide(false)} /></Suspense>
       )}
-      {showCalendar && (
-        <Suspense fallback={null}>
-          <SmartCalendar onClose={() => setShowCalendar(false)} />
-        </Suspense>
-      )}
+
       <TokenEconomyMaster />
       {showVecnityPay && <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />}
       {showPrecolombino && (

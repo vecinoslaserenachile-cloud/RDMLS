@@ -1,6 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate, Navigate } from 'react-router-dom';
+
+// Listas de reproducción diferenciadas por pilares
+const PLAYLIST_INSTITUTIONAL = [
+    { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE', zoom: true },
+    { id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', title: 'VECINOS LA SERENA - BLOQUE A', isPlaylist: true },
+    { id: 'PLg_9ltHJC-01E9YPJtqiGosY2Hd3XHHSl', title: 'VECINOS LA SERENA - BLOQUE B', isPlaylist: true },
+    { id: 'PLg_9ltHJC-03q4F0yNQ3idDvPCqtwoRsy', title: 'VECINOS LA SERENA - BLOQUE C', isPlaylist: true }
+];
+
+const PLAYLIST_LUDIC = [
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_d.mp4', title: 'Noche en La Serena' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videl.mp4', title: 'Museo Gabriel González Videla' }
+];
 import { 
     Search, Mic, CloudSun, Radio, Sliders, Volume2, 
     VolumeX, ChevronUp, ChevronDown, Activity, 
@@ -215,20 +229,6 @@ export default function HubDashboard() {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [videoSelected, setVideoSelected] = useState(false);
     
-    // Listas de reproducción diferenciadas por pilares
-    const PLAYLIST_INSTITUTIONAL = [
-        { id: 'b9LTH4muxR8', title: 'FARO LIVE (MUNICIPALIDAD DE LA SERENA)', zoom: true },
-        { id: 'EQUdyb-YVxM', title: 'ENTREVISTA: Nueva Era de Soberanía Regional' },
-        { id: 'q9X6P4I-Y_o', title: 'IMLS: Gestión y Modernización 2026' }
-    ];
-
-    const PLAYLIST_LUDIC = [
-        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
-        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
-        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_d.mp4', title: 'Noche en La Serena' },
-        { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videl.mp4', title: 'Museo Gabriel González Videla' }
-    ];
-
     const [currentPlaylist, setCurrentPlaylist] = useState('institutional'); // 'institutional' or 'ludic'
     const [previewIndex, setPreviewIndex] = useState(0);
 
@@ -304,10 +304,10 @@ export default function HubDashboard() {
     useEffect(() => {
         if (videoSelected) return;
         const interval = setInterval(() => {
-            setPreviewIndex(prev => prev === 0 ? 1 : 0);
-        }, 8000);
+            setPreviewIndex(prev => (prev + 1) % TVLS_VIDEOS.length);
+        }, 10000); 
         return () => clearInterval(interval);
-    }, [videoSelected]);
+    }, [videoSelected, currentPlaylist, TVLS_VIDEOS.length]);
 
     const [officialNews, setOfficialNews] = useState([]);
 
@@ -2036,9 +2036,9 @@ export default function HubDashboard() {
                         {/* ─── VIDEO / IFRAME ─── */}
                         <div style={{ width: '100%', height: '100%', pointerEvents: 'none', position: 'relative' }}>
                             {isMuted && (
-                                <div onClick={toggleMute} style={{ position: 'absolute', inset: 0, zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.3)', cursor: 'pointer', pointerEvents: 'auto' }}>
-                                    <div style={{ background: 'rgba(239, 68, 68, 0.8)', padding: '10px 20px', borderRadius: '30px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <VolumeX size={16} /> CLIC PARA ACTIVAR AUDIO
+                                <div onClick={toggleMute} style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, cursor: 'pointer', pointerEvents: 'auto', display: 'flex' }}>
+                                    <div className="animate-pulse-slow" style={{ background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(6px)', padding: '6px 12px', borderRadius: '20px', color: 'white', fontWeight: '900', fontSize: '0.6rem', display: 'flex', alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 15px rgba(0,0,0,0.3)' }}>
+                                        <VolumeX size={14} color="#ef4444" /> ACTIVAR AUDIO
                                     </div>
                                 </div>
                             )}
@@ -2056,7 +2056,10 @@ export default function HubDashboard() {
                                 <iframe
                                     ref={iframeRefActive}
                                     width="100%" height="100%"
-                                    src={`https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`}
+                                    src={TVLS_VIDEOS[previewIndex].isPlaylist 
+                                        ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
+                                        : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
+                                    }
                                     title="TVLS Preview"
                                     frameBorder="0"
                                     style={{ transform: isFullscreenTV ? 'scale(1)' : 'scale(1.1)' }}

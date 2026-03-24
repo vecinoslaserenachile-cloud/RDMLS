@@ -71,7 +71,7 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
             id="vls-quantum-watch-container"
             style={{
                 position: 'fixed',
-                top: '120px',
+                top: '220px',
                 left: '20px',
                 zIndex: 10000000,
                 cursor: 'grab',

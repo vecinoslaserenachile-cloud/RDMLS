@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ShieldAlert, Users, CalendarDays, BarChart4, LogIn, ArrowLeft, Lock, X as CloseIcon, Loader2, LogOut, Music, FileText } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { auth } from '../utils/firebase';
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 
 export default function LegacyPortal() {
     const navigate = useNavigate();
@@ -35,8 +35,8 @@ export default function LegacyPortal() {
         });
 
         // Chequear estado en Google Firebase
-        if (auth && typeof auth.onAuthStateChanged === 'function') {
-            const unsubFirebase = auth.onAuthStateChanged(user => {
+        if (auth) {
+            const unsubFirebase = onAuthStateChanged(auth, user => {
                 if (user) setIsLoggedIn(true);
             });
             return () => {
@@ -103,8 +103,12 @@ export default function LegacyPortal() {
 
     const handleLogout = async () => {
         await supabase.auth.signOut();
-        if (auth && auth.currentUser) {
-            await auth.signOut();
+        if (auth && auth.app) {
+            try {
+                await signOut(auth);
+            } catch (e) {
+                console.error("Error signing out from Firebase:", e);
+            }
         }
         setIsLoggedIn(false);
     };

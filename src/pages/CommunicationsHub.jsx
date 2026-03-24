@@ -9,6 +9,7 @@ import InternalChat from '../components/Communications/InternalChat';
 import { ArrowLeft, Newspaper, PenTool, Palette, Megaphone, Radio } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { auth } from '../utils/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function CommunicationsHub() {
     const navigate = useNavigate();
@@ -28,8 +29,8 @@ export default function CommunicationsHub() {
                 return;
             }
 
-            if (auth && typeof auth.onAuthStateChanged === 'function') {
-                const unsub = auth.onAuthStateChanged(user => {
+            if (auth) {
+                const unsub = onAuthStateChanged(auth, user => {
                     if (!user && !isAuthOk) {
                         alert('Acceso restringido. Por favor, inicie sesión en el Portal Interno.');
                         navigate('/legacy');

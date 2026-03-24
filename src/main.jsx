@@ -241,12 +241,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <LanguageProvider>
       <BrowserRouter>
         <GlobalWarning />
-        {!window.location.pathname.includes('/induccion') && <VLSQuantumWatch />}
+        {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
         {isPuertaDns ? (
           <Routes>
             <Route path="/" element={<Navigate to="/puerta" replace />} />
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
+            <Route path="/induccion_imls" element={<VLSInduccion onClose={() => window.history.back()} />} />
             <Route path="*" element={<Navigate to="/puerta" replace />} />
           </Routes>
         ) : (
@@ -285,6 +286,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="acceso" element={<PuertaSerena />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
               <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
+              <Route path="induccion_imls" element={<VLSInduccion onClose={() => window.history.back()} />} />
             </Route>
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/bisabuelo" element={<GameVLS />} />

@@ -78,17 +78,25 @@ export default function SmartTV({ weather }) {
   const [isVisible, setIsVisible] = useState(true);
   const [currentChannelIdx, setCurrentChannelIdx] = useState(0);
   const [overlayData, setOverlayData] = useState({ text: 'Iniciando transmisión...', icon: Activity, color: '#10b981' });
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isSwitching, setIsSwitching] = useState(false);
 
   const currentChannel = CHANNELS[currentChannelIdx];
 
-  // Efecto de estática al cambiar de canal
+  // Efecto de estática al cambiar de canal (Manual o Auto)
   useEffect(() => {
     setIsSwitching(true);
-    const timer = setTimeout(() => setIsSwitching(false), 1200);
+    const timer = setTimeout(() => setIsSwitching(false), 800);
     return () => clearTimeout(timer);
   }, [currentChannelIdx]);
+
+  // Ciclo automático de canales (Auto-Transition cada 15s)
+  useEffect(() => {
+    const cycleTimer = setInterval(() => {
+        setCurrentChannelIdx((prev) => (prev + 1) % CHANNELS.length);
+    }, 15000); 
+    return () => clearInterval(cycleTimer);
+  }, []);
 
   // Ciclo automático de información
   useEffect(() => {
@@ -245,6 +253,26 @@ export default function SmartTV({ weather }) {
                 />
             )}
         </AnimatePresence>
+
+        {isMuted && (
+            <div 
+                onClick={() => setIsMuted(false)}
+                style={{
+                    position: 'absolute', top: '10px', left: '10px', 
+                    zIndex: 10, cursor: 'pointer', pointerEvents: 'auto'
+                }}
+            >
+                <div style={{
+                    background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(6px)',
+                    padding: '6px 12px', borderRadius: '20px', color: 'white',
+                    fontWeight: '900', fontSize: '0.6rem', display: 'flex',
+                    alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.2)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
+                }} className="animate-pulse">
+                    <VolumeX size={14} color="#ef4444" /> ACTIVAR AUDIO
+                </div>
+            </div>
+        )}
 
         {/* Scanlines CRT */}
         <div style={{ 

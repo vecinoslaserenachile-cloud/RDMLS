@@ -13,24 +13,32 @@ const firebaseConfig = {
     appId: "1:283725387947:web:898aa22c80c2fadbe8bfee"
 };
 
-let app, auth, db, storage;
+// Configuración de Mocks para evitar errores en modo desconectado
+const mockAuth = {
+    currentUser: null,
+    onAuthStateChanged: (cb) => { cb(null); return () => {}; },
+    signOut: async () => { return Promise.resolve(); },
+    signInWithPopup: async () => { throw new Error('Firebase no configurado'); },
+    app: { options: {} }
+};
+
+let app = null;
+let auth = mockAuth;
+let db = { collection: () => ({ doc: () => ({ onSnapshot: () => () => {} }) }) };
+let storage = {};
 
 try {
-    if (firebaseConfig.apiKey !== "TU_API_KEY") {
+    if (firebaseConfig.apiKey && firebaseConfig.apiKey !== "TU_API_KEY") {
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
         storage = getStorage(app);
     } else {
-        console.warn('Firebase no está configurado. Usando mocks temporales para evitar que la app se caiga.');
-        app = {};
-        auth = { currentUser: null };
-        db = {};
-        storage = {};
+        console.warn('Firebase no está configurado (API Key de ejemplo). Usando mocks.');
     }
 } catch (error) {
     console.warn('Error inicializando Firebase:', error);
 }
 
-export { auth, db, storage };
+export { auth, db, storage, app };
 
