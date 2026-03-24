@@ -3,17 +3,20 @@ import { useOutletContext, useNavigate, Navigate } from 'react-router-dom';
 
 // Listas de reproducción diferenciadas por pilares
 const PLAYLIST_INSTITUTIONAL = [
-    { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE', zoom: true },
-    { id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', title: 'VECINOS LA SERENA - BLOQUE A', isPlaylist: true },
-    { id: 'PLg_9ltHJC-01E9YPJtqiGosY2Hd3XHHSl', title: 'VECINOS LA SERENA - BLOQUE B', isPlaylist: true },
-    { id: 'PLg_9ltHJC-03q4F0yNQ3idDvPCqtwoRsy', title: 'VECINOS LA SERENA - BLOQUE C', isPlaylist: true }
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4', title: 'Serenito Kiosco Suplementero' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_de_Aguirre.mp4', title: 'Noche en La Serena' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videla.mp4', title: 'Museo Gabriel González Videla' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4', title: 'Avenida Francisco de Aguirre' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compañias.mp4', title: 'Polideportivo Las Compañias' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
+    { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE' }
 ];
 
 const PLAYLIST_LUDIC = [
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_d.mp4', title: 'Noche en La Serena' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videl.mp4', title: 'Museo Gabriel González Videla' }
+    { id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', title: 'VECINOS LA SERENA - BLOQUE A', isPlaylist: true },
+    { id: 'PLg_9ltHJC-01E9YPJtqiGosY2Hd3XHHSl', title: 'VECINOS LA SERENA - BLOQUE B', isPlaylist: true },
+    { id: 'PLg_9ltHJC-03q4F0yNQ3idDvPCqtwoRsy', title: 'VECINOS LA SERENA - BLOQUE C', isPlaylist: true }
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
@@ -616,6 +619,10 @@ export default function HubDashboard() {
         {
             id: 'smart-real-estate', title: 'Corretaje Propiedades Smart', subtitle: 'Arriendos y Ventas con Trazabilidad VLS',
             icon: HomeIcon, color: '#f59e0b', path: '/propiedades', active: true, badge: 'CORRETAJE'
+        },
+        {
+            id: 'vls-investigacion-2026', title: 'La Paradoja 2026', subtitle: 'Reportaje: ¿Por qué la educación apagó el supercomputador?',
+            icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
         },
         {
             id: 'smart-architecture', title: 'Arquitectura & Obras', subtitle: 'Diseño, Ampliaciones y Permisos Municipales',
@@ -1966,13 +1973,28 @@ export default function HubDashboard() {
                                         }}
                                     >
                                         <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
-                                        <iframe
-                                            width="100%" height="100%"
-                                            src={`https://www.youtube.com/embed/${PLAYLIST_INSTITUTIONAL[0].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${PLAYLIST_INSTITUTIONAL[0].id}`}
-                                            title="TVLS Institutional"
-                                            frameBorder="0"
-                                            allow="autoplay; encrypted-media; fullscreen"
-                                        />
+                                        {TVLS_VIDEOS[previewIndex].url ? (
+                                            <video
+                                                src={TVLS_VIDEOS[previewIndex].url}
+                                                autoPlay
+                                                muted={isMuted}
+                                                loop
+                                                playsInline
+                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                onEnded={nextVideo}
+                                            />
+                                        ) : (
+                                            <iframe
+                                                width="100%" height="100%"
+                                                src={TVLS_VIDEOS[previewIndex].isPlaylist 
+                                                    ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
+                                                    : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
+                                                }
+                                                title="TVLS Institutional"
+                                                frameBorder="0"
+                                                allow="autoplay; encrypted-media; fullscreen"
+                                            />
+                                        )}
                                     </motion.div>
                                 </AnimatePresence>
                             )}
