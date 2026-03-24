@@ -9,7 +9,7 @@ export default function UserCRMModal({ onClose, currentUser }) {
     const [historyInfo, setHistoryInfo] = useState({ 
         score: 125, 
         discounts: ['CUPON-VLS-5001'],
-        interactions: 42,
+        tokensSpent: 45,
         gestiones: 3,
         registros_3d: 1,
         tipo_perfil: 'VECINO', // VECINO, ESTUDIANTE, EMPRESA
@@ -28,9 +28,20 @@ export default function UserCRMModal({ onClose, currentUser }) {
     const handleLogout = () => {
         if (auth && typeof signOut === 'function') {
             signOut(auth).then(() => {
+                localStorage.removeItem('smart_is_guest');
+                localStorage.setItem('smart_logout', 'true');
+                window.location.reload();
                 onClose();
-            }).catch(console.error);
+            }).catch(() => {
+                localStorage.removeItem('smart_is_guest');
+                localStorage.setItem('smart_logout', 'true');
+                window.location.reload();
+                onClose();
+            });
         } else {
+            localStorage.removeItem('smart_is_guest');
+            localStorage.setItem('smart_logout', 'true');
+            window.location.reload();
             onClose();
         }
     };

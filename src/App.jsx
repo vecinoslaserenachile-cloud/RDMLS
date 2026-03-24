@@ -1088,7 +1088,10 @@ function AppContent() {
           </Suspense>
 
           <GlobalAnnouncer />
-          <RadioPlayer globalWeather={weather} isVisible={showRadio} />
+          
+          <Suspense fallback={<div style={{ position: 'fixed', bottom: 20, right: 20, color: 'white' }}>Cargando Señal VLS...</div>}>
+            <RadioPlayer globalWeather={weather} isVisible={showRadio} />
+          </Suspense>
         </>
       )}
       

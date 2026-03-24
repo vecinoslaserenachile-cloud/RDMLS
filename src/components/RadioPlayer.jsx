@@ -39,7 +39,7 @@ const AnalogVUMeter = ({ label, needleRef }) => (
 // playerMode: 'expanded' | 'compact' | 'mini'
 export default function RadioPlayer({ globalWeather, isVisible }) {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [playerMode, setPlayerMode] = useState('compact'); // 3 estados
+    const [playerMode, setPlayerMode] = useState('expanded'); // Iniciamos en modo VUMeters expandido
     const audioRef = useRef(null);
 
     
@@ -83,15 +83,15 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             it: "CITTÀ INTELLIGENTE Informa: La Massima Autorità Comunale ha guidato un giro di sicurezza strategica sul campo. Azione reale per la tranquillità dei nostri vicini.",
             fr: "COMMUNE INTELLIGENTE Informe : La Haute Autorité Comunale a mené une ronde de sécurité stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
             zh: "智慧社区通知：最高市政当局已在实地领导了战略安保工作。为了邻居们的安宁采取真正的行动。",
-            pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidade dos nossos vizinhos."
+            pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidad de nossos vizinhos."
         },
         {
             es: "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
             en: "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
             it: "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
             fr: "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
-            zh: "管理报告：通信主权在一匿名邻居的愿景下得到巩固。迈向精英级数字生态系统。",
-            pt: "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a um ecossistema digital de elite."
+            zh: "管理报告：通信主权在一匿名邻居's 愿景下得到巩固。迈向精英级数字生态系统。",
+            pt: "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a un ecossistema digital de elite."
         }
     ];
 
