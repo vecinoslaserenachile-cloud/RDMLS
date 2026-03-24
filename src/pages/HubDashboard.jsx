@@ -1328,7 +1328,7 @@ export default function HubDashboard() {
                                     {isVLS ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                             <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
-                                                <img src="/avatars/serenito_v3.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <img src="/serenito_v3.png" alt="Serenito 3D" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                             </div>
                                             <div style={{ textAlign: 'left', maxWidth: '400px' }}>
                                                 <AnimatePresence mode="wait">

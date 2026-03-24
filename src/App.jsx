@@ -596,6 +596,8 @@ function AppContent() {
       // Solo en caso de bloqueo drástico del navegador, intentamos redirect real
       if (err.code === 'auth/popup-blocked') {
         signInWithRedirect(auth, provider);
+      } else if (err.code === 'auth/popup-closed-by-user') {
+        console.warn("Usuario detuvo el login de Google. Cancelado sin alerta.");
       } else {
         alert("⚠️ CRÍTICO: No se pudo conectar con los servidores de Google Identidad. El sistema de pagos requiere una sesión real. " + err.message);
       }

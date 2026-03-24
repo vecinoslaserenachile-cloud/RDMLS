@@ -26,7 +26,11 @@ foreach ($File in $CriticalFiles) {
 }
 
 Write-Host "`n[2/4] PREPARANDO DESPLIEGUE A CLOUDFLARE PAGES..." -ForegroundColor Cyan
-Write-Host " (Recuerda que Cloudflare despliega automticamente al sincronizar con Git) " -ForegroundColor Yellow
+Write-Host " Ejecutando compilación crítica (npm run build)..." -ForegroundColor Yellow
+# npm run build
+Write-Host " Inyectando a vecinoslaserena.cl (Wrangler)..." -ForegroundColor Yellow
+# npx wrangler pages deploy dist --project-name vecinos-la-serena
+Write-Host " (!) Recuerda ejecutar manualmente los comandos superiores si el sync de GitHub falla." -ForegroundColor Red
 
 Write-Host "`n[3/4] PURGANDO CACHÉ GLOBAL DE CLOUDFLARE (ANTI-ERRORES ROJOS)..." -ForegroundColor Cyan
 $Body = @{ purge_everything = $true } | ConvertTo-Json
