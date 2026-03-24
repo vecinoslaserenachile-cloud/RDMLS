@@ -8,7 +8,8 @@ import { Shirt, Upload, Palette, X, Camera, Zap, LayoutGrid } from 'lucide-react
 function TShirtShape({ color, textureUrl, decalPos }) {
     const decalRef = useRef();
     // Usa un texture placeholder si no hay url cargada
-    const texture = useTexture(textureUrl || 'https://raw.githubusercontent.com/pmndrs/drei/master/docs/logo.png');
+    const defaultLogoUrl = 'https://raw.githubusercontent.com/pmndrs/drei/master/docs/logo.png';
+    const texture = useTexture(textureUrl || defaultLogoUrl);
 
     return (
         <group dispose={null}>
@@ -81,6 +82,8 @@ export default function TiendaPoleras3D({ onClose }) {
     const [uploadedImg, setUploadedImg] = useState(null);
     const [decalPos, setDecalPos] = useState([0, 0.5, 0.26]);
     const fileRef = useRef(null);
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls');
 
     const COLORS = [
         '#ffffff', '#000000', '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'
@@ -113,8 +116,8 @@ export default function TiendaPoleras3D({ onClose }) {
                         <Shirt size={24} />
                     </div>
                     <div>
-                        <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '900', letterSpacing: '1px' }}>VLS TAILOR 3D</h2>
-                        <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>ESPEJO VIRTUAL Y DISEÑO DE VESTUARIO</span>
+                        <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '900', letterSpacing: '1px' }}>{isRDMLS ? 'RDMLS TAILOR 3D' : 'VLS TAILOR 3D'}</h2>
+                        <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>{isRDMLS ? 'SASTRERÍA MUNICIPAL Y DISEÑO DIGITAL' : 'ESPEJO VIRTUAL Y DISEÑO DE VESTUARIO'}</span>
                     </div>
                 </div>
                 <button onClick={onClose} style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid #ef4444', padding: '10px', borderRadius: '50%', cursor: 'pointer' }}>
@@ -239,7 +242,7 @@ export default function TiendaPoleras3D({ onClose }) {
                             <Zap size={20} /> PASAR A PRODUCCIÓN (V-PAY)
                         </button>
                         <div style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.7rem', marginTop: '10px' }}>
-                            Costo estimado de confección: 4.500 Fichas VLS
+                            Costo estimado de confección: 4.500 Fichas {isRDMLS ? 'RDMLS' : 'VLS'}
                         </div>
                     </div>
                 </div>

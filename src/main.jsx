@@ -192,55 +192,7 @@ class ErrorBoundary extends React.Component {
 }
 
 function GlobalWarning() {
-  const [minimized, setMinimized] = React.useState(false);
-
-  if (minimized) {
-    return (
-      <button 
-        onClick={() => setMinimized(false)}
-        style={{
-          position: 'fixed', bottom: '10px', left: '10px', zIndex: 999999,
-          background: 'rgba(220, 38, 38, 0.9)', color: 'white', border: '1px solid #ef4444',
-          borderRadius: '50%', width: '40px', height: '40px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 10px rgba(0,0,0,0.3)', cursor: 'pointer'
-        }}
-        title="Mostrar Disclaimer"
-      >
-        <AlertTriangle size={20} color="#fef08a" />
-      </button>
-    );
-  }
-
-  return (
-    <div className="animate-slide-up" style={{ 
-      position: 'fixed', top: '75px', right: '15px', maxWidth: '350px',
-      background: 'rgba(220, 38, 38, 0.95)', border: '1px solid #ef4444', 
-      borderRadius: '12px', padding: '0.6rem 0.8rem', textAlign: 'left', 
-      zIndex: 999999, display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
-      gap: '0.8rem', backdropFilter: 'blur(10px)', color: 'white', fontFamily: 'sans-serif',
-      boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
-    }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flex: 1 }}>
-        <AlertTriangle color="#fef08a" size={18} className="pulse-fast" style={{ flexShrink: 0 }} />
-        <span style={{ fontWeight: 'bold', fontSize: '0.8rem', lineHeight: '1.2' }}>
-          {/* Mensaje Informativo de Plataforma */}
-          WWW.VECINOSLASERENA.CL · LA SERENA SMART CITY
-        </span>
-      </div>
-      <button 
-        onClick={() => setMinimized(true)}
-        style={{ 
-          background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', 
-          padding: '0.3rem', cursor: 'pointer', color: 'white', flexShrink: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }}
-        title="Minimizar advertencia"
-      >
-        <CloseIcon size={16} />
-      </button>
-    </div>
-  );
+  return null;
 }
 
 import BellaDashboard from './pages/BellaDashboard.jsx';
@@ -254,7 +206,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
     <LanguageProvider>
       <BrowserRouter>
-        <GlobalWarning />
         {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
         {isRdmlsDns ? (
           <Routes>

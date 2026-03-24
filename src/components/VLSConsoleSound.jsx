@@ -12,6 +12,8 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isPowerOn, setIsPowerOn] = useState(true);
     const [volume, setVolume] = useState(20);
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls');
     const [currentTime, setCurrentTime] = useState(new Date());
     const [isMuted, setIsMuted] = useState(false);
     const [activeTab, setActiveTab] = useState('main'); // main, pillars, settings
@@ -61,7 +63,7 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
                     borderLeft: isMobile ? 'none' : '4px solid #ef4444'
                 }}>
                     <Radio size={isMobile ? 22 : 28} color="#ef4444" className="pulse-slow" />
-                    <div style={{ writingMode: isMobile ? 'horizontal-tb' : 'vertical-rl', fontSize: '0.65rem', fontWeight: 900, color: '#ef4444', letterSpacing: '2px' }}>VLSOUND</div>
+                    <div style={{ writingMode: isMobile ? 'horizontal-tb' : 'vertical-rl', fontSize: '0.65rem', fontWeight: 900, color: '#ef4444', letterSpacing: '2px' }}>{isRDMLS ? 'RDMLS' : 'VLSOUND'}</div>
                 </div>
             </div>
         );
@@ -101,8 +103,8 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
             }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '30px', flex: 1 }}>
                     <div style={{ textAlign: isMobile ? 'left' : 'center' }}>
-                        <div style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 900, fontStyle: 'italic', letterSpacing: '2px', textShadow: '0 0 15px #ef444455' }}>vlsound</div>
-                        <div style={{ color: '#ef4444', fontSize: '0.6rem', fontWeight: 'bold', letterSpacing: '3px' }}>EXTENDED CONSOLE</div>
+                        <div style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 900, fontStyle: 'italic', letterSpacing: '2px', textShadow: '0 0 15px #ef444455' }}>{isRDMLS ? 'rdmls' : 'vlsound'}</div>
+                        <div style={{ color: '#ef4444', fontSize: '0.6rem', fontWeight: 'bold', letterSpacing: '3px' }}>{isRDMLS ? 'MUNICIPAL CONSOLE' : 'EXTENDED CONSOLE'}</div>
                     </div>
 
                     {/* Serenito Avatar Area */}
@@ -219,12 +221,12 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
                                 <div className="animate-fade-in">
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px' }}>
                                         <div>
-                                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.2rem' }}>SMART HUB v5.2</h3>
-                                            <span style={{ color: '#38bdf8', fontSize: '0.7rem' }}>CONECTADO A VECINOSLASERENA.CL</span>
+                                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.2rem' }}>{isRDMLS ? 'MUNI HUB v5.2' : 'SMART HUB v5.2'}</h3>
+                                            <span style={{ color: '#38bdf8', fontSize: '0.7rem' }}>{isRDMLS ? 'CONECTADO A RDMLS.CL' : 'CONECTADO A VECINOSLASERENA.CL'}</span>
                                         </div>
                                         <div style={{ textAlign: 'right', color: '#94a3b8', fontSize: '0.8rem' }}>
                                             <div style={{ fontWeight: 'bold' }}>{currentTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
-                                            <div style={{ fontSize: '0.6rem' }}>RD_VLS_SYSTEM_OK</div>
+                                            <div style={{ fontSize: '0.6rem' }}>{isRDMLS ? 'RDMLS_SYSTEM_OK' : 'RD_VLS_SYSTEM_OK'}</div>
                                         </div>
                                     </div>
 
@@ -269,7 +271,7 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
                                     {!isMobile && (
                                         <div style={{ marginTop: '25px', padding: '15px', background: 'rgba(0,0,0,0.5)', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                             <div style={{ color: '#64748b', fontSize: '0.6rem', fontWeight: 'bold', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                <Activity size={10} /> FEED DE SEGURIDAD VLS
+                                                <Activity size={10} /> {isRDMLS ? 'FEED DE SEGURIDAD MUNICIPAL' : 'FEED DE SEGURIDAD VLS'}
                                             </div>
                                             <div style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
                                                 <span>• Sensores de Humedal operativos (100%)</span>
@@ -289,7 +291,7 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
                                     <div className="pulse-slow" style={{ background: 'rgba(239, 68, 68, 0.1)', width: '100px', height: '100px', borderRadius: '50%', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #ef4444' }}>
                                         <Radio size={50} color="#ef4444" />
                                     </div>
-                                    <h3 style={{ color: 'white' }}>VLS RADIO NETWORK</h3>
+                                    <h3 style={{ color: 'white' }}>{isRDMLS ? 'RDMLS RADIO NETWORK' : 'VLS RADIO NETWORK'}</h3>
                                     <p style={{ color: '#94a3b8', fontSize: '0.8rem', maxWidth: '300px', margin: '0 auto 20px' }}>Sintonice la voz oficial de los vecinos de La Serena. Información, música y contingencia.</p>
                                     <button 
                                         onClick={() => { window.dispatchEvent(new CustomEvent('toggle-radio-visibility')); }}

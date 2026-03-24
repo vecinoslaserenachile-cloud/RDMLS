@@ -40,8 +40,9 @@ import AzuraCastSync from '../components/AzuraCastSync';
 import VLSRequestPortal from '../components/VLSRequestPortal';
 import PremiumClub from '../components/PremiumClub';
 import GalaxiaDiscoteque from '../components/GalaxiaDiscoteque';
-import VLSRoadmap from '../components/VLSRoadmap';
-import VLSManifesto from '../components/VLSManifesto';
+import RadioHomeWidget from '../components/RadioHomeWidget';
+import RDMLSRadioDial from '../components/RDMLSRadioDial';
+import VLSConsoleSound from '../components/VLSConsoleSound';
 import PrecolombinoPortal from '../components/PrecolombinoPortal';
 import AmbientModeVLS from '../components/AmbientModeVLS';
 import CentralDifusionVLS from '../components/CentralDifusionVLS';
@@ -66,6 +67,9 @@ import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
 import RadioHomeWidget from '../components/RadioHomeWidget';
 
 export default function HubDashboard() {
+    const host = window.location.hostname.toLowerCase();
+    const isVLS = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('localhost');
+    const isRDMLS = host.includes('rdmls');
     const navigate = useNavigate();
     const { lang, setLang, t: baseT } = useTranslation();
 
@@ -74,7 +78,9 @@ export default function HubDashboard() {
             title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
             citizensTitle: "Smart Citizens", citizensSub: "Reportes, Mapas y Radio Digital",
             adminTitle: "Smart Administration", adminSub: "Gestión Interna, Diploma E-learning e Informes",
-            newsAlert: "COMUNA SMART Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos a través de vecinosmart.cl.",
+            newsAlert: isRDMLS 
+                ? "INFORMATIVO MUNICIPAL: La Ilustre Municipalidad de La Serena informa despliegue de equipos en terreno para mantención urbana. Siga la señal de RDMLS.cl para más detalles."
+                : "COMUNA SMART Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos a través de vecinosmart.cl.",
             eventsTitle: "Smart Events", eventsSub: "Monitor de Precedencia y Protocolo",
             listeningTitle: "Smart Listening", listeningSub: "Centinel Faro y Red de Escucha Social",
             paseo3dTitle: "Paseo Histórico 3D", paseo3dSub: "Arquitectura Tradicional y Museos",
@@ -545,8 +551,6 @@ export default function HubDashboard() {
     const formatoFecha = currentTime.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'short' });
     const formatoHora = currentTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    const host = window.location.hostname.toLowerCase();
-    const isVLS = !host.includes('rdmls') && !host.includes('radiovecino') && !host.includes('entrevecinas');
 
     const { weather, isAuthorized, isGuest, isRegistered } = useOutletContext();
 
@@ -776,7 +780,18 @@ export default function HubDashboard() {
             id: 'central-difusion', title: 'Central de Difusión', subtitle: 'Envío Masivo RRSS e IA Google',
             icon: Share2, color: '#10b981', isEvent: 'open-central-difusion', active: true, badge: 'MUNICIPAL'
         }
-    ].filter(s => s.active && !s.title.toLowerCase().includes('municipal') && !s.subtitle.toLowerCase().includes('institucional') && !s.badge?.includes('GOBIERNO'));
+    ].filter(s => {
+        if (!s.active) return false;
+        // Si es RDMLS, priorizamos lo municipal/institucional
+        if (isRDMLS) {
+            // No filtramos nada por ahora, dejamos que se vea todo lo relevante
+            return true;
+        }
+        // Si es VLS, filtramos lo que explícitamente diga municipal/institucional si se desea ocultar, 
+        // pero el usuario pidió lo opuesto antes.
+        // Mantenemos la lógica original para VLS por ahora para no romper su vista.
+        return !s.title.toLowerCase().includes('municipal') && !s.subtitle.toLowerCase().includes('institucional') && !s.badge?.includes('GOBIERNO');
+    });
 
     const internalTools = [
         {
@@ -808,13 +823,54 @@ export default function HubDashboard() {
         }
     ];
 
-    const allApps = [...servicios, ...participacionCiudadana].filter(a => a.active || a.id === 'debono');
+    // Strict Filtering for RDMLS: Only show professional/institutional tools
+    const allApps = [...servicios, ...participacionCiudadana, ...internalTools]
+        .filter(a => a.active)
+        .filter(a => {
+            if (!isRDMLS) return true;
+            // Purge ludic/citizen-only apps from RDMLS
+            const vlsOnly = ['tienda-poleras', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'vhs-tv', 'cdls-club', 'difundir-app', 'stickers-portal', 'laico', 'ecumenico'];
+            return !vlsOnly.includes(a.id);
+        });
     const filteredApps = allApps.filter(app =>
         (app.title || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
         (app.subtitle || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
 
-    const categories = [
+    const categories = isRDMLS ? [
+        {
+            id: 'citizens',
+            name: 'Smart Citizens (Atención Ciudadana)',
+            description: 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.',
+            icon: Users,
+            color: '#ef4444',
+            modules: ['vecinojos', 'camaras-faro', 'identity-gate', 'distances', 'paseo3d', 'historic-3d']
+        },
+        {
+            id: 'admin',
+            name: 'Smart Administration (Gestión Interna)',
+            description: 'Portal de inducción E-learning y digitalización de informes (Honorarios) con firma digital.',
+            icon: Briefcase,
+            color: '#10b981',
+            modules: ['smart-admin-internal', 'smart-admin', 'elearning']
+        },
+        {
+            id: 'events',
+            name: 'Smart Events (Protocolo)',
+            description: 'Gestión automatizada de eventos y Monitor de Precedencias en tiempo real.',
+            icon: PartyPopper,
+            color: '#f59e0b',
+            modules: ['protocolo', 'events', 'qr-acc']
+        },
+        {
+            id: 'listening',
+            name: 'Smart Listening (Inteligencia)',
+            description: 'Centinel Faro, Social Listening y Radio Digital Municipal.',
+            icon: Radio,
+            color: '#38bdf8',
+            modules: ['vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 'radio-master']
+        }
+    ] : [
         {
             id: 'citizens',
             name: 'Smart Citizens (Atención Ciudadana)',
@@ -923,12 +979,12 @@ export default function HubDashboard() {
     ]);
 
     const guardianes = [
-        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', img: '/serenito_v3.png', bio: 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
+        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', img: '/serenito_v3.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
         { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', img: '/avatars/don_joako_guardian.png', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
         { id: 'pampita-huertera', name: 'Pampita', role: 'Humizales & Parques', img: '/pampita_v3.png', bio: 'Guardiana de flora y fauna regional. Sabiduría de la tierra y biodiversidad.' },
         { id: 'ancestro-bisabuelo', name: 'Ancestral Serenito (Bisabuelo)', role: 'Historia & Tradición', img: '/ancestral_serenito.png', bio: 'Guardián original de la ciudad con su farol de la verdad. Sabiduría de los fundadores.' },
         { id: 'farito-nav', name: 'Farito', role: 'Navegación & Guía', img: '/avatars/farito_navigator.png', bio: 'Asistente experto en geografía y clima regional. Navega el Borde Costero con el nuevo Tripo Engine Rigged.' },
-        { id: 't-9a8e', name: 'Curador 3D Heritage', role: 'Arte Digital VLS', img: '/avatars/compita.png', bio: 'Maestro de la reconstrucción digital del patrimonio serenense (Tripo Engine).' }
+        { id: 't-9a8e', name: 'Curador 3D Heritage', role: 'Arte Digital VLS', img: '/avatars/compita.png', bio: isRDMLS ? 'Maestro de la reconstrucción digital del patrimonio serenense.' : 'Maestro de la reconstrucción digital del patrimonio serenense (Tripo Engine).' }
     ];
 
     const [msgIndex, setMsgIndex] = useState(0);
@@ -1084,46 +1140,53 @@ export default function HubDashboard() {
                         >
                             <Book size={14} /> {t.glosario || 'GLOSARIO'}
                         </button>
-                        <button
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
-                            className="btn-glass animate-pulse-slow"
-                            style={{
-                                background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                                border: '1px solid rgba(255,255,255,0.3)',
-                                borderRadius: '50px',
-                                padding: '0.4rem 1rem',
-                                color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            <Zap size={14} /> {t.smartFeed || 'SMART FEED'}
-                        </button>
-                        <button
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
-                            className="btn-glass animate-pulse-slow"
-                            style={{
-                                background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
-                                border: '1px solid rgba(255,255,255,0.3)',
-                                borderRadius: '50px',
-                                padding: '0.4rem 1rem',
-                                color: 'white',
-                                fontWeight: 'bold',
-                                fontSize: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            <Sparkles size={14} /> {t.city3d || 'CIUDAD 3D'}
-                        </button>
+                    {!isRDMLS && (
+                        <div style={{
+                            display: 'flex',
+                            gap: '10px'
+                        }}>
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
+                                className="btn-glass animate-pulse-slow"
+                                style={{
+                                    background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    borderRadius: '50px',
+                                    padding: '0.4rem 1rem',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                <Zap size={14} /> {t.smartFeed || 'SMART FEED'}
+                            </button>
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
+                                className="btn-glass animate-pulse-slow"
+                                style={{
+                                    background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
+                                    border: '1px solid rgba(255,255,255,0.3)',
+                                    borderRadius: '50px',
+                                    padding: '0.4rem 1rem',
+                                    color: 'white',
+                                    fontWeight: 'bold',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                <Sparkles size={14} /> {t.city3d || 'CIUDAD 3D'}
+                            </button>
+                        </div>
+                    )}
                     </div>
 
                     <div key={msgIndex} className="animate-slide-up" style={{
@@ -1148,6 +1211,7 @@ export default function HubDashboard() {
                 {/* ══════════════════════════════════════════════════ */}
                 {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
                 {/* ══════════════════════════════════════════════════ */}
+                {!isRDMLS && (
                 <div style={{
                     width: '100%',
                     background: '#050d1a',
@@ -1190,7 +1254,7 @@ export default function HubDashboard() {
                                 <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>NUEVO</span>
                             </div>
                             <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                Trivia La Serena · Gana Fichas VLS
+                                Trivia La Serena · Gana Fichas {isRDMLS ? 'RDMLS' : 'VLS'}
                             </p>
                         </div>
                         <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
@@ -1231,349 +1295,158 @@ export default function HubDashboard() {
                                 Vuela, dispara y defiende La Serena
                             </p>
                         </div>
-                        <div style={{ background: 'linear-gradient(135deg,#ef4444,#991b1b)', color: 'white', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
-                            <Rocket size={14} /> VOLAR ▶
                         </div>
                     </div>
-                </div>
+                )}
 
 
                 <div style={{ padding: '0 1rem 2rem 1rem' }}>
 
                     <header className="page-header" style={{ marginBottom: '2.5rem', textAlign: 'center', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-
-                        {/* Nueva Identidad Visual: Integración de Logo VLS */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', marginBottom: '1.5rem', justifyContent: 'center', alignItems: 'center', width: '100%', maxWidth: '900px', boxSizing: 'border-box' }}>
-                            {/* RadioHomeWidget: siempre visible en el portal principal */}
+                            
+                            {/* Radio Dial / Home Widget dinámico */}
                             <div style={{ width: '100%', position: 'relative', zIndex: 100001 }}>
-                                <RadioHomeWidget />
+                                {isVLS ? <RadioHomeWidget /> : <RDMLSRadioDial />}
                             </div>
-                            {!window.location.hostname.includes('vecinoslaserena.cl') && !window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('localhost') ? (
-                                <>
-                                    <div className="neocolonial-frame" style={{ border: '2px solid #ef4444', padding: '2rem', background: 'rgba(0,0,0,0.8)', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                        <img src="/vls_chile_map.jpg" alt="Vecinossmart Chile" style={{ maxHeight: '140px', maxWidth: '90%', height: 'auto', borderRadius: '12px', boxShadow: '0 0 20px rgba(255,255,255,0.2)' }} />
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                        <img src="/vls_red_square.jpg" alt="VLS Logo" style={{ maxHeight: '80px', width: 'auto', borderRadius: '8px' }} />
-                                        <img src="/vls_white_banner.jpg" alt="VLS Banner" style={{ maxHeight: '40px', width: 'auto', opacity: 0.9 }} />
-                                    </div>
 
-                                    <div className="picasso-fractal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '100%', maxWidth: '800px', marginBottom: '2rem', padding: '2rem', borderRadius: '20px' }}>
-                                        <h2 className="serena-title-glow" style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', margin: '0', textAlign: 'center' }}>LA SERENA</h2>
-                                        <h3 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)', margin: '0', fontWeight: 'bold' }}>{t.title}</h3>
-                                        <p style={{ fontWeight: 'bold', margin: '0', fontSize: '1.1rem', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '2px' }}>{t.subtitle}</p>
-                                        <button
-                                            className="btn btn-primary animate-pulse"
-                                            style={{
-                                                width: '100%', maxWidth: '400px', marginTop: '1.5rem', padding: '1rem',
-                                                fontSize: '1.2rem', fontWeight: 'bold', borderRadius: '50px',
-                                                background: 'linear-gradient(90deg, #d4af37, #f59e0b)',
-                                                color: 'black', border: 'none',
-                                                boxShadow: '0 10px 30px rgba(212, 175, 55, 0.5)'
-                                            }}
-                                            onClick={() => window.location.href = 'https://tramites.laserena.cl'}
-                                        >
-                                            <Globe size={24} style={{ marginRight: '10px' }} />
-                                            Trámites Municipales
-                                        </button>
+                            {/* BANNER DINÁMICO SEGÚN DOMINIO */}
+                            {isRDMLS ? (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '1rem 0', textAlign: 'center', width: '100%' }}>
+                                    <div className="picasso-fractal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%', maxWidth: '850px', marginBottom: '1.5rem', padding: '2.5rem', borderRadius: '30px', background: 'rgba(80, 5, 5, 0.4)', border: '2px solid #f59e0b', boxShadow: '0 15px 40px rgba(0,0,0,0.4)', position: 'relative' }}>
+                                        <div style={{ position: 'absolute', top: -30, background: '#f59e0b', padding: '0.4rem 1.5rem', borderRadius: '20px', color: '#000', fontWeight: '900', fontSize: '0.8rem', letterSpacing: '2px' }}>PORTAL INSTITUCIONAL</div>
+                                        <img src="/escudo.png" style={{ height: '120px', filter: 'drop-shadow(0 0 15px rgba(245,158,11,0.5))' }} alt="Muni La Serena" />
+                                        <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '950', letterSpacing: '-1px', margin: 0, textShadow: '0 10px 20px rgba(0,0,0,0.5)' }}>I. MUNICIPALIDAD DE LA SERENA</h1>
+                                        <p style={{ color: '#fcd34d', fontWeight: '900', fontSize: '1.2rem', letterSpacing: '3px', textTransform: 'uppercase', margin: 0 }}>Radio Digital Municipal RDMLS.cl</p>
                                     </div>
-                                </>
-                            ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '2rem 0', textAlign: 'center', width: '100%' }}>
-                                    {/* contenido del portal principal */}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                        <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
-                                            <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                                        </div>
-                                        <div style={{ textAlign: 'left', maxWidth: '400px' }}>
-                                            <AnimatePresence mode="wait">
-                                                <motion.div
-                                                    key={greetingIdx}
-                                                    initial={{ opacity: 0, x: 20 }}
-                                                    animate={{ opacity: 1, x: 0 }}
-                                                    exit={{ opacity: 0, x: -20 }}
-                                                    transition={{ duration: 0.5 }}
-                                                    style={{ overflow: 'visible', width: '100%' }}
-                                                >
-                                                    <h1 style={{
-                                                        color: 'white',
-                                                        fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-                                                        fontWeight: '950',
-                                                        letterSpacing: '-1.5px',
-                                                        margin: 0,
-                                                        fontFamily: '"Outfit", sans-serif',
-                                                        lineHeight: '1.1',
-                                                        textShadow: '0 8px 16px rgba(0,0,0,0.5)'
-                                                    }}>
-                                                        {greetings[greetingIdx].text.split(',')[0]},
-                                                        <span style={{
-                                                            color: greetings[greetingIdx].color,
-                                                            background: greetings[greetingIdx].bg,
-                                                            WebkitBackgroundClip: 'text',
-                                                            WebkitTextFillColor: 'transparent',
-                                                            padding: '0 5px'
-                                                        }}>
-                                                            {greetings[greetingIdx].text.split(',')[1] || ''}
-                                                        </span>
-                                                    </h1>
-                                                    <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.5rem 0", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
-                                                        <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.4))', flexShrink: 0 }}>{greetings[greetingIdx].flag}</span>
-                                                        <span style={{ flex: 1 }}>{greetings[greetingIdx].sub}</span>
-                                                    </p>
-                                                </motion.div>
-                                            </AnimatePresence>
-                                            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
-                                                {t.welcomePortales || 'Bienvenido al portal unificado de La Serena. Explora todas las herramientas ciudadanas a continuación.'}
-                                            </div>
-
-                                            {/* TRANSLATION TICKER FROM RADIO */}
-                                            <div style={{ marginTop: '15px' }}>
-                                                <style>{`
-                                                .vls-hub-wincha-container {
-                                                    width: 100%;
-                                                    background: #ef4444;
-                                                    color: white;
-                                                    overflow: hidden;
-                                                    white-space: nowrap;
-                                                    border-radius: 12px 12px 0 0;
-                                                    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3);
-                                                    border: 1px solid rgba(255,255,255,0.2);
-                                                    height: 32px;
-                                                    display: flex;
-                                                    align-items: center;
-                                                    position: relative;
-                                                }
-                                                .vls-hub-wincha-text {
-                                                    display: inline-block;
-                                                    padding-left: 100%;
-                                                    animation: vls-hub-marquee 40s linear infinite;
-                                                    font-size: 0.85rem;
-                                                    font-weight: 800;
-                                                    text-transform: uppercase;
-                                                    letter-spacing: 0.5px;
-                                                }
-                                                @keyframes vls-hub-marquee {
-                                                    0% { transform: translate(0, 0); }
-                                                    100% { transform: translate(-150%, 0); }
-                                                }
-                                            `}</style>
-                                                <div className="vls-hub-wincha-container" style={{ marginBottom: '0' }}>
-                                                    <div className="vls-hub-wincha-text">
-                                                        {newsFlashes[currentFlashIndex][lang] || newsFlashes[currentFlashIndex]['es']}
-                                                    </div>
-                                                </div>
-                                                <div style={{
-                                                    display: 'flex', gap: '6px', padding: '4px 8px',
-                                                    background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(5px)',
-                                                    borderRadius: '0 0 12px 12px', width: '100%',
-                                                    justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)',
-                                                    borderTop: 'none', flexWrap: 'nowrap'
-                                                }}>
-                                                    {[
-                                                        { id: 'es', flag: '🇨🇱', label: 'CHI' },
-                                                        { id: 'en', flag: '🇺🇸', label: 'USA' },
-                                                        { id: 'it', flag: '🇮🇹', label: 'ITA' },
-                                                        { id: 'fr', flag: '🇫🇷', label: 'FRA' },
-                                                        { id: 'zh', flag: '🇨🇳', label: 'CHN' },
-                                                        { id: 'pt', flag: '🇧🇷', label: 'BRA' }
-                                                    ].map(l => (
-                                                        <button
-                                                            key={l.id}
-                                                            onClick={() => setLang(l.id)}
-                                                            style={{
-                                                                background: lang === l.id ? '#ef4444' : 'transparent',
-                                                                border: '1px solid ' + (lang === l.id ? '#ef4444' : 'rgba(255,255,255,0.1)'),
-                                                                cursor: 'pointer', padding: '2px 8px',
-                                                                borderRadius: '6px', display: 'flex', alignItems: 'center',
-                                                                gap: '4px', transition: 'all 0.3s'
-                                                            }}
-                                                        >
-                                                            <span style={{ fontSize: '1rem' }}>{l.flag}</span>
-                                                            <span style={{ fontSize: '0.65rem', color: 'white', fontWeight: 'bold' }}>{l.label}</span>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* BUSCADOR INTEGRADO */}
-                                    <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
-                                        <Search size={20} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-                                        <input
-                                            type="text"
-                                            placeholder="O busca un servicio específico aquí..."
-                                            value={searchTerm}
-                                            onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
-                                            onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(searchTerm); }}
-                                            style={{ width: '100%', padding: '1rem 1.2rem 1rem 3.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '25px', color: 'white', fontSize: '1rem', outline: 'none', backdropFilter: 'blur(10px)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
-                                        />
-                                        <button
-                                            onClick={startVoiceSearch}
-                                            style={{
-                                                position: 'absolute',
-                                                right: '1.2rem',
-                                                top: '50%',
-                                                transform: 'translateY(-50%)',
-                                                background: 'none',
-                                                border: 'none',
-                                                cursor: 'pointer',
-                                                color: '#94a3b8',
-                                                padding: '0',
-                                                display: 'flex',
-                                                alignItems: 'center'
-                                            }}
-                                            title="Búsqueda por voz"
-                                        >
-                                            <Mic size={20} />
-                                        </button>
-                                    </div>
-
-                                    {/* VLS LIVE METRICS: SUCCESS CELEBRATION */}
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        style={{
-                                            display: 'flex', flexDirection: 'column', alignItems: 'center',
-                                            gap: '10px', marginTop: '20px', padding: '15px 30px',
-                                            background: 'rgba(56, 189, 248, 0.03)', borderTop: '1px solid rgba(56, 189, 248, 0.1)',
-                                            borderBottom: '1px solid rgba(56, 189, 248, 0.1)', minWidth: '100%'
-                                        }}
-                                    >
-                                        <span style={{ fontSize: '0.8rem', fontWeight: '950', color: '#38bdf8', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
-                                            VLS LIVE: {vlsStats.liveUsers} VECINOS ACTIVOS • {vlsStats.totalServed}GB SERVIDOS TODAY
-                                        </span>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(56, 189, 248, 0.1)', padding: '4px 12px', borderRadius: '20px' }}>
-                                            <TrendingUp size={14} color="#38bdf8" />
-                                            <span style={{ fontSize: '0.7rem', fontWeight: 'bold', color: '#38bdf8', letterSpacing: '2px' }}>
-                                                CRECIMIENTO SOCIAL: {vlsStats.growth} VS SEMANA-1
-                                            </span>
-                                        </div>
-                                    </motion.div>
-
-                                    {/* GALERÍA DE LOS 4 PILARES (REGLA #2) */}
-                                    <div style={{
-                                        display: 'grid',
-                                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                                        gap: '1.5rem',
-                                        width: '100%',
-                                        maxWidth: '1200px',
-                                        marginTop: '0.5rem'
-                                    }}>
-                                        {categories.map(pillar => (
-                                            <div
-                                                key={pillar.id}
-                                                onClick={() => {
-                                                    setSearchTerm("");
-                                                    const element = document.getElementById(`cat-section-${pillar.id}`);
-                                                    if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                                }}
-                                                className="glass-panel gaudi-curves hover-lift"
-                                                style={{
-                                                    padding: '2rem',
-                                                    borderRadius: '32px',
-                                                    border: `1.5px solid ${pillar.color}50`,
-                                                    background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`,
-                                                    cursor: 'pointer',
-                                                    textAlign: 'center',
-                                                    display: 'flex',
-                                                    flexDirection: 'column',
-                                                    alignItems: 'center',
-                                                    gap: '1.2rem',
-                                                    boxShadow: `0 20px 40px rgba(0,0,0,0.4)`
-                                                }}
-                                            >
-                                                <div style={{
-                                                    background: pillar.color,
-                                                    padding: '1.2rem',
-                                                    borderRadius: '24px',
-                                                    color: pillar.id === 'citizens' ? 'black' : 'white',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    boxShadow: `0 10px 20px ${pillar.color}44`
-                                                }}>
-                                                    <pillar.icon size={36} />
-                                                </div>
-                                                <div>
-                                                    <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{t[`${pillar.id}Title`] || pillar.name}</h4>
-                                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{t[`${pillar.id}Sub`] || pillar.description}</p>
-                                                </div>
-                                            </div>
-                                        ))}
+                                    <div style={{ background: 'rgba(255,158,11,0.1)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,158,11,0.3)', fontSize: '0.9rem', color: '#fcd34d', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <span style={{ fontSize: '1.1rem' }}>🏛️</span>
+                                        Acceso prioritario a herramientas de gestión municipal y servicios para funcionarios.
                                     </div>
                                 </div>
+                            ) : (
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '1rem 0', textAlign: 'center', width: '100%' }}>
+                                    {isVLS ? (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                            <div className="animate-float" style={{ width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)' }}>
+                                                <img src="/avatars/serenito.png" alt="Serenito" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            </div>
+                                            <div style={{ textAlign: 'left', maxWidth: '400px' }}>
+                                                <AnimatePresence mode="wait">
+                                                    <motion.div
+                                                        key={greetingIdx}
+                                                        initial={{ opacity: 0, x: 20 }}
+                                                        animate={{ opacity: 1, x: 0 }}
+                                                        exit={{ opacity: 0, x: -20 }}
+                                                        transition={{ duration: 0.5 }}
+                                                        style={{ overflow: 'visible', width: '100%' }}
+                                                    >
+                                                        <h1 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: '950', letterSpacing: '-1.5px', margin: 0, fontFamily: '"Outfit", sans-serif', lineHeight: '1.1', textShadow: '0 8px 16px rgba(0,0,0,0.5)' }}>
+                                                            {greetings[greetingIdx].text.split(',')[0]},
+                                                            <span style={{ color: greetings[greetingIdx].color, background: greetings[greetingIdx].bg, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', padding: '0 5px' }}>{greetings[greetingIdx].text.split(',')[1] || ''}</span>
+                                                        </h1>
+                                                        <p style={{ color: greetings[greetingIdx].color, fontWeight: "bold", margin: "0.5rem 0", letterSpacing: "1.5px", textShadow: "0 2px 4px rgba(0,0,0,0.5)", textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '10px', fontSize: 'clamp(0.7rem, 2vw, 0.9rem)' }}>
+                                                            <span style={{ fontSize: '1.5rem' }}>{greetings[greetingIdx].flag}</span>
+                                                            <span>{greetings[greetingIdx].sub}</span>
+                                                        </p>
+                                                    </motion.div>
+                                                </AnimatePresence>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="neocolonial-frame" style={{ border: '2px solid #ef4444', padding: '2rem', background: 'rgba(0,0,0,0.8)', display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                                <img src="/vls_chile_map.jpg" alt="Región Coquimbo" style={{ maxHeight: '140px', maxWidth: '90%', height: 'auto', borderRadius: '12px' }} />
+                                            </div>
+                                            <div className="picasso-fractal" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', width: '100%', maxWidth: '800px', marginBottom: '2rem', padding: '2rem', borderRadius: '20px' }}>
+                                                <h2 className="serena-title-glow" style={{ fontSize: 'clamp(2rem, 6vw, 4rem)', margin: '0', textAlign: 'center' }}>{brandOrg.toUpperCase()}</h2>
+                                                <h3 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)', margin: '0', fontWeight: 'bold' }}>RADIO PORTAL REGIONAL</h3>
+                                            </div>
+                                        </>
+                                    )}
+
+                                    {!isVLS && (
+                                        <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
+                                            {t.welcomePortales || 'Bienvenido al portal unificado de La Serena.'}
+                                        </div>
+                                    )}
+                                </div>
                             )}
+
+                            {/* BUSCADOR INTEGRADO */}
+                            <div style={{ width: '100%', maxWidth: '600px', position: 'relative', marginTop: '1rem' }}>
+                                <Search size={20} style={{ position: 'absolute', left: '1.2rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                                <input
+                                    type="text"
+                                    placeholder="O busca un servicio específico aquí..."
+                                    value={searchTerm}
+                                    onChange={(e) => { setSearchTerm(e.target.value); if (e.target.value) setViewMode('full'); }}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleSearchSubmit(searchTerm); }}
+                                    style={{ width: '100%', padding: '1rem 1.2rem 1rem 3.5rem', background: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '25px', color: 'white', fontSize: '1rem', outline: 'none', backdropFilter: 'blur(10px)', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+                                />
+                                <button
+                                    onClick={startVoiceSearch}
+                                    style={{ position: 'absolute', right: '1.2rem', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}
+                                >
+                                    <Mic size={20} />
+                                </button>
+                            </div>
+
+                            {/* ELIMINADO: Métricas hardcoded (Reemplazar por VLS-Cloud Realtime en v3.5) */}
+
+                            {/* GALERÍA DE LOS 4 PILARES */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '1200px', marginTop: '0.5rem' }}>
+                                {categories.map(pillar => (
+                                    <div
+                                        key={pillar.id}
+                                        onClick={() => {
+                                            setSearchTerm("");
+                                            const element = document.getElementById(`cat-section-${pillar.id}`);
+                                            if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                        }}
+                                        className="glass-panel gaudi-curves hover-lift"
+                                        style={{ padding: '2rem', borderRadius: '32px', border: `1.5px solid ${pillar.color}50`, background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', boxShadow: `0 20px 40px rgba(0,0,0,0.4)` }}
+                                    >
+                                        <div style={{ background: pillar.color, padding: '1.2rem', borderRadius: '24px', color: pillar.id === 'citizens' ? 'black' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <pillar.icon size={36} />
+                                        </div>
+                                        <div>
+                                            <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{t[`${pillar.id}Title`] || pillar.name}</h4>
+                                            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{t[`${pillar.id}Sub`] || pillar.description}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
+                        {/* BARRA DE HERRAMIENTAS INFERIOR */}
                         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', width: '100%' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'white', fontSize: '0.9rem', border: '1px solid rgba(255,255,255,0.1)' }}>
                                 <Globe size={18} color="var(--brand-primary)" />
-                                <select
-                                    value={lang}
-                                    onChange={(e) => setLang(e.target.value)}
-                                    style={{
-                                        background: 'transparent',
-                                        color: 'white',
-                                        border: 'none',
-                                        outline: 'none',
-                                        cursor: 'pointer',
-                                        fontWeight: 'bold',
-                                        fontFamily: lang === 'zh' ? '"Microsoft YaHei", "PingFang SC", sans-serif' : 'inherit'
-                                    }}>
+                                <select value={lang} onChange={(e) => setLang(e.target.value)} style={{ background: 'transparent', color: 'white', border: 'none', outline: 'none', cursor: 'pointer', fontWeight: 'bold' }}>
                                     <option value="es" style={{ color: '#000' }}>Español (ES)</option>
                                     <option value="en" style={{ color: '#000' }}>English (EN)</option>
-                                    <option value="fr" style={{ color: '#000' }}>Français (FR)</option>
-                                    <option value="it" style={{ color: '#000' }}>Italiano (IT)</option>
-                                    <option value="pt" style={{ color: '#000' }}>Português (PT)</option>
-                                    <option value="zh" style={{ color: '#000' }}>中文 (ZH)</option>
-                                    <option value="ht" style={{ color: '#000' }}>Kreyòl (HT)</option>
-                                    <option value="arn" style={{ color: '#000' }}>Mapudungun (ARN)</option>
                                 </select>
-                            </div>
-
-                            {lang !== 'es' && (
-                                <button
-                                    onClick={() => alert("ComunaSmart: Estamos activando la traducción dinámica mediante Gemini para las secciones faltantes...")}
-                                    style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', border: '1px solid #10b981', padding: '0.4rem 0.8rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold' }}
-                                >
-                                    âœ¨ AI Auto-Translate
-                                </button>
-                            )}
-
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', color: 'var(--text-secondary)', fontSize: '0.85rem', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                <DeviceIcon size={16} />
-                                <span style={{ fontWeight: 'bold' }}>Modo {deviceType}</span>
                             </div>
 
                             <button
                                 className="btn-glass"
-                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', transition: 'all 0.3s' }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1.2rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
                                 onClick={() => window.dispatchEvent(new CustomEvent('open-smart-share'))}
-                                onMouseEnter={(e) => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; }}
-                                onMouseLeave={(e) => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; }}
                             >
-                                <QRCodeSVG value={window.location.hostname.includes('rdmls') ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl"} size={35} level={"L"} />
+                                <QRCodeSVG value={isRDMLS ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl"} size={35} level={"L"} />
                                 <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{t.qrText}</span>
                             </button>
 
-                            <SmartShare renderAsHiddenObserver={true} />
-
-                            {/* Reloj en vivo */}
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textTransform: 'capitalize' }}>{formatoFecha}</span>
+                                <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{formatoFecha}</span>
                                 <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatoHora}</span>
                             </div>
 
                             <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
                                 <Map size={18} color="#38bdf8" />
                                 <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
-                            </button>
-
-                            <button onClick={() => navigate('/inversores')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(245, 158, 11, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                                <Zap size={18} color="#f59e0b" />
-                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>PITCH INVERSORES</span>
                             </button>
 
                             <button onClick={() => navigate('/sombreros')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(167, 139, 250, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
@@ -1751,7 +1624,9 @@ export default function HubDashboard() {
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2))' }}></div>
-                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase' }}>Catálogo de Servicios Smart</h3>
+                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
+                                {isRDMLS ? 'Herramientas de Gestión Municipal' : 'Catálogo de Servicios Smart'}
+                            </h3>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(255,255,255,0.2))' }}></div>
                         </div>
                         <div style={{
@@ -1813,12 +1688,12 @@ export default function HubDashboard() {
 
                     {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
                     {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
-                    {(isAuthorized || !isVLS || host.includes('vecinosmart.cl')) && (
+                    {(isAuthorized || isRDMLS || host.includes('vecinosmart.cl')) && (
                         <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem', gap: '1.5rem' }}>
                                 <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.5))' }}></div>
                                 <h3 className="text-gradient" style={{ margin: 0, fontSize: '1.6rem', letterSpacing: '4px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <Lock size={20} color="#38bdf8" /> Gestión Interna VLS
+                                    <Lock size={20} color="#38bdf8" /> {isRDMLS ? 'Gestión Interna Municipal' : 'Gestión Interna VLS'}
                                 </h3>
                                 <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(56,189,248,0.5))' }}></div>
                             </div>
@@ -1830,17 +1705,15 @@ export default function HubDashboard() {
                             </div>
                         </div>
                     )}
-                    {/* MONITOREO NAVIERO EN TIEMPO REAL */}
-                    <NavieraMonitor />
-
-                    {/* RANKING MUSICAL SERENENSE */}
-                    <MusicRanking />
-
-                    {/* POLIDEPORTIVO VECINAL - Ligas, ATP, etc. */}
-                    <PolideportivoVecinal />
-
-                    {/* TUERCA VECINOS - Mecánica y protocolos */}
-                    <TuercaVecinos />
+                    {/* SECCIONES EXCLUSIVAS VLS - HIDDEN IN RDMLS */}
+                    {isVLS && (
+                        <>
+                            <NavieraMonitor />
+                            <MusicRanking />
+                            <PolideportivoVecinal />
+                            <TuercaVecinos />
+                        </>
+                    )}
 
                     {/* SECCIÓN GUARDIANES DE LA REGIÓN (Personajes 3D) */}
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
@@ -1950,52 +1823,54 @@ export default function HubDashboard() {
                                         />
                                     </motion.div>
 
-                                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE */}
-                                    <motion.div
-                                        key="tvls-player-bottom"
-                                        drag
-                                        dragMomentum={false}
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        style={{
-                                            position: 'fixed',
-                                            bottom: '100px',
-                                            right: '25px',
-                                            width: '280px',
-                                            height: '158px',
-                                            zIndex: 10000,
-                                            borderRadius: '16px',
-                                            overflow: 'hidden',
-                                            boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
-                                            border: '2px solid rgba(239, 68, 68, 0.4)',
-                                            background: '#000',
-                                            cursor: 'grab'
-                                        }}
-                                    >
-                                        <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
-                                        {TVLS_VIDEOS[previewIndex].url ? (
-                                            <video
-                                                src={TVLS_VIDEOS[previewIndex].url}
-                                                autoPlay
-                                                muted={isMuted}
-                                                loop
-                                                playsInline
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                onEnded={nextVideo}
-                                            />
-                                        ) : (
-                                            <iframe
-                                                width="100%" height="100%"
-                                                src={TVLS_VIDEOS[previewIndex].isPlaylist 
-                                                    ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
-                                                    : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
-                                                }
-                                                title="TVLS Institutional"
-                                                frameBorder="0"
-                                                allow="autoplay; encrypted-media; fullscreen"
-                                            />
-                                        )}
-                                    </motion.div>
+                                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE - SOLO EN VLS */}
+                                    {isVLS && (
+                                        <motion.div
+                                            key="tvls-player-bottom"
+                                            drag
+                                            dragMomentum={false}
+                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            style={{
+                                                position: 'fixed',
+                                                bottom: '100px',
+                                                right: '25px',
+                                                width: '280px',
+                                                height: '158px',
+                                                zIndex: 10000,
+                                                borderRadius: '16px',
+                                                overflow: 'hidden',
+                                                boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
+                                                border: '2px solid rgba(239, 68, 68, 0.4)',
+                                                background: '#000',
+                                                cursor: 'grab'
+                                            }}
+                                        >
+                                            <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
+                                            {TVLS_VIDEOS[previewIndex].url ? (
+                                                <video
+                                                    src={TVLS_VIDEOS[previewIndex].url}
+                                                    autoPlay
+                                                    muted={isMuted}
+                                                    loop
+                                                    playsInline
+                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                    onEnded={nextVideo}
+                                                />
+                                            ) : (
+                                                <iframe
+                                                    width="100%" height="100%"
+                                                    src={TVLS_VIDEOS[previewIndex].isPlaylist 
+                                                        ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
+                                                        : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
+                                                    }
+                                                    title="TVLS Institutional"
+                                                    frameBorder="0"
+                                                    allow="autoplay; encrypted-media; fullscreen"
+                                                />
+                                            )}
+                                        </motion.div>
+                                    )}
                                 </AnimatePresence>
                             )}
                             {/* End of TV Section */}

@@ -87,6 +87,7 @@ const RightsGovernanceVLS = lazy(() => import('./components/RightsGovernanceVLS'
 const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
 const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
+const VLSMillionaireGame = lazy(() => import('./components/VLSMillionaireGame'));
 import VLSGameMain from './components/VLSGameMain';
 
 const SOVEREIGN_NAMES = [
@@ -160,7 +161,9 @@ const SecurityHoneypot = () => {
 
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
 import { auth } from './utils/firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithRedirect } from 'firebase/auth';
+import { db } from './utils/firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import GlobalAnnouncer from './components/GlobalAnnouncer';
 
 const LoadingScreen = () => <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#020617', color: '#38bdf8' }}>Cargando VLS OS...</div>;
@@ -219,6 +222,66 @@ function AppContent() {
   const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+
+  // ── Sync con Firestore (El CRM del Vecino) ─────────────────────────────────
+  useEffect(() => {
+    if (!currentUser) return;
+    const userDocRef = doc(db, "vls_accounts", currentUser.uid);
+    
+    // Obtener saldo inicial de la nube
+    const syncFromCloud = async () => {
+        try {
+            const snap = await getDoc(userDocRef);
+            if (snap.exists()) {
+                const cloudTokens = snap.data().tokens || 0;
+                // Si la nube tiene más, actualizamos localmente
+                if (cloudTokens > vlsTokens) {
+                    setVlsTokens(cloudTokens);
+                    localStorage.setItem('vls_tokens', cloudTokens.toString());
+                }
+            } else {
+                // Crear perfil inicial si no existe
+                await setDoc(userDocRef, {
+                    email: currentUser.email,
+                    displayName: currentUser.displayName,
+                    tokens: vlsTokens,
+                    lastSeen: new Date().toISOString()
+                });
+            }
+        } catch (e) {
+            console.warn("Firestore Sync Error:", e);
+        }
+    };
+    syncFromCloud();
+
+    // Listener en tiempo real para el saldo (pagos exitosos recargan aquí)
+    const unsub = onSnapshot(userDocRef, (snap) => {
+        if (snap.exists()) {
+            const cloudTokens = snap.data().tokens || 0;
+            if (cloudTokens !== vlsTokens) {
+                setVlsTokens(cloudTokens);
+                localStorage.setItem('vls_tokens', cloudTokens.toString());
+                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: cloudTokens }));
+            }
+        }
+    });
+    return () => unsub();
+  }, [currentUser]);
+
+  // Sincronizar cambios locales a la nube (ej: cuando gana una trivia)
+  useEffect(() => {
+    if (!currentUser) return;
+    const userDocRef = doc(db, "vls_accounts", currentUser.uid);
+    const syncToCloud = async () => {
+        try {
+            const snap = await getDoc(userDocRef);
+            if (snap.exists() && snap.data().tokens < vlsTokens) {
+                await setDoc(userDocRef, { tokens: vlsTokens }, { merge: true });
+            }
+        } catch(e) {}
+    };
+    syncToCloud();
+  }, [vlsTokens, currentUser]);
   const [showPrecolombino, setShowPrecolombino] = useState(false);
 
   // States for modals
@@ -297,6 +360,7 @@ function AppContent() {
   const [showTimeBus, setShowTimeBus] = useState(false);
   const [showRetroRoom, setShowRetroRoom] = useState(false);
   const [showEmergencyDirectory, setShowEmergencyDirectory] = useState(false);
+  const [showVLSMillionaire, setShowVLSMillionaire] = useState(false);
   const [showFaroCentinel, setShowFaroCentinel] = useState(false);
   const [showBotica, setShowBotica] = useState(false);
   const [showVLSGame, setShowVLSGame] = useState(false);
@@ -307,8 +371,8 @@ function AppContent() {
 
 
   const host = window.location.hostname.toLowerCase();
-  const isVLS = !host.includes('rdmls') && !host.includes('radiovecino') && !host.includes('entrevecinas');
-  const isRDMLS = !isVLS; 
+  const isRDMLS = host.includes('rdmls');
+  const isVLS = !isRDMLS && !host.includes('radiovecino') && !host.includes('entrevecinas');
   const isMasterDomain = host.includes('vecinosmart.cl') || host.includes('vls.cl') || host.includes('smartcomuna.cl');
   const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl'); 
 
@@ -406,10 +470,13 @@ function AppContent() {
     const handlePrecolombino = () => setShowPrecolombino(true);
     const handleParlamento = () => setShowParlamento(true);
 
+    const handleOpenVLSMillionaire = () => setShowVLSMillionaire(true);
+    
     window.addEventListener('open-dron-drigo', handleOpenDron);
     window.addEventListener('open-retro-tv', handleRetroTv);
     window.addEventListener('open-vhs-tv', handleVhsTv);
     window.addEventListener('open-game', handleGame);
+    window.addEventListener('open-vls-game', handleOpenVLSMillionaire);
     window.addEventListener('open-personal-stereo', handlePersonalStereo);
     window.addEventListener('open-time-bus', handleTimeBus);
     window.addEventListener('open-gym-3d', handleGym);
@@ -425,6 +492,7 @@ function AppContent() {
       window.removeEventListener('open-retro-tv', handleRetroTv);
       window.removeEventListener('open-vhs-tv', handleVhsTv);
       window.removeEventListener('open-game', handleGame);
+      window.removeEventListener('open-vls-game', handleOpenVLSMillionaire);
       window.removeEventListener('open-personal-stereo', handlePersonalStereo);
       window.removeEventListener('open-time-bus', handleTimeBus);
       window.removeEventListener('open-gym-3d', handleGym);
@@ -525,17 +593,11 @@ function AppContent() {
       window.dispatchEvent(new CustomEvent('vls-start-radio'));
     }).catch((err) => {
       console.error("Auth Error:", err);
-      // Fallback radical ante bloqueos o fallos de conexión
-      if (err.code === 'auth/popup-blocked' || err.code === 'auth/cancelled-by-user' || err.code === 'auth/popup-closed-by-user') {
-        signInWithRedirect(auth, provider).catch(redirErr => {
-          console.error("Redirect Error:", redirErr);
-          setCurrentUser({ displayName: 'Vecino Smart', email: 'vecino@vecinosmart.cl', photoURL: '/serenito-avatar.png' });
-          window.dispatchEvent(new CustomEvent('vls-start-radio'));
-        });
+      // Solo en caso de bloqueo drástico del navegador, intentamos redirect real
+      if (err.code === 'auth/popup-blocked') {
+        signInWithRedirect(auth, provider);
       } else {
-        alert(`Aviso: Hubo un problema de conexión (${err.code}). Accediendo con Perfil de Respaldo...`);
-        setCurrentUser({ displayName: 'Vecino Smart', email: 'vecino@vecinosmart.cl' });
-        window.dispatchEvent(new CustomEvent('vls-start-radio'));
+        alert("⚠️ CRÍTICO: No se pudo conectar con los servidores de Google Identidad. El sistema de pagos requiere una sesión real. " + err.message);
       }
     });
   };
@@ -848,24 +910,12 @@ function AppContent() {
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
   // Un usuario de Google no-admin también puede acceder (como vecino registrado)
   const isGoogleUser = currentUser && !isAuthorized;
-  const showMasterLock = !isAuthorized && !isGoogleUser && !isGuest && !isRegistered;
+  
+  // ELIMINADO: Bloqueo Maestro Passport que impedía acceso a pagos
+  const showMasterLock = false; 
 
   if (!authInitialized) {
       return <LoadingScreen />;
-  }
-
-  // Si requiere bloqueo maestro, NO renderizamos el Dashboard para evitar el "desfase" visual
-  if (showMasterLock) {
-      return (
-          <Suspense fallback={<LoadingScreen />}>
-              <MasterLock 
-                onUnlock={(user) => setCurrentUser(user)} 
-                setIsGuest={setIsGuest}
-                setGuestTimeLeft={setGuestTimeLeft}
-                setIsRegistered={setIsRegistered}
-              />
-          </Suspense>
-      );
   }
 
   return (
@@ -1004,73 +1054,88 @@ function AppContent() {
             )}
           </button>
 
-          <button
-            onClick={() => setShowUserProfile(true)}
-            className="user-badge glass-panel"
-            style={{ padding: '0.35rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-          >
-            <UserCircle size={14} />
-            {currentUser ? `${currentUser.displayName?.split(' ')[0]}` : 'Identidad VLS'}
-          </button>
-
-          {/* Billetera VLS: Visible Token Economy */}
-          <button
-            onClick={() => setShowVecnityPay(true)}
-            className="glass-panel animate-pulse-slow"
-            style={{ 
-              padding: '0.35rem 0.6rem', 
-              fontSize: '0.75rem', 
-              cursor: 'pointer', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px',
-              background: 'rgba(245, 158, 11, 0.1)',
-              border: '1px solid rgba(245, 158, 11, 0.4)',
-              color: '#f59e0b',
-              fontWeight: '900',
-              borderRadius: '20px'
-            }}
-          >
-            <Ticket size={14} />
-            {vlsTokens} FICHAS
-            <span style={{ fontSize: '0.6rem', background: '#f59e0b', color: '#0f172a', padding: '1px 4px', borderRadius: '4px' }}>CARGAR</span>
-          </button>
-          <button 
-            onClick={() => {
-              const doLogout = () => {
-                setIsGuest(false);
-                setCurrentUser(null);
-                setGuestTimeLeft(0);
-                localStorage.removeItem('smart_is_guest');
-                localStorage.setItem('smart_logout', 'true');
-                setShowUserProfile(false);
-                window.location.href = '/';
-              };
-              if (currentUser) {
-                signOut(auth).then(doLogout).catch(err => {
-                   console.error("Logout error:", err);
-                   doLogout();
-                });
-              } else {
-                doLogout();
-              }
-            }}
-            className="btn-glass pulse"
-            style={{ 
-              padding: '0.6rem 1.2rem', 
-              borderRadius: '50px', 
-              background: 'rgba(239, 68, 68, 0.4)', 
-              border: '2px solid #ef4444', 
-              color: 'white',
-              fontWeight: '900',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <CloseIcon size={20} color="white" />
-            <span style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>SALIR</span>
-          </button>
+          {isVLS && (
+            <>
+              {!currentUser ? (
+                <button
+                  onClick={handleLogin}
+                  className="glass-panel animate-pulse"
+                  style={{ padding: '0.35rem 0.8rem', borderRadius: '20px', fontWeight: '900', fontSize: '0.75rem', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid #3b82f6', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <LogIn size={14} /> CONECTAR IDENTIDAD
+                </button>
+              ) : (
+                <button
+                  onClick={() => setShowUserProfile(true)}
+                  className="user-badge glass-panel"
+                  style={{ padding: '0.35rem 0.6rem', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
+                >
+                  <UserCircle size={14} />
+                  {currentUser.displayName?.split(' ')[0]}
+                </button>
+              )}
+    
+              {/* Billetera VLS: Visible Token Economy */}
+              <button
+                onClick={() => setShowVecnityPay(true)}
+                className="glass-panel animate-pulse-slow"
+                style={{ 
+                  padding: '0.35rem 0.6rem', 
+                  fontSize: '0.75rem', 
+                  cursor: 'pointer', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '6px',
+                  background: 'rgba(245, 158, 11, 0.1)',
+                  border: '1px solid rgba(245, 158, 11, 0.4)',
+                  color: '#f59e0b',
+                  fontWeight: '900',
+                  borderRadius: '20px'
+                }}
+              >
+                <Ticket size={14} />
+                {vlsTokens} FICHAS
+                <span style={{ fontSize: '0.6rem', background: '#f59e0b', color: '#0f172a', padding: '1px 4px', borderRadius: '4px' }}>CARGAR</span>
+              </button>
+              <button 
+                onClick={() => {
+                  const doLogout = () => {
+                    setIsGuest(false);
+                    setCurrentUser(null);
+                    setGuestTimeLeft(0);
+                    localStorage.removeItem('smart_is_guest');
+                    localStorage.removeItem('master_bypass');
+                    localStorage.setItem('smart_logout', 'true');
+                    setShowUserProfile(false);
+                    window.location.href = '/';
+                  };
+                  if (currentUser) {
+                    signOut(auth).then(doLogout).catch(err => {
+                       console.error("Logout error:", err);
+                       doLogout();
+                    });
+                  } else {
+                    doLogout();
+                  }
+                }}
+                className="btn-glass pulse"
+                style={{ 
+                  padding: '0.6rem 1.2rem', 
+                  borderRadius: '50px', 
+                  background: 'rgba(239, 68, 68, 0.4)', 
+                  border: '2px solid #ef4444', 
+                  color: 'white',
+                  fontWeight: '900',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <CloseIcon size={20} color="white" />
+                <span style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>SALIR</span>
+              </button>
+            </>
+          )}
         </div>
 
         {showNotificationsMenu && (
@@ -1480,42 +1545,7 @@ function AppContent() {
         </div>
       )}
 
-      {/* Global Secure Login Overlay */}
-      {!currentUser && !isGuest && !isRegistered && authInitialized && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: '#020617', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', textAlign: 'center', overflow: 'hidden' }}>
-          
-          <div className="animate-float" style={{ marginBottom: '2rem', position: 'relative' }}>
-            <img 
-              src="/serenito_security_guard_close_up_1773392164475.png" 
-              alt="Serenito AI" 
-              style={{ height: '220px', filter: 'drop-shadow(0 0 20px rgba(56, 189, 248, 0.4))' }} 
-            />
-            <div className="glass-panel" style={{ position: 'absolute', top: '-20px', right: '-120px', padding: '1rem', borderRadius: '12px', border: '1px solid #38bdf8', fontSize: '0.8rem', color: 'white', maxWidth: '200px', textAlign: 'left', animation: 'slide-up 0.5s ease-out' }}>
-              <Sparkles size={14} color="#38bdf8" style={{ marginBottom: '5px' }} />
-              ¡Hola! Soy Serenito. Recuerda usar nuestras <b>APIs Integradas</b> (SEREMIX + Sentinel) para una experiencia total.
-            </div>
-          </div>
-
-          <div className="glass-panel animate-slide-up" style={{ maxWidth: '450px', width: '100%', padding: '3rem 2rem', textAlign: 'center', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.5)', background: 'linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,58,138,0.95))', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative', zIndex: 2 }}>
-            <div style={{ position: 'absolute', top: '-15px', left: '50%', transform: 'translateX(-50%)', background: '#38bdf8', color: '#0f172a', padding: '4px 12px', borderRadius: '20px', fontSize: '0.6rem', fontWeight: '900', letterSpacing: '2px' }}>ACCESO_RESTRINGIDO</div>
-            
-            <img src="/vls-logo-premium.png" alt="La Serena Smart City" style={{ height: '80px', margin: '0 auto', filter: 'drop-shadow(0 0 15px rgba(56, 189, 248, 0.5))' }} />
-
-            <AppLoginOverlay
-              handleLogin={handleLogin}
-              setIsGuest={setIsGuest}
-              setGuestTimeLeft={setGuestTimeLeft}
-              navigate={navigate}
-            />
-          </div>
-
-          <style>{`
-            .animate-float { animation: float-anim 6s ease-in-out infinite; }
-            @keyframes float-anim { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-            @keyframes slide-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-          `}</style>
-        </div>
-      )}
+      {/* ELIMINADO: Passport AppLoginOverlay que bloqueaba el flujo de ciudadanos */}
       
       {showFaritoSocial && (
         <Suspense fallback={null}><FaritoSocialNetwork onClose={() => setShowFaritoSocial(false)} currentUser={currentUser} /></Suspense>
@@ -1550,15 +1580,18 @@ function AppContent() {
         <Suspense fallback={null}><SkyGuideRA onClose={() => setShowSkyGuide(false)} /></Suspense>
       )}
 
-      <TokenEconomyMaster />
-      {showVecnityPay && <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />}
+      {!isRDMLS && <TokenEconomyMaster />}
+      {showVecnityPay && !isRDMLS && <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />}
       {showPrecolombino && (
         <Suspense fallback={null}><PrecolombinoPortal onClose={() => setShowPrecolombino(false)} /></Suspense>
       )}
       {showParlamento && (
         <Suspense fallback={null}><ParlamentoVecinal onClose={() => setShowParlamento(false)} /></Suspense>
       )}
-      <SmartShare isFloating={true} />
+      {showVLSMillionaire && (
+        <Suspense fallback={null}><VLSMillionaireGame onClose={() => setShowVLSMillionaire(false)} /></Suspense>
+      )}
+      {!isRDMLS && <SmartShare isFloating={true} />}
     </div>
   );
 }

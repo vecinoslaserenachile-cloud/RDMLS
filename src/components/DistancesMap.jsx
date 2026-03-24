@@ -35,6 +35,8 @@ export default function DistancesMap({ onClose }) {
     const [isMinimized, setIsMinimized] = useState(false);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [showBillboard, setShowBillboard] = useState(false);
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls');
 
     useEffect(() => {
         if (selectedRoute) {
@@ -176,7 +178,7 @@ export default function DistancesMap({ onClose }) {
                         <div style={{ padding: '1.2rem', background: 'linear-gradient(90deg, #0f172a, #1e293b)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', flexShrink: 0 }}>
                             <h2 style={{ margin: 0, fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'white', fontWeight: 900 }}>
                                 <Navigation size={24} color="#38bdf8" />
-                                CUADRO DE DISTANCIAS VLS
+                                {isRDMLS ? 'RDMLS MUNICIPAL: CUADRO DE DISTANCIAS' : 'CUADRO DE DISTANCIAS VLS'}
                             </h2>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button onClick={() => setIsMinimized(true)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Minimizar">
