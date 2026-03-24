@@ -25,26 +25,15 @@ export default function GlobalAnnouncer() {
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [currentWeather, setCurrentWeather] = useState({ temp: 20, condition: 'Soleado' });
 
-    // Efecto para actualizar el clima real desde API (Simulando consulta a Google via OpenMeteo/wttr)
+    // Sincronización de Clima Unificado (v3.5)
     useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                // Coordenadas La Serena
-                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2519&current_weather=true");
-                const data = await res.json();
-                if (data.current_weather) {
-                    setCurrentWeather({
-                        temp: Math.round(data.current_weather.temperature),
-                        condition: 'Despejado'
-                    });
-                }
-            } catch (e) {
-                console.warn("GlobalAnnouncer: Usando calibración manual (20°C)");
+        const handleWeatherSync = (e) => {
+            if (e.detail && e.detail.temp) {
+                setCurrentWeather(prev => ({ ...prev, temp: e.detail.temp }));
             }
         };
-        fetchWeather();
-        const interval = setInterval(fetchWeather, 900000); // Cada 15 min
-        return () => clearInterval(interval);
+        window.addEventListener('vls-weather-sync', handleWeatherSync);
+        return () => window.removeEventListener('vls-weather-sync', handleWeatherSync);
     }, []);
 
     // Motor de Humanización de Texto

@@ -64,7 +64,6 @@ import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
 import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
-import RadioHomeWidget from '../components/RadioHomeWidget';
 
 export default function HubDashboard() {
     const host = window.location.hostname.toLowerCase();

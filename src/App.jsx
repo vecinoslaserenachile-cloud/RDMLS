@@ -709,23 +709,19 @@ function AppContent() {
 
   useEffect(() => {
     // Clima real y preciso de La Serena (Timezone Adjusted) - Actualización cada 5 min
+    // Clima real unificado (v3.5) - Dispara evento para GlobalAnnouncer y Radio
     const fetchWeather = () => {
-      fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2520&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,weather_code,cloud_cover,wind_speed_10m,wind_direction_10m,uv_index&timezone=America%2FSantiago')
+      fetch('https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2520&current=temperature_2m,relative_humidity_2m&timezone=America%2FSantiago')
         .then(res => res.json())
         .then(data => {
           if (data?.current) {
-            setWeather({
-              temp: data.current.temperature_2m,
-              code: data.current.weather_code,
-              isDay: data.current.is_day,
-              wind: data.current.wind_speed_10m,
-              humidity: data.current.relative_humidity_2m,
-              rain: data.current.precipitation,
-              uv: data.current.uv_index
-            });
+            const newTemp = Math.round(data.current.temperature_2m);
+            setWeather(prev => ({ ...prev, temp: newTemp, humidity: data.current.relative_humidity_2m }));
+            // Sincronizar GlobalAnnouncer y otros componentes
+            window.dispatchEvent(new CustomEvent('vls-weather-sync', { detail: { temp: newTemp } }));
           }
         })
-        .catch(() => {}); // Fallback is already handled by default state
+        .catch(() => {});
     };
 
     fetchWeather();
