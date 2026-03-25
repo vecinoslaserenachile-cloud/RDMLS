@@ -1289,7 +1289,7 @@ function AppContent() {
           <GlobalAnnouncer />
           
           <Suspense fallback={<div style={{ position: 'fixed', bottom: 20, right: 20, color: 'white' }}>Cargando Señal VLS...</div>}>
-            <RadioPlayer globalWeather={weather} isVisible={showRadio} style={{ zIndex: (showUserProfile || showSentinelApex || showBroadcaster || showRadioMaster) ? 50 : 100050 }} />
+            {!isRDMLS && <RadioPlayer globalWeather={weather} isVisible={showRadio} style={{ zIndex: (showUserProfile || showSentinelApex || showBroadcaster || showRadioMaster) ? 50 : 100050 }} />}
           </Suspense>
         </>
       )}

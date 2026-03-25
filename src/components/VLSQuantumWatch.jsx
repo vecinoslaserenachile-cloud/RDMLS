@@ -11,7 +11,7 @@ import { motion, AnimatePresence } from 'framer-motion';
  * - Botón calendario
  * - No solapea otros elementos al estar minimizado (zIndex correcto)
  */
-export default function VLSQuantumWatch({ onCalendarClick }) {
+export default function VLSQuantumWatch({ onCalendarClick, isRDMLS }) {
     const [time, setTime] = useState(new Date());
     const [blink, setBlink] = useState(true);
     const [isMinimized, setIsMinimized] = useState(() =>
@@ -181,9 +181,9 @@ export default function VLSQuantumWatch({ onCalendarClick }) {
                         <div style={{ marginTop:'6px', borderTop:'1px solid rgba(255,255,255,0.2)',
                                       paddingTop:'4px', display:'flex', justifyContent:'space-between',
                                       alignItems:'center', position:'relative', zIndex:1 }}>
-                            <span style={{ fontFamily:'Arial,sans-serif', fontSize:'0.5rem',
-                                           color:theme.sub, fontWeight:'bold', letterSpacing:'2px' }}>
-                                VLS QUANTUM
+                            <span style={{ fontFamily:'Arial,sans-serif', fontSize:'0.45rem',
+                                           color:theme.sub, fontWeight:'bold', letterSpacing:'1px', whiteSpace: 'nowrap' }}>
+                                {isRDMLS ? 'HORASERENA DE RDMLS.CL' : 'VLS QUANTUM'}
                             </span>
                             {/* Color dots — DENTRO del LCD, visible y funcional */}
                             <div style={{ display:'flex', gap:'4px', alignItems:'center' }}>

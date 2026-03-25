@@ -208,11 +208,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
     <LanguageProvider>
       <BrowserRouter>
-        {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
+        {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch isRDMLS={isRdmlsDns} />}
         {isRdmlsDns ? (
           <Routes>
             <Route path="/welcome" element={<WelcomePortal />} />
             <Route path="/radio-portal" element={<Navigate to="/" replace />} />
+            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
+            <Route path="/induccion2" element={<Induccion26 />} />
             <Route path="/induccion26" element={<Induccion26 />} />
             <Route path="/" element={<App />}>
               <Route index element={<CentroRadio />} />

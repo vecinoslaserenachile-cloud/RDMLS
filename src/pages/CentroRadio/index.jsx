@@ -118,7 +118,7 @@ export default function CentroRadio() {
         ...(!isVLS ? [
             { 
                 id: 'municipal', 
-                name: 'RDMLS INSTITUCIONAL',
+                name: 'RADIO DIGITAL MUNICIPAL LA SERENA',
                 dialLabel: 'RDMLS',
                 slogan: 'LA SEÑAL SIEMPRE CONECTADA - IMLS 2026', 
                 url: "https://az11.yesstreaming.net:8590/radio.mp3",
@@ -137,47 +137,48 @@ export default function CentroRadio() {
                 badge: 'TV CONCEJO',
                 isVideo: true
             }
-        ] : []),
-        { 
-            id: 'jjvv', 
-            name: isVLS ? 'VLS RADIO (Oficial)' : 'RDMLS JJVV',
-            dialLabel: isVLS ? 'VLS 2026' : 'JJVV',
-            slogan: isVLS ? 'EL PULSO DIGITAL DE LA SERENA - VECINOS SMART' : 'JUNTAS DE VECINOS EN RED', 
-            url: "https://az11.yesstreaming.net:8630/radio.mp3", 
-            color: '#f97316',
-            logo: '/logo_vls.png',
-            badge: isVLS ? 'PRINCIPAL' : 'VECINAL'
-        },
-        { 
-            id: 'instrumental', 
-            name: isVLS ? 'SESIONES MUSICALES' : 'RDMLS RURAL',
-            dialLabel: isVLS ? 'MUSICA' : 'RURAL',
-            slogan: isVLS ? 'FOLKLORE, JAZZ Y ESTRENOS VLS' : 'CONEXIÓN CON EL CAMPO', 
-            url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
-            color: '#a855f7',
-            logo: '/piano_icon.png',
-            badge: isVLS ? 'CULTURAL' : 'TERRITORIO'
-        },
-        { 
-            id: 'entrevistas', 
-            name: isVLS ? 'ENTREVECINAS' : 'RDMLS ENTREVISTAS',
-            dialLabel: isVLS ? 'EVECINAS' : 'ENTREVISTAS',
-            slogan: isVLS ? 'LA VOZ DE NUESTRAS DIRIGENTAS' : 'CRÓNICA VECINAL Y ACTUALIDAD', 
-            url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
-            color: '#10b981',
-            logo: '/sessions_icon.png',
-            badge: isVLS ? 'SOCIAL' : 'ACTUALIDAD'
-        },
-        ...(isVLS ? [{
-            id: 'sombreros',
-            name: 'CANCIONES DE LOS SOMBREROS',
-            dialLabel: 'SOMBREROS',
-            slogan: 'EL SONIDO DE LOS SEIS SOMBREROS DE DE BONO',
-            url: "https://az11.yesstreaming.net:8630/hats_music.mp3",
-            color: '#00e5ff',
-            logo: '/vls-logo-3d.png',
-            badge: 'CREATIVIDAD'
-        }] : [])
+        ] : [
+            { 
+                id: 'jjvv', 
+                name: 'VLS RADIO (Oficial)',
+                dialLabel: 'VLS 2026',
+                slogan: 'EL PULSO DIGITAL DE LA SERENA - VECINOS SMART', 
+                url: "https://az11.yesstreaming.net:8630/radio.mp3", 
+                color: '#f97316',
+                logo: '/logo_vls.png',
+                badge: 'PRINCIPAL'
+            },
+            { 
+                id: 'instrumental', 
+                name: 'SESIONES MUSICALES',
+                dialLabel: 'MUSICA',
+                slogan: 'FOLKLORE, JAZZ Y ESTRENOS VLS', 
+                url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
+                color: '#a855f7',
+                logo: '/piano_icon.png',
+                badge: 'CULTURAL'
+            },
+            { 
+                id: 'entrevistas', 
+                name: 'ENTREVECINAS',
+                dialLabel: 'EVECINAS',
+                slogan: 'LA VOZ DE NUESTRAS DIRIGENTAS', 
+                url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
+                color: '#10b981',
+                logo: '/sessions_icon.png',
+                badge: 'SOCIAL'
+            },
+            {
+                id: 'sombreros',
+                name: 'CANCIONES DE LOS SOMBREROS',
+                dialLabel: 'SOMBREROS',
+                slogan: 'EL SONIDO DE LOS SEIS SOMBREROS DE DE BONO',
+                url: "https://az11.yesstreaming.net:8630/hats_music.mp3",
+                color: '#00e5ff',
+                logo: '/vls-logo-3d.png',
+                badge: 'CREATIVIDAD'
+            }
+        ])
     ];
 
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
@@ -1168,9 +1169,36 @@ export default function CentroRadio() {
                     </div>
                 </section>
                 
-                {/* 5. YOUTUBE SOURCES - Removed from RDMLS layout */}
-                
-                {/* 6. ARCADE / PANORAMAS / NOTICIAS / BACKOFFICE - Removed to focus purely on Radio + TV Faro + Serenamet as requested */}
+                {/* 5. NOTICIAS OFICIALES */}
+                <section id="noticias-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.8rem' }}>
+                        <FileText size={28} color="#f43f5e" />
+                        <h2 style={{ margin: 0, fontSize: isMobile ? '1.2rem' : '1.5rem', color: 'white' }}>NOTICIAS OFICIALES IMLS</h2>
+                    </div>
+                    {newsLoading ? (
+                        <div style={{ padding: '2rem', textAlign: 'center', color: '#94a3b8' }}>Cargando noticias desde www.laserena.cl/noticias...</div>
+                    ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                            {newsItems.map(news => (
+                                <a href={news.link} target="_blank" rel="noopener noreferrer" key={news.id} style={{ display: 'block', textDecoration: 'none', background: 'rgba(0,0,0,0.4)', borderRadius: '16px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', transition: 'transform 0.3s', cursor: 'pointer' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-5px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                                    {news.imageUrl && (
+                                        <div style={{ width: '100%', height: '160px', overflow: 'hidden' }}>
+                                            <img src={news.imageUrl} alt={news.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                        </div>
+                                    )}
+                                    <div style={{ padding: '1rem' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                                            <span style={{ fontSize: '0.65rem', fontWeight: 'bold', color: '#f43f5e', background: 'rgba(244,63,94,0.1)', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>{news.category}</span>
+                                            <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{news.date}</span>
+                                        </div>
+                                        <h3 style={{ margin: '0 0 0.5rem', fontSize: '1.1rem', color: 'white', lineHeight: '1.4' }}>{news.title}</h3>
+                                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#94b3c8', lineHeight: '1.5' }}>{news.content}</p>
+                                    </div>
+                                </a>
+                            ))}
+                        </div>
+                    )}
+                </section>
 
             </main>
 
