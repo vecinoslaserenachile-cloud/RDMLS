@@ -22,8 +22,8 @@ const MEDIA_TOOLS = [
         component: 'SmartBroadcasterStudio'
     },
     {
-        id: 'suno',
-        name: 'Soberanía Sonora (Suno AI)',
+        id: 'soberania-sonora',
+        name: 'Soberanía Sonora',
         desc: 'Generación de himnos y hits vecinales mediante IA. El Labs creativo de VLS.',
         icon: Music,
         color: '#a855f7',
@@ -40,22 +40,22 @@ const MEDIA_TOOLS = [
         event: 'open-vls-console'
     },
     {
-        id: 'spotify',
-        name: 'Spotify VLS Hub',
+        id: 'sound-network',
+        name: 'Audio VLS Hub',
         desc: 'Consolidación de playlists soberanas y curaduría musical comunitaria.',
         icon: Headphones,
         color: '#1db954',
         category: 'Streaming',
-        event: 'open-spotify-vls'
+        event: 'open-vls-sound-network'
     },
     {
-        id: 'tiktok',
-        name: 'TikTok VLS Hub',
+        id: 'video-vls',
+        name: 'Video VLS Hub',
         desc: 'Gestión de contenidos verticales y viralización de la gestión comunal.',
         icon: Video,
         color: '#ff0050',
         category: 'Social Media',
-        event: 'open-tiktok-hub'
+        event: 'open-vls-video-hub'
     },
     {
         id: 'whatsapp',
@@ -85,13 +85,13 @@ const MEDIA_TOOLS = [
         event: 'open-linkedin-manager'
     },
     {
-        id: 'suno-chart',
-        name: 'VLS Suno Chart',
+        id: 'vls-chart',
+        name: 'VLS Sounds Chart',
         desc: 'Ranking de los temas más escuchados producidos por los vecinos.',
         icon: Gem,
         color: '#facc15',
         category: 'Streaming',
-        event: 'open-suno-chart'
+        event: 'open-sound-chart'
     }
 ];
 

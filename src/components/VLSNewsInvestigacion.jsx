@@ -148,6 +148,30 @@ export default function VLSNewsInvestigacion({ onClose }) {
 
             <h2 className="news-sub" style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1.5rem', color: '#000', fontFamily: "'Playfair Display', serif" }}>¿Cuál ha sido la respuesta institucional?</h2>
             
+            <motion.div 
+               initial={{ opacity: 0, y: 30 }}
+               whileInView={{ opacity: 1, y: 0 }}
+               viewport={{ once: true }}
+               style={{ background: '#f8fafc', padding: '3rem', borderRadius: '3rem', margin: '4rem 0', border: '1px solid #e2e8f0' }}
+            >
+               <h4 style={{ fontSize: '1.5rem', fontWeight: '900', color: '#000', marginBottom: '2rem', textAlign: 'center' }}>Evolución del Aula: 1996 vs 2026</h4>
+               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem' }}>
+                  <div style={{ padding: '1.5rem', background: '#fff', borderRadius: '20px', border: '1px solid #cbd5e1' }}>
+                     <div style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: '900', marginBottom: '10px' }}>AULA 1996</div>
+                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#000' }}>El PC de Escritorio</span>
+                     <p style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '10px' }}>Compartido por 4 alumnos, conexión dial-up, enciclopedia Encarta.</p>
+                  </div>
+                  <div style={{ padding: '1.5rem', background: '#fff', borderRadius: '20px', border: '2px solid #ef4444' }}>
+                     <div style={{ fontSize: '0.8rem', color: '#ef4444', fontWeight: '900', marginBottom: '10px' }}>AULA 2026</div>
+                     <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#000' }}>El Supercomputador de Bolsillo</span>
+                     <p style={{ fontSize: '0.9rem', color: '#64748b', marginTop: '10px' }}>Personal, 5G, acceso a IA generativa, laboratorios de sensores integrados.</p>
+                  </div>
+               </div>
+               <p style={{ marginTop: '2rem', fontSize: '1rem', lineHeight: '1.6', color: '#475569', fontStyle: 'italic' }}>
+                  * La brecha no es técnica, es pedagógica. El sistema intenta gobernar el 2026 con reglas de 1996.
+               </p>
+            </motion.div>
+
             <p style={{ marginBottom: '2rem' }}>
               Apagarlo, prohibirlo y esconderlo. La reciente ley que prohíbe el uso de celulares en los colegios de Chile ha sido celebrada como un salvavidas necesario contra la distracción. Sin embargo, bajo la superficie, esta medida revela una paradoja brutal y un fracaso sistémico.
             </p>
@@ -160,10 +184,34 @@ export default function VLSNewsInvestigacion({ onClose }) {
                <cite style={{ fontSize: '1rem', fontWeight: 'bold', color: '#6b7280' }}>— John Dewey, Filósofo y Pedagogo</cite>
             </div>
 
-            <h3 style={{ fontSize: '2rem', fontWeight: '900', marginTop: '4rem', marginBottom: '1.5rem', color: '#000' }}>La ceguera ante la Aldea Global</h3>
+            <h3 style={{ fontSize: '2rem', fontWeight: '900', marginTop: '4rem', marginBottom: '1.5rem', color: '#000', fontFamily: "'Playfair Display', serif" }}>La ceguera ante la Aldea Global</h3>
             <p style={{ marginBottom: '2rem' }}>
               Marshall McLuhan, el visionario pensador, acuñó la frase "el medio es el mensaje". Él entendía que la tecnología no es una simple herramienta, sino un entorno que altera nuestra forma de pensar y existir. Al prohibir la herramienta de exploración más potente de la historia, les estamos robando las habilidades del futuro.
             </p>
+            
+            <motion.div 
+               initial={{ opacity: 0, x: -50 }}
+               whileInView={{ opacity: 1, x: 0 }}
+               viewport={{ once: true }}
+               style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', margin: '5rem 0' }}
+            >
+               <img 
+                  src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                  alt="Aprendizaje Digital" 
+                  style={{ width: '100%', borderRadius: '40px', boxShadow: '0 30px 60px rgba(0,0,0,0.1)' }} 
+               />
+               <div style={{ background: '#f8fafc', padding: '3rem', borderRadius: '40px', border: '1px solid #e2e8f0' }}>
+                  <Globe size={40} color="#ef4444" style={{ marginBottom: '1.5rem' }} />
+                  <h4 style={{ fontSize: '1.4rem', fontWeight: '900', color: '#000', marginBottom: '1.5rem' }}>Conexión Global Real</h4>
+                  <p style={{ fontSize: '1rem', lineHeight: '1.6', color: '#475569' }}>
+                     Un estudiante de La Serena puede hoy colaborar en tiempo real con un proyecto de ciencia ciudadana en Europa. Prohibir el dispositivo es, en la práctica, un acto de aislacionismo pedagógico.
+                  </p>
+                  <div style={{ display: 'flex', gap: '10px', marginTop: '2rem' }}>
+                     <span style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 'bold' }}>#SoberaníaDigital</span>
+                     <span style={{ padding: '6px 12px', background: 'rgba(56,189,248,0.1)', color: '#38bdf8', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 'bold' }}>#VLSIntelligence</span>
+                  </div>
+               </div>
+            </motion.div>
 
             {/* Interactive Module 1: The Sensor Power */}
             <section style={{ margin: '4rem 0', background: '#020617', padding: '3rem', borderRadius: '3rem', color: 'white' }}>
@@ -188,10 +236,30 @@ export default function VLSNewsInvestigacion({ onClose }) {
                </div>
             </section>
 
-            <h3 style={{ fontSize: '2rem', fontWeight: '900', marginTop: '4rem', marginBottom: '1.5rem', color: '#000' }}>El mito de la imposibilidad técnica</h3>
+            <h3 style={{ fontSize: '2.5rem', fontWeight: '900', marginTop: '6rem', marginBottom: '1.5rem', color: '#000', fontFamily: "'Playfair Display', serif" }}>El mito de la imposibilidad técnica</h3>
             <p style={{ marginBottom: '2rem' }}>
               El argumento más común para defender la prohibición es que gestionar esta tecnología para evitar el ciberbullying es "demasiado complejo". Esto es profundamente falso. Con la computación en la nube, es perfectamente posible configurar "modos de aula" que bloqueen lo tóxico y habiliten únicamente el 99% de las bondades.
             </p>
+            
+            <div style={{ margin: '4rem 0', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                    <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '32px', border: '1px solid #e5e7eb', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                        <Shield color="#10b981" size={32} style={{ marginBottom: '1.5rem' }} />
+                        <h5 style={{ fontSize: '1.2rem', fontWeight: '900', margin: '0 0 1rem 0' }}>Seguridad Adaptativa</h5>
+                        <p style={{ fontSize: '0.95rem', color: '#64748b', lineHeight: '1.6' }}>Sistemas que detectan patrones de estrés o bullying mediante PLN (Procesamiento de Lenguaje Natural) antes de que la crisis estalle.</p>
+                    </div>
+                    <div style={{ background: '#fff', padding: '2.5rem', borderRadius: '32px', border: '1px solid #e5e7eb', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                        <Target color="#ef4444" size={32} style={{ marginBottom: '1.5rem' }} />
+                        <h5 style={{ fontSize: '1.2rem', fontWeight: '900', margin: '0 0 1rem 0' }}>Enfoque en Proyectos</h5>
+                        <p style={{ fontSize: '0.95rem', color: '#64748b', lineHeight: '1.6' }}>El dispositivo deja de ser un juguete para convertirse en un sensor de temperatura, GPS o grabadora de campo para la clase de ciencias.</p>
+                    </div>
+                </div>
+                <img 
+                    src="https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                    alt="Trabajo en equipo inteligente" 
+                    style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
+                />
+            </div>
 
             {/* SENTINEL FARO INSIGHT */}
             <div style={{ margin: '4rem 0', background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)', padding: '3rem', borderRadius: '3rem', border: '1px solid rgba(56,189,248,0.3)', position: 'relative', overflow: 'hidden' }}>

@@ -1,26 +1,42 @@
 import React, { useEffect, useState } from 'react';
 
 const TIPS = [
-    "Recuerde que el portal de reportes georreferenciados está activo para visibilizar las necesidades de nuestros barrios.",
-    "La Radio Digital VLS ya cuenta con nuevas sesiones de música regional. ¡Sintonícenos!",
-    "Nuestro Paseo 3D permite recorrer la zona típica de La Serena desde cualquier lugar del mundo.",
-    "Vecino, su participación en las consultas ciudadanas es vital para el desarrollo de nuestra Smart City.",
-    "El Santuario El Olivar es un tesoro arqueológico que todos debemos proteger y valorar.",
-    "Recuerde que el asistente virtual Serenito está disponible las 24 horas para resolver sus dudas.",
-    "La seguridad la construimos entre todos. Utilice el sistema Centinel para reportar anomalías.",
-    "Smart Salud: Ya puede solicitar servicios de enfermería a domicilio a través del portal vecinal.",
-    "Cultura VLS: No se pierda el nuevo ciclo de cine en el Teatro Municipal Digital.",
-    "Sostenibilidad: El monitoreo de playas y humedales indica un estado de conservación óptimo hoy.",
-    "INVESTIGACIÓN: Ya está disponible el informe 'La Paradoja 2026' sobre el futuro de la educación técnica en Chile.",
-    "ALERTA VLS: El Efecto Poduje está impactando el acceso a la vivienda. Lea el análisis completo en la Sala de Inteligencia.",
-    "ECONOMÍA: ¿Por qué pagamos bencina de primer mundo? Revise nuestra investigación sobre el Espejismo Americano."
+    // --- Contenidos de Sala de Inteligencia ---
+    "INVESTIGACIÓN VLS: '\u00bfPor qué la bencina es más cara en Chile que en Estados Unidos?' El Espejismo Americano ya está disponible en nuestra Sala de Inteligencia. Entérese ahora.",
+    "INVESTIGACIÓN VLS: El gobierno anunció hoy ocho medidas paliativas ante el bencinazo. ¿Cuánto llega realmente a La Serena? Lea nuestro análisis en la Sala de Inteligencia.",
+    "INFORME ESPECIAL: 'El Dilema de la Vivienda' analiza por qué en nuestra región los departamentos no bajan de precio aunque baje la demanda. Un fenómeno que afecta a todos los serenenses.",
+    "INVESTIGACIÓN: 'La Gran Paradoja del 2026': Chile apaga el supercomputador del conocimiento justo cuando el mundo lo necesita más. Un informe profundo disponible en nuestro portal.",
+    "CENTINEL FARO: Monitoreamos las redes sociales de la región en tiempo real. Si hay un tema que preocupa a La Serena, nosotros lo detectamos primero.",
+    // --- Servicios ciudadanos ---
+    "Su portal inteligente de La Serena le permite reportar luminarias dañadas, baches y problemas comunitarios con foto y geolocalizado. Entérese cómo en la sección Smart Citizens.",
+    "El Paseo Histórico 3D de La Serena le permite recorrer la zona típica desde cualquier lugar del mundo. Ingrese al módulo de Patrimonio y viaje en el tiempo.",
+    "La Radio Digital Municipal de La Serena transmite las 24 horas. Música regional, entrevistas ciudadanas y noticias en tiempo real. Sintoncíonos en vecinoslaserena.cl.",
+    "Smart Administration: Si usted es funcionario municipal, recuerde que puede firmar digitalmente sus informes y acceder al portal de induccion desde cualquier dispositivo.",
+    "El asistente virtual Serenito está disponible las 24 horas para responder sus consultas sobre servicios municipales, horarios y trámites. Es gratuito y está siempre activo.",
+    "Centinel Faro detecta tendencias citizen aes de opinión en redes sociales. Hoy monitoreamos activamente los temas: bencina, vivienda y calidad de vida en la región.",
+    "Puerto de Coquimbo: el Sistema de Monitoreo Naviero VLS sigue en tiempo real la planificación de naves del TPC. Consulte el estado portuario hoy en nuestro portal.",
+    "Smart Events: El Módulo de Precedencias le permite organizar actos protocolares con autoridades de manera profesional y sin errores. Disponible en VLS para municipios.",
+    // --- Invitaciones educativas/culturales ---
+    "VLS Juegaprende: Juegue Trivia sobre La Serena y gane fichas ciudadanas. Una forma entretenida de conocer mejor nuestra ciudad. ¿Cuántos puntos suma hoy?",
+    "El Monitor de Mareas VLS informa que las corrientes en el sector costero de La Serena son aptas para actividades acuaticas hoy.",
+    "Sostenibilidad: El seguimiento de humedales y aves nativas de la región está disponible en el portal ciudadano. Ayude a proteger nuestro patrimonio natural.",
+    "El Santuario El Olivar y el área de conservación del Pingüino de Humboldt siguen siendo tesoros que debemos cuidar. Nuestro sistema de alertas ambientales está activo.",
+    "Smart Salud: Vecino, recuerde que puede solicitar servicios de bienestar comunitario a través del portal. Su salud también es asunto de nuestra comunidad inteligente.",
+];
+
+const MUSIC_SPOTS = [
+    "Estamos en línea desde La Serena. A continuación, un momento musical del archivo de sesiones de nuestra Radio Digital. Gracias por acompañarnos en este momento.",
+    "Esta es la Radio Digital de La Serena. Nuestra programación incluye música regional autóctona, folk chileno y sesiones en vivo. Sintonizados en vecinoslaserena punto ce ele.",
+    "En pocos instantes continuamos con su programación. Si tiene una solicitud musical o quiere compartir un testimonio ciudadano, nuestras redes están abiertas.",
+    "Transmitimos para La Serena, Coquimbo y toda la región. Ésta es la frecuencia donde los vecinos tienen voz.",
 ];
 
 const ALERTS = [
-    "Centinel detecta alta congestión vehicular en el sector de Cuatro Esquinas. Tome precauciones.",
-    "Aviso de marea alta para las próximas horas en el sector de El Faro. Evite acercarse a las rocas.",
-    "Reporte Vecinal: Luminaria reparada exitosamente en el sector de Las Compañías.",
-    "Alerta de Clima: Se esperan cielos nublados para el atardecer. Una brisa marina refrescante."
+    "Centinel Faro detecta alta congestin vehicular en el sector de Cuatro Esquinas. Tome precauciones y utilice rutas alternativas.",
+    "Aviso de marea alta para las próximas horas en el sector de El Faro. Evite acercarse a las rocas e informe a sus hijos.",
+    "Reporte Vecinal: Una luminaria fue reparada exitosamente en Las Compañías gracias al reporte ciudadano. Así funcionamos juntos.",
+    "Alerta de Clima: Se esperan cielos nublados y brisa marina para el atardecer. Una tarde perfecta para la costanera.",
+    "AVISO ECONOMÍA: El alza de combustibles entra en vigencia este jueves. VLS mantiene actualizado el monitor de precios en su portal.",
 ];
 
 export default function GlobalAnnouncer() {
@@ -119,11 +135,28 @@ export default function GlobalAnnouncer() {
         // Evitar múltiples anuncios en el mismo minuto (por re-renders)
         if (minute === lastAnnouncedMinute) return;
 
-        // 1. Horarios fijos (Cada 15 minutos)
+        // 1. Hora en punto y cuartos — saludo contextual
         if (minute === 0 || minute === 15 || minute === 30 || minute === 45) {
-            const timeStr = `En la red Vecinos La Serena CL, son las ${hour} con ${minute === 0 ? 'cero' : minute} minutos.`;
-            const weatherMsg = `Reporte del tiempo: El clima actual en La Serena es de ${currentWeather.temp} grados. Una jornada perfecta para disfrutar de nuestra Avenida del Mar.`;
-            announce(`${timeStr} ${weatherMsg}`);
+            // Franja del día
+            const franja = hour >= 5 && hour < 12
+                ? 'buenos días'
+                : hour >= 12 && hour < 20
+                ? 'buenas tardes'
+                : 'buenas noches';
+
+            const minWord = minute === 0
+                ? 'en punto'
+                : `con ${minute} minutos`;
+
+            const contextualTip = TIPS[Math.floor(Math.random() * TIPS.length)];
+
+            const fullSentence = [
+                `${franja} desde La Serena. Son las ${hour} horas ${minWord}.`,
+                `El tiempo en La Serena es de ${currentWeather.temp} grados. ${currentWeather.condition}.`,
+                contextualTip
+            ].join(' ');
+
+            announce(fullSentence);
             setLastAnnouncedMinute(minute);
             return;
         }
@@ -136,10 +169,18 @@ export default function GlobalAnnouncer() {
             return;
         }
 
-        // 3. Tips Informativos (Probabilidad media cada minuto)
+        // 3. Tips Informativos (probabilidad media cada minuto para no saturar)
         if (Math.random() < 0.08) {
              const tip = TIPS[Math.floor(Math.random() * TIPS.length)];
-             announce(`BOLETÍN VECINAL V L S: ${tip}`);
+             announce(`BOLETÍN VLS: ${tip}`);
+             setLastAnnouncedMinute(minute);
+             return;
+        }
+
+        // 4. Spots musicales / de ambiente (probabilidad baja)
+        if (Math.random() < 0.04) {
+             const spot = MUSIC_SPOTS[Math.floor(Math.random() * MUSIC_SPOTS.length)];
+             announce(spot);
              setLastAnnouncedMinute(minute);
         }
     };

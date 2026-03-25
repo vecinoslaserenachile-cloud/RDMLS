@@ -28,7 +28,7 @@ export default function GameHUD({ fichas, fichasAzules, hp }) {
           transition={{ delay: 0.3 }}
           className="text-[10px] md:text-xs font-mono text-blue-400 uppercase tracking-[0.2em]"
         >
-          Super Serenito Bros: Antigravity
+          Serenito Antigravity: Master Core
         </motion.p>
 
         {/* Hearts / HP */}

@@ -16,7 +16,7 @@ const LEGACY_NOTES = [
         titular: "Colapso: El Grito Visceral del Rock en el Valle del Elqui", 
         bajada: "Una propuesta de rock alternativo que canaliza la aridez del paisaje y la crítica social en un sonido demoledor.", 
         body: "Colapso irrumpe con una propuesta que abraza la distorsión para hablar de la tierra quebrada y la supervivencia en el semiárido, demostrando que el rock regional tiene una potencia inigualable.",
-        contacto: "Spotify: Grupo Colapso", cita: "Nuestro rock nace de la grieta en la tierra seca.",
+        contacto: "VLS Audio: Grupo Colapso", cita: "Nuestro rock nace de la grieta en la tierra seca.",
         color: "#ef4444"
     },
     { 

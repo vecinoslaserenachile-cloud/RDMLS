@@ -24,7 +24,7 @@ export default function EscuelaMusicaVecinal() {
     const STUDIO_TOOLS = [
         { id: 'record', title: 'Grabación Digital', icon: Mic2, desc: 'Captura tu voz e instrumentos con calidad profesional.' },
         { id: 'mix', title: 'Mezcla y Efectos', icon: Settings, desc: 'Ecualización, Reverb y Delay para darle brillo a tu sonido.' },
-        { id: 'master', title: 'Masterización IA', icon: Sparkles, desc: 'Optimización final para que tu música suene potente en Spotify.' }
+        { id: 'master', title: 'Masterización IA', icon: Sparkles, desc: 'Optimización final para que tu música suene potente en la Red de Audio VLS.' }
     ];
 
     return (

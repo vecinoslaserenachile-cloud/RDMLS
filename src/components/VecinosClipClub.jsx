@@ -15,8 +15,8 @@ export default function VecinosClipClub({ onClose }) {
     const catalog = [
         { id: 'vhs-1', title: 'Sereneres 2026', type: 'vhs', cost: 1, img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&auto=format&fit=crop' },
         { id: 'vhs-2', title: 'Documental: El Olivar', type: 'vhs', cost: 2, img: 'https://images.unsplash.com/photo-1588693892556-3c0fde9d21dd?q=80&w=400&auto=format&fit=crop' },
-        { id: 'game-1', title: 'Super Serenito Bros', type: 'game', cost: 1, img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400&auto=format&fit=crop' },
-        { id: 'game-2', title: 'La Portada Kombat', type: 'game', cost: 2, img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=400&auto=format&fit=crop' }
+        { id: 'game-1', title: 'Serenito Antigravity', type: 'game', cost: 1, img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400&auto=format&fit=crop' },
+        { id: 'game-2', title: 'Combat in La Portada', type: 'game', cost: 2, img: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=400&auto=format&fit=crop' }
     ];
 
     useEffect(() => {

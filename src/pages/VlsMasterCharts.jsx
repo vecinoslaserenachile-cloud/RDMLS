@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Globe, MapPin, Star, TrendingUp, Play, Pause, Building2, Heart, Download, Share2, Filter, Info, Radio, Zap, Headphones, Languages, BarChart3, ChevronRight, Settings, Key, ShieldCheck, Database } from 'lucide-react';
 
-const SUNO_MOCK_DATA = [
+const VLS_CHART_DATA = [
     { 
         geo: 'la_serena', 
         name: 'La Serena (Corazón)', 
@@ -15,12 +15,12 @@ const SUNO_MOCK_DATA = [
         geo: 'global_world', 
         name: 'Mundo & Continentes', 
         tracks: [
-            { id: 6, title: 'Infinite Loop (Labs Edition)', artist: 'Suno Global', plays: '5.2M', status: 'GLOBAL HIT', lyrics: 'Electronic pulses...' }
+            { id: 6, title: 'Infinite Loop (Labs Edition)', artist: 'VLS Sounds', plays: '5.2M', status: 'GLOBAL HIT', lyrics: 'Electronic pulses...' }
         ]
     }
 ];
 
-export default function SunoChartsPortal({ onClose }) {
+export default function VlsMasterCharts({ onClose }) {
     const [geoFilter, setGeoFilter] = useState('la_serena');
     const [selectedTrack, setSelectedTrack] = useState(null);
     const [showApiConfig, setShowApiConfig] = useState(false);
@@ -34,23 +34,23 @@ export default function SunoChartsPortal({ onClose }) {
         setIsSyncing(true);
         setTimeout(() => {
             setIsSyncing(false);
-            alert("¡Ranking sincronizado con tu cuenta Suno!");
+            alert("¡Ranking sincronizado con tu cuenta VLS Sounds!");
         }, 3000);
     };
 
-    const activeGeo = SUNO_MOCK_DATA.find(d => d.geo === geoFilter) || SUNO_MOCK_DATA[0];
+    const activeGeo = VLS_CHART_DATA.find(d => d.geo === geoFilter) || VLS_CHART_DATA[0];
 
     return (
         <div style={{ position: 'fixed', inset: 0, zIndex: 2000000, background: '#020617', color: 'white', display: 'flex', flexDirection: 'column', fontFamily: "'Outfit', sans-serif" }}>
             
-            {/* HEADER SUNO VLS */}
+            {/* HEADER VLS MASTER AUDIO */}
             <div style={{ background: 'rgba(5, 10, 25, 0.98)', padding: '1.2rem 3rem', borderBottom: '2px solid #38bdf8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <div style={{ background: 'linear-gradient(45deg, #fcd34d, #f97316)', padding: '8px', borderRadius: '12px' }}>
                         <Music color="white" size={24} />
                     </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>VLS SUNO CHARTS — API GATEWAY</h2>
+                        <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>VLS MASTER CHARTS — API GATEWAY</h2>
                         <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>USER MODE: @vecinossmart — SOBERANÍA SONORA ACTIVA</span>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export default function SunoChartsPortal({ onClose }) {
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '2rem', background: 'rgba(56, 189, 248, 0.1)', padding: '1.5rem', borderRadius: '24px', border: '1px solid #38bdf8' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
                                     <Key size={18} color="#38bdf8" />
-                                    <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>SUNO API TOKEN (USER)</span>
+                                    <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>VLS MASTER API TOKEN (USER)</span>
                                 </div>
                                 <input 
                                     type="password" 
@@ -113,13 +113,13 @@ export default function SunoChartsPortal({ onClose }) {
                          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                              <Database color="#38bdf8" size={32} />
                              <div>
-                                 <h3 style={{ color: 'white', margin: 0 }}>VLS SONYX CLOUD</h3>
+                                 <h3 style={{ color: 'white', margin: 0 }}>VLS SOUND SYNC</h3>
                                  <p style={{ color: '#64748b', margin: 0, fontSize: '0.8rem' }}>Sincronización directa con el Labs de @vecinossmart.</p>
                              </div>
                          </div>
                          <div style={{ textAlign: 'right' }}>
                              <div style={{ fontSize: '1.1rem', color: '#fcd34d', fontWeight: '900' }}>2,500 CRÉDITOS</div>
-                             <div style={{ fontSize: '0.6rem', color: '#64748b' }}>DISPONIBLES EN SUNO</div>
+                             <div style={{ fontSize: '0.6rem', color: '#64748b' }}>DISPONIBLES EN VLS LABS</div>
                          </div>
                     </div>
 
@@ -241,7 +241,7 @@ export default function SunoChartsPortal({ onClose }) {
             <div style={{ padding: '0.8rem 3rem', background: '#000', color: '#64748b', display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontWeight: 'bold' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <BarChart3 size={12} color="#38bdf8" />
-                    <span>ANÁLISIS DE DATOS VLS x SUNO — GATEWAY MODE</span>
+                    <span>ANÁLISIS DE DATOS VLS x SONYX — GATEWAY MODE</span>
                 </div>
             </div>
             <style>{`

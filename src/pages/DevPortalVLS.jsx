@@ -5,7 +5,7 @@ import { Code2, Terminal, Globe, Server, Cpu, Database, Share2, Layers, Key, Roc
 const API_ENDPOINTS = [
     { name: 'GET /soberania/clima', desc: 'Sincronización clima regional La Serena', status: 'active' },
     { name: 'POST /soberania/reporte', desc: 'Envío georreferenciado (Baches/Luminarias)', status: 'active' },
-    { name: 'GET /soberania/radio-feed', desc: 'Señal en vivo y meta-datos Suno VLS', status: 'beta' },
+    { name: 'GET /soberania/radio-feed', desc: 'Señal en vivo y meta-datos VLS Master Audio', status: 'beta' },
     { name: 'GET /soberania/roi-publico', desc: 'Métricas de impacto ciudadano', status: 'active' }
 ];
 

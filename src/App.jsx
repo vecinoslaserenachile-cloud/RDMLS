@@ -22,7 +22,7 @@ const OldTVModal = lazy(() => import('./components/OldTVModal'));
 const VhsTVModal = lazy(() => import('./components/VhsTVModal'));
 const MemoryPortalModal = lazy(() => import('./components/MemoryPortalModal'));
 const VerticalTVModal = lazy(() => import('./components/VerticalTVModal'));
-const SunoChartsPortal = lazy(() => import('./pages/SunoChart'));
+const VlsMasterChartsPortal = lazy(() => import('./pages/VlsMasterCharts'));
 const RetroArcadeLobby = lazy(() => import('./components/RetroArcadeLobby'));
 const SentinelApex = lazy(() => import('./components/SentinelApex'));
 const FaritoBrowser = lazy(() => import('./components/FaritoBrowser'));
@@ -74,7 +74,7 @@ const FaritoSocialNetwork = lazy(() => import('./components/FaritoSocialNetwork'
 const FaroCentinel = lazy(() => import('./components/FaroCentinel'));
 const BoticaVecinal = lazy(() => import('./components/BoticaVecinal'));
 const RedVeterinariaVLS = lazy(() => import('./components/RedVeterinariaVLS'));
-const SuperSerenitoBros = lazy(() => import('./components/SuperSerenitoBros'));
+const SerenitoAntigravity = lazy(() => import('./components/SerenitoAntigravity'));
 const SkyGuideRA = lazy(() => import('./components/SkyGuideRA'));
 const SmartShare = lazy(() => import('./components/SmartShare'));
 const MemoriasUnicornio = lazy(() => import('./pages/MemoriasUnicornio'));
@@ -87,7 +87,7 @@ const RightsGovernanceVLS = lazy(() => import('./components/RightsGovernanceVLS'
 const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
 const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
-const VLSMillionaireGame = lazy(() => import('./components/VLSMillionaireGame'));
+const VlsSmartBillionaire = lazy(() => import('./components/VlsSmartBillionaire'));
 import VLSGameMain from './components/VLSGameMain';
 
 const SOVEREIGN_NAMES = [
@@ -107,7 +107,8 @@ const SOVEREIGN_NAMES = [
     "Coral del Arrayán (Costa Norte) 🌅",
     "Egocéntrico (Institucional) 👔",
     "Sofia",
-    "Lucas"
+    "Lucas",
+    "Pinochef (Chef del Palacio) 👨‍🍳"
 ];
 
 
@@ -336,7 +337,7 @@ function AppContent() {
   const [showVhsTV, setShowVhsTV] = useState(false);
   const [showVerticalTV, setShowVerticalTV] = useState(false);
   const [showMemoryPortal, setShowMemoryPortal] = useState(false);
-  const [showSunoCharts, setShowSunoCharts] = useState(false);
+  const [showVlsMasterCharts, setShowVlsMasterCharts] = useState(false);
   const [showAppendix, setShowAppendix] = useState(false);
   const [showFaritoBrowser, setShowFaritoBrowser] = useState(false);
   const [showKiosko, setShowKiosko] = useState(false);
@@ -360,12 +361,12 @@ function AppContent() {
   const [showTimeBus, setShowTimeBus] = useState(false);
   const [showRetroRoom, setShowRetroRoom] = useState(false);
   const [showEmergencyDirectory, setShowEmergencyDirectory] = useState(false);
-  const [showVLSMillionaire, setShowVLSMillionaire] = useState(false);
+  const [showSmartTrivia, setShowSmartTrivia] = useState(false);
   const [showFaroCentinel, setShowFaroCentinel] = useState(false);
   const [showBotica, setShowBotica] = useState(false);
   const [showVLSGame, setShowVLSGame] = useState(false);
   const [showVeterinaria, setShowVeterinaria] = useState(false);
-  const [showSuperSerenito, setShowSuperSerenito] = useState(false);
+  const [showSerenitoAntigravity, setShowSerenitoAntigravity] = useState(false);
   const [showSkyGuide, setShowSkyGuide] = useState(false);
   const [showVecnityPay, setShowVecnityPay] = useState(false);
 
@@ -470,13 +471,13 @@ function AppContent() {
     const handlePrecolombino = () => setShowPrecolombino(true);
     const handleParlamento = () => setShowParlamento(true);
 
-    const handleOpenVLSMillionaire = () => setShowVLSMillionaire(true);
+    const handleOpenSmartTrivia = () => setShowSmartTrivia(true);
     
     window.addEventListener('open-dron-drigo', handleOpenDron);
     window.addEventListener('open-retro-tv', handleRetroTv);
     window.addEventListener('open-vhs-tv', handleVhsTv);
     window.addEventListener('open-game', handleGame);
-    window.addEventListener('open-vls-game', handleOpenVLSMillionaire);
+    window.addEventListener('open-vls-game', handleOpenSmartTrivia);
     window.addEventListener('open-personal-stereo', handlePersonalStereo);
     window.addEventListener('open-time-bus', handleTimeBus);
     window.addEventListener('open-gym-3d', handleGym);
@@ -492,7 +493,7 @@ function AppContent() {
       window.removeEventListener('open-retro-tv', handleRetroTv);
       window.removeEventListener('open-vhs-tv', handleVhsTv);
       window.removeEventListener('open-game', handleGame);
-      window.removeEventListener('open-vls-game', handleOpenVLSMillionaire);
+      window.removeEventListener('open-vls-game', handleOpenSmartTrivia);
       window.removeEventListener('open-personal-stereo', handlePersonalStereo);
       window.removeEventListener('open-time-bus', handleTimeBus);
       window.removeEventListener('open-gym-3d', handleGym);
@@ -656,7 +657,7 @@ function AppContent() {
   const handleOpenVhsTV = () => setShowVhsTV(true);
   const handleOpenVerticalTV = () => setShowVerticalTV(true);
   const handleOpenMemoryPortal = () => setShowMemoryPortal(true);
-  const handleOpenSunoCharts = () => setShowSunoCharts(true);
+  const handleOpenVlsMasterCharts = () => setShowVlsMasterCharts(true);
   const handleOpenAppendix = () => setShowAppendix(true);
   const handleOpenFaritoBrowser = () => setShowFaritoBrowser(true);
   const handleOpenKiosko = () => setShowKiosko(true);
@@ -778,7 +779,7 @@ function AppContent() {
     window.addEventListener('open-vertical-tv', handleOpenVerticalTV);
     window.addEventListener('open-vhs-tv', handleOpenVhsTV);
     window.addEventListener('open-memory-portal', handleOpenMemoryPortal);
-    window.addEventListener('open-sunocharts', handleOpenSunoCharts);
+    window.addEventListener('open-vlsmastercharts', handleOpenVlsMasterCharts);
     window.addEventListener('open-appendix', handleOpenAppendix);
     window.addEventListener('open-farito-browser', handleOpenFaritoBrowser);
     window.addEventListener('open-kiosko-diarios', handleOpenKiosko);
@@ -894,7 +895,7 @@ function AppContent() {
       window.removeEventListener('open-vertical-tv', handleOpenVerticalTV);
       window.removeEventListener('open-vhs-tv', handleOpenVhsTV);
       window.removeEventListener('open-memory-portal', handleOpenMemoryPortal);
-      window.removeEventListener('open-sunocharts', handleOpenSunoCharts);
+      window.removeEventListener('open-vlsmastercharts', handleOpenVlsMasterCharts);
       window.removeEventListener('open-appendix', handleOpenAppendix);
       window.removeEventListener('open-farito-browser', handleOpenFaritoBrowser);
       window.removeEventListener('open-kiosko-diarios', handleOpenKiosko);
@@ -1351,7 +1352,7 @@ function AppContent() {
       {showRetroTV && <OldTVModal onClose={() => setShowRetroTV(false)} />}
       {showVerticalTV && <VerticalTVModal onClose={() => setShowVerticalTV(false)} />}
       {showVhsTV && <VhsTVModal onClose={() => setShowVhsTV(false)} />}
-      {showSunoCharts && <SunoChartsPortal onClose={() => setShowSunoCharts(false)} />}
+      {showVlsMasterCharts && <VlsMasterChartsPortal onClose={() => setShowVlsMasterCharts(false)} />}
       {showMemoryPortal && <MemoryPortalModal onClose={() => setShowMemoryPortal(false)} />}
       {showKiosko && <KioskoDiarios onClose={() => setShowKiosko(false)} />}
       {showMemorial && <MemorialHijosRegion onClose={() => setShowMemorial(false)} />}
@@ -1595,8 +1596,8 @@ function AppContent() {
       {showVeterinaria && (
         <Suspense fallback={null}><RedVeterinariaVLS onClose={() => setShowVeterinaria(false)} /></Suspense>
       )}
-      {showSuperSerenito && (
-        <Suspense fallback={null}><SuperSerenitoBros onClose={() => setShowSuperSerenito(false)} /></Suspense>
+      {showSerenitoAntigravity && (
+        <Suspense fallback={null}><SerenitoAntigravity onClose={() => setShowSerenitoAntigravity(false)} /></Suspense>
       )}
       {showSkyGuide && (
         <Suspense fallback={null}><SkyGuideRA onClose={() => setShowSkyGuide(false)} /></Suspense>
@@ -1610,8 +1611,8 @@ function AppContent() {
       {showParlamento && (
         <Suspense fallback={null}><ParlamentoVecinal onClose={() => setShowParlamento(false)} /></Suspense>
       )}
-      {showVLSMillionaire && (
-        <Suspense fallback={null}><VLSMillionaireGame onClose={() => setShowVLSMillionaire(false)} /></Suspense>
+      {showSmartTrivia && (
+        <Suspense fallback={null}><VlsSmartBillionaire onClose={() => setShowSmartTrivia(false)} /></Suspense>
       )}
       {!isRDMLS && <SmartShare isFloating={true} />}
     </div>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, Share2, Smartphone, FileText, ShoppingBag, Music, Users, MessageSquare, CheckCircle2, ChevronRight, Star, Award, ShieldCheck, Trophy } from 'lucide-react';
 
 const CHALLENGES = [
-    { id: 1, title: 'Comparte un Himno', task: 'Comparte una canción de Suno VLS', reward: 50, icon: Share2, status: 'pending' },
+    { id: 1, title: 'Comparte un Himno', task: 'Comparte una canción de VLS Master Audio', reward: 50, icon: Share2, status: 'pending' },
     { id: 2, title: 'Primer Reporte', task: 'Envía un reporte de Smart City', reward: 50, icon: FileText, status: 'pending' },
     { id: 3, title: 'Vecino Digital', task: 'Registra tu local en el Mall', reward: 100, icon: ShoppingBag, status: 'completed' },
     { id: 4, title: 'Oído Soberano', task: 'Escucha Radio VLS por 1 h', reward: 30, icon: Music, status: 'pending' },

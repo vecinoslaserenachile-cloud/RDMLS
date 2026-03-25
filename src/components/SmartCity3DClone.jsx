@@ -322,7 +322,7 @@ export default function SmartCity3DClone({ onClose }) {
                     🔄 REINICIAR VISTA
                 </button>
 
-                {/* Pixar Backdrop Hint */}
+                {/* VLS Intelligence Backdrop Hint */}
                 <div style={{ 
                     position: 'absolute', inset: 0, zIndex: -1, 
                     backgroundImage: 'url(/smart_city_3d_pixar_style_1773538873800.png)', 

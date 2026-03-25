@@ -44,7 +44,7 @@ export default function FaritoInversores() {
             color: '#f59e0b',
             icon: <Gamepad2 size={24} />,
             titulo: 'Fichas VLS: El ciudadano paga jugando',
-            descripcion: 'Cada vecino recibe 50 Fichas de bienvenida al validar su identidad. Las regana completando misiones cívicas reales (encuestas, rutinas, trivias) y las gasta en módulos premium: partidas de Super Serenito Bros, sesiones de SkyGuide RA y alquileres en el ClipClub. Un modelo freemium que convierte participación cívica en ingreso recurrente.',
+            descripcion: 'Cada vecino recibe 50 Fichas de bienvenida al validar su identidad. Las regana completando misiones cívicas reales (encuestas, rutinas, trivias) y las gasta en módulos premium: partidas de Serenito Antigravity, sesiones de SkyGuide RA y alquileres en el ClipClub. Un modelo freemium que convierte participación cívica en ingreso recurrente.',
             metricas: [
                 { label: 'Precio ficha objetivo', valor: '$50 CLP' },
                 { label: 'Fichas vendidas est./mes', valor: '15.000' },

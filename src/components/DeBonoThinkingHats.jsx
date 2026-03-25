@@ -12,14 +12,14 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const SONGS = [
-    { title: "Tecno 6 sombreros", url: "https://cdn1.suno.ai/af1b2a23-ba3a-4567-8ea8-39610eae5687.mp3", hat: "Blanco", duration: "03:45" },
-    { title: "La cumbia de los seis sombreros", url: "https://cdn1.suno.ai/11f63327-2259-47d3-a7b0-3e297506cda2.mp3", hat: "Rojo", duration: "04:12" },
-    { title: "6 sombreros de Martin", url: "https://cdn1.suno.ai/641895c9-d926-44f9-bfc0-3e1a51b4ce79.mp3", hat: "Negro", duration: "02:58" },
-    { title: "Sombrero regalón", url: "https://cdn1.suno.ai/89aeafca-fe78-458d-8158-ebbea176e03d.mp3", hat: "Amarillo", duration: "03:20" },
-    { title: "Blusero del jazz con sombreros", url: "https://cdn1.suno.ai/4e422386-bff5-49b3-93fb-6d1287fe7376.mp3", hat: "Verde", duration: "04:05" },
-    { title: "Todos podemos pensar con 6 sombreros", url: "https://cdn1.suno.ai/6e6d5622-927d-4b3a-a103-9d10804a276b.mp3", hat: "Azul", duration: "03:50" },
-    { title: "Cámbiate el sombrero (Mashup)", url: "https://cdn1.suno.ai/9f6d7f2a-f8c4-41d2-b1f9-6ec3541bc4ad.mp3", hat: "Multi", duration: "03:15" },
-    { title: "Piensa lateral sombreros blues", url: "https://cdn1.suno.ai/9948997f-f3cb-4e62-9ee0-ec37d683059b.mp3", hat: "Multi", duration: "02:45" }
+    { title: "Tecno Pensamiento VLS", url: "https://cdn1.suno.ai/af1b2a23-ba3a-4567-8ea8-39610eae5687.mp3", hat: "Blanco", duration: "03:45" },
+    { title: "Soberanía Sonora (Cumbia)", url: "https://cdn1.suno.ai/11f63327-2259-47d3-a7b0-3e297506cda2.mp3", hat: "Rojo", duration: "04:12" },
+    { title: "Laboratorio VLS (Ambient)", url: "https://cdn1.suno.ai/641895c9-d926-44f9-bfc0-3e1a51b4ce79.mp3", hat: "Negro", duration: "02:58" },
+    { title: "Himno Ciudadano VLS", url: "https://cdn1.suno.ai/89aeafca-fe78-458d-8158-ebbea176e03d.mp3", hat: "Amarillo", duration: "03:20" },
+    { title: "Innovación Regional", url: "https://cdn1.suno.ai/4e422386-bff5-49b3-93fb-6d1287fe7376.mp3", hat: "Verde", duration: "04:05" },
+    { title: "Directorio VLS (Main)", url: "https://cdn1.suno.ai/6e6d5622-927d-4b3a-a103-9d10804a276b.mp3", hat: "Azul", duration: "03:50" },
+    { title: "Sinergia Vecinal (Mashup)", url: "https://cdn1.suno.ai/9f6d7f2a-f8c4-41d2-b1f9-6ec3541bc4ad.mp3", hat: "Multi", duration: "03:15" },
+    { title: "Visión 2026", url: "https://cdn1.suno.ai/9948997f-f3cb-4e62-9ee0-ec37d683059b.mp3", hat: "Multi", duration: "02:45" }
 ];
 
 const HATS = [

@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Music, Radio, Shuffle, SkipForward, SkipBack, Play, Pause, Volume2, ExternalLink, List, Heart, Zap, X, LogIn } from 'lucide-react';
 
-// ── SPOTIFY CONFIG ────────────────────────────────────────────────────────────
-// Para habilitar: registra la app en https://developer.spotify.com/dashboard
-// y pon el Client ID y Redirect URI correcto
-const SPOTIFY_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || 'TU_SPOTIFY_CLIENT_ID';
-const REDIRECT_URI = window.location.origin + '/spotify-callback';
+// ── AUDIO ENGINE CONFIG ────────────────────────────────────────────────────────────
+// Para habilitar: registra la app en el portal de desarrolladores de audio
+// y pon las credenciales correspondientes
+const AUDIO_CLIENT_ID = import.meta.env.VITE_SPOTIFY_CLIENT_ID || 'VLS_AUDIO_ID';
+const REDIRECT_URI = window.location.origin + '/vls-audio-callback';
 const SCOPES = [
     'streaming',
     'user-read-email',
@@ -20,8 +20,8 @@ const SCOPES = [
     'user-recently-played'
 ].join(' ');
 
-const loginWithSpotify = () => {
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${SPOTIFY_CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&show_dialog=true`;
+const loginWithVlsAudio = () => {
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${AUDIO_CLIENT_ID}&response_type=token&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=${encodeURIComponent(SCOPES)}&show_dialog=true`;
     window.location.href = authUrl;
 };
 
@@ -32,16 +32,16 @@ const getTokenFromUrl = () => {
     return params.get('access_token');
 };
 
-// ── SPOTIFY API HELPERS ───────────────────────────────────────────────────────
-const spotifyFetch = async (endpoint, token) => {
+// ── AUDIO API HELPERS ───────────────────────────────────────────────────────
+const vlsAudioFetch = async (endpoint, token) => {
     const res = await fetch(`https://api.spotify.com/v1${endpoint}`, {
         headers: { Authorization: `Bearer ${token}` }
     });
-    if (!res.ok) throw new Error(`Spotify API ${res.status}`);
+    if (!res.ok) throw new Error(`Audio API ${res.status}`);
     return res.json();
 };
 
-export default function SpotifyRadioVLS({ onClose }) {
+export default function VlsSoundNetwork({ onClose }) {
     const [token, setToken] = useState(null);
     const [user, setUser] = useState(null);
     const [playlists, setPlaylists] = useState([]);
@@ -61,9 +61,9 @@ export default function SpotifyRadioVLS({ onClose }) {
         if (urlToken) {
             setToken(urlToken);
             window.history.pushState({}, document.title, window.location.pathname);
-            localStorage.setItem('vls_spotify_token', urlToken);
+            localStorage.setItem('vls_audio_token', urlToken);
         } else {
-            const saved = localStorage.getItem('vls_spotify_token');
+            const saved = localStorage.getItem('vls_audio_token');
             if (saved) setToken(saved);
         }
     }, []);
@@ -74,24 +74,24 @@ export default function SpotifyRadioVLS({ onClose }) {
         const load = async () => {
             try {
                 const [userData, playlistData, topData] = await Promise.all([
-                    spotifyFetch('/me', token),
-                    spotifyFetch('/me/playlists?limit=20', token),
-                    spotifyFetch('/me/top/tracks?limit=30&time_range=medium_term', token)
+                    vlsAudioFetch('/me', token),
+                    vlsAudioFetch('/me/playlists?limit=20', token),
+                    vlsAudioFetch('/me/top/tracks?limit=30&time_range=medium_term', token)
                 ]);
                 setUser(userData);
                 setPlaylists(playlistData.items);
                 setTopTracks(topData.items);
                 if (topData.items.length > 0) setCurrentTrack(topData.items[0]);
             } catch (e) {
-                console.warn('Spotify token expirado:', e);
-                localStorage.removeItem('vls_spotify_token');
+                console.warn('VLS Audio token expirado:', e);
+                localStorage.removeItem('vls_audio_token');
                 setToken(null);
             }
         };
         load();
     }, [token]);
 
-    // ── INIT SPOTIFY WEB PLAYBACK SDK ──────────────────────────────────────────
+    // ── INIT AUDIO PLAYBACK SDK ──────────────────────────────────────────
     useEffect(() => {
         if (!token || sdkReadyRef.current) return;
         const script = document.createElement('script');
@@ -121,11 +121,11 @@ export default function SpotifyRadioVLS({ onClose }) {
             });
         };
         return () => { playerRef.current?.disconnect(); };
-    }, [token]);
+    }, [token, radioName, volume]);
 
     const playTrack = async (uri) => {
         if (!playerRef.current) return;
-        const deviceRes = await spotifyFetch('/me/player/devices', token);
+        const deviceRes = await vlsAudioFetch('/me/player/devices', token);
         const device = deviceRes.devices?.find(d => d.name === radioName);
         if (!device) return;
         await fetch(`https://api.spotify.com/v1/me/player/play?device_id=${device.id}`, {
@@ -148,7 +148,7 @@ export default function SpotifyRadioVLS({ onClose }) {
                         <Music size={26} color="#000" />
                     </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: '900' }}>VLS SPOTIFY RADIO</h2>
+                        <h2 style={{ margin: 0, fontSize: '1.6rem', fontWeight: '900' }}>VLS SOUND NETWORK</h2>
                         <span style={{ fontSize: '0.7rem', color: '#1DB954', letterSpacing: '2px' }}>
                             {user ? `🎵 ${user.display_name} · ${user.product?.toUpperCase()}` : 'SEÑAL PERSONAL · vecinoslaserena.cl'}
                         </span>
@@ -176,12 +176,12 @@ export default function SpotifyRadioVLS({ onClose }) {
                     </motion.div>
                     <h2 style={{ fontSize: '2.5rem', textAlign: 'center', margin: 0 }}>Tu música.<br/>Nuestra radio.</h2>
                     <p style={{ color: '#b3b3b3', textAlign: 'center', maxWidth: '500px', lineHeight: '1.6' }}>
-                        Conecta tu cuenta Spotify Premium y conviértela en una señal de radio vecinal en vivo. 
+                        Conecta tu cuenta Premium y conviértela en una señal de radio vecinal en vivo. 
                         Tus playlists favoritas sonarán en <strong>vecinoslaserena.cl</strong>.
                     </p>
-                    <motion.button whileHover={{ scale: 1.05 }} onClick={loginWithSpotify}
+                    <motion.button whileHover={{ scale: 1.05 }} onClick={loginWithVlsAudio}
                         style={{ background: '#1DB954', color: '#000', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 10px 30px rgba(29,185,84,0.3)' }}>
-                        <LogIn size={22} /> CONECTAR SPOTIFY PREMIUM
+                        <LogIn size={22} /> CONECTAR PLATAFORMA DE AUDIO
                     </motion.button>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1.5rem', maxWidth: '600px', width: '100%', marginTop: '1rem' }}>
                         {[

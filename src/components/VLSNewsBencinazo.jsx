@@ -194,9 +194,7 @@ export default function VLSNewsBencinazo({ onClose }) {
         {/* Article Body */}
         <article style={{ maxWidth: '1280px', margin: '0 auto', padding: '8rem 2rem', display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 400px', gap: '8rem' }}>
           
-          <div style={{ position: 'relative', zIndex: 1, fontSize: '1.35rem', lineHeight: '1.8', color: '#000', fontFamily: "'Charter', 'Georgia', serif" }}>
-            
-            {/* CHAPTER I */}
+          <div style={{ position: 'relative', zIndex: 1, fontSize: '1.35rem', lineHeight: '1.8', color: '#000', fontFamily: "'Charter', 'Georgia', serif" }}>            {/* CHAPTER I */}
             <section style={{ marginBottom: '6rem' }}>
                <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#000', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif", letterSpacing: '-0.02em' }}>
                   Capítulo I: La "Frase de la Discordia" y el Choque de Realidades
@@ -213,9 +211,70 @@ export default function VLSNewsBencinazo({ onClose }) {
                   <p style={{ color: '#fbbf24', fontWeight: 'bold', marginTop: '2rem', textAlign: 'right', fontSize: '1rem' }}>— Jorge Quiroz, Ministro de Hacienda (Marzo 2026)</p>
                </div>
 
-               <p style={{ color: '#1e293b', fontWeight: 500 }}>
-                  A simple vista, la frase suena a "justicia fiscal". Pero, al analizarla con lupa, la comparación es, para muchos expertos, una falacia técnica que ignora la estructura de impuestos y el poder adquisitivo real entre ambos países.
+               <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 300px', gap: '3rem', margin: '5rem 0' }}
+               >
+                  <div style={{ borderLeft: '4px solid #ef4444', paddingLeft: '2rem' }}>
+                    <p style={{ fontSize: '1.1rem', color: '#4b5563', lineHeight: '1.6' }}>
+                      En las estaciones de servicio de la Avenida del Mar y Balmaceda, la molestia no es solo por el precio, sino por la narrativa. Para el serenense que debe conducir desde Las Compañías al centro, el auto no es un lujo, es la única herramienta de trabajo viable ante un transporte público que aún no logra la frecuencia necesaria.
+                    </p>
+                  </div>
+                  <img 
+                    src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                    alt="Bencinera de Noche" 
+                    style={{ width: '100%', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
+                  />
+               </motion.div>
+            </section>
+
+            {/* CAPÍTULO II */}
+            <section style={{ marginBottom: '6rem', background: '#f0f9ff', padding: '4rem', borderRadius: '40px', border: '1px solid #bae6fd' }}>
+               <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#0c4a6e', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
+                  Capítulo II: El Espejismo de la Paridad
+               </h2>
+               <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
+                  Comparar el precio de la bencina en Chile con el de Estados Unidos sin ajustar por ingreso per cápita, paridad de poder adquisitivo (PPA) ni infraestructura de transporte público, es la definición clásica de un <strong>espejismo económico</strong>.
                </p>
+               
+               <div style={{ background: '#fff', padding: '3rem', borderRadius: '32px', border: '1px solid #bae6fd', marginBottom: '3rem' }}>
+                  <h4 style={{ color: '#0369a1', fontWeight: '900', fontSize: '1.2rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '10px' }}><Layers size={22} /> MAPA DE CALOR: COSTO RELATIVO POR PAÍS</h4>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+                     <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '20px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 'bold' }}>USA (CALIFORNIA)</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#10b981' }}>US$ 1.20 / Litro</div>
+                        <div style={{ height: '6px', width: '100%', background: '#e2e8f0', borderRadius: '3px', marginTop: '10px' }}>
+                           <div style={{ height: '100%', width: '25%', background: '#10b981', borderRadius: '3px' }} />
+                        </div>
+                     </div>
+                     <div style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '20px' }}>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 'bold' }}>CHILE (LA SERENA)</div>
+                        <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#ef4444' }}>US$ 1.55 / Litro</div>
+                        <div style={{ height: '6px', width: '100%', background: '#e2e8f0', borderRadius: '3px', marginTop: '10px' }}>
+                           <div style={{ height: '100%', width: '90%', background: '#ef4444', borderRadius: '3px' }} />
+                        </div>
+                     </div>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '1.5rem' }}>* Al ajustar por salario promedio, el impacto real en el bolsillo chileno es 4.2 veces superior al del promedio estadounidense.</p>
+               </div>
+               
+               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2rem', margin: '3rem 0' }}>
+                  <div style={{ background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #0ea5e9', textAlign: 'center' }}>
+                     <div style={{ color: '#0284c7', fontWeight: '900', fontSize: '2rem', marginBottom: '0.5rem' }}>US$&thinsp;3,85</div>
+                     <p style={{ margin: 0, color: '#334155', fontSize: '1rem' }}><strong>Precio por Galón en Chile</strong><br/>equivalente en dólares</p>
+                  </div>
+                  <div style={{ background: '#fff', padding: '2rem', borderRadius: '20px', border: '1px solid #0ea5e9', textAlign: 'center' }}>
+                     <div style={{ color: '#0284c7', fontWeight: '900', fontSize: '2rem', marginBottom: '0.5rem' }}>US$&thinsp;0,95</div>
+                     <p style={{ margin: 0, color: '#334155', fontSize: '1rem' }}><strong>Precio por Galón en EE. UU.</strong><br/>(Promedio nacional ajustado)</p>
+                  </div>
+                  <div style={{ background: '#000', padding: '2rem', borderRadius: '20px', border: '1px solid #fbbf24', textAlign: 'center', color: '#fff' }}>
+                     <div style={{ color: '#fbbf24', fontWeight: '900', fontSize: '2rem', marginBottom: '0.5rem' }}>4&times;
+                     </div>
+                     <p style={{ margin: 0, color: '#e2e8f0', fontSize: '1rem' }}><strong>Impacto real sobre el ingreso</strong><br/> El chileno paga 4 veces más de su esfuerzo diario.</p>
+                  </div>
+               </div>
             </section>
 
             {/* CHAPTER III - UPDATED */}
@@ -227,15 +286,15 @@ export default function VLSNewsBencinazo({ onClose }) {
                 Para el vecino de Las Compañías o de los barrios residenciales de La Serena, la pregunta es una sola: ¿Por qué la bencina es tan cara? La respuesta tiene fecha: <strong>1986</strong>. Mediante la Ley 18.502, se creó el Impuesto Específico para reconstruir los caminos tras el terremoto de 1985. Fue una medida "transitoria" que hoy, 40 años después, sigue vigente.
               </p>
               
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', marginBottom: '2rem' }}>
                  <div style={{ background: '#fff', padding: '2rem', borderRadius: '24px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                     <h4 style={{ color: '#7c2d12', fontWeight: '900', marginBottom: '1rem' }}>LA PARADOJA FINAL</h4>
                     <p style={{ fontSize: '1.1rem', margin: 0, color: '#334155' }}>Pagamos peajes en carreteras concesionadas (que ya están construidas) y, además, pagamos el impuesto que originalmente iba a construirlas.</p>
                  </div>
-                 <div style={{ background: '#000', padding: '2rem', borderRadius: '24px', color: '#fbbf24' }}>
-                    <h4 style={{ color: '#fff', fontWeight: '900', marginBottom: '1rem' }}>EFECO ELIMINACIÓN</h4>
-                    <p style={{ fontSize: '1.1rem', margin: 0 }}>Si el gobierno eliminara el IEC, la bencina bajaría hoy mismo <strong>$350 pesos por litro</strong>, neutralizando el "bencinazo".</p>
-                 </div>
+                  <div style={{ background: '#000', padding: '2rem', borderRadius: '24px', color: '#fbbf24' }}>
+                     <h4 style={{ color: '#fff', fontWeight: '900', marginBottom: '1rem' }}>EFECTO ELIMINACIÓN</h4>
+                     <p style={{ fontSize: '1.1rem', margin: 0, color: '#fbbf24', fontWeight: 500 }}>Si el gobierno eliminara el IEC, la bencina bajaría hoy mismo <strong style={{ color: '#fff' }}>$350 pesos por litro</strong>, neutralizando completamente el alza anunciada.</p>
+                  </div>
               </div>
             </section>
 
@@ -244,16 +303,16 @@ export default function VLSNewsBencinazo({ onClose }) {
                <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#000', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
                   Capítulo IV: Peras, Manzanas y Listas de Espera
                </h2>
-               <p style={{ marginBottom: '2rem' }}>
-                  El ministro Quiroz ha sido hábil en "moralizar" la caja chica del Estado. Al decir que el subsidio a la bencina compite con el tratamiento de pacientes con cáncer, pone al ciudadano en una encrucijada ética imposible.
+               <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
+                  El ministro Quiroz ha sido hábil en &ldquo;moralizar&rdquo; la caja del Estado. Al declarar que el subsidio a la bencina compite con el tratamiento de pacientes con cáncer, coloca al ciudadano en una encrucijada ética de imposible resolución inmediata.
                </p>
                
                <div style={{ background: '#f9fafb', padding: '3rem', borderRadius: '32px', border: '1px solid #e5e7eb' }}>
                   <h4 style={{ color: '#ef4444', fontWeight: '900', fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}><AlertTriangle size={24}/> EL EFECTO CASCADA (INFLACIÓN)</h4>
-                  <ul style={{ paddingLeft: '1.5rem', fontSize: '1.15rem' }}>
-                     <li style={{ marginBottom: '1rem' }}><strong>Alza del Diésel ($580):</strong> Sube el flete de los camiones que traen la mercadería al Terminal del Agro.</li>
-                     <li style={{ marginBottom: '1rem' }}><strong>Inflación de Alimentos:</strong> Sube el precio del pan, la lechuga y el aceite.</li>
-                     <li style={{ marginBottom: '1rem' }}><strong>Precarización:</strong> La familia que ahorra en bencina termina pagando más en el supermercado.</li>
+                  <ul style={{ paddingLeft: '1.5rem', fontSize: '1.15rem', color: '#1e293b' }}>
+                     <li style={{ marginBottom: '1rem' }}><strong>Alza del diésel ($580/litro):</strong> Encarece el flete de los camiones que abastecen el Terminal Agropecuario, impactando directamente el costo de los alimentos frescos.</li>
+                     <li style={{ marginBottom: '1rem' }}><strong>Inflación de alimentos:</strong> Sube el precio del pan, las verduras y el aceite; los productos que más pesan en la canasta básica de familias de ingresos medios y bajos.</li>
+                     <li style={{ marginBottom: '1rem' }}><strong>Precarización del transporte menor:</strong> La familia que pierde poder adquisitivo por la bencina, lo recupera pagando más en el supermercado y en la tarifa del colectivo.</li>
                   </ul>
                </div>
             </section>
@@ -263,15 +322,55 @@ export default function VLSNewsBencinazo({ onClose }) {
                <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#000', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
                   Capítulo V: El Descalabro en La Serena y Regiones
                </h2>
-               <p style={{ marginBottom: '2rem' }}>
-                  En Santiago, el Metro (subsidiado) es una opción. En La Serena, la movilidad depende de la micro, el colectivo y el vehículo particular.
+                <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
+                  En Santiago, el Metro &mdash;parcialmente subsidiado&mdash; es una alternativa real. En La Serena, Coquimbo y toda la macro-zona norte chica, la movilidad dep totalende de la micro, el colectivo y el vehículo particular. No existe red ferroviaria urbana ni alternativa de locomoción pública de gran escala.
                </p>
-               <p>
+               <p style={{ color: '#1e293b', fontWeight: 500 }}>
                   <strong>Locomoción Colectiva:</strong> Los dueños de micros y colectiveros de nuestra zona ya advierten que el alza del petróleo es "la sentencia de muerte" para sus actuales tarifas. 
                </p>
                <p style={{ marginTop: '2rem', borderTop: '2px dashed #fbbf24', paddingTop: '2rem', fontStyle: 'italic', color: '#b45309', fontWeight: 'bold' }}>
                   "Mientras Quiroz sube la bencina, el gobierno retira 43 decretos ambientales, incluyendo protecciones en nuestra región como el área del Pingüino de Humboldt."
                </p>
+            </section>
+
+            {/* MEDIDAS PALIATIVAS 24 MARZO 2026 */}
+            <section style={{ marginBottom: '6rem' }}>
+               <h2 style={{ fontSize: '2.8rem', fontWeight: '900', color: '#000', marginBottom: '2.5rem', fontFamily: "'Outfit', sans-serif" }}>
+                  Capítulo VI: Las Medidas Paliativas &mdash; Plan &laquo;Chile Sale Adelante&raquo;
+               </h2>
+               <p style={{ marginBottom: '2rem', color: '#1e293b', fontWeight: 500 }}>
+                  El 24 de marzo de 2026, el gobierno ingresó al Congreso un proyecto de ley con <strong>ocho medidas paliativas</strong> para contener el impacto del bencinazo. Con un costo fiscal de <strong>$111.530 millones</strong>, el ejecutivo las presentó como &ldquo;neutral para las arcas del Estado&rdquo;, arguyendo que la suspensión de un crédito tributario al diésel no transportista cubrirá la mayor parte del gasto. Pero, ¿qué pesa realmente en la balanza del ciudadano serenense?
+               </p>
+
+               {/* Grid de medidas */}
+               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                  {[
+                    { icon: '🛢️', titulo: 'MEPCO Reforzado', desc: 'El cálculo del precio de paridad se extiende de 2 a 4 semanas, amortiguando alzas internacionales bruscas.', veredicto: 'PARCIAL', color: '#f59e0b' },
+                    { icon: '🕯️', titulo: 'Parafina Congelada', desc: 'El precio de la parafina se fija en ~$1.000/litro hasta el fin del invierno. El FEPP se recapitaliza de US$5M a US$60M.', veredicto: 'POSITIVO', color: '#10b981' },
+                    { icon: '🚌', titulo: 'Tarifas Red Congeladas', desc: 'El Metro y el Sistema Red en la Región Metropolitana no subirá hasta el 31 de diciembre de 2026.', veredicto: 'SANTIAGO', color: '#3b82f6' },
+                    { icon: '🚕', titulo: 'Subsidio Taxistas', desc: '$100.000 mensuales por vehículo durante 6 meses. Requiere tramitación en el Congreso.', veredicto: 'PENDIENTE', color: '#8b5cf6' },
+                    { icon: '🔋', titulo: 'Crédito EV BancoEstado', desc: 'Línea de financiamiento preferencial (6 años + 6 meses gracia) para renovar flotas a vehículos eléctricos.', veredicto: 'LARGO PLAZO', color: '#64748b' },
+                    { icon: '🚛', titulo: 'Transporte de Carga', desc: 'Medidas de seguridad vial en rutas y áreas de descanso para camioneros.', veredicto: 'INDIRECTO', color: '#94a3b8' },
+                  ].map((m, i) => (
+                    <div key={i} style={{ background: '#fff', padding: '1.5rem', borderRadius: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.06)', border: '1px solid #e2e8f0' }}>
+                      <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>{m.icon}</div>
+                      <h5 style={{ margin: '0 0 0.5rem 0', color: '#0f172a', fontWeight: '900', fontSize: '1rem', fontFamily: "'Outfit', sans-serif" }}>{m.titulo}</h5>
+                      <p style={{ margin: '0 0 1rem 0', color: '#334155', fontSize: '0.95rem', lineHeight: '1.5', fontWeight: 500 }}>{m.desc}</p>
+                      <span style={{ display: 'inline-block', background: m.color + '20', color: m.color, fontWeight: '900', fontSize: '0.7rem', padding: '3px 10px', borderRadius: '20px', letterSpacing: '1px', border: `1px solid ${m.color}40` }}>{m.veredicto}</span>
+                    </div>
+                  ))}
+               </div>
+
+               {/* Balance VLS para La Serena */}
+               <div style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)', padding: '3rem', borderRadius: '32px', border: '1px solid rgba(59,130,246,0.3)' }}>
+                  <h4 style={{ color: '#93c5fd', fontWeight: '900', fontSize: '1.3rem', marginBottom: '1.5rem', fontFamily: "'Outfit', sans-serif" }}>⚖️ Balance VLS: ¿Qué cambia realmente para La Serena?</h4>
+                  <p style={{ color: '#e2e8f0', fontWeight: 400, lineHeight: '1.7', marginBottom: '1.5rem' }}>
+                     La mayor parte de las medidas están diseñadas para el Gran Santiago. <strong style={{ color: '#fff' }}>El congelamiento del Metro no nos beneficia</strong>; en la Región de Coquimbo no existe un sistema equivalente. Los <strong style={{ color: '#fff' }}>fondos para regiones</strong> son genéricos y sin garantía de montos mínimos por zona. El subsidio a taxistas es prometedor, pero <strong style={{ color: '#93c5fd' }}>aún requiere aprobación del Congreso</strong>, y en el intertanto los colectiveros de Las Compañías y Coquimbo absorberán el alza desde este jueves.
+                  </p>
+                  <p style={{ color: '#e2e8f0', fontWeight: 400, lineHeight: '1.7', marginBottom: 0 }}>
+                     Lo que sí aplica hoy de forma directa en La Serena es el <strong style={{ color: '#fff' }}>congelamiento de la parafina</strong> &mdash;clave para los hogares más vulnerables&mdash; y el <strong style={{ color: '#fff' }}>ajuste al MEPCO</strong>, que podría suavizar futuras alzas pero no evitar la de esta semana. En suma: las medidas existen, pero la mayoría llega tarde, a destinatarios lejanos o con condicionales legíslativos que dilatan el alivio real.
+                  </p>
+               </div>
             </section>
 
             {/* CONCLUSION */}

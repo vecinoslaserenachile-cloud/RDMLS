@@ -21,6 +21,8 @@ import RetroDecathlon from './RetroDecathlon';
 import RetroRubik from './RetroRubik';
 import RetroCaracolElevator from './RetroCaracolElevator';
 import PlayCenterNostalgia from './PlayCenterNostalgia';
+import VLSGameMain from './VLSGameMain';
+import VlsSmartBillionaire from './VlsSmartBillionaire';
 
 export default function RetroArcadeLobby({ onClose }) {
     const [selectedGame, setSelectedGame] = useState(null);
@@ -42,11 +44,13 @@ export default function RetroArcadeLobby({ onClose }) {
         { id: 'pesca', name: 'PESCA CON SERENITO', desc: '¡Atrapa los anillos de colores en las varas, clásico juguete de agua con burbujas!', color: '#0ea5e9', icon: Gamepad2, component: RetroPesca },
         { id: 'pinball', name: 'FLIPPERS VLS', desc: '¡Nuevo! Mesa de pinball mejorada con el arte clásico de FLIPPERS. ¡Suma puntos con Serenito!', color: '#fcd34d', icon: Gamepad2, component: RetroPinball },
         { id: 'rallyx', name: 'SERENA RALLY-X', desc: 'Recorre las calles de La Serena esquivando vehículos con tu cortina de humo.', color: '#3b82f6', icon: Gamepad2, component: RetroRallyX, maintenance: true },
-        { id: 'decathlon', name: 'JABALINA SERENENSE', desc: '¡Lanza la jabalina como en el clásico Decathlon del Atari! Corre y ajusta el ángulo.', color: '#f97316', icon: Gamepad2, component: RetroDecathlon, maintenance: true },
+        { id: 'decathlon', name: 'JABALINA SERENENSE', desc: '¡Lanza la jabalina como en el clásico Decathlon VLS Heritage! Corre y ajusta el ángulo.', color: '#f97316', icon: Gamepad2, component: RetroDecathlon, maintenance: true },
         { id: 'pacman', name: 'SERENITO PACMAN', desc: 'Limpia el laberinto comiendo vitaminas y papayas para derrotar a los enemigos.', color: '#ffff00', icon: Gamepad2, component: RetroPacman },
         { id: 'moonpatrol', name: 'PASEO NOCTURNO', desc: 'Recorre la noche serenense sin chocar con escombros.', color: '#ffb8ff', icon: Gamepad2, component: RetroMoonPatrol, maintenance: true },
         { id: 'elevator', name: 'CARACOL ACTION', desc: '¡NUEVO! Detective Serenito en el ascensor panorámico del Caracol Colonial. ¡De compras por los 5 niveles!', color: '#facc15', icon: Building2, component: RetroCaracolElevator },
-        { id: 'playcenter', name: 'PLAY CENTER CORDOVEZ', desc: '¡Nuevo! Viaja al pasado con fotos reales del mítico salón de juegos.', color: '#f97316', icon: History, component: PlayCenterNostalgia }
+        { id: 'playcenter', name: 'PLAY CENTER CORDOVEZ', desc: '¡Nuevo! Viaja al pasado con fotos reales del mítico salón de juegos.', color: '#f97316', icon: History, component: PlayCenterNostalgia },
+        { id: 'trivia', name: 'VLS TRIVIA CHALLENGE', desc: '¡Nuevo! Demuestra cuánto sabes de La Serena en este desafío de preguntas y respuestas.', color: '#10b981', icon: Trophy, component: VLSGameMain },
+        { id: 'billionaire', name: 'VLS BILLIONAIRE MASTER', desc: '¡Nuevo! Participa por el gran premio respondiendo sobre cultura local y servicios de la comuna.', color: '#fbbf24', icon: Trophy, component: VlsSmartBillionaire }
     ];
 
     const simulateKey = (key, eventType) => {
@@ -101,7 +105,7 @@ export default function RetroArcadeLobby({ onClose }) {
                         </div>
                     </div>
 
-                    {/* Universal Mobile Touch Controls Overlay - Gameboy Style Bottom Bar */}
+                    {/* Universal Mobile Touch Controls Overlay - VLS Classic Style Bottom Bar */}
                     {selectedGame.id !== 'cubo' && (
                         <div className="mobile-only-controls" style={{ width: '100%', zIndex: 100000, display: 'flex', justifyContent: 'space-between', padding: '15px 20px', background: 'linear-gradient(to bottom, #d1d5db, #9ca3af)', borderTop: '4px solid #4b5563' }}>
                         {/* D-Pad */}

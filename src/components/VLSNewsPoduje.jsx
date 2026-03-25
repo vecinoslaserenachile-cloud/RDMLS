@@ -189,6 +189,56 @@ export default function VLSNewsPoduje({ onClose }) {
               <p style={{ marginBottom: '1.5rem', color: '#1e293b', fontWeight: 500 }}>
                 A esto debemos sumarle el factor de la tasa de interés hipotecaria, que sigue en niveles altísimos comparados a la bonanza dorada del crédito en 2018-2019, junto con la inflación post-pandemia de los materiales de construcción. Hoy hacer un departamento cuesta casi un 45% más que hace cinco años, y los sueldos en Chile no han crecido en esa proporción.
               </p>
+
+              <div style={{ background: '#0f172a', padding: '3.5rem', borderRadius: '3rem', color: 'white', margin: '4rem 0', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', top: '-20%', right: '-10%', opacity: 0.1 }}><Calculator size={250} color="#8b5cf6" /></div>
+                  <h4 style={{ color: '#8b5cf6', fontWeight: '900', fontSize: '1.5rem', marginBottom: '2rem' }}>Sueldo vs. Metro Cuadrado (Realidad 2026)</h4>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '20px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                              <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Capacidad de Pago Familiar</span>
+                              <span style={{ fontSize: '0.8rem', color: '#fb7185', fontWeight: 'bold' }}>- 28%</span>
+                          </div>
+                          <div style={{ height: '8px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+                              <div style={{ height: '100%', width: '40%', background: '#fb7185', borderRadius: '4px' }} />
+                          </div>
+                      </div>
+                      <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '20px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                              <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Precio Promedio Depto (2D1B) La Serena</span>
+                              <span style={{ fontSize: '0.8rem', color: '#8b5cf6', fontWeight: 'bold' }}>3.200 UF</span>
+                          </div>
+                          <div style={{ height: '8px', width: '100%', background: 'rgba(255,255,255,0.1)', borderRadius: '4px' }}>
+                              <div style={{ height: '100%', width: '85%', background: '#8b5cf6', borderRadius: '4px' }} />
+                          </div>
+                      </div>
+                  </div>
+
+                  <p style={{ marginTop: '2.5rem', color: '#64748b', fontSize: '0.85rem', lineHeight: '1.5' }}>
+                    * Datos proyectados por VLS Intelligence basados en la brecha entre el IPC de materiales y el índice de remuneraciones regional.
+                  </p>
+              </div>
+
+              <motion.div 
+                 initial={{ opacity: 0, scale: 0.95 }}
+                 whileInView={{ opacity: 1, scale: 1 }}
+                 viewport={{ once: true }}
+                 style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem', margin: '5rem 0' }}
+              >
+                  <img 
+                    src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                    alt="Serena Real Estate" 
+                    style={{ width: '100%', borderRadius: '40px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <Building size={40} color="#8b5cf6" style={{ marginBottom: '1.5rem' }} />
+                      <h4 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#000', marginBottom: '1.5rem' }}>Obras de Concreto, Esperanzas de Papel</h4>
+                      <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: '#4b5563' }}>
+                        En sectores como San Joaquín o El Milagro, grúas que antes operaban 24/7 hoy lucen estáticas. La parálisis legislativa tiene un costo en sacos de cemento y en sueños familiares.
+                      </p>
+                  </div>
+              </motion.div>
             </section>
 
             {/* LA PARADOJA FINAL */}

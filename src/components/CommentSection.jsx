@@ -176,10 +176,11 @@ export default function CommentSection({ themeColor = '#ef4444', reportTitle = "
                 </AnimatePresence>
             </div>
 
-            <div style={{ textAlign: 'center', marginTop: '4rem' }}>
-                <p style={{ color: '#9ca3af', fontSize: '0.85rem' }}>
+            <div style={{ textAlign: 'center', marginTop: '4rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+                <p style={{ color: '#64748b', fontSize: '0.78rem', margin: 0, lineHeight: 1.6 }}>
+                    ⚠️ <strong>Aviso editorial:</strong> Los comentarios iniciales que aparecen en esta sección son <em>ejemplos ilustrativos</em> generados por el equipo de VLS Smart City para ilustrar el debate ciudadano. No corresponden a personas reales identificables. Los comentarios enviados por usuarios registrados sí son reales y estarán sujetos a moderación automática por inteligencia artificial.
+                    <br /><br />
                     Solo los usuarios registrados en <strong>VLS Smart City</strong> pueden comentar y aportar evidencias.
-                    <br />Tus comentarios están sujetos a moderación automática por IA para garantizar un debate respetuoso.
                 </p>
             </div>
         </div>

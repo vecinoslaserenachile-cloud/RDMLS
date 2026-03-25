@@ -90,7 +90,7 @@ export default function WhatsAppEliteHub({ onClose }) {
                         <div style={{ background: 'rgba(56, 189, 248, 0.05)', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
                             <Volume2 color="#38bdf8" size={32} style={{ marginBottom: '1.5rem' }} />
                             <h4 style={{ margin: '0 0 10px 0', fontSize: '1rem' }}>IA MUSIC: EL LOGO SONORO</h4>
-                            <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Crea himnos instantáneos para gestión comunal con nuestro motor Premium Suno.</p>
+                            <p style={{ fontSize: '0.75rem', color: '#64748b' }}>Crea himnos instantáneos para gestión comunal con nuestro motor Premium Master Audio.</p>
                             <button style={{ marginTop: '1rem', background: 'transparent', color: '#38bdf8', padding: '8px 20px', borderRadius: '10px', border: '1px solid #38bdf8', fontSize: '0.7rem', fontWeight: 'bold' }}>PROBAR MARAVILLA</button>
                         </div>
                         <div style={{ background: 'rgba(34, 197, 94, 0.05)', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(34, 197, 94, 0.2)' }}>

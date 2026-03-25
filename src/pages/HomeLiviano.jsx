@@ -45,10 +45,10 @@ export default function HomeLiviano() {
                 { title: 'Salón Arcade', subtitle: 'Pac-Man, Tetris, Pooyan...', icon: Gamepad2, color: '#ef4444', action: () => dispatch('open-game'), badge: '🕹️' },
                 { title: 'Personal Stereo', subtitle: 'Música como en el colegio', icon: Radio, color: '#fcd34d', action: () => dispatch('open-personal-stereo'), badge: '🎧' },
                 { title: 'Cine VHS', subtitle: 'TV Cassette de los 80', icon: PlayCircle, color: '#a78bfa', action: () => dispatch('open-vhs-tv'), badge: '📼' },
-                { title: 'Super Serenito Bros', subtitle: 'Plataformas 3D · Gravedad Esférica', icon: Rocket, color: '#10b981', action: () => dispatch('open-super-serenito'), badge: '🍄', ficha: true },
-                { title: 'TV Vertical Social', subtitle: 'Reels, Tiktok, IG Live', icon: Tv, color: '#ec4899', action: () => dispatch('open-vertical-tv'), badge: '📱' },
+                { title: 'Serenito Antigravity', subtitle: 'Plataformas 3D · Gravedad Esférica', icon: Rocket, color: '#10b981', action: () => dispatch('open-super-serenito'), badge: '🚀', ficha: true },
+                { title: 'TV Vertical VLS', subtitle: 'Videos y Contenidos Verticales', icon: Tv, color: '#ec4899', action: () => dispatch('open-vertical-tv'), badge: '📱' },
                 { title: 'Radio Master Engine', subtitle: 'Estudio y DJ Virtual AI', icon: Radio, color: '#fcd34d', action: () => dispatch('open-radio-master'), badge: '📻' },
-                { title: 'Juego VLS: ¿Quién Sabe?', subtitle: 'Gana Fichas con tu conocimiento', icon: Award, color: '#FFD700', action: () => dispatch('open-vls-game'), badge: 'NUEVO', featured: true },
+                { title: 'Vls Billionaire Master', subtitle: 'Gana Fichas con tu conocimiento', icon: Award, color: '#FFD700', action: () => dispatch('open-vls-game'), badge: 'NUEVO', featured: true },
             ]
         },
         {

@@ -16,7 +16,7 @@ const FESTIVAL_LINEUP = [
     { id: 10, name: 'Hito: San Joaquín / El Milagro (Juaco & Milagros)', type: 'social-nature', status: 'monitored' },
     { id: 11, name: 'Hito: Arrayán Costero (Sra. Coral)', type: 'security', status: 'needed' },
     { id: 12, name: 'Hito: Avenida Costanera (Kevin)', type: 'security-beach', status: 'monitored' },
-    { id: 13, name: 'Hito: Palacio del Billete (El Primo)', type: 'catering-elite', status: 'active' },
+    { id: 13, name: 'Hito: Palacio del Billete (Pinochef)', type: 'catering-elite', status: 'active' },
     { id: 14, name: 'Hito: Captación Las Rojas (Tata Rojas)', type: 'resources', status: 'critical' },
     { id: 7, name: 'Hito: Casa Clausen (Oct 16th)', type: 'memory', status: 'monumented' },
     { id: 7, name: 'Artistas Locales Soberanos', type: 'local', status: 'auditioning' },

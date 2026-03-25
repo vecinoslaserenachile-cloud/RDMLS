@@ -27,7 +27,7 @@ const VLS_DATA = {
             titular: "Colapso: El Grito Visceral del Rock en el Valle del Elqui", 
             bajada: "Una propuesta de rock alternativo que canaliza la aridez del paisaje y la crítica social en un sonido demoledor.", 
             body: "El Grupo Colapso irrumpe en la escena regional con una propuesta que se aleja del folclore tradicional para abrazar la distorsión. Su álbum debut es un manifiesto sónico sobre la vida en el semiárido, donde la belleza del valle contrasta con la dureza de la supervivencia.\n\nCapítulo 1: La Estética de la Sequía. Sus letras no hablan de valles verdes idealizados, sino de la tierra quebrada, la falta de agua y la expansión inmobiliaria que devora los cerros. Es rock con denominación de origen, pero sin postales turísticas.\n\nCapítulo 2: Autogestión como Trinchera. Grabado íntegramente en estudios locales, Colapso demuestra que se puede lograr un sonido de alta fidelidad sin salir de la región. Cada riff es un ladrillo en la construcción de una escena rockera elquina que pide a gritos ser escuchada.\n\nCapítulo 3: En Vivo. La banda se caracteriza por una puesta en escena energética, donde la conexión con el público se basa en la catarsis colectiva frente a las injusticias cotidianas.",
-            mensaje: "El rock regional está vivo; apóyenlo.", contacto: "Spotify: Grupo Colapso", cita: "Nuestro rock nace de la grieta en la tierra seca." 
+            mensaje: "El rock regional está vivo; apóyenlo.", contacto: "VLS Audio: Grupo Colapso", cita: "Nuestro rock nace de la grieta en la tierra seca." 
         },
         { 
             id: "wzNKbSUFHQk", type: "MÚSICA", cat: "TROVA", title: "Fernando Figueroa", 

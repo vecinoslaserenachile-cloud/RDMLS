@@ -92,7 +92,7 @@ export default function HubDashboard() {
             listeningTitle: "Smart Listening", listeningSub: "Centinel Faro y Red de Escucha Social",
             paseo3dTitle: "Paseo Histórico 3D", paseo3dSub: "Arquitectura Tradicional y Museos",
             busdeltiempoTitle: "El Bus del Tiempo", busdeltiempoSub: "Viajes de 1948 a la Smart City",
-            gameTitle: "Gamer Portal 3D", gameSub: "Crea tu Serenito y Explora",
+            gameTitle: "Play Center VLS", gameSub: "Explora y Juega con Serenito",
             qrText: "Acceso Móvil",
             distancesTitle: "Cuadro de Distancias VLS", distancesSub: "Trayectos sobre Mapa Región de Coquimbo",
             projectTitle: "Gestión de Proyectos", projectSub: "Avance Obra y Planificación Territorio",
@@ -218,6 +218,12 @@ export default function HubDashboard() {
             setGreetingIdx(langToIdx[lang]);
         }
     }, [lang]);
+
+    // Auto-rotate greeting every 4 seconds
+    useEffect(() => {
+        const t = setInterval(() => setGreetingIdx(prev => (prev + 1) % greetings.length), 4000);
+        return () => clearInterval(t);
+    }, [greetings.length]);
     const [showOmnibox, setShowOmnibox] = useState(false);
     const [showPoll, setShowPoll] = useState(false);
     const [showGalaxia, setShowGalaxia] = useState(false);
@@ -1362,6 +1368,29 @@ export default function HubDashboard() {
                                                 <h3 className="text-gradient" style={{ fontSize: 'clamp(1.2rem, 3vw, 2rem)', margin: '0', fontWeight: 'bold' }}>RADIO PORTAL REGIONAL</h3>
                                             </div>
                                         </>
+                                    )}
+
+                                    {isVLS && (
+                                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '0.75rem' }}>
+                                            {greetings.map((g, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    onClick={() => setGreetingIdx(idx)}
+                                                    title={g.text}
+                                                    style={{
+                                                        background: greetingIdx === idx ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
+                                                        border: greetingIdx === idx ? `1.5px solid ${g.color}` : '1.5px solid rgba(255,255,255,0.15)',
+                                                        borderRadius: '50px',
+                                                        padding: '4px 10px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '1.1rem',
+                                                        transition: 'all 0.25s ease',
+                                                        boxShadow: greetingIdx === idx ? `0 0 10px ${g.color}50` : 'none',
+                                                        transform: greetingIdx === idx ? 'scale(1.15)' : 'scale(1)'
+                                                    }}
+                                                >{g.flag}</button>
+                                            ))}
+                                        </div>
                                     )}
 
                                     {!isVLS && (

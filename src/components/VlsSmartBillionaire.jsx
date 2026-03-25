@@ -72,7 +72,7 @@ const STAGES = [
     ]}
 ];
 
-export default function VLSMillionaireGame({ onClose }) {
+export default function VlsSmartBillionaire({ onClose }) {
     const SAVE_KEY = 'vls_game_save_v2026_final';
     
     const [gameState, setGameState] = useState(() => {

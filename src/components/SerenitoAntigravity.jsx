@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { Gamepad2, X, AlertCircle } from 'lucide-react';
 
 /**
- * 🍄🚀 SUPER SERENITO BROS (V1 - Spherical Gravity Core)
+ * 🍄🚀 SERENITO ANTIGRAVITY (V1 - Spherical Gravity Core)
  */
 
 function PlanetCore() {
@@ -62,7 +62,7 @@ function PlayerAntigravity() {
     );
 }
 
-export default function SuperSerenitoBros({ onClose }) {
+export default function SerenitoAntigravity({ onClose }) {
     const [gameState, setGameState] = useState('menu'); // menu, playing, gameover
 
     const startGame = () => {
@@ -81,7 +81,7 @@ export default function SuperSerenitoBros({ onClose }) {
             {gameState === 'menu' && (
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', background: 'radial-gradient(circle at center, #1e3a8a, #020617)' }}>
                     <Gamepad2 size={80} color="#38bdf8" style={{ marginBottom: '2rem', animation: 'pulse 2s infinite' }} />
-                    <h1 style={{ fontSize: '4rem', margin: '0 0 1rem 0', textShadow: '0 10px 30px rgba(56,189,248,0.5)', textAlign: 'center' }}>SUPER SERENITO<br/>BROS. 3D</h1>
+                    <h1 style={{ fontSize: '4rem', margin: '0 0 1rem 0', textShadow: '0 10px 30px rgba(56,189,248,0.5)', textAlign: 'center' }}>SERENITO<br/>ANTIGRAVITY 3D</h1>
                     <p style={{ color: '#bae6fd', fontSize: '1.2rem', marginBottom: '3rem' }}>
                         Gravedad esférica. Laberintos procedimentales. Resuelve los puzles lumínicos con El Abuelo.
                     </p>

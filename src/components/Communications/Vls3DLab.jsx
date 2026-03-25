@@ -34,13 +34,13 @@ export default function Vls3DLab() {
         { 
             id: 4, name: 'Flopy Aeropuerto (Hitem3D)', type: 'Portrait', size: '2.4MB', date: 'Ahora', status: 'HighRes', engine: 'hitem3d',
             desc: "Personaje generado con Hitem3D Retratos. Alta fidelidad en expresiones.",
-            prompt: "Beautiful 3D render of Flopy, airport staff character, Disney Pixar style."
+            prompt: "Beautiful 3D render of Flopy, airport staff character, VLS 3D Intelligence style."
         },
         { 
-            id: 3, name: 'Primo Chago (Chef Moneda)', type: 'Character', size: '1.8MB', date: 'Ahora', status: 'Ready', engine: 'tripo',
+            id: 3, name: 'Pinochef (Chef del Palacio)', type: 'Character', size: '1.8MB', date: 'Ahora', status: 'Ready', engine: 'tripo',
             preview: PRIMO_CHEF_IMG,
-            desc: "Personaje: Chago, Chef del Palacio de La Moneda.",
-            prompt: "A premium 3D character render of a friendly chef named Chago."
+            desc: "Personaje: Primo Chago Pinochef, Chef del Palacio de La Moneda.",
+            prompt: "A premium 3D character render of a friendly chef named Pinochef."
         }
     ]);
 
