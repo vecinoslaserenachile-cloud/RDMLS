@@ -174,6 +174,10 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
               onClick={() => {
+                if (note.id === 'CHAGO_CHEF_VLS') {
+                   // Disabled until content is ready
+                   return;
+                }
                 if (note.id === 'AGUAS_VALLE_VLS') {
                    window.dispatchEvent(new CustomEvent('open-vls-aguas'));
                    onClose && onClose();
@@ -185,7 +189,7 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
               style={{
                 padding: '2rem',
                 borderRadius: '24px',
-                cursor: 'pointer',
+                cursor: note.id === 'CHAGO_CHEF_VLS' ? 'not-allowed' : 'pointer',
                 position: 'relative',
                 overflow: 'hidden',
                 background: 'rgba(15,23,42,0.6)',
