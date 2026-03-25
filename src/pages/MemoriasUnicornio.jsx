@@ -132,11 +132,7 @@ export default function LibraryPortal({ onClose }) {
                                         <span style={{ fontSize: '0.6rem', color: STATUS_MAP[book.status].color, fontWeight: 'bold' }}>{book.status}</span>
                                     </div>
                                     {/* The button from the instruction is placed here, assuming it's a new element */}
-                                    {book.id === 'revancha_musica' && ( // Example condition, adjust as needed
-                                        <button onClick={(e) => { e.stopPropagation(); setShowPropuestaElDia(true); }} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #ef4444', position: 'absolute', bottom: '20px', left: '20px', right: '20px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', borderRadius: '12px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            🚨 Alianza Estratégica Regional - Diario El Día
-                                        </button>
-                                    )}
+                                    {/* Alianza Regional - REMOVED PER LEGAL SAFETY RULE */}
                                     <div style={{ height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
                                        <Book size={60} color={book.status === 'REAL' ? '#38bdf8' : '#64748b'} />
                                     </div>

@@ -102,7 +102,8 @@ export default function WelcomePortal() {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    const splashTimer = setTimeout(() => setShowSplash(false), 10000);
+    // Reducimos el tiempo de splash de 10s a 1.5s para evitar que parezca "pegado"
+    const splashTimer = setTimeout(() => setShowSplash(false), 1500);
     return () => clearTimeout(splashTimer);
   }, []);
 

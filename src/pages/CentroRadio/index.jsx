@@ -1168,136 +1168,9 @@ export default function CentroRadio() {
                     </div>
                 </section>
                 
-                {/* 5. YOUTUBE SOURCES - Exclusivo VLS o si es solicitado */}
-                {isVLS && (
-                    <section id="youtube-section" className="glass-panel animate-slide-up" style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.5)', borderRadius: '24px', border: '1px solid #ff0000', overflow: 'hidden' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,0,0,0.3)', paddingBottom: '0.8rem' }}>
-                            <Youtube size={28} color="#ff0000" />
-                            <h2 style={{ margin: 0, fontSize: isMobile ? '1.2rem' : '1.8rem', color: 'white' }}>RED DE CANALES VECINOS SMART</h2>
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', gap: '1rem' }}>
-                            {[
-                                { name: 'VECINOS LA SERENA CHILE', url: 'https://www.youtube.com/@vecinoslaserenachile', icon: '📺' },
-                                { name: 'ENTRE VECINAS VLS', url: 'https://www.youtube.com/@entrevecinasvls', icon: '🎙️' },
-                                { name: 'SESIONES CUTURRUFO', url: 'https://www.youtube.com/@sesionescuturrufo', icon: '🎶' },
-                                { name: 'VECINOSMART TV', url: 'https://www.youtube.com/@vecinosmart', icon: '🚀' }
-                            ].map(yt => (
-                                <a key={yt.name} href={yt.url} target="_blank" rel="noopener noreferrer" style={{ background: 'rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '20px', border: '1px solid rgba(255,0,0,0.2)', textAlign: 'center', cursor: 'pointer', textDecoration: 'none', transition: 'all 0.3s' }}>
-                                    <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{yt.icon}</div>
-                                    <h3 style={{ margin: 0, color: '#ff0000', textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 'bold' }}>{yt.name}</h3>
-                                    <span style={{ fontSize: '0.65rem', opacity: 0.6, color: 'white' }}>Ver Canal</span>
-                                </a>
-                            ))}
-                        </div>
-                    </section>
-                )}
-
-                {/* 5. ARCADE - 3 JUEGOS VISIBLES CON SELECTOR */}
-                <section id="arcade-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.8)', borderRadius: '24px', border: '1px solid #c084fc' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <Gamepad2 size={28} color="#c084fc" />
-                            <h2 style={{ margin: 0, fontSize: '1.8rem', color: 'white' }}>{isVLS ? 'VLS' : 'RDMLS'} ARCADE - FAVORITOS</h2>
-                        </div>
-                        <button onClick={() => setShowArcade(true)} style={{ background: '#c084fc', border: 'none', color: 'black', padding: '0.6rem 1.2rem', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                            VER TODOS LOS JUEGOS
-                        </button>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
-                        {featuredGames.map(gameId => {
-                            // Simple mapping (we'd ideally share the game data list)
-                            return (
-                                <div key={gameId} onClick={() => setShowArcade(true)} style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(192,132,252,0.3)', textAlign: 'center', cursor: 'pointer' }}>
-                                    <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🎮</div>
-                                    <h3 style={{ margin: 0, color: '#c084fc', textTransform: 'uppercase' }}>{gameId}</h3>
-                                    <span style={{ fontSize: '0.8rem', opacity: 0.6 }}>Haz clic para jugar</span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </section>
-
-                {/* 6. PANORAMAS */}
-                <section id="panoramas-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.4)', borderRadius: '24px', border: '1px solid rgba(0,229,255,0.2)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                        <Calendar size={28} color="#00e5ff" />
-                        <h2 style={{ margin: 0, fontSize: '1.8rem', color: 'white' }}>PANORAMAS & AGENDA CULTURAL</h2>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '1rem' }}>
-                        <div style={{ padding: '1.2rem', background: 'linear-gradient(90deg, #001220, #002233)', borderRadius: '16px', borderLeft: '5px solid #00e5ff' }}>
-                            <strong style={{ color: '#00e5ff' }}>CONCIERTO EN EL FARO</strong>
-                            <p style={{ margin: '5px 0 0', fontSize: '0.9rem' }}>Orquesta Sinfónica Juvenil - Sábado 20:00 Hrs.</p>
-                        </div>
-                        <div style={{ padding: '1.2rem', background: 'linear-gradient(90deg, #001220, #002233)', borderRadius: '16px', borderLeft: '5px solid #10b981' }}>
-                            <strong style={{ color: '#10b981' }}>FERIA DEL LIBRO</strong>
-                            <p style={{ margin: '5px 0 0', fontSize: '0.9rem' }}>Plaza de Armas - Todo el Fin de Semana.</p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 7. NOTICIAS REALES (LASERENA.CL) */}
-                <section id="news-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.5)', borderRadius: '24px', border: '1px solid rgba(255,215,0,0.2)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                            <Info size={28} color="#FFD700" />
-                            <h2 style={{ margin: 0, fontSize: isMobile ? '1.2rem' : '1.8rem', color: 'white' }}>NOTICIAS LASERENA.CL</h2>
-                            {newsLoading && <div style={{ width: '18px', height: '18px', border: '3px solid rgba(255,215,0,0.3)', borderTopColor: '#FFD700', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>}
-                        </div>
-                        <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}>
-                            VER TODAS <ExternalLink size={13} />
-                        </a>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                        {newsItems.length === 0 && !newsLoading && (
-                            <div style={{ textAlign: 'center', padding: '2rem', opacity: 0.5, fontSize: '0.9rem' }}>
-                                Cargando noticias desde laserena.cl...
-                            </div>
-                        )}
-                        {newsItems.slice(0, 4).map((item, i) => (
-                            <a
-                                key={i}
-                                href={item.link || 'https://www.laserena.cl/noticias'}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ display: 'flex', gap: '1rem', background: 'rgba(255,255,255,0.02)', padding: '0.9rem', borderRadius: '12px', border: '1px solid rgba(255,215,0,0.1)', cursor: 'pointer', textDecoration: 'none', transition: 'background 0.2s' }}
-                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,215,0,0.06)'}
-                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
-                            >
-                                <div style={{ minWidth: '80px', width: '80px', height: '80px', background: '#1a1a1a', borderRadius: '8px', overflow: 'hidden', flexShrink: 0 }}>
-                                    <img
-                                        src={item.imageUrl || '/escudo.png'}
-                                        alt={item.title}
-                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                        onError={e => { e.target.src = '/escudo.png'; e.target.style.objectFit = 'contain'; e.target.style.padding = '10px'; e.target.style.opacity = '0.5'; }}
-                                    />
-                                </div>
-                                <div style={{ flex: 1, overflow: 'hidden' }}>
-                                    <div style={{ fontSize: '0.65rem', color: '#FFD700', fontWeight: 'bold', marginBottom: '3px' }}>{item.category} · {item.date}</div>
-                                    <div style={{ fontSize: '0.95rem', color: 'white', fontWeight: 'bold', lineHeight: 1.3, marginBottom: '4px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{item.title}</div>
-                                    <p style={{ fontSize: '0.75rem', opacity: 0.55, margin: 0, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.4 }}>{item.content}</p>
-                                </div>
-                            </a>
-                        ))}
-                    </div>
-                </section>
-
-
-                {/* 8. BOTÓN DE BACKOFFICE (PROGRAMACIÓN INTERNA) */}
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
-                    <button 
-                        onClick={() => {
-                            const pass = prompt("INGRESE CLAVE MAESTRA INSTITUCIONAL:");
-                            if (pass === 'master2026' || pass === 'vls_master' || pass === 'master_bypass_2026') {
-                                setShowAdmin(true);
-                            } else if (pass !== null) {
-                                alert("ACCESO DENEGADO: Credenciales incorrectas.");
-                            }
-                        }} 
-                        style={{ background: 'linear-gradient(45deg, #111, #333)', border: '1px solid #FFD700', color: '#FFD700', padding: '1rem 3rem', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.8rem', boxShadow: '0 0 20px rgba(255,215,0,0.1)' }}
-                    >
-                        <Settings size={20} /> ACCESO BACKOFFICE GESTIÓN {isVLS ? 'VLS' : 'RDMLS'}
-                    </button>
-                </div>
+                {/* 5. YOUTUBE SOURCES - Removed from RDMLS layout */}
+                
+                {/* 6. ARCADE / PANORAMAS / NOTICIAS / BACKOFFICE - Removed to focus purely on Radio + TV Faro + Serenamet as requested */}
 
             </main>
 
@@ -1313,38 +1186,8 @@ export default function CentroRadio() {
                             style={{ height: '70px', marginBottom: '1rem', filter: 'drop-shadow(0 0 8px rgba(255,215,0,0.4))' }}
                             onError={e => { e.target.style.display = 'none'; }}
                         />
-                        <h3 style={{ margin: '0 0 0.3rem', color: '#FFD700', letterSpacing: '2px', fontSize: '1rem' }}>{isVLS ? 'VLS RADIO COMUNITARIA - PORTAL VLS' : 'RDMLS RADIO DIGITAL MUNICIPAL'}</h3>
-                        <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>                {/* 4. CLIMA Y JUEGOS VECINALES (Básico RDMLS) */}
-                <section id="extras-section" style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 2fr', gap: '2rem', marginTop: '2rem' }}>
-                    <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', justifyContent: 'center' }}>
-                         <CloudSun size={48} color="#fcd34d" />
-                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ fontSize: '2.5rem', fontWeight: '900', color: 'white' }}>{weather?.current_weather?.temperature || '17'}°C</div>
-                            <div style={{ fontSize: '0.8rem', color: '#fcd34d', fontWeight: 'bold', letterSpacing: '2px' }}>LA SERENA · HOY</div>
-                         </div>
-                    </div>
-
-                    <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: '900', color: '#FFD700', marginBottom: '1rem', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <Gamepad2 size={16} /> ENTRETENCIÓN VECINAL
-                        </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                <RefreshCw size={24} color="#38bdf8" />
-                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>RUBIK 3D</span>
-                            </button>
-                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                <Zap size={24} color="#ef4444" />
-                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>PINBALL</span>
-                            </button>
-                            <button onClick={() => setShowArcade(true)} className="hover-lift" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
-                                <Volume2 size={24} color="#10b981" />
-                                <span style={{ fontSize: '0.65rem', fontWeight: 'bold' }}>PIANO</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
+                                             <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>
+                        
                         {/* Links */}
                         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start' }}>
                             <a href="https://www.laserena.cl" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.8rem', textDecoration: 'none' }}>WWW.LASERENA.CL</a>
@@ -1360,47 +1203,8 @@ export default function CentroRadio() {
                             <Download size={16} /> INSTALAR APP {isVLS ? 'VLS' : 'RDMLS'}
                         </button>
 
-                        {/* Compartir */}
-                        <div style={{ marginTop: '1rem', display: 'flex', gap: '0.7rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start' }}>
-                            <span style={{ fontSize: '0.72rem', opacity: 0.5, alignSelf: 'center' }}>COMPARTIR:</span>
-                            {/* WhatsApp */}
-                            <a
-                                href={`https://wa.me/?text=Escucha%20${isVLS ? 'VLS' : 'RDMLS'}%20Radio%20en%20vivo%20%F0%9F%93%BB%20https%3A%2F%2Fwww.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl`}
-                                target="_blank" rel="noopener noreferrer"
-                                style={{ background: '#25D366', color: 'white', padding: '0.45rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.3rem' }}
-                            >
-                                📱 WhatsApp
-                            </a>
-                            {/* Facebook */}
-                            <a
-                                href={`https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl`}
-                                target="_blank" rel="noopener noreferrer"
-                                style={{ background: '#1877F2', color: 'white', padding: '0.45rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', textDecoration: 'none' }}
-                            >
-                                Facebook
-                            </a>
-                            {/* X / Twitter */}
-                            <a
-                                href={`https://twitter.com/intent/tweet?text=Escucha%20${isVLS ? 'VLS' : 'RDMLS'}%20en%20vivo&url=https%3A%2F%2Fwww.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl`}
-                                target="_blank" rel="noopener noreferrer"
-                                style={{ background: '#000', color: 'white', padding: '0.45rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', textDecoration: 'none', border: '1px solid #333' }}
-                            >
-                                𝕏 Twitter
-                            </a>
-                            {/* Copiar link */}
-                            <button
-                                onClick={() => { 
-                                    const link = isVLS ? 'https://www.vecinoslaserena.cl' : 'https://www.rdmls.cl';
-                                    navigator.clipboard.writeText(link); 
-                                    alert('¡Enlace copiado! Compártelo con quien quieras.'); 
-                                }}
-                                style={{ background: 'rgba(255,255,255,0.1)', color: 'white', padding: '0.45rem 1rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer' }}
-                            >
-                                🔗 Copiar link
-                            </button>
-                        </div>
-                        <div style={{ marginTop: '1.5rem', fontSize: '0.65rem', opacity: 0.25 }}>
-                            TODOS LOS DERECHOS RESERVADOS © {isVLS ? 'RED DE INNOVACIÓN COMUNITARIA' : 'MUNICIPIO DE LA SERENA'} 2026
+                        <div style={{ marginTop: '1.5rem', fontSize: '0.65rem', opacity: 0.5, fontWeight: 'bold', textTransform: 'uppercase' }}>
+                            RDMLS.CL Desarrollado por Comunicaciones IMLS 2026
                         </div>
                     </div>
 

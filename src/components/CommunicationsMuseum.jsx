@@ -72,18 +72,23 @@ const CHARACTERS = [
 ];
 
 function SerenitoRealModel({ variant }) {
-    const { scene } = useGLTF(SERENITO_MODEL_URL);
     const modelRef = useRef();
+    let scene;
+    
+    try {
+        const gltf = useGLTF(SERENITO_MODEL_URL);
+        scene = gltf.scene;
+    } catch (e) {
+        console.warn("VLS 3D Model Load Failure: Falling back to geometric representation.", e);
+    }
 
     useEffect(() => {
         if (scene) {
             scene.traverse((child) => {
                 if (child.isMesh) {
                     if (variant === 'bisabuelo') {
-                        // Apply a sepia/vintage filter to materials
-                        child.material.color.setStyle('#a16207'); // Dark ochre/sepia
+                        child.material.color.setStyle('#a16207');
                     } else {
-                        // Reset to original or default
                         child.material.color.set(1, 1, 1);
                     }
                 }
@@ -96,6 +101,21 @@ function SerenitoRealModel({ variant }) {
             modelRef.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.2;
         }
     });
+
+    if (!scene) {
+        return (
+            <group ref={modelRef} position={[0, -0.5, 0]}>
+                <mesh position={[0, 0.5, 0]}>
+                    <capsuleGeometry args={[0.3, 0.6, 4, 16]} />
+                    <meshStandardMaterial color="#3b82f6" emissive="#3b82f6" emissiveIntensity={0.2} />
+                </mesh>
+                <mesh position={[0, 1.1, 0]}>
+                    <sphereGeometry args={[0.25, 16, 16]} />
+                    <meshStandardMaterial color="#3b82f6" />
+                </mesh>
+            </group>
+        );
+    }
 
     return (
         <primitive 

@@ -1,122 +1,75 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Tv, X as CloseIcon, Maximize2, Minimize2, RadioReceiver, CloudSun, ShieldAlert, Activity, Volume2, VolumeX, Move, Star, Mic2, Award } from 'lucide-react';
+import { Tv, X as CloseIcon, Maximize2, Minimize2, Activity, Volume2, VolumeX, Move, Star, Mic2, Award, CloudSun, ShieldAlert, Square, ExternalLink } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CHANNELS = [
     { 
         url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', 
-        title: 'SERENITO & JUANÍN', 
-        desc: 'Serenito disfrutando de la playa con su gato Juanín.',
+        title: 'SERENITO CLIPS', 
+        desc: 'Contenido Vertical Optimizado VLS.',
         icon: Tv,
         color: '#f43f5e'
     },
     { 
         url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', 
-        title: 'AVENIDA DEL MAR', 
-        desc: 'Recorrido por la emblemática Avenida del Mar.',
+        title: 'VECINO TV', 
+        desc: 'Ojo en la Ciudad.',
         icon: Tv,
         color: '#38bdf8'
     },
     { 
         id: 'PLg_9ltHJC-02auBvkAB4-RSs9EJZOH_B4', 
-        title: 'TVLS CONTENIDOS 1', 
-        desc: 'Producción original VLS - Bloque A.',
+        title: 'PLAYLIST VLS 1', 
+        desc: 'Soberanía Digital Block A.',
         icon: Tv,
         color: '#f43f5e',
         isPlaylist: true
     },
     { 
-        id: 'PLg_9ltHJC-01E9YPJtqiGosY2Hd3XHHSl', 
-        title: 'TVLS CONTENIDOS 2', 
-        desc: 'Producción original VLS - Bloque B.',
-        icon: Tv,
-        color: '#c026d3',
-        isPlaylist: true
-    },
-    { 
-        id: 'PLg_9ltHJC-03q4F0yNQ3idDvPCqtwoRsy', 
-        title: 'TVLS CONTENIDOS 3', 
-        desc: 'Producción original VLS - Bloque C.',
-        icon: Tv,
-        color: '#7c3aed',
-        isPlaylist: true
-    },
-    { 
-        id: 'b9LTH4muxR8', 
-        title: 'FARO LA SERENA LIVE', 
-        desc: 'Transmisión en vivo desde el Faro Monumental.',
-        icon: Tv,
-        color: '#38bdf8'
-    },
-    { 
         id: 'uQ4G15nZ1z0', 
         title: 'AEROPUERTO LIVE', 
-        desc: 'Tráfico aéreo y pistas.',
+        desc: 'Tráfico aéreo La Serena.',
         icon: Activity,
         color: '#10b981'
     }
 ];
 
-const SOVEREIGN_JEWELS = [
-    { 
-        id: 'l6hqXu-5-5w', 
-        title: 'Dread Mar I - Sálvame', 
-        desc: 'Frecuencia de libertad y redención soberana.',
-        icon: Star
-    },
-    { 
-        id: 'EazNLUhXXdA', 
-        title: 'Calamaro & Freestyle', 
-        desc: 'La magia de lo imprevisto y el talento real.',
-        icon: Mic2
-    }
-];
-
 export default function SmartTV({ weather }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(true);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [currentChannelIdx, setCurrentChannelIdx] = useState(0);
-  const [overlayData, setOverlayData] = useState({ text: 'Iniciando transmisión...', icon: Activity, color: '#10b981' });
+  const [overlayData, setOverlayData] = useState({ text: 'Soberanía Digital VLS', icon: Activity, color: '#10b981' });
   const [isMuted, setIsMuted] = useState(true);
   const [isSwitching, setIsSwitching] = useState(false);
+  
+  // Posición inicial: Superior Izquierda
+  const [position, setPosition] = useState({ x: 20, y: 80 });
+  const [size, setSize] = useState({ width: 220, height: 391 }); // ~9:16 aspect ratio
 
   const currentChannel = CHANNELS[currentChannelIdx];
+  const containerRef = useRef(null);
 
-  // Efecto de estática al cambiar de canal (Manual o Auto)
   useEffect(() => {
     setIsSwitching(true);
     const timer = setTimeout(() => setIsSwitching(false), 800);
     return () => clearTimeout(timer);
   }, [currentChannelIdx]);
 
-  // Ciclo automático de canales (Auto-Transition cada 15s)
   useEffect(() => {
     const cycleTimer = setInterval(() => {
         setCurrentChannelIdx((prev) => (prev + 1) % CHANNELS.length);
-    }, 15000); 
+    }, 20000); 
     return () => clearInterval(cycleTimer);
   }, []);
 
-  // Ciclo automático de información
   useEffect(() => {
     const cycleInfo = () => {
-      const timeMs = Date.now();
-      const seconds = Math.floor(timeMs / 1000) % 30;
-      
-      if (seconds < 10) {
-        if (weather) {
-           setOverlayData({ text: `Clima Local: ${weather.temp}°C`, icon: CloudSun, color: '#fcd34d' });
-        } else {
-           setOverlayData({ text: 'Pronóstico: Soleado 18°C', icon: CloudSun, color: '#fcd34d' });
-        }
-      } else if (seconds < 20) {
-        setOverlayData({ text: 'COMUNA SMART: Nueva era de Soberanía Regional.', icon: Award, color: '#fcd34d' });
-      } else {
-        setOverlayData({ text: 'vecinoslaserena.cl: Dirección Estratégica Activa.', icon: ShieldAlert, color: '#38bdf8' });
-      }
+      const seconds = Math.floor(Date.now() / 5000) % 3;
+      if (seconds === 0) setOverlayData({ text: weather ? `VLS CLIMA: ${weather.temp}°C` : 'VLS HUB 2026', icon: CloudSun, color: '#fcd34d' });
+      else if (seconds === 1) setOverlayData({ text: 'SOCIOS_VLS: Liderando el Cambio', icon: Award, color: '#10b981' });
+      else setOverlayData({ text: 'SENTINEL_ACTIVO: Blindaje IA', icon: ShieldAlert, color: '#38bdf8' });
     };
-
     const interval = setInterval(cycleInfo, 5000);
     cycleInfo();
     return () => clearInterval(interval);
@@ -124,189 +77,136 @@ export default function SmartTV({ weather }) {
 
   if (!isVisible) {
     return (
-      <button 
+      <motion.button 
+        initial={{ scale: 0 }} animate={{ scale: 1 }}
         onClick={() => setIsVisible(true)}
-        className="btn-glass hover-lift"
+        className="glass-panel"
         style={{
-          position: 'fixed', bottom: '80px', right: '25px', zIndex: 100000,
-          borderRadius: '50%', padding: '12px', background: 'rgba(15, 23, 42, 0.9)',
-          boxShadow: '0 4px 15px rgba(56, 189, 248, 0.3)', border: '2px solid #38bdf8'
+          position: 'fixed', top: '100px', left: '25px', zIndex: 200000,
+          borderRadius: '12px', padding: '10px', background: 'rgba(5, 10, 20, 0.8)',
+          border: '2px solid #38bdf8', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
         }}
-        title="Abrir VLS TV"
       >
-        <Tv size={24} color="#38bdf8" className="pulse-slow" />
-      </button>
+        <Tv size={20} color="#38bdf8" />
+        <span style={{ color: 'white', fontSize: '0.6rem', fontWeight: '950' }}>VLS_TV</span>
+      </motion.button>
     );
   }
 
   return (
     <motion.div 
+      ref={containerRef}
       drag={!isFullScreen}
       dragMomentum={false}
-      initial={{ scale: 0.8, opacity: 0, y: 50 }}
-      animate={{ 
-        scale: 1, 
-        opacity: 1, 
-        y: 0,
-        ...(isFullScreen ? { bottom: 0, right: 0, left: 0, top: 0 } : {})
-      }}
-      className="animate-slide-up"
+      initial={{ opacity: 0, x: position.x, y: position.y }}
+      animate={{ opacity: 1, x: position.x, y: position.y }}
+      onDragEnd={(e, info) => setPosition({ x: info.point.x, y: info.point.y })}
+      className="vls-smart-tv-visor"
       style={{
         position: 'fixed',
-        backgroundColor: '#0f172a',
-        borderRadius: isFullScreen ? '0' : '16px',
-        boxShadow: '0 20px 60px rgba(0,0,0,0.9)',
-        border: isFullScreen ? 'none' : '4px solid #334155',
+        left: 0, top: 0, // motion x/y handles the rest
+        width: isFullScreen ? '100vw' : size.width,
+        height: isFullScreen ? '100vh' : size.height,
+        backgroundColor: '#000',
+        borderRadius: isFullScreen ? '0' : '20px',
+        boxShadow: '0 30px 80px rgba(0,0,0,0.9), 0 0 30px rgba(56, 189, 248, 0.2)',
+        border: isFullScreen ? 'none' : '3px solid rgba(255,255,255,0.15)',
         zIndex: 200000,
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
-        cursor: 'default',
-        resize: isExpanded && !isFullScreen && window.innerWidth >= 768 ? 'both' : 'none',
-        minWidth: isFullScreen ? '100vw' : (isExpanded ? (window.innerWidth < 768 ? '260px' : '380px') : (window.innerWidth < 768 ? '100px' : '220px')),
-        minHeight: isFullScreen ? '100vh' : (isExpanded ? (window.innerWidth < 768 ? '146px' : '214px') : (window.innerWidth < 768 ? '56px' : '124px')),
-        width: 'auto',
-        height: 'auto',
+        resize: 'both', // Resizable
         maxWidth: '100vw',
-        maxHeight: '100vh',
-        ...(!isFullScreen ? {
-          bottom: window.innerWidth < 768 ? '85px' : 'auto',
-          right: window.innerWidth < 768 ? '15px' : 'auto',
-          left: window.innerWidth < 768 ? 'auto' : '50px',
-          top: window.innerWidth < 768 ? 'auto' : '100px'
-        } : {})
+        maxHeight: '100vh'
       }}
     >
-      {/* Header del Televisor - Drag Handle */}
+      {/* Header Interactivo (Barra de Control Superior) */}
       <div 
         style={{ 
-            background: '#1e293b', padding: '6px 10px', display: 'flex', 
+            background: 'linear-gradient(90deg, #1e293b, #0f172a)', 
+            padding: '8px 12px', display: 'flex', 
             justifyContent: 'space-between', alignItems: 'center', 
-            borderBottom: '2px solid #000', cursor: 'grab' 
+            borderBottom: '1.5px solid rgba(255,255,255,0.1)', cursor: 'grab' 
         }}
       >
-         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.7rem', fontWeight: 'bold', color: currentChannel.color }}>
-            <currentChannel.icon size={12} />
-            <span style={{ letterSpacing: '1px' }}>{currentChannel.title}</span>
+         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.6rem', fontWeight: '950', color: currentChannel.color }}>
+            <Activity size={10} className="animate-pulse" />
+            <span style={{ letterSpacing: '2px', textShadow: '0 0 5px rgba(255,255,255,0.3)' }}>VLS_VISOR_LIVE</span>
          </div>
-         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-            {/* Controles Recuperados */}
-            <button onClick={() => setCurrentChannelIdx((prev) => (prev > 0 ? prev - 1 : CHANNELS.length - 1))} style={{ background: '#334155', border: '1px solid #475569', color: 'white', cursor: 'pointer', padding: '2px 6px', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 'bold' }}>CH -</button>
-            <button onClick={() => setCurrentChannelIdx((prev) => (prev + 1) % CHANNELS.length)} style={{ background: '#334155', border: '1px solid #475569', color: 'white', cursor: 'pointer', padding: '2px 6px', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 'bold' }}>CH +</button>
-            <button onClick={() => setIsMuted(!isMuted)} style={{ background: 'transparent', border: 'none', color: isMuted ? '#ef4444' : '#10b981', cursor: 'pointer', padding: '0 4px' }}>
-               {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
-            </button>
-            <div style={{ width: '1px', height: '14px', background: '#334155', margin: '0 4px' }}></div>
-            
-            <button onClick={() => { setIsFullScreen(!isFullScreen); setIsExpanded(!isFullScreen); }} style={{ background: 'transparent', border: 'none', color: '#facc15', cursor: 'pointer', padding: 0 }}>
-               <Maximize2 size={14} />
-            </button>
-            <button onClick={() => { setIsExpanded(!isExpanded); setIsFullScreen(false); }} style={{ background: 'transparent', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}>
-               {isExpanded ? <Minimize2 size={14} /> : <Tv size={14} />}
-            </button>
-            <button onClick={() => { setIsVisible(false); setIsFullScreen(false); }} style={{ background: 'transparent', border: 'none', color: '#ef4444', cursor: 'pointer', padding: 0 }}>
-               <CloseIcon size={14} />
-            </button>
+         <div style={{ display: 'flex', gap: '10px' }}>
+            <button onClick={() => setIsFullScreen(!isFullScreen)} style={{ background: 'none', border: 'none', color: '#38bdf8', padding: 0 }}><Maximize2 size={13} /></button>
+            <button onClick={() => setIsVisible(false)} style={{ background: 'none', border: 'none', color: '#ef4444', padding: 0 }}><CloseIcon size={14} /></button>
          </div>
       </div>
 
-      {/* Pantalla (Contenido YouTube/Video + Overlays) */}
-      <div style={{ flex: 1, position: 'relative', background: '#000', pointerEvents: 'none' }}>
-        {currentChannel.url ? (
-            <video 
-                key={currentChannel.url}
-                src={currentChannel.url}
-                autoPlay 
-                loop 
-                muted={isMuted}
-                playsInline
-                style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }}
-            />
-        ) : (
-            <iframe 
-                key={currentChannel.id}
-                width="100%" 
-                height="100%" 
-                src={currentChannel.isPlaylist 
-                    ? `https://www.youtube.com/embed/videoseries?list=${currentChannel.id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
-                    : `https://www.youtube.com/embed/${currentChannel.id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&loop=1&playlist=${currentChannel.id}&modestbranding=1&iv_load_policy=3&rel=0&showinfo=0&disablekb=1`
-                }
-                title={currentChannel.title}
-                frameBorder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                style={{ position: 'absolute', inset: 0, opacity: 0.9, pointerEvents: 'none' }}
-            ></iframe>
-        )}
-
-        {/* Estática de cambio de canal */}
-        <AnimatePresence>
-            {isSwitching && (
+      {/* Screen Area (9:16 optimized) */}
+      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', background: '#000' }}>
+         <AnimatePresence mode="wait">
+            {!isSwitching && (
                 <motion.div 
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
+                    key={currentChannelIdx}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0 }}
-                    style={{ 
-                        position: 'absolute', inset: 0, 
-                        background: 'url(https://media.giphy.com/media/Yy26NRbpB9lDi/giphy.gif) center/cover',
-                        zIndex: 20, pointerEvents: 'none'
-                    }}
-                />
+                    style={{ position: 'absolute', inset: 0 }}
+                >
+                    {currentChannel.url ? (
+                        <video 
+                            src={currentChannel.url}
+                            autoPlay loop muted={isMuted} playsInline
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                    ) : (
+                        <iframe 
+                            width="100%" height="100%" 
+                            src={`https://www.youtube.com/embed/${currentChannel.id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0`}
+                            frameBorder="0" allow="autoplay"
+                            style={{ width: '100%', height: '103%', marginTop: '-1%', pointerEvents: 'none' }}
+                        />
+                    )}
+                </motion.div>
             )}
-        </AnimatePresence>
+         </AnimatePresence>
 
-        {isMuted && (
-            <div 
+         {/* Estática / Conmutación */}
+         {isSwitching && (
+            <div style={{ position: 'absolute', inset: 0, background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
+               <div className="animate-pulse" style={{ color: '#38bdf8', fontSize: '0.6rem', fontWeight: '950', letterSpacing: '4px' }}>TUNING VLS...</div>
+            </div>
+         )}
+
+         {/* Scanlines Effect */}
+         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 5, background: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%)', backgroundSize: '100% 2px' }} />
+
+         {/* Mute Overlay */}
+         {isMuted && (
+            <button 
                 onClick={() => setIsMuted(false)}
-                style={{
-                    position: 'absolute', top: '10px', left: '10px', 
-                    zIndex: 10, cursor: 'pointer', pointerEvents: 'auto'
-                }}
+                style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 20, background: 'rgba(56,189,248,0.9)', color: '#000', border: 'none', padding: '8px 16px', borderRadius: '50px', fontWeight: '900', fontSize: '0.65rem', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', boxShadow: '0 0 20px rgba(56,189,248,0.5)' }}
             >
-                <div style={{
-                    background: 'rgba(15, 23, 42, 0.6)', backdropFilter: 'blur(6px)',
-                    padding: '6px 12px', borderRadius: '20px', color: 'white',
-                    fontWeight: '900', fontSize: '0.6rem', display: 'flex',
-                    alignItems: 'center', gap: '6px', border: '1px solid rgba(255,255,255,0.2)',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.3)'
-                }} className="animate-pulse">
-                    <VolumeX size={14} color="#ef4444" /> ACTIVAR AUDIO
-                </div>
+               <VolumeX size={14} /> ACTIVAR SONIDO VLS
+            </button>
+         )}
+
+         {/* Info Overlay (Ticker) */}
+         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '15px 10px', background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)', zIndex: 15, pointerEvents: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 10px', borderRadius: '4px', borderLeft: `3px solid ${overlayData.color}`, width: 'fit-content', maxWidth: '100%' }}>
+               <overlayData.icon size={12} color={overlayData.color} />
+               <span style={{ color: 'white', fontSize: '0.65rem', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{overlayData.text}</span>
             </div>
-        )}
-
-        {/* Scanlines CRT */}
-        <div style={{ 
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage: 'linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05))',
-          backgroundSize: '100% 4px, 6px 100%',
-          zIndex: 21
-        }}></div>
-
-        <div style={{ pointerEvents: "auto" }}></div>
-
-        {/* Tickers */}
-        <div style={{
-          position: 'absolute', bottom: '0', left: '0', right: '0',
-          background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
-          padding: '20px 10px 10px 10px', display: 'flex', flexDirection: 'column',
-          gap: '4px', pointerEvents: 'none'
-        }}>
-          <div className="animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(15,23,42,0.85)', padding: '4px 10px', borderRadius: '4px', borderLeft: `4px solid ${overlayData.color}`, alignSelf: 'flex-start' }}>
-            <overlayData.icon size={12} color={overlayData.color} />
-            <span style={{ color: 'white', fontSize: isExpanded ? '0.8rem' : '0.7rem', fontWeight: 'bold' }}>{overlayData.text}</span>
-          </div>
-          {isExpanded && (
-            <div style={{ overflow: 'hidden', whiteSpace: 'nowrap', width: '100%', background: 'rgba(56, 189, 248, 0.85)', padding: '3px 0', fontSize: '0.65rem', color: '#0f172a', fontWeight: 'bold', borderRadius: '4px' }}>
-              <div style={{ display: 'inline-block', animation: 'scroll-left 25s linear infinite', paddingLeft: '100%' }}>
-                 🚨 COMUNA SMART VLS: INICIO DE TRANSMISIÓN OFICIAL — SOBERANÍA COMUNAL 2026 — DIRIGIDO POR vecinoslaserena.cl — REVOLUCIÓN URBANA 🚨
-              </div>
-            </div>
-          )}
-        </div>
+         </div>
       </div>
 
+      {/* Resize Handle Placeholder (El propio resize:both genera el tirador, pero podemos hacerlo más obvio) */}
+      <div style={{ position: 'absolute', bottom: 2, right: 2, pointerEvents: 'none', borderRight: '2px solid rgba(56,189,248,0.5)', borderBottom: '2px solid rgba(56,189,248,0.5)', width: '10px', height: '10px' }} />
+      
       <style>{`
-        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .vls-smart-tv-visor {
+          transition: border-color 0.3s ease;
+        }
+        .vls-smart-tv-visor:hover {
+          border-color: rgba(56, 189, 248, 0.4) !important;
+        }
       `}</style>
     </motion.div>
   );

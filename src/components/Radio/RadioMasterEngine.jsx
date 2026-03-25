@@ -7,7 +7,7 @@ export default function RadioMasterEngine({ onClose }) {
     const [showStudio, setShowStudio] = useState(false);
     const [viewMode, setViewMode] = useState('status'); // 'status', 'alerts', 'programming'
     const [liveData, setLiveData] = useState(null);
-    const [locutionEnabled, setLocutionEnabled] = useState(localStorage.getItem('vls_locution_enabled') !== 'false');
+    const [locutionEnabled, setLocutionEnabled] = useState(localStorage.getItem('vls_locution_enabled') === 'true');
     const [stationStatus, setStationStatus] = useState({
         1: { name: 'RDMLS (MUNICIPAL)', listeners: 124, status: 'online', nowPlaying: 'Himno de La Serena - Coro Tradicional', bitrate: '128kbps', type: 'MP3' },
         2: { name: 'RVLS (VECINAL)', listeners: 86, status: 'online', nowPlaying: 'Cargando Metadata...', bitrate: '192kbps', type: 'Adaptive' }

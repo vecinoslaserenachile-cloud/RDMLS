@@ -39,7 +39,7 @@ const VUMeter = ({ label, needleRef }) => (
     </div>
 );
 
-export default function RDMLSRadioDial() {
+export default function RDMLSRadioDial({ onClose }) {
     const [isPlaying, setIsPlaying] = useState(false);
     const [volume, setVolume] = useState(0.8);
     const [isMuted, setIsMuted] = useState(false);
@@ -61,50 +61,32 @@ export default function RDMLSRadioDial() {
             badge: 'OFICIAL'
         },
         { 
-            id: 'concejo', 
-            name: 'CONCEJO MUNICIPAL',
-            dialLabel: 'CONCEJO',
-            slogan: 'TRANSPARENCIA Y GESTIÓN PÚBLICA', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3", 
+            id: 'cultura', 
+            name: 'RDMLS CULTURA',
+            dialLabel: 'CULTURA',
+            slogan: 'DIFUSIÓN CULTURAL MUNICIPAL - LA SERENA', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", 
             color: '#ef4444',
             logo: '/escudo.png',
             badge: 'MUNICIPAL'
         },
         { 
-            id: 'jjvv', 
-            name: 'RDMLS JJVV',
-            dialLabel: 'JJVV',
-            slogan: 'JUNTAS DE VECINOS EN RED', 
-            url: "https://az11.yesstreaming.net:8630/radio.mp3", 
-            color: '#f97316',
-            logo: '/logo_vls.png',
-            badge: 'VECINAL'
-        },
-        { 
-            id: 'rural', 
-            name: 'RDMLS RURAL',
-            dialLabel: 'RURAL',
-            slogan: 'CONEXIÓN CON EL CAMPO', 
-            url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
-            color: '#a855f7',
-            badge: 'TERRITORIO'
-        },
-        { 
-            id: 'entrevistas', 
-            name: 'RDMLS ENTREVISTAS',
-            dialLabel: 'ENTREVISTAS',
-            slogan: 'CRÓNICA VECINAL Y ACTUALIDAD', 
-            url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
-            color: '#10b981',
-            badge: 'ACTUALIDAD'
+            id: 'informativa', 
+            name: 'RDMLS INFORMATIVA',
+            dialLabel: 'RADIO INFO',
+            slogan: 'BOLETINES Y GESTIÓN EN TERRENO', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", 
+            color: '#38bdf8',
+            logo: '/logo_municipio.png',
+            badge: 'OFICIAL 24/7'
         },
         { 
             id: 'eventos', 
             name: 'RDMLS EVENTOS',
-            dialLabel: 'EVENTOS',
-            slogan: 'MUNICIPALIDAD EN TERRENO', 
+            dialLabel: 'PROTOCOL',
+            slogan: 'PROTOCOLOS Y ACTOS INSTITUCIONALES', 
             url: "https://az11.yesstreaming.net:8590/radio.mp3", 
-            color: '#38bdf8',
+            color: '#10b981',
             badge: 'VIVO'
         }
     ];
@@ -155,8 +137,33 @@ export default function RDMLSRadioDial() {
             maxWidth: '600px',
             margin: '0 auto',
             color: '#fff',
-            fontFamily: "'Inter', sans-serif"
+            fontFamily: "'Inter', sans-serif",
+            position: 'relative'
         }}>
+            {/* CLOSE BUTTON */}
+            {onClose && (
+                <button 
+                    onClick={onClose}
+                    style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'rgba(255,255,255,0.1)',
+                        border: 'none',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '30px',
+                        height: '30px',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        zIndex: 10
+                    }}
+                >
+                    <span style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>&times;</span>
+                </button>
+            )}
             {/* VUMETERS SECTION */}
             <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '20px' }}>
                 <VUMeter label="CH L" needleRef={vuLeftRef} />

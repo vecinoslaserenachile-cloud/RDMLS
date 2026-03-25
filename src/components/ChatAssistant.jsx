@@ -131,6 +131,33 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
         }
     };
 
+    const handleQuickAction = async (type) => {
+        const text = type === 'song' ? "¿Cómo puedo pedir una canción?" : "¿Cómo puedo enviar un aviso a la radio?";
+        const userMsg = { id: Date.now(), sender: 'user', text };
+        setMessages(prev => [...prev, userMsg]);
+        
+        setIsSendingEmail(true);
+        const RESEND_KEY = localStorage.getItem('vls_resend_key') || "re_BxWBivzx_3CpokEvr9UbCKFzFXyfT3VYn";
+        try {
+            await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_KEY}` },
+                body: JSON.stringify({
+                    from: 'Faro IA <onboarding@resend.dev>',
+                    to: ['vecinoslaserenachile@gmail.com', 'contacto@vecinosmart.cl'],
+                    subject: `[VLS] ${type === 'song' ? 'Pedido Musical' : 'Aviso Ciudadano'} - ${new Date().toLocaleTimeString()}`,
+                    html: `<h3>${type === 'song' ? 'Solicitud de Canción' : 'Aviso Ciudadano'}</h3><p>Un vecino ha solicitado información sobre ${type === 'song' ? 'pedidos musicales' : 'envío de avisos'} desde el Chat Assistant.</p>`
+                })
+            });
+            const botMsg = { id: Date.now() + 1, sender: 'bot', text: `¡Perfecto! He enviado tu ${type === 'song' ? 'solicitud musical' : 'aviso'} a la central de **RDMLS**. También puedes escribirnos directamente a **contacto@vecinosmart.cl**. ¿Necesitas algo más?` };
+            setMessages(prev => [...prev, botMsg]);
+        } catch (e) {
+            setMessages(prev => [...prev, { id: Date.now()+1, sender: 'bot', text: "Lo siento, tuve un problema enviando el aviso." }]);
+        } finally {
+            setIsSendingEmail(false);
+        }
+    };
+
     const handleSend = async (e) => {
         e.preventDefault();
         if (!inputText.trim()) return;
@@ -230,6 +257,14 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
                                         <span dangerouslySetInnerHTML={{ __html: msg.text }} />
                                     </div>
                                 ))}
+                                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                    <button onClick={() => handleQuickAction('song')} style={{ flex: 1, padding: '0.6rem', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', color: '#10b981', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer' }}>
+                                        PEDIR CANCIÓN 🎵
+                                    </button>
+                                    <button onClick={() => handleQuickAction('notice')} style={{ flex: 1, padding: '0.6rem', borderRadius: '12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer' }}>
+                                        ENVIAR AVISO 📢
+                                    </button>
+                                </div>
                                 <div ref={messagesEndRef} />
                             </div>
 

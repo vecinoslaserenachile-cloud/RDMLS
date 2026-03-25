@@ -2021,51 +2021,53 @@ export default function HubDashboard() {
                             {isVideoPlaying && (
                                 <AnimatePresence>
                                     {/* TV 1: SUPERIOR (SMART SOCIAL VISOR - Vertical 9:16) */}
-                                    <motion.div
-                                        key="tvls-player-top"
-                                        drag
-                                        dragMomentum={false}
-                                        initial={{ opacity: 0, y: 100 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        style={{
-                                            position: 'fixed',
-                                            top: '140px',
-                                            right: '40px',
-                                            width: '240px',
-                                            aspectRatio: '9/16',
-                                            zIndex: 10000,
-                                            borderRadius: '24px',
-                                            overflow: 'hidden',
-                                            boxShadow: '0 30px 60px rgba(0,0,0,0.9), 0 0 20px rgba(16, 185, 129, 0.3)',
-                                            border: '3px solid rgba(16, 185, 129, 0.6)',
-                                            background: '#000',
-                                            cursor: 'grab',
-                                            resize: 'horizontal', // Permite achicar/agrandar manteniendo proporción
-                                            minWidth: '150px',
-                                            maxWidth: '400px'
-                                        }}
-                                    >
-                                        <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 10, fontSize: '0.65rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.8)', padding: '4px 10px', borderRadius: '50px', border: '1px solid rgba(16, 185, 129, 0.5)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                            <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
-                                            SMART SOCIAL VISOR
-                                        </div>
-                                        <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', zIndex: 10, textAlign: 'center' }}>
-                                            <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '10px' }}>
-                                                {PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].title}
-                                            </span>
-                                        </div>
-                                        
-                                        {/* Overlay transparente para capturar eventos de drag y resize sin que el iframe los bloquee */}
-                                        <div style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'grab' }} />
-                                        
-                                        <iframe
-                                            width="100%" height="100%"
-                                            src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].url}
-                                            frameBorder="0"
-                                            allow="autoplay; encrypted-media; fullscreen"
-                                            style={{ objectFit: 'cover', transform: 'scale(1.05)', background: '#fff' }}
-                                        />
-                                    </motion.div>
+                                    {deviceType !== 'Móvil' && (
+                                        <motion.div
+                                            key="tvls-player-top"
+                                            drag
+                                            dragMomentum={false}
+                                            initial={{ opacity: 0, y: 100 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            style={{
+                                                position: 'fixed',
+                                                top: '140px',
+                                                right: '40px',
+                                                width: '240px',
+                                                aspectRatio: '9/16',
+                                                zIndex: 10000,
+                                                borderRadius: '24px',
+                                                overflow: 'hidden',
+                                                boxShadow: '0 30px 60px rgba(0,0,0,0.9), 0 0 20px rgba(16, 185, 129, 0.3)',
+                                                border: '3px solid rgba(16, 185, 129, 0.6)',
+                                                background: '#000',
+                                                cursor: 'grab',
+                                                resize: 'horizontal', // Permite achicar/agrandar manteniendo proporción
+                                                minWidth: '150px',
+                                                maxWidth: '400px'
+                                            }}
+                                        >
+                                            <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 10, fontSize: '0.65rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.8)', padding: '4px 10px', borderRadius: '50px', border: '1px solid rgba(16, 185, 129, 0.5)', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                                <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
+                                                SMART SOCIAL VISOR
+                                            </div>
+                                            <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', zIndex: 10, textAlign: 'center' }}>
+                                                <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '10px' }}>
+                                                    {PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].title}
+                                                </span>
+                                            </div>
+                                            
+                                            {/* Overlay transparente para capturar eventos de drag y resize sin que el iframe los bloquee */}
+                                            <div style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'grab' }} />
+                                            
+                                            <iframe
+                                                width="100%" height="100%"
+                                                src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].url}
+                                                frameBorder="0"
+                                                allow="autoplay; encrypted-media; fullscreen"
+                                                style={{ objectFit: 'cover', transform: 'scale(1.05)', background: '#fff' }}
+                                            />
+                                        </motion.div>
+                                    )}
 
                                     {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE - SOLO EN VLS */}
                                     {isVLS && (

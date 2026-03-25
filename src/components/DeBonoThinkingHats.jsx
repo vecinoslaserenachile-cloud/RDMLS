@@ -335,9 +335,12 @@ ComunaSmart 2026 - Innovación Regional
                                             <video 
                                                 src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/models/seis_sombreros_para_pensar_serenito.mp4" 
                                                 autoPlay muted loop playsInline 
+                                                poster="/six_3d_thinking_hats_vls.png"
                                                 style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'contrast(1.1)' }} 
-                                                onLoadedData={() => console.log("Video VLS cargado correctamente")}
-                                                onError={(e) => console.error("Fallo carga video VLS", e)}
+                                                onLoadedData={() => console.log("Video VLS: Capa visual activa.")}
+                                                onError={() => {
+                                                    console.warn("VLS Video: Renderizado lúdico no disponible. Usando representación estática.");
+                                                }}
                                             />
                                             {/* Sombrero Overlay para que se note el color */}
                                             <div style={{ position: 'absolute', top: '20px', left: '20px', background: hat.accent, color: hat.id === 'white' ? '#000' : '#fff', padding: '0.8rem 2rem', borderRadius: '50px', fontWeight: '900', fontSize: '1.2rem', boxShadow: `0 10px 30px ${hat.accent}88`, border: '2px solid white', zIndex: 10 }}>

@@ -38,8 +38,12 @@ const AnalogVUMeter = ({ label, needleRef }) => (
 
 // playerMode: 'expanded' | 'compact' | 'mini'
 export default function RadioPlayer({ globalWeather, isVisible }) {
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls');
+    const isVLS = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('localhost');
+
     const [isPlaying, setIsPlaying] = useState(false);
-    const [playerMode, setPlayerMode] = useState('expanded'); // Iniciamos en modo VUMeters expandido
+    const [playerMode, setPlayerMode] = useState('mini'); // Iniciamos en modo mini (replegado) para no obstruir el home
     const audioRef = useRef(null);
 
     
@@ -68,12 +72,19 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const isExpanded = playerMode === 'expanded';
     const isMini = playerMode === 'mini';
 
-    const stations = [
-        // --- RADIOS VLS & LOCALES ---
+    // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
+    const allStations = [
+        // --- RADIOS RDMLS (INSTITUCIONAL) ---
+        { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' },
+        
+        // --- RADIOS VLS (COMUNITARIA) ---
         { id: 1, type: 'radio', sub: 'vls', name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
         { id: 14, type: 'radio', sub: 'vls', name: 'VLS Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones VLS' },
         { id: 15, type: 'radio', sub: 'vls', name: 'VLS Entrevistas', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=entrevecinas', isLive: true, desc: 'EntreVecinas: Historias y Comunidad VLS' }
     ];
+
+    // Filtramos las estaciones según el dominio para evitar mezclar señales
+    const stations = allStations.filter(s => isRDMLS ? s.sub === 'rdmls' : s.sub === 'vls');
     const [currentStation, setCurrentStation] = useState(stations[0]);
 
     const newsFlashes = [
@@ -81,17 +92,29 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             es: "COMUNA INTELIGENTE Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos.",
             en: "SMART CITY News: The Highest Municipal Authority has led a strategic security round in the field. Real action for our neighbors' peace of mind.",
             it: "CITTÀ INTELLIGENTE Informa: La Massima Autorità Comunale ha guidato un giro di sicurezza strategica sul campo. Azione reale per la tranquillità dei nostri vicini.",
-            fr: "COMMUNE INTELLIGENTE Informe : La Haute Autorité Comunale a mené une ronde de sécurité stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
+            fr: "COMMUNE INTELIGENTE Informe : La Haute Autorité Comunale a mené une ronde de sécurité stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
             zh: "智慧社区通知：最高市政当局已在实地领导了战略安保工作。为了邻居们的安宁采取真正的行动。",
             pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidad de nossos vizinhos."
         },
         {
-            es: "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
-            en: "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
-            it: "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
-            fr: "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
-            zh: "管理报告：通信主权在一匿名邻居's 愿景下得到巩固。迈向精英级数字生态系统。",
-            pt: "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a un ecossistema digital de elite."
+            es: isRDMLS 
+                ? "Reporte de Gestión: Se consolida la Modernización Digital bajo la visión de la I. Municipalidad de La Serena. Hacia un servicio ciudadano de élite."
+                : "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
+            en: isRDMLS
+                ? "Management Report: Digital Modernization is consolidated under the vision of the I. Municipality of La Serena. Towards an elite citizen service."
+                : "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
+            it: isRDMLS
+                ? "Rapporto di Gestione: La Modernizzazione Digitale si consolida sotto la visione della I. Municipalità di La Serena. Verso un servizio cittadino d'élite."
+                : "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
+            fr: isRDMLS
+                ? "Rapport de Gestion : La Modernisation Numérique est consolidée sous la vision de la I. Municipalité de La Serena. Vers un service citoyen d'élite."
+                : "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
+            zh: isRDMLS
+                ? "管理报告：在拉塞雷纳市第一市政当局的愿景下，数字化现代化得到巩固。迈向精英级公民服务。"
+                : "管理报告：通信主权在一匿名邻居's 愿景下得到巩固。迈向精英级数字生态系统。",
+            pt: isRDMLS
+                ? "Relatório de Gestão: A Modernização Digital consolida-se sob a visão da I. Municipalidade de La Serena. Rumo a um serviço cidadão de elite."
+                : "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a un ecossistema digital de elite."
         }
     ];
 
@@ -105,7 +128,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         return () => clearInterval(timer);
     }, [newsFlashes.length]);
     
-    const [weatherData, setWeatherData] = useState({ temp: '17.4', condition: 'Estado VLS' });
+    const [weatherData, setWeatherData] = useState({ temp: '17.4', condition: isRDMLS ? 'Normal' : 'Estado VLS' });
 
     useEffect(() => {
         const fetchWeather = async () => {
@@ -255,9 +278,12 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const voice = findBestVoice();
         if (voice) utt.voice = voice;
         utt.lang = (voice && voice.lang) ? voice.lang : 'es-MX';
-        utt.rate = 0.95;
-        utt.pitch = 1.0;
-        utt.volume = 1.0;
+        utt.rate = 0.98; // Ligeramente más pausado para sonar empático
+        utt.pitch = 1.05; // Tono cálido, no estridente
+        utt.volume = 0.9;
+        // Pausas naturales para un ritmo más humano y reflexivo
+        const textToSpeak = msg.split('. ').join('... ').split(', ').join('... ');
+        utt.text = textToSpeak; 
         utt.onend = () => {
             fadeVolume(volume, 1000);
             setIsDjTalking(false);
@@ -277,15 +303,15 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 const hours = new Date().getHours();
                 const minutes = new Date().getMinutes().toString().padStart(2, '0');
                 const tips = [
-                    `VLS informa: Son las ${hours} con ${minutes}. Estás escuchando el bloque "${getCurrentShow()}".`,
-                    `Relatos Soberanos: Acompaña a Sofia y Lucas en su próximo viaje por el Paseo Histórico 3D.`,
-                    `Spot Publicitario VLS: Ven al Nuevo Peregrino, ese lugar especial de La Serena... más de 20 años de música.`,
-                    `Dato VLS: Sofia y Lucas nos recuerdan que la soberanía empieza en la educación de nuestros hijos.`,
-                    `Faro News: El Arquitecto Invisible reporta una optimización en los nodos de seguridad comunal.`,
-                    "Actualidad Local: Se confirma la mediación exitosa en el primer caso de Derechos Soberanos del mes.",
-                    "Recomendación VLS: Si buscas un refugio de bohemia y buena mesa, visita El Nuevo Peregrino en Balmaceda 2936.",
-                    "Homenaje: Recordamos la melodía inconclusa de un gran maestro, un tesoro de nuestra memoria.",
-                    "Próximamente: El Master Plan 2026 incluye un nuevo Teatro Regional. Apoyamos el arte local."
+                    `VLS informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque "${getCurrentShow()}".`,
+                    "En puertasmart.cl buscamos facilitar el acceso de sus visitas y proveedores de forma sencilla. Una pequeña herramienta para ayudar a organizar mejor su día.",
+                    "Queremos que su experiencia al reportar baches o luminarias sea lo más simple posible. Gracias por ayudarnos a cuidar los barrios de nuestra ciudad.",
+                    "¿Busca descansar un momento? Nuestra Zona Arcade está disponible para que disfrute de los clásicos de siempre en su portal.",
+                    "Le invitamos a recorrer el Paseo Histórico 3D. Es un viaje tranquilo por la memoria y los rincones que dan identidad a nuestra región.",
+                    "Si le gusta observar el cielo, nuestro simulador de estrellas es una ventana abierta a la belleza de nuestras noches en La Serena.",
+                    "Apoyamos el emprendimiento local. Si tiene un negocio, puede compartirlo en nuestro hub comercial para conectar con sus vecinos de forma cercana.",
+                    "Aprender algo nuevo siempre es un buen plan. Explore nuestros módulos de idiomas y descubra nuevas habilidades a su propio ritmo.",
+                    "Recordamos con cariño a los maestros de nuestra música regional. Gracias por acompañarnos en esta sintonía comunitaria."
                 ];
                 const nextIndex = (currentTipIndex + 1) % tips.length;
                 setCurrentTipIndex(nextIndex);
@@ -323,14 +349,29 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             if (e.detail !== undefined) setVolume(parseFloat(e.detail) / 100);
         };
         window.addEventListener('vls-set-volume', handleSetVolume);
+
+        const handleExternalEq = (e) => {
+            if (e.detail && e.detail.index !== undefined) {
+                handleEqChange(e.detail.index, e.detail.value);
+            }
+        };
+        window.addEventListener('vls-set-eq', handleExternalEq);
+
+        const handleSetMode = (e) => {
+            if (e.detail) setPlayerMode(e.detail);
+        };
+        window.addEventListener('vls-set-player-mode', handleSetMode);
+
         return () => {
             window.removeEventListener('stop-all-audio', handleStopAudio);
             window.removeEventListener('vls-stop-radio', handleManualStop);
             window.removeEventListener('radio-duck', handleDuck);
             window.removeEventListener('radio-unduck', handleUnduck);
             window.removeEventListener('vls-set-volume', handleSetVolume);
+            window.removeEventListener('vls-set-eq', handleExternalEq);
+            window.removeEventListener('vls-set-player-mode', handleSetMode);
         };
-    }, [isPlaying, isDjTalking, volume]);
+    }, [isPlaying, isDjTalking, volume, eqLevels]);
 
     useEffect(() => {
         if (audioRef.current && isPlaying) {
@@ -343,14 +384,11 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         if (!audioRef.current) return;
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
         
+        // Solo usamos PROXY si es HTTP (no seguro) para evitar bloqueo de contenido mixto.
+        // Si es HTTPS, vamos directo para evitar latencia y errores de terceros.
         let streamUrl = currentStation.stream;
-        
-        // isMain y directStreaming → sin proxy (conexión directa)
-        // Todo lo demás → proxy para CORS
-        const needsProxy = currentStation.type === 'radio' 
-            && streamUrl.startsWith('http') 
-            && !currentStation.isMain 
-            && !currentStation.directStreaming;
+        const isSecure = streamUrl.startsWith('https:');
+        const needsProxy = !isSecure && currentStation.type === 'radio' && !currentStation.isMain && !currentStation.directStreaming;
         
         if (needsProxy) {
             streamUrl = `https://corsproxy.io/?url=${encodeURIComponent(currentStation.stream)}`;
@@ -500,6 +538,10 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const newEq = [...eqLevels];
         newEq[index] = val;
         setEqLevels(newEq);
+        // Notificar a otros componentes (UI Sync)
+        window.dispatchEvent(new CustomEvent('vls-sync-eq-ui', { 
+            detail: { levels: newEq } 
+        }));
     };
 
     useEffect(() => {
@@ -521,6 +563,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         if (!audioContextRef.current) initAudioContext();
         const ctx = audioContextRef.current;
         if (ctx.state === 'suspended') ctx.resume();
+        const host = window.location.hostname.toLowerCase();
+
         const osc = ctx.createOscillator();
         const g = ctx.createGain();
         osc.type = 'sine';

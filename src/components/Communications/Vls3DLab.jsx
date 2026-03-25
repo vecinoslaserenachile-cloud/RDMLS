@@ -5,7 +5,25 @@ import { Box, Download, Cpu, UserCheck, Layers, Trash2, Zap, Settings, Share2, I
 
 // Componente para cargar modelos GLB
 function Model({ url }) {
-    const { scene } = useGLTF(url || 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb');
+    const defaultUrl = 'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Duck/glTF-Binary/Duck.glb';
+    let scene;
+    
+    try {
+        const gltf = useGLTF(url || defaultUrl);
+        scene = gltf.scene;
+    } catch (e) {
+        console.warn("VLS-3D Engine: Asset load failed, using local primitive.", e);
+    }
+
+    if (!scene) {
+        return (
+            <mesh position={[0, 0, 0]} scale={1.5}>
+                <boxGeometry args={[1, 1, 1]} />
+                <meshStandardMaterial color="#c084fc" wireframe />
+            </mesh>
+        );
+    }
+
     return <primitive object={scene} scale={2} />;
 }
 
@@ -276,6 +294,60 @@ export default function Vls3DLab() {
                             </div>
                         ))}
                     </div>
+                </div>
+                
+                {/* VLS DEV TERMINAL - IDE PROTOTYPER */}
+                <div className="glass-panel" style={{ padding: '1.2rem', border: '1px solid #38bdf8', marginTop: '1rem', background: 'rgba(0,0,0,0.5)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                            <Code2 size={16} /> VLS_IDE: TERMINAL DE IDEAS
+                        </div>
+                        <div style={{ display: 'flex', gap: '5px' }}>
+                            <div style={{ width: '8px', height: '8px', background: '#ef4444', borderRadius: '50%' }}></div>
+                            <div style={{ width: '8px', height: '8px', background: '#fbbf24', borderRadius: '50%' }}></div>
+                            <div style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%' }}></div>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        {/* Editor Area */}
+                        <div>
+                            <div style={{ fontSize: '0.65rem', color: '#94a3b8', marginBottom: '5px', fontFamily: 'monospace' }}>vecinoslaserena@vls-os:~/lab$ nano ideas.html</div>
+                            <textarea 
+                                value={prompt}
+                                onChange={(e) => setPrompt(e.target.value)}
+                                placeholder="Escribe tu idea (HTML/CSS/JS)..."
+                                style={{ 
+                                    width: '100%', 
+                                    height: '120px', 
+                                    background: '#0a0f1e', 
+                                    border: '1px solid #1e293b', 
+                                    borderRadius: '8px', 
+                                    padding: '0.8rem', 
+                                    color: '#10b981', 
+                                    fontSize: '0.75rem', 
+                                    fontFamily: 'monospace',
+                                    outline: 'none',
+                                    boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.5)'
+                                }}
+                            />
+                        </div>
+
+                        {/* Preview Area */}
+                        <div style={{ background: 'white', borderRadius: '8px', overflow: 'hidden', height: '145px', border: '1px solid #1e293b' }}>
+                            <div style={{ background: '#f1f5f9', padding: '4px 8px', fontSize: '0.6rem', borderBottom: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                <Globe size={10} color="#64748b" /> localhost:5173/preview
+                            </div>
+                            <div 
+                                style={{ padding: '10px', height: 'calc(100% - 25px)', overflow: 'auto', color: 'black', fontSize: '0.8rem' }}
+                                dangerouslySetInnerHTML={{ __html: prompt || '<div style="color:#64748b; text-align:center; margin-top:30px;">Escribe algo en la terminal para previsualizar tu idea...</div>' }}
+                            />
+                        </div>
+                    </div>
+                    
+                    <button onClick={() => alert("Idea enviada al Smart Lab. ¡Gracias por aportar a tu ciudad!")} style={{ width: '100%', marginTop: '10px', padding: '0.6rem', background: '#38bdf8', border: 'none', borderRadius: '6px', color: 'black', fontWeight: '900', fontSize: '0.7rem', cursor: 'pointer' }}>
+                        DEPLEGAR PREVIEW A PRODUCCIÓN VLS
+                    </button>
                 </div>
 
                 <div className="glass-panel" style={{ padding: '1.2rem', border: `1px solid ${engine === 'hitem3d' ? '#10b981' : '#c084fc'}`, flex: 1 }}>

@@ -32,11 +32,10 @@ const MUSIC_SPOTS = [
 ];
 
 const ALERTS = [
-    "Centinel Faro detecta alta congestin vehicular en el sector de Cuatro Esquinas. Tome precauciones y utilice rutas alternativas.",
     "Aviso de marea alta para las próximas horas en el sector de El Faro. Evite acercarse a las rocas e informe a sus hijos.",
     "Reporte Vecinal: Una luminaria fue reparada exitosamente en Las Compañías gracias al reporte ciudadano. Así funcionamos juntos.",
-    "Alerta de Clima: Se esperan cielos nublados y brisa marina para el atardecer. Una tarde perfecta para la costanera.",
-    "AVISO ECONOMÍA: El alza de combustibles entra en vigencia este jueves. VLS mantiene actualizado el monitor de precios en su portal.",
+    "Reporte VLS: Siga la programación de la Radio Digital Municipal 24/7.",
+    "AVISO ECONOMÍA: El alza de combustibles semanal entra en vigencia. VLS mantiene actualizado el monitor de precios en su portal.",
 ];
 
 export default function GlobalAnnouncer() {
@@ -88,8 +87,9 @@ export default function GlobalAnnouncer() {
     };
 
     const announce = (text, priority = 'normal') => {
-        // CHECK MASTER KILL-SWITCH (Prevents 'Robot Woman' if disabled)
-        if (localStorage.getItem('vls_locution_enabled') === 'false') return;
+        // --- REGLA SAGRADA: ELIMINAR VOZ ROBOT POR DEFECTO ---
+        // Solo anunciamos si el usuario lo activa EXPLÍCITAMENTE en el Master Engine
+        if (localStorage.getItem('vls_locution_enabled') !== 'true') return;
 
         if (!window.speechSynthesis) return;
         

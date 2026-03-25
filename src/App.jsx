@@ -58,6 +58,7 @@ const SmartTheater = lazy(() => import('./components/SmartTheater.jsx'));
 const SmartHub3D = lazy(() => import('./components/SmartHub3D'));
 const SocialVision = lazy(() => import('./components/SocialVision'));
 const RadioIntercom = lazy(() => import('./components/RadioIntercom'));
+const VLSNewsAguasValle = lazy(() => import('./components/VLSNewsAguasValle'));
 const AuditoriaVecinal = lazy(() => import('./components/Auditoria/AuditoriaVecinal'));
 const Gimnasio3D = lazy(() => import('./components/Gimnasio3D'));
 const MotorTiempoBrowser = lazy(() => import('./components/MotorTiempoBrowser'));
@@ -223,6 +224,7 @@ function AppContent() {
   const [showNotificationsMenu, setShowNotificationsMenu] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+  const [showSmartTV, setShowSmartTV] = useState(false);
 
   // ── Sync con Firestore (El CRM del Vecino) ─────────────────────────────────
   useEffect(() => {
@@ -369,13 +371,21 @@ function AppContent() {
   const [showSerenitoAntigravity, setShowSerenitoAntigravity] = useState(false);
   const [showSkyGuide, setShowSkyGuide] = useState(false);
   const [showVecnityPay, setShowVecnityPay] = useState(false);
+  const [showMemoriasUnicornio, setShowMemoriasUnicornio] = useState(false);
+  const [showAguasValle, setShowAguasValle] = useState(false);
+  const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
+  const [showNewsBencinazo, setShowNewsBencinazo] = useState(false);
+  const [showNewsPoduje, setShowNewsPoduje] = useState(false);
+  const [showNewsSentinel, setShowNewsSentinel] = useState(false);
+  const [showNewsInvestigacion, setShowNewsInvestigacion] = useState(false);
+  const [showSoveranix, setShowSoveranix] = useState(false);
 
 
   const host = window.location.hostname.toLowerCase();
   const isRDMLS = host.includes('rdmls');
   const isVLS = !isRDMLS && !host.includes('radiovecino') && !host.includes('entrevecinas');
   const isMasterDomain = host.includes('vecinosmart.cl') || host.includes('vls.cl') || host.includes('smartcomuna.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl'); 
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('rdmls.cl'); 
 
   useEffect(() => {
     // Título y Favicon Dinámico (solo depende de dominio/ruta, no de auth)
@@ -401,7 +411,7 @@ function AppContent() {
         if (!showRadioMaster) setShowRadioMaster(true);
     }
 
-    if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+    if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !isRDMLS && !host.includes('localhost') && !host.includes('127.0.0.1')) {
         if (location.pathname !== '/welcome') {
             navigate('/welcome');
         }
@@ -466,12 +476,18 @@ function AppContent() {
     const handleRetroRoom = () => setShowRetroRoom(true);
     const handleFaritoSocial = () => setShowFaritoSocial(true);
     const handleVecnityPay   = () => setShowVecnityPay(true);
+    const handleSmartTV      = () => setShowSmartTV(true);
+    const handleTienda       = () => setShowTiendaPoleras(true);
     
     const handleFaroChat = () => setShowChat(true);
     const handlePrecolombino = () => setShowPrecolombino(true);
     const handleParlamento = () => setShowParlamento(true);
 
     const handleOpenSmartTrivia = () => setShowSmartTrivia(true);
+    const handleOpenBencinazo = () => setShowNewsBencinazo(true);
+    const handleOpenPoduje = () => setShowNewsPoduje(true);
+    const handleOpenSentinelNews = () => setShowNewsSentinel(true);
+    const handleOpenInvestigacion = () => setShowNewsInvestigacion(true);
     
     window.addEventListener('open-dron-drigo', handleOpenDron);
     window.addEventListener('open-retro-tv', handleRetroTv);
@@ -484,9 +500,15 @@ function AppContent() {
     window.addEventListener('open-retro-room', handleRetroRoom);
     window.addEventListener('open-farito-social', handleFaritoSocial);
     window.addEventListener('open-vecinity-pay', handleVecnityPay);
+    window.addEventListener('open-smart-tv', handleSmartTV);
+    window.addEventListener('open-tienda-poleras', handleTienda);
     window.addEventListener('open-faro-ia', handleFaroChat);
     window.addEventListener('open-precolombino', handlePrecolombino);
     window.addEventListener('open-decision-vecinal', handleParlamento);
+    window.addEventListener('open-vls-bencinazo', handleOpenBencinazo);
+    window.addEventListener('open-vls-poduje', handleOpenPoduje);
+    window.addEventListener('open-vls-sentinel', handleOpenSentinelNews);
+    window.addEventListener('open-vls-investigacion', handleOpenInvestigacion);
     
     return () => {
       window.removeEventListener('open-dron-drigo', handleOpenDron);
@@ -500,16 +522,22 @@ function AppContent() {
       window.removeEventListener('open-retro-room', handleRetroRoom);
       window.removeEventListener('open-farito-social', handleFaritoSocial);
       window.removeEventListener('open-vecinity-pay', handleVecnityPay);
+      window.removeEventListener('open-smart-tv', handleSmartTV);
+      window.removeEventListener('open-tienda-poleras', handleTienda);
       window.removeEventListener('open-faro-ia', handleFaroChat);
       window.removeEventListener('open-precolombino', handlePrecolombino);
       window.removeEventListener('open-decision-vecinal', handleParlamento);
+      window.removeEventListener('open-vls-bencinazo', handleOpenBencinazo);
+      window.removeEventListener('open-vls-poduje', handleOpenPoduje);
+      window.removeEventListener('open-vls-sentinel', handleOpenSentinelNews);
+      window.removeEventListener('open-vls-investigacion', handleOpenInvestigacion);
     };
   }, []);
 
   useEffect(() => {
-    if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
-      Notification.requestPermission();
-    }
+    // La solicitud de permisos de notificación al montar la app fue removida.
+    // Los navegadores modernos bloquean estas peticiones si no provienen de un click del usuario,
+    // y en ciertos entornos esto causa un bucle infinito de recargas o prompts.
 
     import('./utils/socket').then(({ socket }) => {
       socket.on('receive_push_notification', (data) => {
@@ -587,10 +615,37 @@ function AppContent() {
     const provider = new GoogleAuthProvider();
     localStorage.removeItem('smart_logout');
     signInWithPopup(auth, provider).then((result) => {
+      const rewardKey = `vls_tokens_rewarded_${result.user.uid}`;
+      const isNewUser = localStorage.getItem(rewardKey) === null;
+      
       setCurrentUser(result.user);
       setIsGuest(false);
       localStorage.removeItem('smart_is_guest');
       localStorage.removeItem('smart_logout');
+      localStorage.setItem('smart_is_guest', 'false');
+
+      if (isNewUser) {
+        const reward = 20; // Recompensa de 20 FICHAS (VLS Tokens) por ingresar con Identidad VLS
+        const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+        const newTokens = currentTokens + reward;
+        setVlsTokens(newTokens);
+        localStorage.setItem('vls_tokens', newTokens.toString());
+        localStorage.setItem(rewardKey, 'true');
+        
+        // Notificar al usuario
+        const msg = `Soberanía Digital: Has recibido ${reward} FICHAS GRATUITAS por conectar tu cuenta. ¡Bienvenido!`;
+        const newNotif = { 
+            id: Date.now(), 
+            title: "RECOMPENSA VLS", 
+            body: msg, 
+            read: false, 
+            timestamp: new Date().toLocaleString('es-CL'),
+            type: 'token_gift'
+        };
+        setNotifications(prev => [newNotif, ...prev]);
+        window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+      }
+
       window.dispatchEvent(new CustomEvent('vls-start-radio'));
     }).catch((err) => {
       console.error("Auth Error:", err);
@@ -624,7 +679,7 @@ function AppContent() {
   const handleOpen3DWalk = () => setShow3DWalk(true);
   const handleOpenTimeBus = () => setShowTimeBus(true);
   const handleOpenDistances = () => setShowDistances(true);
-  const handleOpenProjectInfo = () => setShowProjectInfo(true);
+  const handleOpenProjectInfo = () => setShowVlsVision(true);
   const handleOpenCouncil = () => setShowCouncil(true);
   const handleOpenCDLS = () => setShowCDLS(true);
   const handleOpenGame = () => setShowGame(true);
@@ -707,6 +762,19 @@ function AppContent() {
         if (localStorage.getItem('master_bypass') === 'true') {
             setShowLeanMaster(true);
         }
+    }
+
+    // -- DEEP LINKING PARA NOTICIAS DE INVESTIGACIÓN (Bypass Home) --
+    const newsId = params.get('news');
+    if (newsId) {
+        console.log("VLS_AI: Detectado Deep Link de Investigación:", newsId);
+        setTimeout(() => {
+            if (newsId === 'bencinazo') setShowNewsBencinazo(true);
+            if (newsId === 'poduje') setShowNewsPoduje(true);
+            if (newsId === 'sentinel') setShowNewsSentinel(true);
+            if (newsId === 'investigacion' || newsId === 'paradoja') setShowNewsInvestigacion(true);
+            if (newsId === 'aguasvalle') setShowAguasValle(true);
+        }, 1200);
     }
   }, []);
 
@@ -809,6 +877,7 @@ function AppContent() {
     window.addEventListener('open-production-hub', () => setShowBroadcaster(true));
     window.addEventListener('open-debono-hats', () => setShowDeBonoHats(true));
     window.addEventListener('open-tribunales', () => setShowTribunales(true));
+    window.addEventListener('open-unicorn', () => setShowMemoriasUnicornio(true));
     window.addEventListener('trigger-don-radios', () => setShowDonRadios(true));
     window.addEventListener('open-hub-3d', () => setShowHub3D(true));
     window.addEventListener('open-auditoria', () => setShowAuditoria(true));
@@ -818,7 +887,7 @@ function AppContent() {
     window.addEventListener('open-faro-centinel', () => setShowFaroCentinel(true));
     window.addEventListener('open-botica', () => setShowBotica(true));
     window.addEventListener('open-veterinaria', () => setShowVeterinaria(true));
-    window.addEventListener('open-super-serenito', () => setShowSuperSerenito(true));
+    window.addEventListener('open-super-serenito', () => setShowSerenitoAntigravity(true));
     window.addEventListener('open-sky-guide', () => setShowSkyGuide(true));
     window.addEventListener('open-motor-tiempo', () => setShowMotorTiempo(true));
     window.addEventListener('open-radio-master', () => setShowRadioMaster(true));
@@ -831,6 +900,7 @@ function AppContent() {
     window.addEventListener('open-smart-events', () => setShowSmartEvents(true));
     window.addEventListener('open-vls-game', () => setShowVLSGame(true));
     window.addEventListener('open-vls-play', () => setShowVLSGame(true));
+    window.addEventListener('open-vls-aguas', () => setShowAguasValle(true));
 
     
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
@@ -1043,6 +1113,12 @@ function AppContent() {
                 <>
                   <img src="/vls-logo-premium.png" style={{ height: '24px', marginRight: '6px', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.3))' }} alt="VLS Logo" />
                   www.vecinoslaserena.cl
+                  {(currentUser || isGuest) && (
+                    <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(56, 189, 248, 0.15)', padding: '2px 10px', borderRadius: '50px', border: '1px solid rgba(56, 189, 248, 0.4)' }}>
+                      <div className="pulse-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8' }} />
+                      <span style={{ fontSize: '0.65rem', color: '#38bdf8', fontWeight: '900', letterSpacing: '1px' }}>SESIÓN ACTIVA</span>
+                    </div>
+                  )}
                 </>
               )}
           </span>
@@ -1213,7 +1289,7 @@ function AppContent() {
           <GlobalAnnouncer />
           
           <Suspense fallback={<div style={{ position: 'fixed', bottom: 20, right: 20, color: 'white' }}>Cargando Señal VLS...</div>}>
-            <RadioPlayer globalWeather={weather} isVisible={showRadio} />
+            <RadioPlayer globalWeather={weather} isVisible={showRadio} style={{ zIndex: (showUserProfile || showSentinelApex || showBroadcaster || showRadioMaster) ? 50 : 100050 }} />
           </Suspense>
         </>
       )}
@@ -1379,7 +1455,8 @@ function AppContent() {
       {showLeanMaster && <LeanStartupMaster onClose={() => setShowLeanMaster(false)} />}
       {showAuditoria && <Suspense fallback={<div/>}><AuditoriaVecinal onClose={() => setShowAuditoria(false)} /></Suspense>}
       {showParlamento && <Suspense fallback={<div/>}><ParlamentoVecinal onClose={() => setShowParlamento(false)} /></Suspense>}
-      {showGym3D && <Suspense fallback={<div/>}><Gimnasio3D onClose={() => setShowGym3D(false)} /></Suspense>}
+      {showSmartTV && !isRDMLS && <Suspense fallback={null}><SmartTV onClose={() => setShowSmartTV(false)} /></Suspense>}
+      {showGym3D && <Suspense fallback={null}><Gimnasio3D onClose={() => setShowGym3D(false)} /></Suspense>}
       {showEnfermeria && <SmartEnfermeria onClose={() => setShowEnfermeria(false)} />}
       {/* Secure Radio Master Engine Overlay */}
       {showRadioMaster && (
@@ -1432,6 +1509,42 @@ function AppContent() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 90000 }}>
             <LegacyVLSAppendix onClose={() => setShowAppendix(false)} />
         </div>
+      )}
+      {/* Memorias del Unicornio (El Libro del Unicornio) */}
+      {showMemoriasUnicornio && (
+        <Suspense fallback={<div style={{ position: 'fixed', inset: 0, background: '#000', zIndex: 100060 }} />}>
+          <MemoriasUnicornio onClose={() => setShowMemoriasUnicornio(false)} />
+        </Suspense>
+      )}
+      {showAguasValle && (
+        <Suspense fallback={<div className="loading-vls">Cargando Hemeroteca...</div>}>
+          <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />
+        </Suspense>
+      )}
+      {showTiendaPoleras && (
+        <Suspense fallback={null}>
+          <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />
+        </Suspense>
+      )}
+      {showNewsBencinazo && (
+        <Suspense fallback={null}>
+          <VLSNewsBencinazo onClose={() => setShowNewsBencinazo(false)} />
+        </Suspense>
+      )}
+      {showNewsPoduje && (
+        <Suspense fallback={null}>
+          <VLSNewsPoduje onClose={() => setShowNewsPoduje(false)} />
+        </Suspense>
+      )}
+      {showNewsSentinel && (
+        <Suspense fallback={null}>
+          <VLSNewsSentinel onClose={() => setShowNewsSentinel(false)} />
+        </Suspense>
+      )}
+      {showNewsInvestigacion && (
+        <Suspense fallback={null}>
+          <VLSNewsInvestigacion onClose={() => setShowNewsInvestigacion(false)} />
+        </Suspense>
       )}
       {/* Strategic Lock for Sentinel Apex (Intelligence Module) */}
       {showSentinelApex && (
