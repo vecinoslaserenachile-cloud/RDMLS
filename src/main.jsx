@@ -44,8 +44,10 @@ import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
 import GameVLS from './pages/GameVLS.jsx';
 import VLSMotorsShowroom from './pages/VLSMotorsShowroom.jsx';
 import VLSInduccion from './pages/VLSInduccion.jsx';
+import Induccion26 from './pages/Induccion26.jsx';
 import VLSQuantumWatch from './components/VLSQuantumWatch';
 import VLSConsoleSound from './components/VLSConsoleSound'; // Added import for VLSConsoleSound
+import DevPortal from './pages/DevPortal';
 import { AlertTriangle, X as CloseIcon, Calendar, Activity } from 'lucide-react';
 import './index.css';
 
@@ -197,9 +199,9 @@ function GlobalWarning() {
 
 import BellaDashboard from './pages/BellaDashboard.jsx';
 
-const currentHost = window.location.hostname;
+const currentHost = window.location.hostname.toLowerCase();
 const isPuertaDns = currentHost.includes('puertasmart.cl');
-const isRdmlsDns = currentHost.includes('rdmls') || currentHost.includes('rdmls.cl');
+const isRdmlsDns = currentHost.includes('rdmls.cl') || currentHost.includes('rdmls');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -209,8 +211,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         {(!window.location.pathname.includes('/induccion') && !window.location.pathname.includes('/induccion_imls')) && <VLSQuantumWatch />}
         {isRdmlsDns ? (
           <Routes>
-            <Route path="/radio-portal" element={<CentroRadio />} />
+            <Route path="/welcome" element={<WelcomePortal />} />
+            <Route path="/radio-portal" element={<Navigate to="/" replace />} />
+            <Route path="/induccion26" element={<Induccion26 />} />
             <Route path="/" element={<App />}>
+              <Route index element={<CentroRadio />} />
+            </Route>
+            <Route path="/hub" element={<App />}>
               <Route index element={<HubDashboard />} />
             </Route>
             <Route path="/admin" element={<App />} />
@@ -258,6 +265,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="serenamet" element={<Serenamet />} />
               <Route path="propiedades" element={<Propiedades />} />
               <Route path="acceso" element={<PuertaSerena />} />
+              <Route path="dev" element={<DevPortal />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
               <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} />} />
               <Route path="induccion_imls" element={<VLSInduccion onClose={() => window.history.back()} />} />
