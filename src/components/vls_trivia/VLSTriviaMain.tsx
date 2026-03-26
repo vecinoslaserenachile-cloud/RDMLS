@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Phone, 
@@ -125,6 +125,28 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
   const currentStage = STAGES.find(s => s.id === currentStageId) || STAGES[0];
   const currentQuestions = currentStage.questions;
   const currentQuestion = currentQuestions[currentQuestionIndex];
+
+  // Memoize shuffled options and the new correct index
+  const { shuffledOptions, correctIndexShuffled } = useMemo(() => {
+    if (!currentQuestion) return { shuffledOptions: [], correctIndexShuffled: 0 };
+    
+    // Create an array of objects to keep track of the original index
+    const optionsWithOriginalIndex = currentQuestion.options.map((opt, i) => ({
+      text: opt,
+      isCorrect: i === currentQuestion.correctIndex
+    }));
+    
+    // Shuffle them
+    const shuffled = [...optionsWithOriginalIndex].sort(() => Math.random() - 0.5);
+    
+    // Find where the correct answer ended up
+    const newCorrectIdx = shuffled.findIndex(opt => opt.isCorrect);
+    
+    return {
+      shuffledOptions: shuffled.map(opt => opt.text),
+      correctIndexShuffled: newCorrectIdx
+    };
+  }, [currentQuestion?.id]);
 
   useEffect(() => {
     let interval: any;
@@ -302,7 +324,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
     if (!isMuted) soundService.playSelect();
 
     setTimeout(() => {
-      if (index === currentQuestion.correctIndex) {
+      if (index === correctIndexShuffled) {
         if (!isMuted) {
           if (currentQuestionIndex === currentQuestions.length - 1) soundService.playPrize();
           else soundService.playCoin();
@@ -347,7 +369,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
 
   const useFiftyFifty = () => {
     if (!lifelines.fiftyFifty || isAnswered) return;
-    const incorrectIndices = currentQuestion.options.map((_, i) => i).filter(i => i !== currentQuestion.correctIndex);
+    const incorrectIndices = [0, 1, 2, 3].filter(i => i !== correctIndexShuffled);
     const toHide = incorrectIndices.sort(() => Math.random() - 0.5).slice(0, 2);
     setHiddenOptions(toHide);
     setLifelines(prev => ({ ...prev, fiftyFifty: false }));
@@ -358,7 +380,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
     if (!isMuted) soundService.playPhone();
     setGameState('lifeline_phone');
     const isExpertCorrect = Math.random() > 0.2;
-    const expertChoice = isExpertCorrect ? currentQuestion.options[currentQuestion.correctIndex] : currentQuestion.options[Math.floor(Math.random() * 4)];
+    const expertChoice = isExpertCorrect ? shuffledOptions[correctIndexShuffled] : shuffledOptions[Math.floor(Math.random() * 4)];
     setLifelineResult(`Tu amigo especialista dice: "Mmm, estoy casi seguro de que la respuesta es ${expertChoice}."`);
     setLifelines(prev => ({ ...prev, phone: false }));
   };
@@ -368,7 +390,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
     if (!isMuted) soundService.playAudience();
     setGameState('lifeline_audience');
     const data = [0, 0, 0, 0];
-    const correctIdx = currentQuestion.correctIndex;
+    const correctIdx = correctIndexShuffled;
     let remaining = 100;
     data[correctIdx] = Math.floor(Math.random() * 30) + 40;
     remaining -= data[correctIdx];
@@ -484,7 +506,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                            e.currentTarget.onerror = null;
                            e.currentTarget.src = `https://picsum.photos/seed/vls-trivia-${currentStageId}-${currentQuestion?.id}/1920/1080`;
                         }}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover', background: '#000', filter: 'blur(0.5px) contrast(1.15) brightness(1.1)' }} 
+                        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000', filter: 'blur(0.5px) contrast(1.15) brightness(1.1)' }} 
                         alt="Monitor de Trivia" 
                       />
                    )}
@@ -506,11 +528,11 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
 
           <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '0.75rem', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', paddingBottom: '9rem', boxSizing: 'border-box' }}>
              {/* Lifelines will hover safely above this 9rem padding */}
-            {currentQuestion.options.map((option, idx) => {
+            {shuffledOptions.map((option, idx) => {
               const isHidden = hiddenOptions.includes(idx);
               const isSelected = selectedOption === idx;
-              const isCorrect = isAnswered && idx === currentQuestion.correctIndex;
-              const isWrong = isAnswered && isSelected && idx !== currentQuestion.correctIndex;
+              const isCorrect = isAnswered && idx === correctIndexShuffled;
+              const isWrong = isAnswered && isSelected && idx !== correctIndexShuffled;
 
               const getBgColor = () => {
                   if (isHidden) return 'transparent';
@@ -725,7 +747,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                     {audienceData.map((val, i) => (
                       <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', height: '100%', justifyContent: 'flex-end', flex: 1 }}>
                         <span style={{ color: '#FFD700', fontWeight: '900', fontSize: '1.5rem' }}>{val}%</span>
-                        <motion.div initial={{ height: 0 }} animate={{ height: `${val}%` }} style={{ width: '100%', minHeight: '10px', background: i === currentQuestion.correctIndex ? 'linear-gradient(to top, #047857, #34d399)' : 'linear-gradient(to top, #1e293b, #475569)', borderRadius: '12px 12px 0 0', border: '1px solid rgba(255,255,255,0.1)' }} />
+                        <motion.div initial={{ height: 0 }} animate={{ height: `${val}%` }} style={{ width: '100%', minHeight: '10px', background: i === correctIndexShuffled ? 'linear-gradient(to top, #047857, #34d399)' : 'linear-gradient(to top, #1e293b, #475569)', borderRadius: '12px 12px 0 0', border: '1px solid rgba(255,255,255,0.1)' }} />
                         <span style={{ color: 'white', fontWeight: '900', fontSize: '1.2rem', background: 'rgba(255,255,255,0.1)', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px' }}>{String.fromCharCode(65 + i)}</span>
                       </div>
                     ))}

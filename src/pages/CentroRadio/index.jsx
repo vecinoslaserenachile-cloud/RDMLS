@@ -98,7 +98,7 @@ export default function CentroRadio() {
     
     const defaultStream = isVLS 
         ? "https://az11.yesstreaming.net:8630/radio.mp3" 
-        : "https://az11.yesstreaming.net/public/radio-digital-municipal-la-serena";
+        : "https://az11.yesstreaming.net:8590/radio.mp3";
 
     const [streamUrl, setStreamUrl] = useState(defaultStream);
     const [deferredPrompt, setDeferredPrompt] = useState(null);

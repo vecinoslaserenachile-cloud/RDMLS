@@ -78,16 +78,23 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, errorInfo) {
     console.error("ErrorBoundary:", error, errorInfo);
     if (this.state.isChunkError) {
-      this.intervalRef = setInterval(() => {
-        this.setState(prev => {
-          if (prev.countdown <= 1) {
-            clearInterval(this.intervalRef);
-            window.location.reload();
-            return prev;
-          }
-          return { countdown: prev.countdown - 1 };
-        });
-      }, 1000);
+      const reloadCnt = parseInt(sessionStorage.getItem('chunk_reload_cnt') || '0', 10);
+      if (reloadCnt < 2) {
+        sessionStorage.setItem('chunk_reload_cnt', reloadCnt + 1);
+        this.intervalRef = setInterval(() => {
+          this.setState(prev => {
+            if (prev.countdown <= 1) {
+              clearInterval(this.intervalRef);
+              window.location.reload();
+              return prev;
+            }
+            return { countdown: prev.countdown - 1 };
+          });
+        }, 1000);
+      } else {
+        // Stop infinite reloading loop if it's already failed twice
+        this.setState({ countdown: 0 });
+      }
     }
   }
 
@@ -102,8 +109,12 @@ class ErrorBoundary extends React.Component {
           <div style={{ padding: '3rem', textAlign: 'center', background: '#0f172a', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white', fontFamily: 'sans-serif' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔄</div>
             <h2 style={{ color: '#38bdf8', marginBottom: '0.5rem' }}>Actualizando...</h2>
-            <p style={{ color: '#94a3b8', marginBottom: '1rem' }}>Recargando en <strong style={{color:'white'}}>{this.state.countdown}</strong>s</p>
-            <button onClick={() => window.location.reload()} style={{ marginTop: '2rem', background: '#38bdf8', color: '#0f172a', border: 'none', padding: '0.8rem 2rem', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}>Actualizar Ahora</button>
+            {this.state.countdown > 0 ? (
+              <p style={{ color: '#94a3b8', marginBottom: '1rem' }}>Recargando en <strong style={{color:'white'}}>{this.state.countdown}</strong>s</p>
+            ) : (
+              <p style={{ color: '#ef4444', marginBottom: '1rem' }}>Error de conexión. Por favor, borre la caché de su navegador o espere unos minutos.</p>
+            )}
+            <button onClick={() => { sessionStorage.setItem('chunk_reload_cnt', '0'); window.location.reload(); }} style={{ marginTop: '2rem', background: '#38bdf8', color: '#0f172a', border: 'none', padding: '0.8rem 2rem', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}>Forzar Actualización</button>
           </div>
         );
       }
