@@ -50,6 +50,7 @@ import Serenito1945Page from './pages/Serenito1945Page.jsx';
 import VLSQuantumWatch from './components/VLSQuantumWatch';
 import VLSConsoleSound from './components/VLSConsoleSound';
 import DevPortal from './pages/DevPortal';
+import RDMLSOpciones from './pages/RDMLSOpciones.jsx';
 import BellaDashboard from './pages/BellaDashboard.jsx';
 import { Activity } from 'lucide-react';
 import './index.css';
@@ -151,6 +152,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Routes>
             <Route path="/welcome" element={<Navigate to="/" replace />} />
             <Route path="/induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
+            <Route path="/opciones" element={<RDMLSOpciones />} />
             <Route path="/" element={<CentroRadio />} />
             <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
