@@ -94,9 +94,10 @@ export default function CentroRadio() {
         };
     }, [isVLS]);
     
-    const defaultStream = "https://az11.yesstreaming.net:8590/radio.mp3";
-
-    const [streamUrl, setStreamUrl] = useState(defaultStream);
+    const MAIN_RADIO_URL = "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3";
+  // Enforced fixed stream mapping for RDMLS to bypass any port 8590 caching
+  const AUDIO_URL = MAIN_RADIO_URL;
+    const [streamUrl, setStreamUrl] = useState(AUDIO_URL);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [djImageError, setDjImageError] = useState(false);
     const [showArcade, setShowArcade] = useState(false);
@@ -420,15 +421,11 @@ export default function CentroRadio() {
                 analyserRef.current = ctx.createAnalyser();
                 analyserRef.current.fftSize = 64;
 
-                // Cadena: source → low → mid → high → gain → analyser → destination
+                // Bypass createMediaElementSource para evitar el bloqueo CORS estricto.
+                // El audio saldrá puro desde la etiqueta <audio>, y el Analyser se mantendrá pero sin datos reales
+                // para que el reproductor no falle al cargar flujos Icecast/Shoutcast externos.
                 if (audioRef.current && !sourceRef.current) {
-                    sourceRef.current = ctx.createMediaElementSource(audioRef.current);
-                    sourceRef.current.connect(low);
-                    low.connect(mid);
-                    mid.connect(high);
-                    high.connect(gainNodeRef.current);
-                    gainNodeRef.current.connect(analyserRef.current);
-                    analyserRef.current.connect(ctx.destination);
+                    sourceRef.current = true; // Flag para decir que ya pasamos la config
                 }
             } catch (e) {
                 console.error("Error al inicializar AudioContext:", e);
@@ -665,7 +662,6 @@ export default function CentroRadio() {
             {/* ELEMENTO AUDIO OCULTO — ancla del audioRef */}
             <audio
                 ref={audioRef}
-                crossOrigin="anonymous"
                 preload="none"
                 style={{ display: 'none' }}
             />
