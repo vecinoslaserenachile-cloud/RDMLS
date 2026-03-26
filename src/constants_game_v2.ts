@@ -62,11 +62,10 @@ export const STAGES: Stage[] = [
       },
       {
         id: 6,
-        text: "¿Qué histórica fábrica de papayas funcionaba en la esquina de Matta y Prat?",
-        options: ["Casa Fábrica de Papayas Ceres (Anastassiou)", "Fábrica de Carruajes Juan Bohón", "Cervecería La Serena", "Imprenta El Día"],
+        text: "¿Cuál es una de las iglesias de piedra caliza más antiguas de La Serena?",
+        options: ["Iglesia San Francisco", "Catedral de La Serena", "Iglesia Santo Domingo", "Iglesia Santa Inés"],
         correctIndex: 0,
-        explanation: "La Casa Fábrica de Papayas Ceres de Anastassiou fue un punto icónico de la gastronomía serenense por décadas.",
-        image: "/img_trivia/stage_1_q6.jpg"
+        explanation: "La Iglesia San Francisco destaca por su imponente construcción en piedra extraída de las canteras locales."
       },
       {
         id: 7,

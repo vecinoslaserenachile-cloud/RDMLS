@@ -613,10 +613,8 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
                     flex: 1, 
                     minWidth: 0, 
                     wordBreak: 'break-word', 
-                    overflow: 'hidden',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: 'vertical'
+                    overflow: 'visible',
+                    display: 'block'
                   }}>
                     {option}
                   </span>
