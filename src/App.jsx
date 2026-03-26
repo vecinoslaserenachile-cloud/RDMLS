@@ -920,7 +920,7 @@ function AppContent() {
     window.addEventListener('open-vls-game', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-play', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-aguas', () => setShowAguasValle(true));
-    window.addEventListener('open-propuesta-estrategica', handlePropuesta); // Added event listener
+    window.addEventListener('open-propuesta-estrategica', () => navigate('/propuesta'));
 
     
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
