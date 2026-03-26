@@ -15,7 +15,7 @@ const VLS_CHART_DATA = [
         geo: 'global_world', 
         name: 'Mundo & Continentes', 
         tracks: [
-            { id: 6, title: 'Infinite Loop (Labs Edition)', artist: 'VLS Sounds', plays: '5.2M', status: 'GLOBAL HIT', lyrics: 'Electronic pulses...' }
+            { id: 6, title: 'Infinite Loop (Labs Edition)', artist: 'RDMLS Sounds', plays: '5.2M', status: 'GLOBAL HIT', lyrics: 'Electronic pulses...' }
         ]
     }
 ];
@@ -34,7 +34,7 @@ export default function VlsMasterCharts({ onClose }) {
         setIsSyncing(true);
         setTimeout(() => {
             setIsSyncing(false);
-            alert("¡Ranking sincronizado con tu cuenta VLS Sounds!");
+            alert("¡Ranking sincronizado con tu cuenta RDMLS Sounds!");
         }, 3000);
     };
 
@@ -50,7 +50,7 @@ export default function VlsMasterCharts({ onClose }) {
                         <Music color="white" size={24} />
                     </div>
                     <div>
-                        <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>VLS MASTER CHARTS — API GATEWAY</h2>
+                        <h2 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>RDMLS MASTER CHARTS — API GATEWAY</h2>
                         <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>USER MODE: @vecinossmart — SOBERANÍA SONORA ACTIVA</span>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ export default function VlsMasterCharts({ onClose }) {
                             <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '2rem', background: 'rgba(56, 189, 248, 0.1)', padding: '1.5rem', borderRadius: '24px', border: '1px solid #38bdf8' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1rem' }}>
                                     <Key size={18} color="#38bdf8" />
-                                    <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>VLS MASTER API TOKEN (USER)</span>
+                                    <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>RDMLS MASTER API TOKEN (USER)</span>
                                 </div>
                                 <input 
                                     type="password" 
@@ -113,13 +113,13 @@ export default function VlsMasterCharts({ onClose }) {
                          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                              <Database color="#38bdf8" size={32} />
                              <div>
-                                 <h3 style={{ color: 'white', margin: 0 }}>VLS SOUND SYNC</h3>
+                                 <h3 style={{ color: 'white', margin: 0 }}>RDMLS SOUND SYNC</h3>
                                  <p style={{ color: '#64748b', margin: 0, fontSize: '0.8rem' }}>Sincronización directa con el Labs de @vecinossmart.</p>
                              </div>
                          </div>
                          <div style={{ textAlign: 'right' }}>
                              <div style={{ fontSize: '1.1rem', color: '#fcd34d', fontWeight: '900' }}>2,500 CRÉDITOS</div>
-                             <div style={{ fontSize: '0.6rem', color: '#64748b' }}>DISPONIBLES EN VLS LABS</div>
+                             <div style={{ fontSize: '0.6rem', color: '#64748b' }}>DISPONIBLES EN RDMLS LABS</div>
                          </div>
                     </div>
 
@@ -146,7 +146,7 @@ export default function VlsMasterCharts({ onClose }) {
                                     }}
                                     style={{ background: selectedTrack?.id === track.id ? '#10b981' : '#fcd34d', color: '#0f172a', border: 'none', padding: '8px 15px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: '900' }}
                                 >
-                                    {selectedTrack?.id === track.id ? 'PLAYING...' : 'REPRODUCIR (VLS)'}
+                                    {selectedTrack?.id === track.id ? 'PLAYING...' : 'REPRODUCIR (RDMLS)'}
                                 </button>
                             </motion.div>
                         ))}
@@ -156,7 +156,7 @@ export default function VlsMasterCharts({ onClose }) {
                 {/* EL TORNAMESA (VINYL PLAYER) PANEL */}
                 <div style={{ width: '400px', background: '#0f172a', borderLeft: '1px solid rgba(56, 189, 248, 0.1)', padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                     <div style={{ position: 'absolute', top: '20px', right: '20px', color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                        EL TORNAMESA VLS
+                        EL TORNAMESA RDMLS
                     </div>
                     
                     {/* Vinyl Record */}
@@ -187,7 +187,7 @@ export default function VlsMasterCharts({ onClose }) {
                         }}>
                             <div>
                                 <Star size={10} color="#fcd34d" style={{ margin: '0 auto 2px auto' }} />
-                                VLS<br/>RECORDS
+                                RDMLS<br/>RECORDS
                             </div>
                         </div>
                         {/* Spindle hole */}
@@ -230,7 +230,7 @@ export default function VlsMasterCharts({ onClose }) {
                             </motion.div>
                         ) : (
                             <div style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.9rem' }}>
-                                Selecciona una pista del ranking para iniciar el tornamesa VLS.
+                                Selecciona una pista del ranking para iniciar el tornamesa RDMLS.
                             </div>
                         )}
                     </div>
@@ -241,7 +241,7 @@ export default function VlsMasterCharts({ onClose }) {
             <div style={{ padding: '0.8rem 3rem', background: '#000', color: '#64748b', display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontWeight: 'bold' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <BarChart3 size={12} color="#38bdf8" />
-                    <span>ANÁLISIS DE DATOS VLS x SONYX — GATEWAY MODE</span>
+                    <span>ANÁLISIS DE DATOS RDMLS x SONYX — GATEWAY MODE</span>
                 </div>
             </div>
             <style>{`

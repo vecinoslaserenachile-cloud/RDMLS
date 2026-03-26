@@ -79,7 +79,7 @@ function SerenitoRealModel({ variant }) {
         const gltf = useGLTF(SERENITO_MODEL_URL);
         scene = gltf.scene;
     } catch (e) {
-        console.warn("VLS 3D Model Load Failure: Falling back to geometric representation.", e);
+        console.warn("RDMLS 3D Model Load Failure: Falling back to geometric representation.", e);
     }
 
     useEffect(() => {
@@ -297,7 +297,7 @@ export default function CommunicationsMuseum({ onClose }) {
                             {arLoading && (
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', zIndex: 10 }}>
                                     <div className="pulse" style={{ width: '80px', height: '80px', border: '4px solid #3b82f6', borderRadius: '50%', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }} />
-                                    <p style={{ color: '#3b82f6', marginTop: '1.5rem', fontWeight: 'bold', letterSpacing: '2px' }}>INICIALIZANDO LENTES AR VLS...</p>
+                                    <p style={{ color: '#3b82f6', marginTop: '1.5rem', fontWeight: 'bold', letterSpacing: '2px' }}>INICIALIZANDO LENTES AR RDMLS...</p>
                                 </div>
                             )}
 
@@ -337,7 +337,7 @@ export default function CommunicationsMuseum({ onClose }) {
                 {/* Footer Status */}
                 <div style={{ padding: '0.8rem 2rem', background: '#000', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.7rem', color: '#475569' }}>
                     <div style={{ display: 'flex', gap: '2rem' }}>
-                        <span>SISTEMA DE PRESERVACIÓN TECNOLÓGICA VLS v1.5</span>
+                        <span>SISTEMA DE PRESERVACIÓN TECNOLÓGICA RDMLS v1.5</span>
                         <span>DATOS: ARCHIVO HISTÓRICO MUNICIPAL</span>
                     </div>
                 </div>
