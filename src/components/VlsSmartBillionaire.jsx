@@ -382,21 +382,21 @@ export default function VlsSmartBillionaire({ onClose }) {
                                     {activeJokerMsg && <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#FFD700] text-[#0f172a] px-8 py-3 rounded-full font-black shadow-xl animate-bounce z-50 text-lg whitespace-nowrap">{activeJokerMsg}</div>}
                                     
                                     {/* Zona de pregunta scrolleable */}
-                                    <div className="flex-1 overflow-y-auto w-full flex items-center justify-center mb-6 vls-scrollbar pr-2">
-                                        <h2 className="text-2xl md:text-5xl font-black text-center text-white pb-4">{currentQuestion?.text}</h2>
+                                    <div className="flex-1 overflow-y-auto w-full flex items-center justify-center mb-6 vls-scrollbar pr-2 min-h-[120px] max-h-[40vh] md:max-h-none">
+                                        <h2 className="text-2xl md:text-5xl font-black text-center text-white pb-4 leading-tight">{currentQuestion?.text}</h2>
                                     </div>
 
                                     {/* Zona de botones fija */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 shrink-0">
                                         {shuffledOptions.map((opt, i) => (
                                             <button key={i} disabled={hiddenOptions.includes(i) || isAnswered} onClick={() => handleAnswer(i)}
-                                                className={`p-7 text-left rounded-2xl border-2 transition-all font-bold text-2xl flex items-center ${
+                                                className={`p-4 md:p-7 text-left rounded-2xl border-2 transition-all font-bold text-lg md:text-2xl flex items-center ${
                                                     hiddenOptions.includes(i) ? 'opacity-0 pointer-events-none' :
                                                     selectedOpt === i ? (i === correctIdxForUI ? 'border-emerald-400 bg-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.3)]' : 'border-red-500 bg-red-500/20') : 
                                                     'border-white/10 hover:border-[#FFD700]/60 bg-black/50 hover:bg-white/5'
                                                 }`}
                                             >
-                                                {opt}
+                                                <div className="w-full text-center md:text-left">{opt}</div>
                                             </button>
                                         ))}
                                     </div>
