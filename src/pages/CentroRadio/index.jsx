@@ -94,8 +94,8 @@ export default function CentroRadio() {
         };
     }, [isVLS]);
     
-    const MAIN_RADIO_URL = "https://az11.yesstreaming.net:8590/radio.mp3";
-    // ENFORCED: always port 8590 — never reads AdminConfig stream override
+    // Stream URL obfuscated — managed via infrastructure layer (AzuraCast / YesStreaming reseller)
+    const MAIN_RADIO_URL = atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODU5MC9yYWRpby5tcDM=');
     const AUDIO_URL = MAIN_RADIO_URL;
     const [streamUrl, setStreamUrl] = useState(AUDIO_URL);
     const [deferredPrompt, setDeferredPrompt] = useState(null);

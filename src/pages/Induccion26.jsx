@@ -1,506 +1,575 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
-    Play, Pause, Award, HelpCircle, FastForward, 
-    CheckCircle, Shield, Globe, Award as Honor, Music, Volume2, VolumeX, ArrowRight,
-    QrCode, Radio, RefreshCw
+import {
+    Play, Pause, Award, HelpCircle, FastForward,
+    CheckCircle, Shield, Globe, Radio, Volume2, VolumeX, ArrowRight,
+    QrCode, RefreshCw, AlertTriangle, Mic, Signal, Clock
 } from 'lucide-react';
 import { db } from '../utils/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 
+// ── PPTX Beta26 (GitHub raw) ──────────────────────────────────────────
+const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx";
+const IFRAME_SRC = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX)}`;
+
+// ── Colores RDMLS ────────────────────────────────────────────────────
+const C = {
+    orange: '#f97316',
+    gold:   '#C5A065',
+    dark:   '#0d0200',
+    mid:    '#180800',
+    card:   'rgba(249,115,22,0.07)',
+    border: 'rgba(249,115,22,0.25)',
+};
+
+// ── Preguntas enfocadas en Radio Municipal + IMLS ────────────────────
+const QUESTIONS = [
+    {
+        q: "¿Cuál es el propósito principal de la Radio Digital Municipal RDMLS?",
+        opts: [
+            "Entretenimiento comercial para la región",
+            "Informar y conectar a la comunidad con la gestión municipal de La Serena",
+            "Competir con radios privadas locales"
+        ],
+        ans: 1,
+        explanation: "La RDMLS es el canal oficial de comunicación digital de la I. Municipalidad de La Serena. Su misión es servir como puente de información pública, difusión de servicios municipales y cultura ciudadana, sin fines comerciales."
+    },
+    {
+        q: "¿Cuál es el mecanismo formal de instrucciones en la administración municipal de La Serena?",
+        opts: [
+            "Correos electrónicos internos",
+            "Decretos Alcaldicios",
+            "Mensajes de WhatsApp institucional"
+        ],
+        ans: 1,
+        explanation: "Todo acto administrativo y decisión formal del municipio se formaliza mediante Decretos Alcaldicios. Esto garantiza transparencia, legalidad y trazabilidad en todos los procesos, incluyendo los comunicacionales."
+    },
+    {
+        q: "Respecto a las vocerías públicas y comunicados oficiales del municipio:",
+        opts: [
+            "Cualquier funcionario puede declarar a la prensa",
+            "Se canalizan exclusivamente por Alcaldía y el Departamento de Comunicaciones",
+            "Cada dirección comunica de forma independiente"
+        ],
+        ans: 1,
+        explanation: "La Radio Municipal opera bajo la coordinación directa del Departamento de Comunicaciones e Innovación Digital. Toda vocería, entrevista o comunicado debe contar con el visto bueno de esta área y de Alcaldía."
+    },
+    {
+        q: "¿Qué protocolo define la Ley 21.643 (Ley Karin) en el ámbito laboral municipal?",
+        opts: [
+            "El uso correcto de equipos informáticos",
+            "La prevención y sanción del acoso laboral, sexual y la violencia en el trabajo",
+            "El horario de transmisión de la radio"
+        ],
+        ans: 1,
+        explanation: "La Ley Karin mandata tolerancia cero al acoso y la violencia laboral. Un solo acto grave es suficiente para denunciar. Todo funcionario RDMLS debe conocer el canal de denuncia institucional y actuar con probidad."
+    },
+    {
+        q: "Ante un sismo de gran magnitud en La Serena, el protocolo de evacuación establece:",
+        opts: [
+            "Permanecer en las instalaciones de radio",
+            "Evacuar al edificio municipal más cercano",
+            "Dirigirse a COTA 30 (Av. Cisternas) ante riesgo de tsunami"
+        ],
+        ans: 2,
+        explanation: "La Serena es una ciudad costera con riesgo de tsunami. El protocolo municipal establece evacuar hacia la Cota 30 (Av. Cisternas) ante un sismo fuerte. La continuidad radial se retoma cuando el personal esté en zona segura."
+    }
+];
+
+// ── Módulos de contenido ─────────────────────────────────────────────
+const MODULES = [
+    { icon: '🏛️', label: 'Bienvenida & Misión IMLS',  desc: 'Slides 1–8 · La visión de la Alcaldesa y la misión municipal' },
+    { icon: '📡', label: 'RDMLS: La Radio Digital',    desc: 'Slides 9–15 · Historia, plataforma y objetivos de la emisora' },
+    { icon: '⚖️',  label: 'Marco Legal & Decretos',    desc: 'Slides 16–22 · Normativa que regula las comunicaciones municipales' },
+    { icon: '🛡️', label: 'Ley Karin & Probidad',       desc: 'Slides 23–28 · Protocolo de convivencia y ética laboral' },
+    { icon: '🚨', label: 'Seguridad & Emergencias',    desc: 'Slides 29–33 · Planes de evacuación y números de emergencia' },
+];
+
+// ═══════════════════════════════════════════════════════════════════════
 export default function Induccion26({ isRDMLS }) {
     const navigate = useNavigate();
-    const [progress, setProgress] = useState(0);
-    const [showTrivia, setShowTrivia] = useState(false);
-    const [musicPlaying, setMusicPlaying] = useState(false);
-    const [score, setScore] = useState(0);
     const audioRef = useRef(null);
-    const [showConfetti, setShowConfetti] = useState(false);
+
+    const [step, setStep]               = useState('disclaimer'); // disclaimer | main | trivia | diploma-form | diploma
+    const [progress, setProgress]       = useState(0);
+    const [score, setScore]             = useState(0);
+    const [musicPlaying, setMusicPlaying] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(0);
-    const [answered, setAnswered] = useState(false);
-    const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
-    const [showDiplomaForm, setShowDiplomaForm] = useState(false);
-    const [showFinalDiploma, setShowFinalDiploma] = useState(false);
-    const [userData, setUserData] = useState({
-        nombres: '',
-        apellidos: '',
-        area: '',
-        calidad: 'Planta'
-    });
+    const [answered, setAnswered]       = useState(false);
+    const [lastCorrect, setLastCorrect] = useState(false);
+    const [userData, setUserData]       = useState({ nombres: '', apellidos: '', area: '', calidad: 'Planta' });
+    const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
-    // PPTX Viewer logic
-    const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx";
-    const iframeSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX)}`;
-
-    const newQuestions = [
-        {
-            q: "¿Cuál es el mecanismo principal de formalización de instrucciones en la administración municipal?",
-            opts: ["Decretos Alcaldicios", "Circulares Internas", "Correos Electrónicos"],
-            ans: 0,
-            explanation: "Todo acto administrativo y decisión formal de la Municipalidad debe quedar plasmado mediante un Decreto, lo que asegura transparencia, legalidad y trazabilidad en tus funciones."
-        },
-        {
-            q: "Respecto a la jornada laboral y cumplimiento de metas, los funcionarios a Honorarios se rigen por:",
-            opts: ["Estatuto Administrativo", "Contrato Civil de Prestación de Servicios", "Código del Trabajo"],
-            ans: 1,
-            explanation: "A diferencia del personal de Planta o Contrata, los prestadores de Honorarios se relacionan mediante un contrato regido por las normas civiles, con base en informes de gestión."
-        },
-        {
-            q: "¿Qué rol cumple la Dirección de Desarrollo Comunitario (DIDECO) en el municipio?",
-            opts: ["Administrar las finanzas", "Promover el desarrollo vecinal y social", "Dictar sentencias de policía local"],
-            ans: 1,
-            explanation: "DIDECO es el área primordial para garantizar la vinculación y asistencia directa a los vecinos, ejecutando políticas sociales con enfoque territorial y humano."
-        },
-        {
-            q: "¿Cómo debe proceder un funcionario ante un conflicto de interés o falta a la probidad?",
-            opts: ["Informar a su jefatura y abstenerse de intervenir", "Resolver el problema discretamente", "Derivar a otra unidad sin avisar"],
-            ans: 0,
-            explanation: "La probidad es el pilar de nuestra gestión. Siempre se debe informar oficialmente a la jefatura directa e inhabilitarse de tomar decisiones para proteger la transparencia institucional."
-        },
-        {
-            q: "En relación a las comunicaciones y vocerías públicas oficiales de la Municipalidad:",
-            opts: ["Cualquier funcionario puede dar declaraciones", "Se canalizan exclusivamente por Alcaldía y Comunicaciones", "Los departamentos comunican independientemente"],
-            ans: 1,
-            explanation: "Para mantener una voz oficial e institucional clara, los lineamientos, comunicados y vocerías frente a los medios son coordinadas estrictamente por Alcaldía y el equipo de Comunicaciones."
-        }
-    ];
-    const questions = newQuestions;
-
-    const handleAnswer = (idx) => {
-        if (answered) return;
-        setAnswered(true);
-        const correct = questions[currentQuestion].ans === idx;
-        setLastAnswerCorrect(correct);
-        
-        if (correct) {
-            setScore(s => s + 100);
-            setShowConfetti(true);
-            setTimeout(() => setShowConfetti(false), 3000);
-        }
-    };
-
-    const nextTrivia = () => {
-        if (currentQuestion < questions.length - 1) {
-            setCurrentQuestion(c => c + 1);
-            setAnswered(false);
-            setShowTrivia(false);
-        } else {
-            setShowTrivia(false);
-            setProgress(100);
-            setTimeout(() => setShowDiplomaForm(true), 1000);
-        }
-    };
+    useEffect(() => {
+        document.title = 'RDMLS · Inducción Municipal 2026';
+        setTimeout(() => setDisclaimerVisible(true), 100);
+    }, []);
 
     const toggleMusic = () => {
         if (audioRef.current) {
-            if (musicPlaying) {
-                audioRef.current.pause();
-            } else {
-                audioRef.current.play().catch(e => console.log(e));
-            }
+            if (musicPlaying) audioRef.current.pause();
+            else audioRef.current.play().catch(() => {});
             setMusicPlaying(!musicPlaying);
         }
     };
 
     const advanceProgress = () => {
         if (progress >= 100) return;
-        const nextProg = progress + 33;
-        setProgress(nextProg > 100 ? 100 : nextProg);
-        if (nextProg === 33 || nextProg === 66 || nextProg >= 99) {
-            setTimeout(() => {
-                setShowTrivia(true);
-                setAnswered(false);
-            }, 600);
+        const next = Math.min(progress + 33, 100);
+        setProgress(next);
+        setTimeout(() => {
+            setCurrentQuestion(prev => {
+                const q = prev < QUESTIONS.length - 1 ? prev : prev;
+                return q;
+            });
+            setAnswered(false);
+            setStep('trivia');
+        }, 500);
+    };
+
+    const handleAnswer = (idx) => {
+        if (answered) return;
+        setAnswered(true);
+        const correct = QUESTIONS[currentQuestion].ans === idx;
+        setLastCorrect(correct);
+        if (correct) setScore(s => s + 100);
+    };
+
+    const nextTrivia = () => {
+        if (currentQuestion < QUESTIONS.length - 1) {
+            setCurrentQuestion(c => c + 1);
+            setAnswered(false);
+            setStep('main');
+        } else {
+            setProgress(100);
+            setStep('diploma-form');
         }
     };
 
-    useEffect(() => {
-        // Auto-play ambient on load if unmuted by user action prior, logic simplified
-    }, []);
-
-    return (
-        <div style={{ 
-            minHeight: '100vh', 
-            background: 'radial-gradient(circle at 50% 0%, #312e81 0%, #0f172a 100%)', 
-            color: 'white',
-            fontFamily: 'Inter, sans-serif',
-            display: 'flex',
-            flexDirection: 'column'
+    // ── DISCLAIMER ──────────────────────────────────────────────────
+    if (step === 'disclaimer') return (
+        <div style={{
+            minHeight: '100vh', background: `radial-gradient(ellipse at top, #1a0800, ${C.dark})`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            fontFamily: "'Segoe UI', Roboto, sans-serif", padding: '2rem', color: 'white',
+            opacity: disclaimerVisible ? 1 : 0, transition: 'opacity 0.6s ease'
         }}>
-            {/* Audio oculto */}
-            <audio 
-                ref={audioRef} 
-                src={isRDMLS ? "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3" : "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/audio/serenito_theme.mp3"} 
-            />
-
-            {/* HEADER INTERACTIVO */}
-            <header style={{
-                background: 'rgba(0,0,0,0.5)',
-                backdropFilter: 'blur(20px)',
-                borderBottom: '2px solid rgba(56, 189, 248, 0.3)',
-                padding: '1rem 2rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                position: 'sticky',
-                top: 0,
-                zIndex: 100
+            {/* Banner EN DESARROLLO */}
+            <div style={{
+                background: 'rgba(250,204,21,0.12)', border: '2px solid rgba(250,204,21,0.5)',
+                borderRadius: '16px', padding: '1rem 2rem', display: 'flex', alignItems: 'center',
+                gap: '10px', marginBottom: '2rem', maxWidth: '600px', width: '100%'
             }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <Shield size={32} color="#38bdf8" />
+                <AlertTriangle size={24} color="#fbbf24" style={{ flexShrink: 0 }} />
+                <div>
+                    <div style={{ fontWeight: '900', color: '#fbbf24', fontSize: '0.9rem', letterSpacing: '2px' }}>
+                        🚧 MÓDULO EN DESARROLLO
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#d97706', marginTop: '3px' }}>
+                        Este portal de inducción está en fase de implementación. El contenido puede cambiar sin aviso previo.
+                    </div>
+                </div>
+            </div>
+
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📻</div>
+            <img src="/escudo.png" alt="IMLS" style={{ height: '64px', marginBottom: '1rem', filter: 'drop-shadow(0 0 20px rgba(249,115,22,0.5))' }} />
+            <h1 style={{ color: C.orange, fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: '900', letterSpacing: '2px', textAlign: 'center', margin: '0 0 0.5rem' }}>
+                INDUCCIÓN RDMLS 2026
+            </h1>
+            <p style={{ color: '#f97316cc', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '0.5rem' }}>
+                RADIO DIGITAL MUNICIPAL · LA SERENA
+            </p>
+            <p style={{ color: '#94a3b8', fontSize: '0.9rem', textAlign: 'center', maxWidth: '500px', lineHeight: 1.7, marginBottom: '2.5rem' }}>
+                Portal de inducción corporativa para nuevos funcionarios y colaboradores
+                de la Radio Digital Municipal de La Serena. Accederás a la presentación oficial,
+                una evaluación de conocimientos y tu certificado digital personalizado.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.8rem', maxWidth: '520px', width: '100%', marginBottom: '2.5rem' }}>
+                {[
+                    { icon: '📄', label: 'Presentación oficial IMLS Beta26' },
+                    { icon: '❓', label: '5 preguntas de validación' },
+                    { icon: '🏆', label: 'Diploma digital con tu nombre' },
+                    { icon: '⏱️', label: 'Duración estimada: 20 min' },
+                ].map(({ icon, label }) => (
+                    <div key={label} style={{
+                        background: C.card, border: `1px solid ${C.border}`,
+                        borderRadius: '12px', padding: '0.9rem', textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8'
+                    }}>
+                        <div style={{ fontSize: '1.5rem', marginBottom: '5px' }}>{icon}</div>
+                        {label}
+                    </div>
+                ))}
+            </div>
+
+            <button onClick={() => setStep('main')} style={{
+                background: `linear-gradient(135deg, ${C.orange}, #c2410c)`, border: 'none',
+                borderRadius: '14px', padding: '14px 48px', color: 'white',
+                fontWeight: '900', fontSize: '1rem', letterSpacing: '2px', cursor: 'pointer',
+                boxShadow: '0 10px 30px rgba(249,115,22,0.35)'
+            }}>
+                INICIAR INDUCCIÓN →
+            </button>
+            <button onClick={() => navigate('/')} style={{
+                marginTop: '1rem', background: 'none', border: 'none',
+                color: '#475569', cursor: 'pointer', fontSize: '0.75rem', textDecoration: 'underline'
+            }}>Volver a la Radio RDMLS</button>
+        </div>
+    );
+
+    // ── DIPLOMA FORM ──────────────────────────────────────────────────
+    if (step === 'diploma-form') return (
+        <div style={{
+            minHeight: '100vh', background: `radial-gradient(ellipse at top, #1a0800, ${C.dark})`,
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            fontFamily: "'Segoe UI', Roboto, sans-serif", padding: '2rem', color: 'white'
+        }}>
+            <div style={{ width: '100%', maxWidth: '540px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '2.5rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
+                    <h2 style={{ color: C.orange, fontWeight: '900', letterSpacing: '2px', margin: 0 }}>OBTÉN TU DIPLOMA</h2>
+                    <p style={{ color: '#64748b', fontSize: '0.8rem', marginTop: '6px' }}>Completa tus datos para el registro oficial</p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {[
+                        { key: 'nombres',   label: 'Nombres',      placeholder: 'Tus nombres' },
+                        { key: 'apellidos', label: 'Apellidos',     placeholder: 'Tus apellidos' },
+                    ].map(({ key, label, placeholder }) => (
+                        <div key={key}>
+                            <label style={{ display: 'block', fontSize: '0.65rem', color: '#64748b', letterSpacing: '2px', marginBottom: '6px' }}>{label.toUpperCase()}</label>
+                            <input value={userData[key]} onChange={e => setUserData({ ...userData, [key]: e.target.value })}
+                                placeholder={placeholder}
+                                style={{ width: '100%', boxSizing: 'border-box', background: 'rgba(0,0,0,0.4)', border: `1.5px solid ${C.border}`, borderRadius: '10px', padding: '12px', color: 'white', fontSize: '0.9rem', outline: 'none' }} />
+                        </div>
+                    ))}
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>INDUCCIÓN {isRDMLS ? 'RDMLS' : 'VLS'} 2026</h1>
-                        <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'bold' }}>EXPERT LEVEL MASTERCLASS</p>
+                        <label style={{ display: 'block', fontSize: '0.65rem', color: '#64748b', letterSpacing: '2px', marginBottom: '6px' }}>ÁREA / DIRECCIÓN</label>
+                        <select value={userData.area} onChange={e => setUserData({ ...userData, area: e.target.value })}
+                            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: `1.5px solid ${C.border}`, borderRadius: '10px', padding: '12px', color: 'white', fontSize: '0.9rem', outline: 'none' }}>
+                            <option value="">Seleccione su área</option>
+                            <option>Comunicaciones / RDMLS</option>
+                            <option>Alcaldía</option>
+                            <option>Administración Municipal</option>
+                            <option>DIDECO</option>
+                            <option>Finanzas</option>
+                            <option>Gestión de Personas (RRHH)</option>
+                            <option>Seguridad Ciudadana</option>
+                            <option>Innovación Digital</option>
+                            <option>Otra Dirección</option>
+                        </select>
                     </div>
-                </div>
-
-                {/* BARRA DE PROGRESO GLOBAL */}
-                <div style={{ flex: 1, maxWidth: '400px', margin: '0 2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.3rem', fontSize: '0.8rem' }}>
-                        <span style={{ color: '#38bdf8', fontWeight: 'bold' }}>AVANCE MÓDULO</span>
-                        <span style={{ color: 'white', fontWeight: 'bold' }}>{Math.round(progress)}%</span>
+                    <div>
+                        <label style={{ display: 'block', fontSize: '0.65rem', color: '#64748b', letterSpacing: '2px', marginBottom: '6px' }}>CALIDAD JURÍDICA</label>
+                        <select value={userData.calidad} onChange={e => setUserData({ ...userData, calidad: e.target.value })}
+                            style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: `1.5px solid ${C.border}`, borderRadius: '10px', padding: '12px', color: 'white', fontSize: '0.9rem', outline: 'none' }}>
+                            <option>Planta</option>
+                            <option>Contrata</option>
+                            <option>Honorarios</option>
+                            <option>Código del Trabajo</option>
+                        </select>
                     </div>
-                    <div style={{ height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '4px', overflow: 'hidden' }}>
-                        <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progress}%` }}
-                            style={{ height: '100%', background: 'linear-gradient(90deg, #38bdf8, #818cf8)' }}
-                        />
-                    </div>
-                </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: 'rgba(255, 215, 0, 0.1)', border: '1px solid rgba(255, 215, 0, 0.3)', padding: '0.5rem 1rem', borderRadius: '30px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <Honor size={18} color="#FFD700" />
-                        <span style={{ color: '#FFD700', fontWeight: '900', fontSize: '0.9rem' }}>{score} XP</span>
-                    </div>
-                    <button 
-                        onClick={toggleMusic}
-                        style={{ background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'white' }}
-                        title="Música Ambiental"
-                    >
-                        {musicPlaying ? <Volume2 size={20} color="#38bdf8" /> : <VolumeX size={20} />}
+                    <button onClick={async () => {
+                        if (!userData.nombres || !userData.apellidos || !userData.area) { alert('Completa todos los datos.'); return; }
+                        setStep('diploma');
+                        try {
+                            await addDoc(collection(db, 'induccion_certificados_2026'), {
+                                ...userData, fecha: new Date().toISOString(), domain: 'RDMLS', score
+                            });
+                        } catch (e) { console.error(e); }
+                    }} style={{
+                        background: `linear-gradient(135deg, ${C.orange}, #c2410c)`, border: 'none',
+                        borderRadius: '12px', padding: '14px', color: 'white', fontWeight: '900',
+                        fontSize: '0.9rem', letterSpacing: '2px', cursor: 'pointer', marginTop: '0.5rem'
+                    }}>
+                        GENERAR CERTIFICADO OFICIAL 🎓
                     </button>
-                    <button onClick={() => navigate('/')} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: 'white', padding: '0.5rem 1rem', borderRadius: '20px', cursor: 'pointer' }}>
+                </div>
+            </div>
+        </div>
+    );
+
+    // ── DIPLOMA FINAL ──────────────────────────────────────────────────
+    if (step === 'diploma') return (
+        <div style={{
+            minHeight: '100vh', background: '#0f0f0f',
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            fontFamily: "'Segoe UI', Roboto, sans-serif", padding: '2rem', overflowY: 'auto'
+        }}>
+            <motion.div initial={{ y: 40, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                style={{
+                    width: '100%', maxWidth: '900px', background: 'white',
+                    borderRadius: '16px', padding: 'clamp(2rem,5vw,4rem)',
+                    border: '24px double #C5A065', position: 'relative', overflow: 'hidden',
+                    boxShadow: '0 40px 80px rgba(0,0,0,0.8)', color: '#1a1a1a'
+                }}>
+                {/* Watermark */}
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', opacity: 0.04, pointerEvents: 'none' }}>
+                    <img src="/escudo.png" alt="" style={{ height: '600px' }} />
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '3px solid rgba(197,160,101,0.2)', paddingBottom: '1.5rem' }}>
+                    <img src="/escudo.png" alt="IMLS" style={{ height: '70px' }} />
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ color: C.orange, fontWeight: '900', fontSize: '0.8rem', letterSpacing: '3px' }}>RADIO DIGITAL MUNICIPAL</div>
+                        <div style={{ color: '#94a3b8', fontSize: '0.65rem', letterSpacing: '4px', marginTop: '4px' }}>LA SERENA · CHILE · 2026</div>
+                    </div>
+                </div>
+                <div style={{ textAlign: 'center' }}>
+                    <h1 style={{ fontSize: 'clamp(2.5rem,8vw,5rem)', fontWeight: '900', fontFamily: 'Georgia, serif', letterSpacing: '0.1em', margin: '0 0 0.5rem', color: '#111' }}>CERTIFICADO</h1>
+                    <p style={{ color: '#888', fontStyle: 'italic', fontSize: '1rem', marginBottom: '2rem', fontFamily: 'Georgia, serif' }}>
+                        De Aprobación · Inducción Corporativa RDMLS 2026
+                    </p>
+                    <p style={{ fontSize: '0.7rem', color: '#aaa', letterSpacing: '3px', marginBottom: '1rem' }}>OTORGADO A:</p>
+                    <h2 style={{ fontSize: 'clamp(1.8rem,5vw,3.5rem)', fontWeight: '900', color: C.orange, margin: '0 0 1rem', letterSpacing: '-1px' }}>
+                        {userData.nombres} {userData.apellidos}
+                    </h2>
+                    <p style={{ fontWeight: '700', color: '#555', letterSpacing: '3px', fontSize: '0.8rem', marginBottom: '2rem' }}>
+                        {userData.calidad.toUpperCase()} · {userData.area.toUpperCase()}
+                    </p>
+                    <p style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic', fontSize: '1rem', color: '#444', maxWidth: '600px', margin: '0 auto 2.5rem', lineHeight: 1.7 }}>
+                        "Por haber completado con éxito el proceso de inducción corporativa de la Ilustre Municipalidad de La Serena, adhiriendo a los valores, protocolos y misión de la Radio Digital Municipal RDMLS."
+                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'flex-end', borderTop: '2px solid rgba(197,160,101,0.2)', paddingTop: '1.5rem' }}>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontStyle: 'italic', color: '#ccc', fontSize: '1.5rem', fontFamily: 'Georgia, serif', marginBottom: '8px' }}>Firma Digital RDMLS</div>
+                            <div style={{ borderTop: '2px solid #ddd', paddingTop: '8px', fontSize: '0.6rem', letterSpacing: '2px', color: '#999' }}>DIRECCIÓN DE COMUNICACIONES</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ color: C.orange, fontWeight: '900', fontSize: '1rem', marginBottom: '6px' }}>RDMLS-OK-2026</div>
+                            <QrCode size={44} color="#ccc" />
+                            <div style={{ fontSize: '0.55rem', color: '#bbb', letterSpacing: '1px', marginTop: '4px' }}>rdmls.cl/induccion</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <div style={{ fontStyle: 'italic', color: '#ccc', fontSize: '1.5rem', fontFamily: 'Georgia, serif', marginBottom: '8px' }}>Firma Alcaldía</div>
+                            <div style={{ borderTop: '2px solid #ddd', paddingTop: '8px', fontSize: '0.6rem', letterSpacing: '2px', color: '#999' }}>ADMINISTRACIÓN MUNICIPAL</div>
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* Botones post-diploma */}
+            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button onClick={() => navigate('/')} style={{
+                    background: `linear-gradient(135deg, ${C.orange}, #c2410c)`, border: 'none',
+                    borderRadius: '14px', padding: '14px 32px', color: 'white', fontWeight: '900',
+                    fontSize: '0.85rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px'
+                }}>
+                    <Radio size={18} /> Escuchar RDMLS
+                </button>
+                <button onClick={() => window.print()} style={{
+                    background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
+                    borderRadius: '14px', padding: '14px 32px', color: 'white', fontWeight: '700',
+                    fontSize: '0.85rem', cursor: 'pointer'
+                }}>🖨️ Imprimir Diploma</button>
+            </div>
+        </div>
+    );
+
+    // ── TRIVIA MODAL inline ──────────────────────────────────────────
+    if (step === 'trivia') return (
+        <div style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(12px)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '1rem'
+        }}>
+            <motion.div initial={{ scale: 0.9, y: 40 }} animate={{ scale: 1, y: 0 }} style={{
+                background: 'linear-gradient(180deg,#1e293b,#0f172a)', padding: '2.5rem',
+                borderRadius: '28px', maxWidth: '600px', width: '100%',
+                border: `1px solid ${C.border}`, boxShadow: '0 30px 60px rgba(0,0,0,0.7)', textAlign: 'center',
+                fontFamily: "'Segoe UI', Roboto, sans-serif"
+            }}>
+                <div style={{ background: C.orange, width: '56px', height: '56px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.2rem', boxShadow: `0 0 20px ${C.orange}66` }}>
+                    <HelpCircle size={28} color="white" />
+                </div>
+                <div style={{ fontSize: '0.65rem', color: C.orange, letterSpacing: '3px', marginBottom: '0.5rem' }}>
+                    PREGUNTA {currentQuestion + 1} DE {QUESTIONS.length}
+                </div>
+                <h2 style={{ color: 'white', fontSize: '1.3rem', fontWeight: '900', marginBottom: '1.5rem' }}>
+                    EVALUACIÓN SMART RDMLS
+                </h2>
+                <div style={{ fontSize: '1.05rem', color: 'white', fontWeight: '700', marginBottom: '1.5rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px', lineHeight: 1.5 }}>
+                    {QUESTIONS[currentQuestion].q}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', textAlign: 'left' }}>
+                    {QUESTIONS[currentQuestion].opts.map((opt, idx) => {
+                        const isCorrect = QUESTIONS[currentQuestion].ans === idx;
+                        return (
+                            <button key={idx} onClick={() => handleAnswer(idx)} style={{
+                                background: answered ? (isCorrect ? 'rgba(34,197,94,0.2)' : 'rgba(255,255,255,0.04)') : 'rgba(255,255,255,0.05)',
+                                border: `2px solid ${answered && isCorrect ? '#22c55e' : 'rgba(255,255,255,0.1)'}`,
+                                color: 'white', padding: '1rem 1.2rem', borderRadius: '14px',
+                                fontSize: '0.95rem', fontWeight: '600', cursor: answered ? 'default' : 'pointer',
+                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s'
+                            }}>
+                                {opt}
+                                {answered && isCorrect && <CheckCircle size={20} color="#22c55e" />}
+                            </button>
+                        );
+                    })}
+                </div>
+                {answered && (
+                    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '1.5rem' }}>
+                        <div style={{ color: lastCorrect ? '#22c55e' : '#f87171', fontWeight: '900', fontSize: '1.1rem', marginBottom: '1rem' }}>
+                            {lastCorrect ? '✅ ¡VALIDACIÓN APROBADA! +100 XP' : '⚠️ REVISIÓN REQUERIDA'}
+                        </div>
+                        <div style={{ textAlign: 'left', background: 'rgba(197,160,101,0.1)', borderLeft: `4px solid ${C.gold}`, borderRadius: '0 12px 12px 0', padding: '1rem 1.2rem', marginBottom: '1.5rem' }}>
+                            <div style={{ fontSize: '0.65rem', color: C.gold, fontWeight: '900', letterSpacing: '2px', marginBottom: '6px' }}>📋 NOTA DE INTEGRACIÓN RDMLS:</div>
+                            <p style={{ margin: 0, color: '#e2e8f0', fontStyle: 'italic', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                                {QUESTIONS[currentQuestion].explanation}
+                            </p>
+                        </div>
+                        <button onClick={nextTrivia} style={{
+                            background: C.orange, color: 'white', border: 'none',
+                            padding: '12px 36px', borderRadius: '50px', fontWeight: '900',
+                            fontSize: '0.95rem', cursor: 'pointer'
+                        }}>
+                            {currentQuestion < QUESTIONS.length - 1 ? 'CONTINUAR →' : '🏆 OBTENER DIPLOMA'}
+                        </button>
+                    </motion.div>
+                )}
+            </motion.div>
+        </div>
+    );
+
+    // ── MAIN (PPTX + Sidebar) ─────────────────────────────────────────
+    return (
+        <div style={{
+            minHeight: '100vh',
+            background: `linear-gradient(180deg, ${C.mid} 0%, ${C.dark} 100%)`,
+            color: 'white', fontFamily: "'Segoe UI', Roboto, sans-serif", display: 'flex', flexDirection: 'column'
+        }}>
+            <audio ref={audioRef} src="https://az11.yesstreaming.net:8590/radio.mp3" />
+
+            {/* ── HEADER ── */}
+            <header style={{
+                background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)',
+                borderBottom: `2px solid ${C.border}`, padding: '0.9rem 1.5rem',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                position: 'sticky', top: 0, zIndex: 100, flexWrap: 'wrap', gap: '0.8rem'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img src="/escudo.png" alt="IMLS" style={{ height: '34px' }} />
+                    <div>
+                        <div style={{ fontWeight: '900', color: C.orange, fontSize: '0.95rem', letterSpacing: '1px' }}>INDUCCIÓN RDMLS 2026</div>
+                        <div style={{ fontSize: '0.6rem', color: '#64748b', letterSpacing: '1px' }}>Radio Digital Municipal La Serena · IMLS</div>
+                    </div>
+                </div>
+
+                {/* Progreso */}
+                <div style={{ flex: 1, maxWidth: '360px', margin: '0 1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', marginBottom: '4px' }}>
+                        <span style={{ color: C.orange, fontWeight: '700' }}>AVANCE MÓDULO</span>
+                        <span style={{ color: 'white', fontWeight: '700' }}>{progress}%</span>
+                    </div>
+                    <div style={{ height: '7px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', overflow: 'hidden' }}>
+                        <motion.div animate={{ width: `${progress}%` }} style={{ height: '100%', background: `linear-gradient(90deg, ${C.orange}, ${C.gold})` }} />
+                    </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ background: 'rgba(255,215,0,0.1)', border: '1px solid rgba(255,215,0,0.3)', padding: '5px 12px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                        <Award size={14} color="#FFD700" />
+                        <span style={{ color: '#FFD700', fontWeight: '900', fontSize: '0.8rem' }}>{score} XP</span>
+                    </div>
+                    <button onClick={toggleMusic} style={{ background: 'rgba(249,115,22,0.12)', border: 'none', borderRadius: '50%', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>
+                        {musicPlaying ? <Volume2 size={16} color={C.orange} /> : <VolumeX size={16} color="#64748b" />}
+                    </button>
+                    <button onClick={() => navigate('/')} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: '#94a3b8', padding: '6px 16px', borderRadius: '20px', cursor: 'pointer', fontSize: '0.78rem' }}>
                         CERRAR
                     </button>
                 </div>
             </header>
 
-            {/* CONTENEDOR PRINCIPAL */}
-            <main style={{ flex: 1, padding: '2rem', display: 'flex', gap: '2rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-                
-                {/* Visualizador PPTX Embebido */}
-                <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    style={{ 
-                        flex: 3, 
-                        background: 'black', 
-                        borderRadius: '24px', 
-                        overflow: 'hidden',
-                        boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-                        border: '1px solid rgba(56, 189, 248, 0.2)',
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
-                >
-                    <iframe 
-                        src={iframeSrc}
-                        width="100%" 
-                        height="100%" 
-                        frameBorder="0"
-                        title="Presentación Inducción IMLS"
-                        allowFullScreen
-                        style={{ flex: 1 }}
+            {/* Banner EN DESARROLLO */}
+            <div style={{
+                background: 'rgba(250,204,21,0.1)', borderBottom: '1px solid rgba(250,204,21,0.3)',
+                padding: '10px 1.5rem', display: 'flex', alignItems: 'center', gap: '8px'
+            }}>
+                <AlertTriangle size={14} color="#fbbf24" />
+                <span style={{ color: '#d97706', fontSize: '0.72rem', fontWeight: '700', letterSpacing: '1px' }}>
+                    🚧 MÓDULO EN DESARROLLO — El contenido puede actualizarse sin aviso previo · Versión Beta 2026
+                </span>
+            </div>
+
+            {/* ── MAIN CONTENT ── */}
+            <main style={{ flex: 1, padding: '1.5rem', display: 'flex', gap: '1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+
+                {/* PPTX Viewer */}
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{
+                    flex: 3, background: 'black', borderRadius: '20px', overflow: 'hidden',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)', border: `1px solid ${C.border}`,
+                    display: 'flex', flexDirection: 'column', minHeight: '60vh'
+                }}>
+                    <div style={{ background: 'rgba(249,115,22,0.08)', borderBottom: `1px solid ${C.border}`, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Signal size={14} color={C.orange} />
+                        <span style={{ fontSize: '0.7rem', color: C.orange, fontWeight: '700', letterSpacing: '1px' }}>PRESENTACIÓN OFICIAL IMLS BETA26</span>
+                    </div>
+                    <iframe
+                        src={IFRAME_SRC} width="100%" style={{ flex: 1, border: 'none', minHeight: '500px' }}
+                        title="Inducción IMLS 2026" allowFullScreen
                     />
                 </motion.div>
 
-                {/* Sidebar Interactivo */}
-                <motion.div 
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    style={{ 
-                        flex: 1, 
-                        background: 'rgba(255,255,255,0.03)', 
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: '24px',
-                        border: '1px solid rgba(255,255,255,0.05)',
-                        padding: '1.5rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '1.5rem'
-                    }}
-                >
-                    <div style={{ textAlign: 'center' }}>
-                        <div style={{ 
-                            width: '80px', height: '80px', background: 'linear-gradient(135deg, #C5A065, #b48530)', 
-                            borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 0 20px rgba(197, 160, 101, 0.4)', fontSize: '2.5rem'
-                        }}>
-                            🏛️
+                {/* Sidebar */}
+                <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} style={{
+                    flex: 1, minWidth: '260px', display: 'flex', flexDirection: 'column', gap: '1rem'
+                }}>
+                    {/* Módulos */}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '1.2rem' }}>
+                        <div style={{ fontSize: '0.62rem', color: C.orange, fontWeight: '800', letterSpacing: '2px', marginBottom: '0.8rem' }}>CONTENIDO DEL MÓDULO</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                            {MODULES.map((m, i) => (
+                                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '8px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }}>
+                                    <span style={{ fontSize: '1.2rem', flexShrink: 0 }}>{m.icon}</span>
+                                    <div>
+                                        <div style={{ fontWeight: '700', color: 'white', fontSize: '0.78rem' }}>{m.label}</div>
+                                        <div style={{ color: '#64748b', fontSize: '0.68rem', marginTop: '2px' }}>{m.desc}</div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#C5A065', textTransform: 'uppercase', fontStyle: 'italic', fontWeight: '900' }}>Evaluación Corporativa</h2>
-                        <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: '#94a3b8', lineHeight: '1.5' }}>
-                            Avanza en las normativas del visor. Cuando completes el bloque de lecturas, haz clic en "Validar Avance" para responder y asegurar la inducción normativa.
+                    </div>
+
+                    {/* Instrucción */}
+                    <div style={{ background: 'rgba(197,160,101,0.08)', border: `1px solid ${C.gold}30`, borderLeft: `4px solid ${C.gold}`, borderRadius: '0 12px 12px 0', padding: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
+                            <HelpCircle size={14} color={C.gold} />
+                            <span style={{ fontSize: '0.65rem', color: C.gold, fontWeight: '800', letterSpacing: '1px' }}>MISIÓN DE INDUCCIÓN</span>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.78rem', color: '#94a3b8', lineHeight: 1.5 }}>
+                            Lee cada sección de la presentación. Al completar un bloque, presiona <strong style={{ color: 'white' }}>"Validar Avance"</strong> para responder la evaluación y acumular XP.
                         </p>
                     </div>
 
-                    <div style={{ flex: 1 }}>
-                        <div style={{ padding: '1rem', background: 'rgba(197, 160, 101, 0.1)', borderRadius: '12px', borderLeft: '4px solid #C5A065', marginBottom: '1rem' }}>
-                            <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <HelpCircle size={16} color="#C5A065" /> MISIÓN DE INDUCCIÓN
-                            </h3>
-                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#cbd5e1' }}>Lee detalladamente la sección actual sobre decretos y el funcionamiento municipal e internaliza los procesos.</p>
+                    {/* Botón validar */}
+                    <button onClick={advanceProgress} disabled={progress >= 100} style={{
+                        background: progress >= 100 ? 'rgba(255,255,255,0.08)' : `linear-gradient(135deg, ${C.orange}, #c2410c)`,
+                        color: 'white', border: 'none', padding: '1.1rem', borderRadius: '14px',
+                        fontWeight: '900', fontSize: '0.9rem', cursor: progress >= 100 ? 'default' : 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                        boxShadow: progress >= 100 ? 'none' : '0 8px 20px rgba(249,115,22,0.3)', transition: 'all 0.3s'
+                    }}>
+                        {progress >= 100 ? '¡MÓDULO COMPLETADO! ✓' : 'VALIDAR AVANCE'} <FastForward size={18} />
+                    </button>
+
+                    {/* Progreso preguntas */}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '1rem', fontSize: '0.75rem', color: '#64748b' }}>
+                        <div style={{ color: C.orange, fontWeight: '700', marginBottom: '6px', fontSize: '0.65rem', letterSpacing: '1px' }}>VALIDACIONES COMPLETADAS</div>
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                            {QUESTIONS.map((_, i) => (
+                                <div key={i} style={{
+                                    width: '24px', height: '24px', borderRadius: '50%',
+                                    background: i < currentQuestion ? C.orange : 'rgba(255,255,255,0.08)',
+                                    border: `1.5px solid ${i < currentQuestion ? C.orange : 'rgba(255,255,255,0.15)'}`,
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    fontSize: '0.65rem', fontWeight: '700', color: i < currentQuestion ? 'white' : '#475569'
+                                }}>
+                                    {i < currentQuestion ? '✓' : i + 1}
+                                </div>
+                            ))}
                         </div>
                     </div>
-
-                    <button 
-                        onClick={advanceProgress}
-                        disabled={progress >= 100}
-                        className="hover-lift"
-                        style={{ 
-                            background: progress >= 100 ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #C5A065, #8c6b39)', 
-                            color: 'white', border: 'none', padding: '1.2rem', borderRadius: '16px', 
-                            fontWeight: '900', fontSize: '1rem', cursor: progress >= 100 ? 'default' : 'pointer',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem',
-                            boxShadow: progress >= 100 ? 'none' : '0 10px 20px rgba(197, 160, 101, 0.3)',
-                            transition: 'all 0.3s'
-                        }}
-                    >
-                        {progress >= 100 ? '¡INDUCCIÓN COMPLETADA!' : 'VALIDAR AVANCE MÓDULO'} <FastForward size={20} />
-                    </button>
                 </motion.div>
             </main>
-
-            {/* MODAL TRIVIA */}
-            <AnimatePresence>
-                {showTrivia && (
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        style={{
-                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000
-                        }}
-                    >
-                        <motion.div 
-                            initial={{ scale: 0.9, y: 50 }}
-                            animate={{ scale: 1, y: 0 }}
-                            exit={{ scale: 0.9, y: 50 }}
-                            style={{ 
-                                background: 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)', 
-                                padding: '3rem', borderRadius: '30px', maxWidth: '600px', width: '90%',
-                                border: '1px solid rgba(56, 189, 248, 0.3)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-                                textAlign: 'center'
-                            }}
-                        >
-                            <div style={{ background: '#38bdf8', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 0 20px rgba(56, 189, 248, 0.6)' }}>
-                                <HelpCircle size={30} color="white" />
-                            </div>
-                            
-                            <h2 style={{ color: 'white', fontSize: '1.8rem', fontWeight: '900', marginBottom: '0.5rem' }}>EVALUACIÓN SMART</h2>
-                            <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Selecciona la respuesta correcta basada en lo que acabas de leer.</p>
-
-                            <div style={{ fontSize: '1.2rem', color: 'white', fontWeight: 'bold', marginBottom: '2rem', padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
-                                {questions[currentQuestion].q}
-                            </div>
-
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                {questions[currentQuestion].opts.map((opt, idx) => {
-                                    const isCorrect = questions[currentQuestion].ans === idx;
-                                    const isSelected = answered; // Any selection freezes it
-                                    let btnBg = 'rgba(255,255,255,0.05)';
-                                    let btnBorder = 'rgba(255,255,255,0.1)';
-                                    
-                                    if (answered) {
-                                        if (isCorrect) {
-                                            btnBg = 'rgba(34, 197, 94, 0.2)';
-                                            btnBorder = '#22c55e';
-                                        }
-                                    }
-
-                                    return (
-                                        <button 
-                                            key={idx}
-                                            onClick={() => handleAnswer(idx)}
-                                            style={{ 
-                                                background: btnBg, border: `2px solid ${btnBorder}`, 
-                                                color: 'white', padding: '1.2rem', borderRadius: '16px', fontSize: '1rem', fontWeight: 'bold',
-                                                cursor: answered ? 'default' : 'pointer', transition: 'all 0.2s',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                                            }}
-                                            onMouseEnter={e => { if(!answered) e.currentTarget.style.background = 'rgba(255,255,255,0.1)' }}
-                                            onMouseLeave={e => { if(!answered) e.currentTarget.style.background = btnBg }}
-                                        >
-                                            {opt}
-                                            {answered && isCorrect && <CheckCircle size={24} color="#22c55e" />}
-                                        </button>
-                                    );
-                                })}
-                            </div>
-
-                            {answered && (
-                                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '2rem' }}>
-                                    {lastAnswerCorrect ? (
-                                        <div style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>¡VALIDACIÓN APROBADA!</div>
-                                    ) : (
-                                        <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>REVISIÓN REQUERIDA (Sigue intentándolo).</div>
-                                    )}
-                                    <div style={{ textAlign: 'left', color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: '1.6', background: 'rgba(255,255,255,0.05)', padding: '1.2rem', borderRadius: '16px', borderLeft: '4px solid #C5A065' }}>
-                                        <span style={{ fontWeight: '900', color: 'white', display: 'block', marginBottom: '0.8rem', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase' }}><Shield size={16} style={{display:'inline', verticalAlign:'sub', marginRight:'4px'}}/> NOTA DE INTEGRACIÓN MUNICIPAL:</span>
-                                        <p style={{ margin: 0, color: '#e2e8f0', fontStyle: 'italic', fontSize: '1rem' }}>{questions[currentQuestion].explanation}</p>
-                                    </div>
-                                    <button 
-                                        onClick={nextTrivia}
-                                        style={{ background: '#38bdf8', color: '#0f172a', border: 'none', padding: '1rem 3rem', borderRadius: '30px', fontWeight: '900', fontSize: '1rem', cursor: 'pointer' }}
-                                    >
-                                        CONTINUAR <ArrowRight size={18} style={{ verticalAlign: 'middle' }} />
-                                    </button>
-                                </motion.div>
-                            )}
-
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* DIPLOMA FORM MODAL */}
-            <AnimatePresence>
-                {showDiplomaForm && !showFinalDiploma && (
-                    <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[10000] bg-slate-950 flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto font-sans">
-                        <div className="w-full max-w-4xl bg-white/5 backdrop-blur-xl border border-white/10 p-12 lg:p-20 rounded-[3rem] shadow-2xl relative overflow-hidden">
-                            <h2 className="text-4xl lg:text-5xl font-black text-white mb-4 uppercase italic">OBTÉN TU DIPLOMA</h2>
-                            <p className="text-slate-400 mb-12 font-bold uppercase tracking-widest text-xs lg:text-sm">Completa tus datos para el registro oficial de inducción.</p>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8 text-left">
-                                <div>
-                                    <label className="block text-slate-500 text-xs font-black uppercase tracking-widest mb-3">Nombres</label>
-                                    <input type="text" value={userData.nombres} onChange={e => setUserData({...userData, nombres: e.target.value})} className="w-full bg-slate-900 text-white rounded-2xl border border-white/10 p-4 focus:border-[#C5A065] focus:outline-none" />
-                                </div>
-                                <div>
-                                    <label className="block text-slate-500 text-xs font-black uppercase tracking-widest mb-3">Apellidos</label>
-                                    <input type="text" value={userData.apellidos} onChange={e => setUserData({...userData, apellidos: e.target.value})} className="w-full bg-slate-900 text-white rounded-2xl border border-white/10 p-4 focus:border-[#C5A065] focus:outline-none" />
-                                </div>
-                            </div>
-
-                            <div className="mb-8 text-left">
-                                <label className="block text-slate-500 text-xs font-black uppercase tracking-widest mb-3">Departamento o Área</label>
-                                <select value={userData.area} onChange={e => setUserData({...userData, area: e.target.value})} className="w-full bg-slate-900 text-white rounded-2xl border border-white/10 p-4 focus:border-[#C5A065] focus:outline-none scrollbar-hide">
-                                    <option value="">Seleccione su Área</option>
-                                    <option value="Administración Municipal">Administración Municipal</option>
-                                    <option value="Alcaldía">Alcaldía</option>
-                                    <option value="DIDECO">DIDECO (Desarrollo Comunitario)</option>
-                                    <option value="DOM">DOM (Obras Municipales)</option>
-                                    <option value="Salud">Salud (Corporación)</option>
-                                    <option value="Educación">Educación (Corporación)</option>
-                                    <option value="SECPLAN">SECPLAN</option>
-                                    <option value="Finanzas">Finanzas</option>
-                                    <option value="Seguridad Ciudadana">Seguridad Ciudadana</option>
-                                    <option value="Aseo y Ornato">Aseo y Ornato</option>
-                                    <option value="Tránsito">Tránsito</option>
-                                    <option value="Asesoría Jurídica">Asesoría Jurídica</option>
-                                    <option value="Gestión de Personas">Gestión de Personas (RRHH)</option>
-                                    <option value="Comunicaciones">Comunicaciones / RRPP</option>
-                                    <option value="Otro">Otra Área</option>
-                                </select>
-                            </div>
-
-                            <div className="mb-12 text-left">
-                                <label className="block text-slate-500 text-xs font-black uppercase tracking-widest mb-3">Calidad Jurídica</label>
-                                <select value={userData.calidad} onChange={e => setUserData({...userData, calidad: e.target.value})} className="w-full bg-slate-900 text-white rounded-2xl border border-white/10 p-4 focus:border-[#C5A065] focus:outline-none">
-                                    <option value="Planta">De Planta</option>
-                                    <option value="Contrata">A Contrata</option>
-                                    <option value="Honorarios">A Honorarios</option>
-                                    <option value="Código del Trabajo">Código del Trabajo</option>
-                                </select>
-                            </div>
-
-                            <button 
-                                onClick={async () => {
-                                    if(!userData.nombres || !userData.apellidos || !userData.area) return alert('Completa todos los datos obligatorios.');
-                                    setShowFinalDiploma(true);
-                                    try {
-                                        await addDoc(collection(db, 'induccion_certificados_2026'), {
-                                            ...userData,
-                                            fecha: new Date().toISOString(),
-                                            domain: isRDMLS ? 'RDMLS' : 'VLS',
-                                            score: score
-                                        });
-                                    } catch(e) { console.error('Error saving db', e); }
-                                }} 
-                                className="w-full bg-gradient-to-r from-[#C5A065] to-[#D4AF37] text-slate-950 font-black p-6 rounded-2xl uppercase tracking-[0.2em] shadow-[0_10px_30px_rgba(197,160,101,0.3)] hover:scale-[1.01] transition-all"
-                            >
-                                GENERAR CERTIFICADO OFICIAL
-                            </button>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            {/* FINAL DIPLOMA MODAL */}
-            <AnimatePresence>
-                {showFinalDiploma && (
-                    <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="fixed inset-0 z-[1000000] bg-slate-950 flex flex-col items-center overflow-y-auto font-sans p-6 lg:p-12">
-                        <div className="w-full max-w-5xl mx-auto space-y-16 py-12">
-                            <motion.div initial={{ y: 50 }} animate={{ y: 0 }} className="bg-white p-12 lg:p-24 rounded-[1rem] shadow-[0_50px_100px_rgba(0,0,0,0.8)] text-slate-900 relative overflow-hidden border-[30px] border-double border-[#C5A065]">
-                                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-[0.03] pointer-events-none">
-                                    <img src={isRDMLS ? "/escudo.png" : "/logo_vls.png"} className="h-[800px]" alt="Watermark" />
-                                </div>
-                                <div className="flex justify-between items-center mb-10 border-b-4 border-[#C5A065]/20 pb-8 relative z-10">
-                                    <img src={isRDMLS ? "/escudo.png" : "/logo_vls.png"} className="h-24" alt="Logo" />
-                                    <div className="text-right">
-                                        <p className="text-[#C5A065] font-black text-sm uppercase tracking-widest leading-none">Smart Administration</p>
-                                        <p className="text-slate-400 font-bold text-[10px] uppercase tracking-[0.5em] mt-2">LA SERENA • CHILE</p>
-                                    </div>
-                                </div>
-                                <div className="text-center relative z-10">
-                                    <h1 className="text-6xl lg:text-[8rem] font-serif font-black uppercase tracking-[0.1em] mb-4 leading-none text-[#1a1a1a]">CERTIFICADO</h1>
-                                    <p className="text-xl lg:text-2xl italic text-slate-500 mb-12 font-serif">De Aprobación Inducción Corporativa {isRDMLS ? 'RDMLS' : 'VLS'} 2026</p>
-                                    <div className="mb-10">
-                                        <p className="text-slate-400 text-xs uppercase tracking-[0.5em] mb-4 font-bold">OTORGADO A:</p>
-                                        <h2 className="text-4xl lg:text-6xl font-black uppercase tracking-tighter text-[#C5A065] drop-shadow-sm leading-none">{userData.nombres} {userData.apellidos}</h2>
-                                    </div>
-                                    <p className="text-lg font-bold text-slate-700 uppercase tracking-[0.3em] mb-12 bg-slate-50 py-3 rounded-full inline-block px-10 border border-slate-100 italic">{userData.calidad} • {userData.area}</p>
-                                    <p className="text-xl lg:text-2xl text-slate-800 font-serif italic mb-16 max-w-4xl mx-auto leading-relaxed">"Por haber cumplido con éxito los requerimientos formativos, éticos y técnicos de ingreso a la Ilustre Municipalidad de La Serena, adhiriendo a los valores de nuestra gestión Smart City."</p>
-                                </div>
-                                <div className="flex justify-between items-end mt-16 text-[10px] font-extrabold uppercase text-slate-400 tracking-[0.3em] relative z-10 px-8">
-                                    <div className="text-center w-64">
-                                         <div className="h-16 flex items-center justify-center opacity-80 mb-2 italic text-slate-300 font-serif text-2xl">Firma Digital {isRDMLS ? 'RDMLS' : 'VLS'}</div>
-                                        <div className="border-t-2 border-slate-200 pt-3">Dirección de Gestión de Personas</div>
-                                    </div>
-                                    <div className="text-center space-y-4">
-                                         <p className="text-[#C5A065] font-black text-lg">{isRDMLS ? 'RDMLS' : 'VLS'}-OK-2026</p>
-                                        <div className="flex justify-center"><QrCode size={50} className="text-slate-300"/></div>
-                                    </div>
-                                    <div className="text-center w-64">
-                                        <div className="h-16 flex items-center justify-center opacity-80 mb-2 italic text-slate-300 font-serif text-2xl">Firma Alcaldía</div>
-                                        <div className="border-t-2 border-slate-200 pt-3">Administración Municipal</div>
-                                    </div>
-                                </div>
-                            </motion.div>
-                            <div className="bg-white/5 backdrop-blur-3xl p-12 rounded-[4rem] border border-white/10 text-center shadow-2xl relative z-10">
-                                <h2 className="text-5xl font-black text-white mb-10 uppercase italic tracking-tighter leading-none">¡BIENVENIDO A BORDO!</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mx-auto">
-                                    <button onClick={() => window.location.href = '/'} className="bg-red-600 text-white w-full py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:scale-105 transition-transform shadow-xl shadow-red-900/40 text-sm">
-                                        <Radio size={24}/> Escuchar Radio Digital
-                                    </button>
-                                    <button className="bg-blue-600 text-white w-full py-6 rounded-[2rem] font-black uppercase tracking-[0.2em] flex items-center justify-center gap-4 hover:scale-105 transition-transform shadow-xl shadow-blue-900/40 text-sm">
-                                        <Globe size={24}/> Volver al Inicio
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <style>{`
-                .hover-lift:hover { transform: translateY(-3px); }
-                .hover-lift:active { transform: translateY(0); }
-            `}</style>
         </div>
     );
 }
