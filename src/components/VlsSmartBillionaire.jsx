@@ -386,17 +386,17 @@ export default function VlsSmartBillionaire({ onClose }) {
                                         <h2 className="text-2xl md:text-5xl font-black text-center text-white pb-4 leading-tight">{currentQuestion?.text}</h2>
                                     </div>
 
-                                    {/* Zona de botones fija */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 shrink-0">
+                                    {/* Zona de botones fija - Optimización móvil agresiva */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3 shrink-0">
                                         {shuffledOptions.map((opt, i) => (
                                             <button key={i} disabled={hiddenOptions.includes(i) || isAnswered} onClick={() => handleAnswer(i)}
-                                                className={`p-4 md:p-7 text-left rounded-2xl border-2 transition-all font-bold text-lg md:text-2xl flex items-center ${
+                                                className={`p-3 md:p-7 text-left rounded-2xl border-2 transition-all font-bold text-base md:text-2xl flex items-center min-h-[60px] md:min-h-0 ${
                                                     hiddenOptions.includes(i) ? 'opacity-0 pointer-events-none' :
                                                     selectedOpt === i ? (i === correctIdxForUI ? 'border-emerald-400 bg-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.3)]' : 'border-red-500 bg-red-500/20') : 
                                                     'border-white/10 hover:border-[#FFD700]/60 bg-black/50 hover:bg-white/5'
                                                 }`}
                                             >
-                                                <div className="w-full text-center md:text-left">{opt}</div>
+                                                <div className="w-full text-center md:text-left leading-tight">{opt}</div>
                                             </button>
                                         ))}
                                     </div>

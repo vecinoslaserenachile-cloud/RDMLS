@@ -342,6 +342,25 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
           localStorage.setItem(COMPLETED_STAGES_KEY, JSON.stringify(newCompleted));
           localStorage.removeItem(SAVE_KEY);
           if (currentUser) updateLeaderboard(newCompleted, timeSpent);
+          
+          // TOKEN REWARD LOGIC: 10 Fichas for winning a stage (adjusted for economy balance)
+          const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+          const newTokens = currentTokens + 10;
+          localStorage.setItem('vls_tokens', newTokens.toString());
+          
+          // Dispatch event for UI updates (HubDashboard/App)
+          window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+          
+          // Show alert in the main app
+          window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+            detail: { 
+              title: '¡VICTORIA TRIVIAL!', 
+              message: 'Has ganado 10 Fichas VLS por completar este nivel.',
+              type: 'success',
+              icon: 'Trophy'
+            } 
+          }));
+
           if (!isMuted) { soundService.playAnthemSting(); soundService.playPrize(); }
           triggerFireworks();
         } else {
@@ -435,7 +454,7 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
   // ─── LÓGICA DE RENDERIZADO MAESTRO (MASTER CEO EDITION) ───
   if (['playing', 'lifeline_phone', 'lifeline_audience'].includes(gameState) && currentQuestion) {
     return (
-      <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: '#0a0f1a', overflow: 'hidden', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: '#0a0f1a', overflowX: 'hidden', overflowY: 'auto', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
         <div style={{ position: 'relative', zIndex: 10, width: '100%', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, minWidth: 0 }}>
             <div style={{ border: '2px solid #FFD700', borderRadius: '12px', width: '40px', height: '40px', minWidth: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFD700', fontSize: '1.2rem', fontWeight: '900', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)' }}>
@@ -530,8 +549,8 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
              </div>
           </div>
 
-          <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '0.75rem', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', paddingBottom: '9rem', boxSizing: 'border-box' }}>
-             {/* Lifelines will hover safely above this 9rem padding */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 w-full max-w-[1000px] mx-auto p-3 gap-3 pb-[10rem] sm:pb-[9rem]">
+             {/* Lifelines will hover safely above this padding */}
             {shuffledOptions.map((option, idx) => {
               const isHidden = hiddenOptions.includes(idx);
               const isSelected = selectedOption === idx;

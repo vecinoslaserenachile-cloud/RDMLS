@@ -100,6 +100,28 @@ Estamos en fase de mapeo participativo: tus reportes nos ayudan a visualizar lo 
 
         if (platform !== 'qr') {
             setShowOptions(false);
+            
+            // REWARD LOGIC: 2 tokens for sharing the platform (adjusted for economy)
+            const rewardPlatforms = ['whatsapp', 'facebook', 'twitter', 'linkedin'];
+            if (rewardPlatforms.includes(platform)) {
+                // TOKEN REWARD LOGIC
+                const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+                const newTokens = currentTokens + 2;
+                localStorage.setItem('vls_tokens', newTokens.toString());
+                
+                // Dispatch event for UI updates
+                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+                
+                // Show floating alert if available in App.jsx (via event)
+                window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+                    detail: { 
+                        title: 'DIFUSIÓN RECOMPENSADA', 
+                        message: '¡Gracias por compartir! Has ganado 2 Fichas VLS.',
+                        type: 'info',
+                        icon: 'Share2'
+                    } 
+                }));
+            }
         }
     };
 

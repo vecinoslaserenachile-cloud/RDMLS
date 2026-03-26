@@ -73,6 +73,7 @@ import VLSNotesGallery from '../components/VLSNotesGallery';
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
+import SmartFloatingTV from '../components/SmartFloatingTV';
 
 
 export default function HubDashboard() {
@@ -109,8 +110,11 @@ export default function HubDashboard() {
             retroTitle: "Retro TV Master", retroSub: "Canales Clásicos y Archivo Histórico",
             vhsTitle: "Cineteca VHS", vhsSub: "Videos de la Región y Documentales",
             memoryTitle: "Portal de la Memoria", memorySub: "Sube Recuerdos y Fotos del Pasado",
-            sentinelTitle: "Centinel Faro IA", sentinelSub: "Monitoreo Avanzado de Redes y Seguridad",
-            welcomePortales: "Bienvenido al portal unificado de Vecinos La Serena. Explora todas las herramientas ciudadanas a continuación."
+            sentinelTitle: isRDMLS ? "Centinel Faro (IA)" : "Centinel Faro IA",
+            sentinelSub: isRDMLS ? "Monitoreo Avanzado y Análisis de Datos" : "Monitoreo Avanzado de Redes y Seguridad",
+            welcomePortales: isRDMLS 
+                ? "Bienvenido al Portal Institucional RDMLS.cl de la I. Municipalidad de La Serena."
+                : "Bienvenido al portal unificado de Vecinos La Serena. Explora todas las herramientas ciudadanas a continuación."
         },
         en: {
             title: "Smart Communications & Citizenship Hub - VLS Unified Portal",
@@ -182,7 +186,7 @@ export default function HubDashboard() {
     const [showPremiumClub, setShowPremiumClub] = useState(false);
     const [greetingIdx, setGreetingIdx] = useState(0);
 
-    const greetings = [
+    const greetingsVLS = [
         { text: "¡HOLA, VECINO!", sub: "SOY SERENITO, TU GUÍA SMART CITY", color: "#ef4444", bg: "linear-gradient(135deg, #ef4444 0%, #1e3a8a 100%)", flag: "🇨🇱" },
         { text: "HELLO, NEIGHBOR!", sub: "I'M SERENITO, YOUR SMART CITY GUIDE", color: "#3b82f6", bg: "linear-gradient(135deg, #00247d 0%, #cf142b 100%)", flag: "🇬🇧🇺🇸" },
         { text: "OLÁ, VIZINHO!", sub: "SOU SERENITO, SEU GUIA SMART CITY", color: "#22c55e", bg: "linear-gradient(135deg, #009c3b 0%, #ffdf00 100%)", flag: "🇧🇷" },
@@ -190,6 +194,14 @@ export default function HubDashboard() {
         { text: "CIAO, VICINO!", sub: "SONO SERENITO, LA TUA GUIDA SMART CITY", color: "#10b981", bg: "linear-gradient(135deg, #009246 0%, #ce2b37 100%)", flag: "🇮🇹" },
         { text: "你好, 邻居!", sub: "我是小谢尔, 您的智慧城市指南 (SERENITO)", color: "#FFDE00", bg: "linear-gradient(135deg, #DE2910 0%, #FFDE00 100%)", flag: "🇨🇳" }
     ];
+
+    const greetingsRDMLS = [
+        { text: "PORTAL RDMLS.cl", sub: "I. MUNICIPALIDAD DE LA SERENA", color: "#f59e0b", bg: "linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)", flag: "🏛️" },
+        { text: "SERVICIOS SMART", sub: "GESTIÓN PÚBLICA MODERNA", color: "#38bdf8", bg: "linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)", flag: "⚙️" },
+        { text: "IDENTIDAD LOCAL", sub: "LA SERENA SIEMPRE LÍDER", color: "#ef4444", bg: "linear-gradient(135deg, #7f1d1d 0%, #b91c1c 100%)", flag: "🇨🇱" }
+    ];
+
+    const greetings = isRDMLS ? greetingsRDMLS : greetingsVLS;
 
     const newsFlashes = [
         {
@@ -201,10 +213,12 @@ export default function HubDashboard() {
             pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidade dos nossos vizinhos."
         },
         {
-            es: "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
-            en: "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
-            it: "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
-            fr: "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
+            es: isRDMLS 
+                ? "Gestión Institucional: Se consolida la Soberanía Comunicacional Digital en el Portal Principal RDMLS.cl."
+                : "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
+            en: "Management Report: Communicational Sovereignty is consolidated under the municipal vision. Towards an elite digital ecosystem.",
+            it: "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione istituzionale. Verso un ecosistema digitale d'élite.",
+            fr: "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée selon la vision institutionnelle. Vers un écosystème numérique d'élite.",
             zh: "管理报告：通信主权在一匿名邻居的愿景下得到巩固。迈向精英级数字生态系统。",
             pt: "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a um ecossistema digital de elite."
         }
@@ -231,6 +245,15 @@ export default function HubDashboard() {
         const t = setInterval(() => setGreetingIdx(prev => (prev + 1) % greetings.length), 4000);
         return () => clearInterval(t);
     }, [greetings.length]);
+
+    const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+    
+    useEffect(() => {
+        const handleTokensUpdate = (e) => setVlsTokens(e.detail);
+        window.addEventListener('tokens-updated', handleTokensUpdate);
+        return () => window.removeEventListener('tokens-updated', handleTokensUpdate);
+    }, []);
+
     const [showOmnibox, setShowOmnibox] = useState(false);
     const [showPoll, setShowPoll] = useState(false);
     const [showGalaxia, setShowGalaxia] = useState(false);
@@ -1236,6 +1259,31 @@ export default function HubDashboard() {
                         >
                             <Book size={14} /> {t.glosario || 'GLOSARIO'}
                         </button>
+                        
+                        {/* TOKEN DISPLAY IN HEADER */}
+                        {!isRDMLS && (
+                            <div style={{
+                                background: 'rgba(255,215,0,0.15)',
+                                border: '1px solid rgba(255,215,0,0.5)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: '#FFD700',
+                                fontWeight: '900',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                boxShadow: '0 0 15px rgba(255,215,0,0.2)',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vecinity-pay'))}
+                            title="Tus Fichas VLS Recompensadas"
+                            >
+                                <Award size={14} />
+                                <span>{vlsTokens} FICHAS</span>
+                            </div>
+                        )}
+
                     {!isRDMLS && (
                         <div style={{
                             display: 'flex',
@@ -1346,11 +1394,11 @@ export default function HubDashboard() {
                         </div>
                         <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SMART JUEGAPRENDE</span>
-                                <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>NUEVO</span>
+                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>{isRDMLS ? 'SABERES REGIONALES' : 'SMART JUEGAPRENDE'}</span>
+                                <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>{isRDMLS ? 'INSTITUCIONAL' : 'NUEVO'}</span>
                             </div>
                             <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                Trivia La Serena · Gana Fichas {isRDMLS ? 'RDMLS' : 'VLS'}
+                                {isRDMLS ? 'Historia y Cultura de La Serena' : 'Trivia La Serena · Gana Fichas VLS'}
                             </p>
                         </div>
                         <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
@@ -2122,102 +2170,35 @@ export default function HubDashboard() {
 
                             {isVideoPlaying && (
                                 <AnimatePresence>
-                                    {/* TV 1: SUPERIOR (SMART SOCIAL VISOR - Vertical 9:16) */}
-                                    {deviceType !== 'Móvil' && (
-                                        <motion.div
-                                            key="tvls-player-top"
-                                            drag
-                                            dragMomentum={false}
-                                            initial={{ opacity: 0, y: 100 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            style={{
-                                                position: 'fixed',
-                                                top: '140px',
-                                                right: '40px',
-                                                width: '240px',
-                                                aspectRatio: '9/16',
-                                                zIndex: 10000,
-                                                borderRadius: '24px',
-                                                overflow: 'hidden',
-                                                boxShadow: '0 30px 60px rgba(0,0,0,0.9), 0 0 20px rgba(16, 185, 129, 0.3)',
-                                                border: '3px solid rgba(16, 185, 129, 0.6)',
-                                                background: '#000',
-                                                cursor: 'grab',
-                                                resize: 'horizontal', // Permite achicar/agrandar manteniendo proporción
-                                                minWidth: '150px',
-                                                maxWidth: '400px'
-                                            }}
-                                        >
-                                            <div style={{ position: 'absolute', top: 10, left: 10, zIndex: 10, fontSize: '0.65rem', color: '#10b981', fontWeight: '900', background: 'rgba(0,0,0,0.8)', padding: '4px 10px', borderRadius: '50px', border: '1px solid rgba(16, 185, 129, 0.5)', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                                <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
-                                                SMART SOCIAL VISOR
-                                            </div>
-                                            <div style={{ position: 'absolute', bottom: 10, left: 0, width: '100%', zIndex: 10, textAlign: 'center' }}>
-                                                <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 'bold', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '10px' }}>
-                                                    {PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].title}
-                                                </span>
-                                            </div>
-                                            
-                                            {/* Overlay transparente para capturar eventos de drag y resize sin que el iframe los bloquee */}
-                                            <div style={{ position: 'absolute', inset: 0, zIndex: 5, cursor: 'grab' }} />
-                                            
-                                            <iframe
-                                                width="100%" height="100%"
-                                                src={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length].url}
-                                                frameBorder="0"
-                                                allow="autoplay; encrypted-media; fullscreen"
-                                                style={{ objectFit: 'cover', transform: 'scale(1.05)', background: '#fff' }}
-                                            />
-                                        </motion.div>
-                                    )}
-
-                                    {/* TV 2: INFERIOR DERECHA (Institucional / Faro) - PERSISTENTE - SOLO EN VLS */}
+                                    <SmartFloatingTV
+                                        key="tv1-vertical"
+                                        title="SMART SOCIAL VISOR"
+                                        isVertical={true}
+                                        initialX="40px"
+                                        initialY="140px"
+                                        bottom="auto"
+                                        widthDesktop="240px"
+                                        widthMobile="140px"
+                                        heightDesktop="426px"
+                                        heightMobile="248px"
+                                        item={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]}
+                                    />
+                                    
                                     {isVLS && (
-                                        <motion.div
-                                            key="tvls-player-bottom"
-                                            drag
-                                            dragMomentum={false}
-                                            initial={{ opacity: 0, scale: 0.8 }}
-                                            animate={{ opacity: 1, scale: 1 }}
-                                            style={{
-                                                position: 'fixed',
-                                                bottom: '100px',
-                                                right: '25px',
-                                                width: '280px',
-                                                height: '158px',
-                                                zIndex: 10000,
-                                                borderRadius: '16px',
-                                                overflow: 'hidden',
-                                                boxShadow: '0 20px 50px rgba(0,0,0,0.8), 0 0 20px rgba(239, 68, 68, 0.2)',
-                                                border: '2px solid rgba(239, 68, 68, 0.4)',
-                                                background: '#000',
-                                                cursor: 'grab'
-                                            }}
-                                        >
-                                            <div style={{ position: 'absolute', top: 5, left: 10, zIndex: 10, fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', background: 'rgba(0,0,0,0.6)', padding: '2px 6px', borderRadius: '4px' }}>TVLS INSTITUCIONAL</div>
-                                            {TVLS_VIDEOS[previewIndex].url ? (
-                                                <video
-                                                    src={TVLS_VIDEOS[previewIndex].url}
-                                                    autoPlay
-                                                    muted={isMuted}
-                                                    loop
-                                                    playsInline
-                                                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                    onEnded={nextVideo}
-                                                />
-                                            ) : (
-                                                <iframe
-                                                    width="100%" height="100%"
-                                                    src={TVLS_VIDEOS[previewIndex].isPlaylist 
-                                                        ? `https://www.youtube.com/embed/videoseries?list=${TVLS_VIDEOS[previewIndex].id}&autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1`
-                                                        : `https://www.youtube.com/embed/${TVLS_VIDEOS[previewIndex].id}?autoplay=1&mute=${isMuted ? 1 : 0}&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${TVLS_VIDEOS[previewIndex].id}`
-                                                    }
-                                                    title="TVLS Institutional"
-                                                    frameBorder="0"
-                                                    allow="autoplay; encrypted-media; fullscreen"
-                                                />
-                                            )}
-                                        </motion.div>
+                                        <SmartFloatingTV
+                                            key="tv2-horizontal"
+                                            title="TVLS INSTITUCIONAL"
+                                            isVertical={false}
+                                            initialX="25px"
+                                            initialY={undefined}
+                                            bottom="100px"
+                                            widthDesktop="280px"
+                                            widthMobile="200px"
+                                            heightDesktop="158px"
+                                            heightMobile="112px"
+                                            item={TVLS_VIDEOS[previewIndex]}
+                                            onEnded={nextVideo}
+                                        />
                                     )}
                                 </AnimatePresence>
                             )}

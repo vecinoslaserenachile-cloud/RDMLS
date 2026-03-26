@@ -41,6 +41,8 @@ export default function RetroCaracolElevator({ brightness = 100, contrast = 100 
     const bullets = useRef([]);
     const stores = useRef([]);
     const keys = useRef({});
+    const [messages, setMessages] = useState(["¡Bienvenido al Caracol! Recolecta suministros para la misión."]);
+    const missionLog = useRef([]);
 
     const initLevel = useCallback(() => {
         setScore(0);
@@ -76,13 +78,22 @@ export default function RetroCaracolElevator({ brightness = 100, contrast = 100 
         stores.current = newStores;
 
         // Init enemies - Increased count and added shooting state
-        enemies.current = Array.from({ length: 8 }, () => ({
+        enemies.current = Array.from({ length: 10 }, () => ({
             x: Math.random() * 500 + 100,
-            y: Math.floor(Math.random() * TOTAL_FLOORS) * LEVEL_HEIGHT + 100,
+            y: Math.floor(Math.random() * TOTAL_FLOORS) * LEVEL_HEIGHT + (LEVEL_HEIGHT - 60),
             vx: (Math.random() > 0.5 ? 2.5 : -2.5),
             type: 'agent',
             lastShot: 0
         }));
+
+        elevator.current = {
+            y: (TOTAL_FLOORS - 1) * LEVEL_HEIGHT,
+            targetY: (TOTAL_FLOORS - 1) * LEVEL_HEIGHT,
+            status: 'idle',
+            floor: TOTAL_FLOORS - 1
+        };
+        missionLog.current = [];
+        setMessages(["Misión: Entra a las tiendas marcadas para recolectar evidencia."]);
     }, []);
 
     useEffect(() => {
@@ -160,31 +171,59 @@ export default function RetroCaracolElevator({ brightness = 100, contrast = 100 
             if (p.x < 0) p.x = 0;
             if (p.x > canvas.width - PLAYER_SIZE) p.x = canvas.width - PLAYER_SIZE;
 
-            // Elevator Login
+            // Elevator Logic - FIXED
             const elevatorX = canvas.width - 100;
-            if (Math.abs(p.x - elevatorX) < 20 && Math.abs(p.y - (el.y + 100)) < 20) {
+            const distToElevator = Math.abs(p.x - elevatorX);
+            const elevatorFloorY = el.floor * LEVEL_HEIGHT;
+
+            // Enter elevator
+            if (!p.inElevator && distToElevator < 40 && Math.abs(p.y - (elevatorFloorY + 100)) < 40) {
                 if (keys.current['ArrowUp'] || keys.current['ArrowDown']) {
                     p.inElevator = true;
                     p.x = elevatorX + 20;
+                    p.vx = 0;
+                    setMessages([`Elevador Caracol: Planta ${TOTAL_FLOORS - el.floor}`]);
                 }
             }
 
             if (p.inElevator) {
-                if (keys.current['ArrowUp'] && el.floor > 0) {
-                    el.floor--;
-                    el.y = el.floor * LEVEL_HEIGHT;
-                    p.y = el.y + 100;
-                    p.currentFloor = el.floor;
-                } else if (keys.current['ArrowDown'] && el.floor < TOTAL_FLOORS - 1) {
-                    el.floor++;
-                    el.y = el.floor * LEVEL_HEIGHT;
-                    p.y = el.y + 100;
-                    p.currentFloor = el.floor;
+                p.x = elevatorX + 20;
+                p.vx = 0;
+                p.isJumping = false;
+                p.vy = 0;
+
+                if (keys.current['ArrowUp'] && el.floor > 0 && el.status === 'idle') {
+                    el.status = 'moving';
+                    el.targetY = (el.floor - 1) * LEVEL_HEIGHT;
+                    setMessages(["Subiendo..."]);
+                    setTimeout(() => {
+                        el.floor--;
+                        el.status = 'idle';
+                        p.currentFloor = el.floor;
+                        setMessages([`Llegamos al Nivel ${TOTAL_FLOORS - el.floor}`]);
+                    }, 500);
+                } else if (keys.current['ArrowDown'] && el.floor < TOTAL_FLOORS - 1 && el.status === 'idle') {
+                    el.status = 'moving';
+                    el.targetY = (el.floor + 1) * LEVEL_HEIGHT;
+                    setMessages(["Bajando..."]);
+                    setTimeout(() => {
+                        el.floor++;
+                        el.status = 'idle';
+                        p.currentFloor = el.floor;
+                        setMessages([`Llegamos al Nivel ${TOTAL_FLOORS - el.floor}`]);
+                    }, 500);
                 }
                 
-                if (keys.current['ArrowLeft']) {
+                // Smooth move elevator
+                if (el.y !== el.targetY) {
+                    const step = el.targetY > el.y ? 5 : -5;
+                    el.y += step;
+                    p.y = el.y + 100;
+                }
+
+                if (keys.current['ArrowLeft'] || keys.current['ArrowRight']) {
                     p.inElevator = false;
-                    p.x = elevatorX - 30;
+                    p.x = elevatorX - (keys.current['ArrowLeft'] ? 60 : -10);
                 }
             }
 
@@ -240,14 +279,18 @@ export default function RetroCaracolElevator({ brightness = 100, contrast = 100 
                 }
             });
 
-            // Store interaction
+            // Store interaction - ENTER MISSIONS
             stores.current.forEach(s => {
-                if (Math.abs(s.x - p.x) < 30 && s.floor === p.currentFloor && !s.visited) {
+                if (Math.abs(s.x - p.x) < 40 && s.floor === p.currentFloor && !s.visited) {
                     if (keys.current['ArrowUp']) {
                         s.visited = true;
-                        setItemsCollected(prev => prev + 1);
+                        setItemsCollected(prev => {
+                            const NewCount = prev + 1;
+                            if (NewCount >= stores.current.length) setGameState('win');
+                            return NewCount;
+                        });
                         setScore(prev => prev + 500);
-                        if (itemsCollected + 1 >= stores.current.length) setGameState('win');
+                        setMessages([`Misión cumplida en ${s.type}: Suministros obtenidos.`]);
                     }
                 }
             });
@@ -423,6 +466,15 @@ export default function RetroCaracolElevator({ brightness = 100, contrast = 100 
             else ctx.fillRect(-10, 20, 15, 8);
 
             ctx.restore();
+
+            // Draw Messages
+            ctx.fillStyle = 'rgba(0,0,0,0.7)';
+            ctx.fillRect(canvas.width/2 - 200, 50, 400, 30);
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = '12px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(messages[0] || "", canvas.width/2, 70);
+            ctx.textAlign = 'left';
 
             // Overlay scanlines
             ctx.fillStyle = 'rgba(0, 255, 0, 0.05)';

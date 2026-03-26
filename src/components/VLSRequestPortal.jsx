@@ -110,6 +110,24 @@ export default function VLSRequestPortal({ onClose }) {
             }
 
             if (response.ok) {
+                // TOKEN REWARD LOGIC: 5 Fichas for contributing a report (adjusted for economy balance)
+                const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+                const newTokens = currentTokens + 5;
+                localStorage.setItem('vls_tokens', newTokens.toString());
+                
+                // Dispatch event to update App and other components
+                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+                
+                // Show a mini notification/alert
+                window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+                    detail: { 
+                        title: '¡RECOMPENSA VLS!', 
+                        message: 'Has ganado 5 Fichas VLS por tu contribución ciudadana.',
+                        type: 'success',
+                        icon: 'Award'
+                    } 
+                }));
+
                 setIsSuccess(true);
             } else {
                 alert("Hubo un error al enviar el reporte.");

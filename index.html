@@ -22,13 +22,21 @@
   <meta http-equiv="Expires" content="0">
 
   <!-- Open Graph Data for Social Media -->
-  <meta property="og:title" content="La Serena Smart City 2026 - Portal Vecinal" />
-  <meta property="og:description" content="Ecosistema de Innovación, Seguridad y Co-creación Ciudadana. ¡Sé parte del futuro de nuestra comuna!" />
-  <meta property="og:image" content="/vls-logo-3d.png" />
+  <meta property="og:title" content="La Serena Smart City 2026 - Portal Vecinal / VLSABES" />
+  <meta property="og:description" content="Ecosistema de Innovación, Seguridad y Co-creación Ciudadana. ¡Sé parte del futuro de nuestra comuna y ponte a prueba en nuestro juego trivia!" />
+  <meta property="og:image" content="/img_trivia/50serenitoBisabueloVLSABES.png" />
   <meta property="og:type" content="website" />
 
   <meta name="rdmls-version" content="2026-03-26-final">
   <title>vecinoslaserena.cl</title>
+  <script>
+    // PRE-HYDRATION BRANDING (Avoid flashing VLS on RDMLS Domains)
+    if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
+      document.title = "RDMLS · Radio Digital Municipal";
+      document.querySelector("meta[name='theme-color']").setAttribute('content', '#8B1D19');
+      document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/rdmls_favicon.png'));
+    }
+  </script>
   <script>
     function logErrorToConsole(msg, isPromise) {
       let consoleDiv = document.getElementById('vls-mini-error-console');
@@ -77,7 +85,7 @@
     });
 
     // AGGRESSIVE PURGE FOR RDMLS (Institutional Mode)
-    if (window.location.hostname.includes('rdmls')) {
+    if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then(registrations => {
           for (let registration of registrations) { registration.unregister(); }

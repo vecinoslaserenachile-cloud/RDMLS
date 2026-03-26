@@ -483,7 +483,6 @@ function AppContent() {
     }
   }, [showAlert]);
 
-
   useEffect(() => {
     const handleOpenDron = () => setShowDronDrigo(true);
     const handleRetroTv = () => setShowRetroTV(true);
@@ -508,6 +507,23 @@ function AppContent() {
     const handleOpenSentinelNews = () => setShowNewsSentinel(true);
     const handleOpenInvestigacion = () => setShowNewsInvestigacion(true);
     
+    // Global listener for rewards and mission alerts
+    const handleGlobalAlert = (e) => {
+        const { title, message, type } = e.detail;
+        const newNotif = { 
+            id: Date.now(), 
+            title: title || "AVISO VLS", 
+            body: message, 
+            read: false, 
+            timestamp: new Date().toLocaleString('es-CL'),
+            type: type || 'info'
+        };
+        setNotifications(prev => [newNotif, ...prev]);
+        setShowNotificationsMenu(true);
+        // Play notification sound
+        window.dispatchEvent(new CustomEvent('vls-play-sfx', { detail: 'win' }));
+    };
+    
     window.addEventListener('open-dron-drigo', handleOpenDron);
     window.addEventListener('open-retro-tv', handleRetroTv);
     window.addEventListener('open-vhs-tv', handleVhsTv);
@@ -528,6 +544,7 @@ function AppContent() {
     window.addEventListener('open-vls-poduje', handleOpenPoduje);
     window.addEventListener('open-vls-sentinel', handleOpenSentinelNews);
     window.addEventListener('open-vls-investigacion', handleOpenInvestigacion);
+    window.addEventListener('vls-show-alert', handleGlobalAlert);
     
     return () => {
       window.removeEventListener('open-dron-drigo', handleOpenDron);
@@ -550,6 +567,7 @@ function AppContent() {
       window.removeEventListener('open-vls-poduje', handleOpenPoduje);
       window.removeEventListener('open-vls-sentinel', handleOpenSentinelNews);
       window.removeEventListener('open-vls-investigacion', handleOpenInvestigacion);
+      window.removeEventListener('vls-show-alert', handleGlobalAlert);
     };
   }, []);
 

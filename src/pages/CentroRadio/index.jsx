@@ -64,15 +64,13 @@ export default function CentroRadio() {
     const animationRef = useRef(null);
     const vuLeftRef = useRef(null);
     const vuRightRef = useRef(null);
-    const host = (window.location.host || window.location.hostname).toLowerCase();
-    const isVLS = host.includes('vecinoslaserena') || host.includes('vls') || host.includes('localhost');
-    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+    const isMobile = window.innerWidth < 1024;
+    const isVLS = false; // Forza false para mantener compatibilidad con codigo viejo si quedó algo
+    const isRDMLS = true; // Hardcoded ya que esta app solo corre aca
+
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth < 1024);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
+        // resize listener handled in css
     }, []);
 
     // ── Título de pestaña y favicon dinámico según dominio ──
@@ -84,7 +82,7 @@ export default function CentroRadio() {
 
         if (!isVLS) {
             document.title = 'RDMLS · Radio Digital Municipal · I. Municipalidad de La Serena';
-            updateFavicon('/escudo.png');
+            updateFavicon('/rdmls_favicon.png');
         } else {
             document.title = 'vecinoslaserena.cl';
             updateFavicon('/vls-crystal-icon.svg');
@@ -96,9 +94,7 @@ export default function CentroRadio() {
         };
     }, [isVLS]);
     
-    const defaultStream = isVLS 
-        ? "https://az11.yesstreaming.net:8630/radio.mp3" 
-        : "https://az11.yesstreaming.net:8590/radio.mp3";
+    const defaultStream = "https://az11.yesstreaming.net:8590/radio.mp3";
 
     const [streamUrl, setStreamUrl] = useState(defaultStream);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -115,79 +111,16 @@ export default function CentroRadio() {
     ];
 
     const radioStations = [
-        ...(isRDMLS ? [
-            { 
-                id: 'municipal',
-                name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
-                dialLabel: 'RDMLS',
-                slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
-                url: "https://az11.yesstreaming.net:8590/radio.mp3", 
-                color: '#f97316',
-                logo: '/logo_municipio.png',
-                badge: 'RDMLS'
-            },
-            { 
-                id: 'instrumental', 
-                name: 'ACADEMIA DE MÚSICA RDMLS',
-                dialLabel: 'CULTURA',
-                slogan: 'NUESTROS TALENTOS LOCALES EN RDMLS', 
-                url: "https://az11.yesstreaming.net:8590/music_school.mp3", 
-                color: '#a855f7',
-                logo: '/piano_icon.png',
-                badge: 'MUNICIPAL'
-            },
-            { 
-                id: 'entrevistas', 
-                name: 'ENTREVISTAS ESPECIALES',
-                dialLabel: 'RADIO',
-                slogan: 'LA ENTREVISTA RADIAL RDMLS', 
-                url: "https://az11.yesstreaming.net:8590/sessions.mp3", 
-                color: '#10b981',
-                logo: '/sessions_icon.png',
-                badge: 'RDMLS'
-            }
-        ] : [
-            { 
-                id: 'jjvv', 
-                name: 'VLS RADIO (Oficial)',
-                dialLabel: 'VLS 2026',
-                slogan: 'EL PULSO DIGITAL DE LA SERENA - VECINOS SMART', 
-                url: "https://az11.yesstreaming.net:8630/radio.mp3", 
-                color: '#f97316',
-                logo: '/logo_vls.png',
-                badge: 'PRINCIPAL'
-            },
-            { 
-                id: 'instrumental', 
-                name: 'SESIONES MUSICALES',
-                dialLabel: 'MUSICA',
-                slogan: 'FOLKLORE, JAZZ Y ESTRENOS VLS', 
-                url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
-                color: '#a855f7',
-                logo: '/piano_icon.png',
-                badge: 'CULTURAL'
-            },
-            { 
-                id: 'entrevistas', 
-                name: 'ENTREVECINAS',
-                dialLabel: 'EVECINAS',
-                slogan: 'LA VOZ DE NUESTRAS DIRIGENTAS', 
-                url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
-                color: '#10b981',
-                logo: '/sessions_icon.png',
-                badge: 'SOCIAL'
-            },
-            {
-                id: 'sombreros',
-                name: 'CANCIONES DE LOS SOMBREROS',
-                dialLabel: 'SOMBREROS',
-                slogan: 'EL SONIDO DE LOS SEIS SOMBREROS DE DE BONO',
-                url: "https://az11.yesstreaming.net:8630/hats_music.mp3",
-                color: '#00e5ff',
-                logo: '/vls-logo-3d.png',
-                badge: 'CREATIVIDAD'
-            }
-        ])
+        { 
+            id: 'municipal',
+            name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
+            dialLabel: 'RDMLS',
+            slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3", 
+            color: '#f97316',
+            logo: '/escudo.png',
+            badge: 'RDMLS'
+        }
     ];
 
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
@@ -435,24 +368,17 @@ export default function CentroRadio() {
     // Cuando cambia la estación (streamUrl), actualizar el src pero NO auto-reproducir
     useEffect(() => {
         if (!audioRef.current) return;
+        audioRef.current.src = streamUrl;
+        audioRef.current.load();
         if (isPlaying && streamUrl) {
-            // Si estaba reproduciendo y hay una URL de audio válida
-            audioRef.current.src = streamUrl;
-            audioRef.current.load();
             audioRef.current.play()
                 .then(() => { setIsPlaying(true); syncAudioVolume(); })
                 .catch(() => setIsPlaying(false));
         } else {
-            // Si no hay URL (es video) o no está en play, parar audio
-            if (!streamUrl) {
-                audioRef.current.pause();
-                audioRef.current.src = "";
-            } else {
-                audioRef.current.src = streamUrl;
-            }
+            audioRef.current.pause();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [streamUrl]);
+    }, [streamUrl, isPlaying]);
 
     // initAudioContext — incluye cadena EQ completa desde el inicio
     const initAudioContext = () => {
@@ -559,7 +485,6 @@ export default function CentroRadio() {
     const toggleMute = () => {
         setIsMuted(prev => {
             const next = !prev;
-            // Aplicar inmediatamente sin esperar el useEffect para evitar lag
             if (audioRef.current) {
                 audioRef.current.muted = next;
                 audioRef.current.volume = next ? 0 : volume;
@@ -788,10 +713,6 @@ export default function CentroRadio() {
                 </div>
 
                 <div className="hide-mobile" style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <button onClick={handleInstall} className="pulse-fast" style={{ background: '#10b981', border: 'none', color: 'white', padding: '0.5rem 1rem', borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
-                        <Download size={16} /> Descargar {isVLS ? 'VLS' : 'RDMLS'} App
-                    </button>
-                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
                         <Clock size={18} color="#FFD700" />
                         {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
@@ -801,21 +722,6 @@ export default function CentroRadio() {
                         <CloudSun size={18} color="#FFD700" />
                         {weather ? `${weather}°C` : '--'}
                     </div>
-                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                    <button onClick={() => navigate('/escuela-musica')} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Escuela de Música">
-                        <GraduationCap size={18} color="#a855f7" />
-                        <span style={{ fontSize: '0.9rem' }}>Escuela de Música</span>
-                    </button>
-                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                    <button onClick={() => navigate('/vlsabes')} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Juego de Trivia">
-                        <Gamepad2 size={18} color="#FFD700" />
-                        <span style={{ fontSize: '0.9rem' }}>Saberes</span>
-                    </button>
-                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                    <button onClick={() => navigate('/')} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Volver al Portal Central">
-                        <Home size={18} color="#00e5ff" />
-                        <span style={{ fontSize: '0.9rem' }}>Smart Comuna</span>
-                    </button>
                 </div>
             </header>
 
@@ -1180,13 +1086,6 @@ export default function CentroRadio() {
                             </div>
                         </div>
 
-                        {/* Ondas Sonoras (solo cuando está en reproducción) */}
-                        {isPlaying && (
-                            <div style={{ position: 'relative', width: '100%', height: '0', overflow: 'visible' }}>
-                                <div className="wave-sonar" style={{ position: 'absolute', left: '50%', top: 0, width: '400px', height: '400px', marginLeft: '-200px', marginTop: '-200px', border: `2px solid ${currentStation.color}22`, borderRadius: '50%', animation: 'sonar-expand 4s linear infinite', zIndex: 0 }}></div>
-                                <div className="wave-sonar" style={{ position: 'absolute', left: '50%', top: 0, width: '400px', height: '400px', marginLeft: '-200px', marginTop: '-200px', border: `2px solid ${currentStation.color}11`, borderRadius: '50%', animation: 'sonar-expand 4s linear 2s infinite', zIndex: 0 }}></div>
-                            </div>
-                        )}
                     </div>
                 </section>
 
