@@ -40,6 +40,15 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
         localStorage.setItem('vls_quantum_theme', id);
     };
 
+    const [is24h, setIs24h] = useState(() => localStorage.getItem('vls_quantum_24h') !== 'false');
+
+    const toggle24h = (e) => {
+        e && e.stopPropagation();
+        const next = !is24h;
+        setIs24h(next);
+        localStorage.setItem('vls_quantum_24h', String(next));
+    };
+
     const toggleMin = (e) => {
         e && e.stopPropagation();
         const next = !isMinimized;
@@ -59,7 +68,10 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     }, []);
 
     const pad = n => n.toString().padStart(2, '0');
-    const H = pad(time.getHours());
+    const rawH = time.getHours();
+    const isPM = rawH >= 12;
+    const finalH = is24h ? rawH : (rawH % 12 || 12);
+    const H = pad(finalH);
     const M = pad(time.getMinutes());
     const S = pad(time.getSeconds());
     const days   = ['DOM','LUN','MAR','MIÉ','JUE','VIE','SÁB'];
@@ -86,6 +98,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                 <span style={{ fontFamily:'"Courier New",monospace', fontSize:'0.85rem', fontWeight:900,
                                color:'white', letterSpacing:'1px', lineHeight:1 }}>
                     {H}<span style={{ opacity: blink ? 1 : 0.3, transition:'opacity 0.1s' }}>:</span>{M}
+                    {!is24h && <span style={{ fontSize: '0.45rem', marginLeft: '2px', opacity: 0.8 }}>{isPM ? 'PM':'AM'}</span>}
                 </span>
                 {/* botón restaurar */}
                 <button
@@ -143,6 +156,11 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                 {dayStr} {dayNum} {monStr}
                             </span>
                             <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
+                                {/* Boton 12/24 */}
+                                <button onClick={toggle24h} title="Formato 12/24h"
+                                    style={{ background:'rgba(0,0,0,0.2)', border:`1px solid ${theme.pin}`, padding:'1px 4px', borderRadius:'4px', cursor:'pointer', fontSize: '0.45rem', fontWeight: 'bold', color: 'white' }}>
+                                    {is24h ? '24H' : '12H'}
+                                </button>
                                 {/* Minimizar */}
                                 <button onClick={toggleMin} title="Minimizar"
                                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
@@ -174,8 +192,9 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                             </span>
                             <span style={{ fontFamily:'"Courier New",monospace', fontSize:'0.9rem',
                                            fontWeight:900, color:theme.sub, marginLeft:'5px',
-                                           alignSelf:'flex-end', marginBottom:'2px' }}>
-                                {S}
+                                           alignSelf:'flex-end', marginBottom:'2px', display:'flex', flexDirection:'column', gap:'2px' }}>
+                                <span>{S}</span>
+                                {!is24h && <span style={{ fontSize: '0.4rem', background: 'rgba(0,0,0,0.3)', padding: '1px 3px', borderRadius: '4px', letterSpacing: '0', textAlign: 'center' }}>{isPM ? 'PM':'AM'}</span>}
                             </span>
                         </div>
 
