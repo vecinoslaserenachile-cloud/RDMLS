@@ -2178,9 +2178,9 @@ export default function HubDashboard() {
                                         initialY="140px"
                                         bottom="auto"
                                         widthDesktop="240px"
-                                        widthMobile="140px"
+                                        widthMobile="90px"
                                         heightDesktop="426px"
-                                        heightMobile="248px"
+                                        heightMobile="160px"
                                         item={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]}
                                     />
                                     
@@ -2193,9 +2193,9 @@ export default function HubDashboard() {
                                             initialY={undefined}
                                             bottom="100px"
                                             widthDesktop="280px"
-                                            widthMobile="200px"
+                                            widthMobile="120px"
                                             heightDesktop="158px"
-                                            heightMobile="112px"
+                                            heightMobile="68px"
                                             item={TVLS_VIDEOS[previewIndex]}
                                             onEnded={nextVideo}
                                         />

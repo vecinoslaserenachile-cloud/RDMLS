@@ -33,39 +33,39 @@ export default function Induccion26({ isRDMLS }) {
     const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx";
     const iframeSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX)}`;
 
-    const questions = isRDMLS ? [
+    const newQuestions = [
         {
-            q: "Según la visión Smart City IMLS 2026, ¿cuál es el primer pilar de la gestión?",
-            opts: ["Burocracia Tradicional", "Probidad y Cercanía Digital", "Privatización de Servicios"],
-            ans: 1
+            q: "¿Cuál es el mecanismo principal de formalización de instrucciones en la administración municipal?",
+            opts: ["Decretos Alcaldicios", "Circulares Internas", "Correos Electrónicos"],
+            ans: 0,
+            explanation: "Todo acto administrativo y decisión formal de la Municipalidad debe quedar plasmado mediante un Decreto, lo que asegura transparencia, legalidad y trazabilidad en tus funciones."
         },
         {
-            q: "El asistente IA de la plataforma se llama...",
-            opts: ["Serenito", "Robotito", "AlcaldeBot"],
-            ans: 0
+            q: "Respecto a la jornada laboral y cumplimiento de metas, los funcionarios a Honorarios se rigen por:",
+            opts: ["Estatuto Administrativo", "Contrato Civil de Prestación de Servicios", "Código del Trabajo"],
+            ans: 1,
+            explanation: "A diferencia del personal de Planta o Contrata, los prestadores de Honorarios se relacionan mediante un contrato regido por las normas civiles, con base en informes de gestión."
         },
         {
-            q: "RDMLS corresponde a...",
-            opts: ["Red de Medios", "Radio Digital Municipal La Serena", "Región de La Serena"],
-            ans: 1
-        }
-    ] : [
-        {
-            q: "Según la visión Smart City VLS 2026, ¿cuál es el pilar de desarrollo ciudadano?",
-            opts: ["Burocracia Tradicional", "Soberanía Digital Vecinal", "Privatización de Servicios"],
-            ans: 1
+            q: "¿Qué rol cumple la Dirección de Desarrollo Comunitario (DIDECO) en el municipio?",
+            opts: ["Administrar las finanzas", "Promover el desarrollo vecinal y social", "Dictar sentencias de policía local"],
+            ans: 1,
+            explanation: "DIDECO es el área primordial para garantizar la vinculación y asistencia directa a los vecinos, ejecutando políticas sociales con enfoque territorial y humano."
         },
         {
-            q: "El asistente IA de la plataforma se llama...",
-            opts: ["Serenito", "Robotito", "AlcaldeBot"],
-            ans: 0
+            q: "¿Cómo debe proceder un funcionario ante un conflicto de interés o falta a la probidad?",
+            opts: ["Informar a su jefatura y abstenerse de intervenir", "Resolver el problema discretamente", "Derivar a otra unidad sin avisar"],
+            ans: 0,
+            explanation: "La probidad es el pilar de nuestra gestión. Siempre se debe informar oficialmente a la jefatura directa e inhabilitarse de tomar decisiones para proteger la transparencia institucional."
         },
         {
-            q: "El concepto VLS significa...",
-            opts: ["Visión La Serena", "Vecinos La Serena", "Valle La Serena"],
-            ans: 1
+            q: "En relación a las comunicaciones y vocerías públicas oficiales de la Municipalidad:",
+            opts: ["Cualquier funcionario puede dar declaraciones", "Se canalizan exclusivamente por Alcaldía y Comunicaciones", "Los departamentos comunican independientemente"],
+            ans: 1,
+            explanation: "Para mantener una voz oficial e institucional clara, los lineamientos, comunicados y vocerías frente a los medios son coordinadas estrictamente por Alcaldía y el equipo de Comunicaciones."
         }
     ];
+    const questions = newQuestions;
 
     const handleAnswer = (idx) => {
         if (answered) return;
@@ -131,7 +131,7 @@ export default function Induccion26({ isRDMLS }) {
             {/* Audio oculto */}
             <audio 
                 ref={audioRef} 
-                src={isRDMLS ? "https://az11.yesstreaming.net:8590/radio.mp3" : "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/audio/serenito_theme.mp3"} 
+                src={isRDMLS ? "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3" : "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/audio/serenito_theme.mp3"} 
             />
 
             {/* HEADER INTERACTIVO */}
@@ -235,25 +235,24 @@ export default function Induccion26({ isRDMLS }) {
                 >
                     <div style={{ textAlign: 'center' }}>
                         <div style={{ 
-                            width: '80px', height: '80px', background: 'linear-gradient(135deg, #38bdf8, #818cf8)', 
+                            width: '80px', height: '80px', background: 'linear-gradient(135deg, #C5A065, #b48530)', 
                             borderRadius: '50%', margin: '0 auto 1rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)'
+                            boxShadow: '0 0 20px rgba(197, 160, 101, 0.4)', fontSize: '2.5rem'
                         }}>
-                            <img src="/serenito.png" alt="Serenito" style={{ width: '60px', height: '60px', objectFit: 'contain' }} onError={(e) => e.target.style.display = 'none'} />
-                            <Globe size={40} color="white" style={{ position: 'absolute', opacity: 0.2 }} />
+                            🏛️
                         </div>
-                        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#38bdf8' }}>Guía Serenito</h2>
+                        <h2 style={{ margin: 0, fontSize: '1.2rem', color: '#C5A065', textTransform: 'uppercase', fontStyle: 'italic', fontWeight: '900' }}>Evaluación Corporativa</h2>
                         <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: '#94a3b8', lineHeight: '1.5' }}>
-                            Avanza en las diapositivas del visor. Cuando completes un bloque, haz clic en "Validar Avance" para responder la trivia.
+                            Avanza en las normativas del visor. Cuando completes el bloque de lecturas, haz clic en "Validar Avance" para responder y asegurar la inducción normativa.
                         </p>
                     </div>
 
                     <div style={{ flex: 1 }}>
-                        <div style={{ padding: '1rem', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '12px', borderLeft: '4px solid #38bdf8', marginBottom: '1rem' }}>
+                        <div style={{ padding: '1rem', background: 'rgba(197, 160, 101, 0.1)', borderRadius: '12px', borderLeft: '4px solid #C5A065', marginBottom: '1rem' }}>
                             <h3 style={{ margin: 0, fontSize: '0.9rem', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <HelpCircle size={16} color="#38bdf8" /> MISIÓN ACTUAL
+                                <HelpCircle size={16} color="#C5A065" /> MISIÓN DE INDUCCIÓN
                             </h3>
-                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#cbd5e1' }}>Lee las diapositivas 1 a 10 y absorbe la visión Smart City.</p>
+                            <p style={{ margin: '0.5rem 0 0', fontSize: '0.8rem', color: '#cbd5e1' }}>Lee detalladamente la sección actual sobre decretos y el funcionamiento municipal e internaliza los procesos.</p>
                         </div>
                     </div>
 
@@ -262,11 +261,11 @@ export default function Induccion26({ isRDMLS }) {
                         disabled={progress >= 100}
                         className="hover-lift"
                         style={{ 
-                            background: progress >= 100 ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #38bdf8, #2563eb)', 
+                            background: progress >= 100 ? 'rgba(255,255,255,0.1)' : 'linear-gradient(135deg, #C5A065, #8c6b39)', 
                             color: 'white', border: 'none', padding: '1.2rem', borderRadius: '16px', 
                             fontWeight: '900', fontSize: '1rem', cursor: progress >= 100 ? 'default' : 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem',
-                            boxShadow: progress >= 100 ? 'none' : '0 10px 20px rgba(37, 99, 235, 0.4)',
+                            boxShadow: progress >= 100 ? 'none' : '0 10px 20px rgba(197, 160, 101, 0.3)',
                             transition: 'all 0.3s'
                         }}
                     >
@@ -346,10 +345,14 @@ export default function Induccion26({ isRDMLS }) {
                             {answered && (
                                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '2rem' }}>
                                     {lastAnswerCorrect ? (
-                                        <div style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>¡CORRECTO! +100 XP</div>
+                                        <div style={{ color: '#22c55e', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>¡VALIDACIÓN APROBADA!</div>
                                     ) : (
-                                        <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>¡INCORRECTO! (Sigue intentando sumar XP).</div>
+                                        <div style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '1.2rem', marginBottom: '1rem' }}>REVISIÓN REQUERIDA (Sigue intentándolo).</div>
                                     )}
+                                    <div style={{ textAlign: 'left', color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: '1.6', background: 'rgba(255,255,255,0.05)', padding: '1.2rem', borderRadius: '16px', borderLeft: '4px solid #C5A065' }}>
+                                        <span style={{ fontWeight: '900', color: 'white', display: 'block', marginBottom: '0.8rem', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase' }}><Shield size={16} style={{display:'inline', verticalAlign:'sub', marginRight:'4px'}}/> NOTA DE INTEGRACIÓN MUNICIPAL:</span>
+                                        <p style={{ margin: 0, color: '#e2e8f0', fontStyle: 'italic', fontSize: '1rem' }}>{questions[currentQuestion].explanation}</p>
+                                    </div>
                                     <button 
                                         onClick={nextTrivia}
                                         style={{ background: '#38bdf8', color: '#0f172a', border: 'none', padding: '1rem 3rem', borderRadius: '30px', fontWeight: '900', fontSize: '1rem', cursor: 'pointer' }}

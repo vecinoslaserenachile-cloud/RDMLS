@@ -22,8 +22,8 @@ export default function SmartFloatingTV({
     if (hidden || !item) return null;
 
     const isMobile = window.innerWidth < 768;
-    const currentWidth = minimized ? '180px' : (isMobile ? widthMobile : widthDesktop);
-    const currentHeight = minimized ? '40px' : (isMobile ? heightMobile : heightDesktop);
+    const currentWidth = minimized ? (isMobile ? '100px' : '180px') : (isMobile ? widthMobile : widthDesktop);
+    const currentHeight = minimized ? (isMobile ? '30px' : '40px') : (isMobile ? heightMobile : heightDesktop);
 
     const getBottom = () => {
         if (bottom !== undefined) return bottom;
