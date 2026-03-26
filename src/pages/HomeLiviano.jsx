@@ -23,6 +23,9 @@ export default function HomeLiviano() {
         return () => { clearInterval(timer); window.removeEventListener('tokens-updated', onTokens); };
     }, []);
 
+    const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+
     // Search for payment status
     const [showSuccess, setShowSuccess] = useState(false);
     useEffect(() => {
@@ -99,6 +102,7 @@ export default function HomeLiviano() {
 
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                         {/* Billetera de Fichas */}
+                        {!isRDMLS && (
                         <div style={{ background: 'linear-gradient(135deg, #f59e0b20, rgba(0,0,0,0.3))', border: '1px solid #f59e0b40', padding: '0.8rem 1.2rem', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <Ticket size={18} color="#f59e0b" />
                             <div>
@@ -106,6 +110,7 @@ export default function HomeLiviano() {
                                 <div style={{ fontSize: '0.65rem', color: '#94a3b8' }}>FICHAS VLS</div>
                             </div>
                         </div>
+                        )}
                         {/* Reloj */}
                         <div style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', padding: '0.8rem 1.2rem', borderRadius: '14px', textAlign: 'right' }}>
                             <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#38bdf8', fontVariantNumeric: 'tabular-nums' }}>{currentTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
@@ -115,13 +120,17 @@ export default function HomeLiviano() {
                 </header>
 
                 {/* ── SECCIONES DE MÓDULOS ── */}
-                {secciones.map(sec => (
+                {secciones.filter(sec => !isRDMLS || sec.titulo.includes('Comunidad')).map(sec => (
                     <section key={sec.titulo} style={{ marginBottom: '3rem' }}>
                         <h2 style={{ margin: '0 0 1.2rem 0', fontSize: '1.1rem', color: sec.color, display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `2px solid ${sec.color}30`, paddingBottom: '0.8rem' }}>
                             {sec.titulo}
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1rem' }}>
-                            {sec.modulos.map((m, idx) => (
+                            {sec.modulos.filter(m => {
+                                if (!isRDMLS) return true;
+                                const hiddenRDMLS = ['Retro TV 80s', 'Salón Arcade', 'Personal Stereo', 'Cine VHS', 'Serenamet Regional', 'Tarjeta Descuento VLS', 'Vecinos ClipClub'];
+                                return !hiddenRDMLS.includes(m.title);
+                            }).map((m, idx) => (
                                 <button
                                     key={idx}
                                     onClick={m.action}

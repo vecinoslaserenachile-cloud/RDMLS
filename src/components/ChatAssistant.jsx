@@ -7,8 +7,17 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
     const [isMinimized, setIsMinimized] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const recognitionRef = useRef(null);
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls');
+    
     const [messages, setMessages] = useState([
-        { id: 1, sender: 'bot', text: '¡Hola! Soy **Faro IA**, tu asistente inteligente de ComunaSmart La Serena.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' }
+        { 
+            id: 1, 
+            sender: 'bot', 
+            text: isRDMLS 
+                ? '¡Hola! Soy **Faro IA**, tu asistente inteligente del **Portal RDMLS.cl**.<br/><br/>Estoy aquí para apoyarte en la gestión municipal, consultas técnicas y soporte de plataforma regional. ¿En qué puedo asistirte hoy?'
+                : '¡Hola! Soy **Faro IA**, tu asistente inteligente de **ComunaSmart La Serena**.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' 
+        }
     ]);
     const [inputText, setInputText] = useState('');
     const messagesEndRef = useRef(null);

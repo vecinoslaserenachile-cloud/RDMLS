@@ -38,9 +38,9 @@ const AnalogVUMeter = ({ label, needleRef }) => (
 
 // playerMode: 'expanded' | 'compact' | 'mini'
 export default function RadioPlayer({ globalWeather, isVisible }) {
-    const host = window.location.hostname.toLowerCase();
-    const isRDMLS = host.includes('rdmls');
-    const isVLS = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('localhost');
+    const host = (window.location.hostname || window.location.host || '').toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+    const isVLS = !isRDMLS;
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [playerMode, setPlayerMode] = useState('mini'); // Iniciamos en modo mini (replegado) para no obstruir el home
@@ -73,18 +73,13 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const isMini = playerMode === 'mini';
 
     // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
-    const allStations = [
-        // --- RADIOS RDMLS (INSTITUCIONAL) ---
-        { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' },
-        
-        // --- RADIOS VLS (COMUNITARIA) ---
+    const stations = isRDMLS ? [
+        { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
+    ] : [
         { id: 1, type: 'radio', sub: 'vls', name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
         { id: 14, type: 'radio', sub: 'vls', name: 'VLS Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones VLS' },
         { id: 15, type: 'radio', sub: 'vls', name: 'VLS Entrevistas', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=entrevecinas', isLive: true, desc: 'EntreVecinas: Historias y Comunidad VLS' }
     ];
-
-    // Filtramos las estaciones según el dominio para evitar mezclar señales
-    const stations = allStations.filter(s => isRDMLS ? s.sub === 'rdmls' : s.sub === 'vls');
     const [currentStation, setCurrentStation] = useState(stations[0]);
 
     const newsFlashes = [

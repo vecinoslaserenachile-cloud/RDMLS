@@ -62,7 +62,7 @@ export const STAGES: Stage[] = [
       },
       {
         id: 6,
-        text: "En la esquina de Matta y Prat (Plaza de Armas) existieron edificios emblemáticos hoy desaparecidos. ¿Qué histórica fábrica funcionaba en la esquina central de esa imagen?",
+        text: "¿Qué histórica fábrica de papayas funcionaba en la esquina de Matta y Prat?",
         options: ["Casa Fábrica de Papayas Ceres (Anastassiou)", "Fábrica de Carruajes Juan Bohón", "Cervecería La Serena", "Imprenta El Día"],
         correctIndex: 0,
         explanation: "La Casa Fábrica de Papayas Ceres de Anastassiou fue un punto icónico de la gastronomía serenense por décadas.",
@@ -86,7 +86,7 @@ export const STAGES: Stage[] = [
       },
       {
         id: 9,
-        text: "¿Qué importante sistema de pago electrónico en Chile tuvo a la Región de Coquimbo como piloto nacional para su primera etapa de instalación?",
+        text: "¿Qué sistema de pago tuvo a la región como piloto nacional para su instalación?",
         options: ["Redcompra (Transbank)", "CuentaRUT", "Mercado Pago", "Onepay"],
         correctIndex: 0,
         explanation: "La Serena y Coquimbo fueron las ciudades elegidas como plan piloto para masificar el uso de tarjetas de débito Redcompra en el comercio local.",
@@ -118,7 +118,7 @@ export const STAGES: Stage[] = [
       },
       {
         id: 13,
-        text: "¿Cómo se llama la concurrida plaza ubicada en la intersección de Avenida de Aguirre con Larraín Alcalde?",
+        text: "¿Cómo se llama la plaza en la esquina de Av. de Aguirre con Larraín Alcalde?",
         options: ["Plaza Buenos Aires", "Plaza de Armas", "Plaza Tenri", "Plaza de los Poetas"],
         correctIndex: 0,
         explanation: "La Plaza Buenos Aires es un punto neurálgico que conecta la Avenida de Aguirre con Larraín Alcalde.",
@@ -126,7 +126,7 @@ export const STAGES: Stage[] = [
       },
       {
         id: 14,
-        text: "¿Cerca de qué localidad de La Serena se encuentra el puente sobre el Río Elqui que está próximo a la captación de agua potable para la zona?",
+        text: "¿En qué localidad está el puente sobre el Elqui cerca de la captación de agua?",
         options: ["Las Rojas", "Algarrobito", "Lambert", "Altovalsol"],
         correctIndex: 0,
         explanation: "El puente de la localidad de Las Rojas cruza el Río Elqui cerca de un punto vital de captación hídrica para La Serena y Coquimbo.",

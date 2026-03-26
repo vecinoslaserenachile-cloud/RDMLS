@@ -618,8 +618,8 @@ export default function HubDashboard() {
 
     const servicios = [
         {
-            id: 'vls-trivia', title: 'VLSabes: Juegaprende', subtitle: 'Pilar #2: Trivia Educativa y Soberanía Comunicacional',
-            icon: Gamepad2, color: '#FFD700', path: '/vlsabes', active: true, badge: 'TRIVIA'
+            id: 'vls-trivia', title: isRDMLS ? 'Saberes: Gestión del Conocimiento' : 'VLSabes: Juegaprende', subtitle: isRDMLS ? 'Pilar #2: Saberes, Historia y Soberanía' : 'Pilar #2: Trivia Educativa y Soberanía Comunicacional',
+            icon: Gamepad2, color: '#FFD700', path: '/vlsabes', active: true, badge: isRDMLS ? 'SABERES' : 'TRIVIA'
         },
         {
             id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
@@ -863,9 +863,23 @@ export default function HubDashboard() {
         .filter(a => {
             if (!isRDMLS) return true;
             // Purge ludic/citizen-only apps from RDMLS
-            const vlsOnly = ['tienda-poleras', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'vhs-tv', 'cdls-club', 'difundir-app', 'stickers-portal', 'laico', 'ecumenico', 'vls-motors', 'tornamesa-digital'];
+            const vlsOnly = [
+                'tienda-poleras', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'vhs-tv', 'cdls-club', 
+                'difundir-app', 'stickers-portal', 'laico', 'ecumenico', 'vls-motors', 'tornamesa-digital',
+                'galaxia-disco', 'memory-portal', 'kiosko-diarios', 'muralismo', 'operacion-ls', 
+                'personal-stereo', 'tornamesa-digital', 'gym-3d', 'retro-gamer-room', 'vhs-tv', 
+                'stickers-portal', 'glosario-vls', 'legacy-game', 'serenito-1945'
+            ];
             // VLSabes (vls-trivia) is EXPLICITLY ALLOWED as it's part of the educational pillar
             return !vlsOnly.includes(a.id);
+        })
+        .map(app => {
+            if (isRDMLS) {
+                // Renombrar apps para el portal institucional
+                if (app.id === 'vls-trivia') return { ...app, title: 'Saberes Regionales', badge: 'INSTITUCIONAL' };
+                if (app.id === 'smart-learning') return { ...app, title: 'Inducción Municipal', badge: 'RRHH' };
+            }
+            return app;
         });
     const filteredApps = allApps.filter(app =>
         (app.title || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
@@ -879,7 +893,7 @@ export default function HubDashboard() {
             description: 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'identity-gate', 'distances', 'paseo3d', 'historic-3d']
+            modules: ['vecinojos', 'camaras-faro', 'identity-gate', 'distances', 'paseo3d', 'historic-3d', 'servicios-publicos']
         },
         {
             id: 'admin',
@@ -1101,6 +1115,67 @@ export default function HubDashboard() {
     // Tenant guards (después de todos los hooks, válido por reglas de React)
     if (curTenant === 'gore-coquimbo') return <GoreDashboard />;
     if (curTenant === 'vecino-portal-only') return <Navigate to="/vecinos" />;
+
+    if (isRDMLS) {
+        return (
+            <div className="page-container trencadis-guell" style={{ paddingTop: 'var(--nav-height, 60px)', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                {/* 1. Huincha Superior */}
+                <div style={{
+                    width: '100%',
+                    background: 'linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)',
+                    borderBottom: '2px solid #ef4444',
+                    padding: '0.5rem 1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '0.85rem',
+                    zIndex: 1000,
+                    minHeight: '60px'
+                }}>
+                    <div key={msgIndex} className="animate-slide-up" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', border: `1px solid ${CurrentMessage.color}50` }}>
+                            {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
+                        </div>
+                        <span style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', animation: 'pulse 2s infinite' }}></span>
+                            {CurrentMessage.text}
+                        </span>
+                    </div>
+                </div>
+
+                <div style={{ padding: '2rem 1rem', width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
+                    {/* 2. Radio Dial */}
+                    <div style={{ width: '100%', position: 'relative', zIndex: 100 }}>
+                        <RDMLSRadioDial />
+                    </div>
+
+                    {/* 3. Cartel Burdeo Municipal */}
+                    <div className="picasso-fractal" style={{ 
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', 
+                        width: '100%', maxWidth: '850px', padding: '2.5rem', borderRadius: '30px', 
+                        background: 'rgba(80, 5, 5, 0.65)', border: '2px solid #f59e0b', 
+                        boxShadow: '0 15px 40px rgba(0,0,0,0.4)', position: 'relative' 
+                    }}>
+                        <div style={{ position: 'absolute', top: -30, background: '#f59e0b', padding: '0.4rem 1.5rem', borderRadius: '20px', color: '#000', fontWeight: '900', fontSize: '0.8rem', letterSpacing: '2px' }}>PORTAL INSTITUCIONAL</div>
+                        <img src="/escudo.png" style={{ height: '120px', filter: 'drop-shadow(0 0 15px rgba(245,158,11,0.5))' }} alt="Muni La Serena" />
+                        <h1 style={{ color: 'white', fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', fontWeight: '950', letterSpacing: '-1px', margin: 0, textAlign: 'center', textShadow: '0 10px 20px rgba(0,0,0,0.5)' }}>I. MUNICIPALIDAD DE LA SERENA</h1>
+                        <p style={{ color: '#fcd34d', fontWeight: '900', fontSize: '1.2rem', letterSpacing: '3px', textTransform: 'uppercase', margin: 0 }}>Radio Digital Municipal RDMLS.cl</p>
+                    </div>
+
+                    {/* 4. Footer Institucional RDMLS */}
+                    <footer style={{ 
+                        marginTop: '2rem', padding: '2rem', textAlign: 'center', 
+                        width: '100%', color: 'rgba(255,255,255,0.6)', fontSize: '1rem',
+                        borderTop: '1px solid rgba(245,158,11,0.2)', fontWeight: '500', letterSpacing: '1px'
+                    }}>
+                        <p>www.rdmls.cl · IMLS COMUNICACIONES 2026</p>
+                        <p style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '5px' }}>Ilustre Municipalidad de La Serena</p>
+                    </footer>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -1488,15 +1563,19 @@ export default function HubDashboard() {
                                 <span style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold', fontFamily: 'monospace' }}>{formatoHora}</span>
                             </div>
 
-                            <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                                <Map size={18} color="#38bdf8" />
-                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
-                            </button>
+                            {!isRDMLS && (
+                                <>
+                                    <button onClick={() => navigate('/serenamet')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(56, 189, 248, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                                        <Map size={18} color="#38bdf8" />
+                                        <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>SERENAMET</span>
+                                    </button>
 
-                            <button onClick={() => navigate('/sombreros')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(167, 139, 250, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
-                                <Star size={18} color="#a78bfa" />
-                                <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>LAB. IDEAS</span>
-                            </button>
+                                    <button onClick={() => navigate('/sombreros')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(167, 139, 250, 0.2)', padding: '0.5rem 1.2rem', borderRadius: '12px' }}>
+                                        <Star size={18} color="#a78bfa" />
+                                        <span style={{ fontSize: '0.85rem', color: 'white', fontWeight: 'bold' }}>LAB. IDEAS</span>
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </header>
 
@@ -1821,6 +1900,7 @@ export default function HubDashboard() {
 
                     <div style={{ height: '5rem' }} />
 
+                    {!isRDMLS && (
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(236, 72, 153, 0.5))' }}></div>
@@ -1864,9 +1944,10 @@ export default function HubDashboard() {
                             <button onClick={() => window.open('https://laserena.cl/noticias', '_blank')} className="btn-glass" style={{ fontSize: '0.9rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}>Ver Archivo de Noticias (laserena.cl) <Globe size={14} style={{ marginLeft: '5px' }} /></button>
                         </div>
                     </div>
+                    )}
 
                     {/* Featured Business Spotlight - VLS MOTORS */}
-                    <VLSMotorsSpot />
+                    {!isRDMLS && <VLSMotorsSpot />}
 
                     <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
@@ -1990,6 +2071,7 @@ export default function HubDashboard() {
                     </div>
 
                     {/* NUEVA SECCIÓN CÁMARAS EN VIVO C5 */}
+                    {!isRDMLS && (
                     <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5))' }}></div>
@@ -2145,6 +2227,7 @@ export default function HubDashboard() {
                             </div>
                         </div>
                     </div>
+                    )}
                 </div>
             </div>
             {showTiendaPoleras && <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />}

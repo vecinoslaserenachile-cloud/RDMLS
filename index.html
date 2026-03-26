@@ -74,6 +74,20 @@
       if (e.reason && e.reason.message) msg = e.reason.message;
       logErrorToConsole(msg, true);
     });
+
+    // AGGRESSIVE PURGE FOR RDMLS (Institutional Mode)
+    if (window.location.hostname.includes('rdmls')) {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+          for (let registration of registrations) { registration.unregister(); }
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          for (let name of names) caches.delete(name);
+        });
+      }
+    }
   </script>
 </head>
 

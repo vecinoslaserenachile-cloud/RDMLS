@@ -46,6 +46,7 @@ import GameVLS from './pages/GameVLS.jsx';
 import VLSMotorsShowroom from './pages/VLSMotorsShowroom.jsx';
 import VLSInduccion from './pages/VLSInduccion.jsx';
 import Induccion26 from './pages/Induccion26.jsx';
+import Serenito1945Page from './pages/Serenito1945Page.jsx';
 import VLSQuantumWatch from './components/VLSQuantumWatch';
 import VLSConsoleSound from './components/VLSConsoleSound';
 import DevPortal from './pages/DevPortal';
@@ -136,7 +137,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const host = (window.location.host || window.location.hostname || '').toLowerCase();
+const host = (window.location.hostname || window.location.host || '').toLowerCase();
 const isRdmlsDns = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
 const isPuertaDns = host.includes('puertasmart.cl');
 
@@ -145,14 +146,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <ErrorBoundary>
     <LanguageProvider>
       <BrowserRouter>
-        {(location.pathname !== '/induccion' && location.pathname !== '/induccion_imls' && location.pathname !== '/vlsabes') && <VLSQuantumWatch isRDMLS={isRdmlsDns} />}
+        {(location.pathname !== '/induccion' && location.pathname !== '/induccion_imls' && location.pathname !== '/vlsabes' && !isRdmlsDns) && <VLSQuantumWatch isRDMLS={isRdmlsDns} />}
         {isRdmlsDns ? (
           <Routes>
             <Route path="/welcome" element={<Navigate to="/" replace />} />
             <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} isRDMLS={isRdmlsDns} />} />
-            <Route path="/" element={<App />}>
-              <Route index element={<CentroRadio />} />
-            </Route>
+            <Route path="/" element={<CentroRadio />} />
             <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -205,6 +204,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route index element={<HubDashboard />} />
             </Route>
             <Route path="/bella" element={<BellaDashboard />} />
+            <Route path="/1945" element={<Serenito1945Page />} />
             <Route path="/lite" element={<LitePortal />} />
             <Route path="/sombreros" element={<DeBonoThinkingHats />} />
             <Route path="*" element={<Navigate to="/" />} />

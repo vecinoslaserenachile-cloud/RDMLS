@@ -136,8 +136,12 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
       isCorrect: i === currentQuestion.correctIndex
     }));
     
-    // Shuffle them
-    const shuffled = [...optionsWithOriginalIndex].sort(() => Math.random() - 0.5);
+    // Fisher-Yates Shuffle
+    const shuffled = [...optionsWithOriginalIndex];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
     
     // Find where the correct answer ended up
     const newCorrectIdx = shuffled.findIndex(opt => opt.isCorrect);

@@ -18,7 +18,12 @@ const IMAGENES_REALES = {
     "q1_faro": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Faro_Monumental_de_La_Serena%2C_Chile.jpg",
     "q2_cruz": "https://upload.wikimedia.org/wikipedia/commons/6/64/Cruz_del_Tercer_Milenio_Coquimbo.jpg",
     "q3_tololo": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Cerro_Tololo_Inter-American_Observatory.jpg",
-    "q3_rio": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Valle_del_Elqui.jpg"
+    "q3_rio": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Valle_del_Elqui.jpg",
+    "q1_plan_serena": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Valle_del_Elqui.jpg",
+    "q1_estilo": "https://upload.wikimedia.org/wikipedia/commons/8/87/Iglesia_de_Santo_Domingo%2C_La_Serena.jpg",
+    "q1_parque": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jard%C3%ADn_del_Coraz%C3%B3n_en_La_Serena.jpg/1280px-Jard%C3%ADn_del_Coraz%C3%B3n_en_La_Serena.jpg",
+    "q1_regimiento": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Cerro_Tololo_Inter-American_Observatory.jpg",
+    "q1_dulce": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Chumbeque.jpg"
 };
 
 const VLSTokenIcon = ({ size = 100 }) => (
@@ -109,8 +114,32 @@ export default function VlsSmartBillionaire({ onClose }) {
     
     const activeStage = STAGES[currentStageIdx];
     const currentQuestion = activeStage?.questions[currentQuestionIdx];
+    const [shuffledOptions, setShuffledOptions] = useState([]);
+    const [correctIdxForUI, setCorrectIdxForUI] = useState(0);
     const [selectedOpt, setSelectedOpt] = useState(null);
     const [isAnswered, setIsAnswered] = useState(false);
+
+    // Fisher-Yates Shuffle
+    const shuffleArray = (array) => {
+        const newArr = [...array];
+        for (let i = newArr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
+        }
+        return newArr;
+    };
+
+    useEffect(() => {
+        if (currentQuestion) {
+            const optsWithFlags = currentQuestion.options.map((opt, i) => ({ text: opt, isCorrect: i === currentQuestion.correctIndex }));
+            const shuffled = shuffleArray(optsWithFlags);
+            setShuffledOptions(shuffled.map(o => o.text));
+            setCorrectIdxForUI(shuffled.findIndex(o => o.isCorrect));
+            setSelectedOpt(null);
+            setIsAnswered(false);
+            setHiddenOptions([]);
+        }
+    }, [currentQuestionIdx, currentStageIdx]);
 
     const getBgImage = () => IMAGENES_REALES[activeStage?.imgBg] || IMAGENES_REALES["default"];
     const getInterstitialImage = () => currentQuestion && currentQuestion.imgKey ? (IMAGENES_REALES[currentQuestion.imgKey] || IMAGENES_REALES["default"]) : IMAGENES_REALES["default"];
@@ -215,7 +244,7 @@ export default function VlsSmartBillionaire({ onClose }) {
         if (isAnswered || hiddenOptions.includes(idx)) return;
         setSelectedOpt(idx); setIsAnswered(true); stopSuspense(); setActiveJokerMsg("");
         
-        if (idx === currentQuestion.correctIndex) {
+        if (idx === correctIdxForUI) {
             playSfx(987.77, 1318.51, 'square', 0.3);
             setTimeout(() => {
                 if (globalQuestionCounter === 50) {
@@ -343,25 +372,31 @@ export default function VlsSmartBillionaire({ onClose }) {
                                         <span className="font-black text-xl">{activeStage.name}</span>
                                     </div>
                                     <div className="flex gap-3">
-                                        <button disabled={!lifelines.fifty || isAnswered} onClick={() => { setLifelines(p => ({...p, fifty: false})); setHiddenOptions([0,1,2,3].filter(i=>i!==currentQuestion.correctIndex).sort(()=>Math.random()-0.5).slice(0,2)); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.fifty ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="50/50"><Scissors size={22}/></button>
-                                        <button disabled={!lifelines.audience || isAnswered} onClick={() => { setLifelines(p => ({...p, audience: false})); setActiveJokerMsg(`📊 Público: Es la ${String.fromCharCode(65+currentQuestion.correctIndex)}!`); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.audience ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="Público"><Users size={22}/></button>
-                                        <button disabled={!lifelines.phone || isAnswered} onClick={() => { setLifelines(p => ({...p, phone: false})); setActiveJokerMsg(`📞 Serenito: "Correcto es ${String.fromCharCode(65+currentQuestion.correctIndex)}."`); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.phone ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="Llamada"><Phone size={22}/></button>
+                                        <button disabled={!lifelines.fifty || isAnswered} onClick={() => { setLifelines(p => ({...p, fifty: false})); setHiddenOptions([0,1,2,3].filter(i=>i!==correctIdxForUI).sort(()=>Math.random()-0.5).slice(0,2)); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.fifty ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="50/50"><Scissors size={22}/></button>
+                                        <button disabled={!lifelines.audience || isAnswered} onClick={() => { setLifelines(p => ({...p, audience: false})); setActiveJokerMsg(`📊 Público: ¡Sugerimos "${shuffledOptions[correctIdxForUI]}"!`); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.audience ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="Público"><Users size={22}/></button>
+                                        <button disabled={!lifelines.phone || isAnswered} onClick={() => { setLifelines(p => ({...p, phone: false})); setActiveJokerMsg(`📞 Serenito: "Correcto es '${shuffledOptions[correctIdxForUI]}'."`); }} className={`p-4 rounded-xl border-2 transition-all ${lifelines.phone ? 'vls-lifeline-active' : 'vls-lifeline-used'}`} title="Llamada"><Phone size={22}/></button>
                                     </div>
                                 </div>
 
-                                <div className="vls-glass-panel p-12 rounded-[2.5rem] relative shadow-2xl flex-1 flex flex-col justify-center">
-                                    {activeJokerMsg && <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#FFD700] text-[#0f172a] px-8 py-3 rounded-full font-black shadow-xl animate-bounce z-50 text-lg">{activeJokerMsg}</div>}
-                                    <h2 className="text-3xl md:text-5xl font-black mb-14 text-center text-white">{currentQuestion.text}</h2>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                        {currentQuestion.options.map((opt, i) => (
+                                <div className="vls-glass-panel p-6 md:p-12 rounded-[2.5rem] relative shadow-2xl flex-1 flex flex-col min-h-0">
+                                    {activeJokerMsg && <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#FFD700] text-[#0f172a] px-8 py-3 rounded-full font-black shadow-xl animate-bounce z-50 text-lg whitespace-nowrap">{activeJokerMsg}</div>}
+                                    
+                                    {/* Zona de pregunta scrolleable */}
+                                    <div className="flex-1 overflow-y-auto w-full flex items-center justify-center mb-6 vls-scrollbar pr-2">
+                                        <h2 className="text-2xl md:text-5xl font-black text-center text-white pb-4">{currentQuestion?.text}</h2>
+                                    </div>
+
+                                    {/* Zona de botones fija */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 shrink-0">
+                                        {shuffledOptions.map((opt, i) => (
                                             <button key={i} disabled={hiddenOptions.includes(i) || isAnswered} onClick={() => handleAnswer(i)}
                                                 className={`p-7 text-left rounded-2xl border-2 transition-all font-bold text-2xl flex items-center ${
                                                     hiddenOptions.includes(i) ? 'opacity-0 pointer-events-none' :
-                                                    selectedOpt === i ? (i === currentQuestion.correctIndex ? 'border-emerald-400 bg-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.3)]' : 'border-red-500 bg-red-500/20') : 
+                                                    selectedOpt === i ? (i === correctIdxForUI ? 'border-emerald-400 bg-emerald-500/20 shadow-[0_0_40px_rgba(16,185,129,0.3)]' : 'border-red-500 bg-red-500/20') : 
                                                     'border-white/10 hover:border-[#FFD700]/60 bg-black/50 hover:bg-white/5'
                                                 }`}
                                             >
-                                                <span className="text-[#FFD700] mr-5 font-black">[{String.fromCharCode(65+i)}]</span> {opt}
+                                                {opt}
                                             </button>
                                         ))}
                                     </div>

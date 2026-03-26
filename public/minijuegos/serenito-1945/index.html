@@ -3,487 +3,861 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Juego Serenito 1945 - Master Edition</title>
+    <title>Serenito 1945 · VLS Master Edition</title>
+    <meta property="og:title" content="🛩️ Serenito 1945 – Juego Oficial de Vecinos La Serena">
+    <meta property="og:description" content="¡Defiende La Serena a bordo del Halcón Serenito! Enfrenta oleadas de enemigos y Jefes Finales épicos. Juega en vecinoslaserena.cl/1945">
+    <meta property="og:image" content="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/assets/og-1945.jpg">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Press+Start+2P&display=swap');
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            margin: 0;
-            padding: 0;
-            background-color: #020617;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            background: #020617;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            height: 100dvh; overflow: hidden;
+            font-family: 'Orbitron', sans-serif; color: #fff;
+        }
+        #gameWrapper {
+            position: relative;
+            box-shadow: 0 0 80px rgba(56,189,248,0.4);
+            border: 6px solid #1e293b;
+            border-radius: 16px;
             overflow: hidden;
-            font-family: 'Courier New', Courier, monospace;
+            touch-action: none;
         }
-        #juegoCanvas {
-            background-color: #0f172a;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
-            max-width: 100%;
-            max-height: 100%;
-            border: 4px solid #1e293b;
-        }
+        #juegoCanvas { image-rendering: pixelated; display: block; }
         #uiLayer {
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 500px;
-            height: 100%;
-            pointer-events: none;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; display: flex; flex-direction: column;
+            padding: 10px; z-index: 10;
         }
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            pointer-events: auto;
+        .stats-bar { display: flex; justify-content: space-between; gap: 6px; pointer-events: auto; }
+        .stat-panel {
+            background: rgba(15,23,42,0.88); backdrop-filter: blur(8px);
+            border: 1px solid rgba(56,189,248,0.3); color: #38bdf8;
+            padding: 8px 14px; border-radius: 12px; font-size: 11px; font-weight: 900;
+            display: flex; flex-direction: column; min-width: 70px;
         }
-        .stat-box {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 20px;
-            font-weight: 900;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        .stat-panel label { font-size: 7px; color: #94a3b8; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; }
+        .stat-panel span { font-size: 16px; font-family: 'Press Start 2P', cursive; }
+        #bossBar {
+            position: absolute; bottom: 60px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.8); border: 2px solid #ef4444;
+            border-radius: 8px; padding: 6px 10px; display: none; pointer-events: none;
         }
+        #bossLabel { color: #ef4444; font-size: 9px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+        #bossHealthOuter { height: 12px; background: #1e293b; border-radius: 6px; overflow: hidden; border: 1px solid #ef4444; }
+        #bossHealthInner { height: 100%; background: linear-gradient(90deg, #ef4444, #f97316); transition: width 0.2s; border-radius: 6px; }
+        #shieldBar {
+            position: absolute; bottom: 130px; left: 10px; right: 10px;
+            background: rgba(0,0,0,0.7); border: 1px solid #38bdf8;
+            border-radius: 6px; padding: 4px 8px; display: none; pointer-events: none;
+        }
+        #shieldLabel { color: #38bdf8; font-size: 8px; font-weight: 900; letter-spacing: 1px; margin-bottom: 3px; }
+        #shieldOuter { height: 8px; background: #0f172a; border-radius: 4px; overflow: hidden; }
+        #shieldInner { height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8); transition: width 0.2s; }
         #gameOverScreen {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            background: rgba(2, 6, 23, 0.98);
-            padding: 50px;
-            border-radius: 30px;
-            border: 4px solid #f43f5e;
-            box-shadow: 0 0 100px rgba(244, 63, 94, 0.3);
-            pointer-events: auto;
-            z-index: 1000;
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); text-align: center;
+            background: rgba(2,6,23,0.97); backdrop-filter: blur(15px);
+            padding: 40px 30px; border-radius: 30px; border: 3px solid #f43f5e;
+            box-shadow: 0 0 100px rgba(244,63,94,0.4); pointer-events: auto;
+            z-index: 1000; width: 88%; max-width: 360px;
         }
-        #gameOverScreen h1 {
-            color: #f43f5e;
-            margin-top: 0;
-            font-size: 42px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
+        #winScreen {
+            display: none; position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%,-50%); text-align: center;
+            background: rgba(2,6,23,0.97); backdrop-filter: blur(15px);
+            padding: 40px 30px; border-radius: 30px; border: 3px solid #fbbf24;
+            box-shadow: 0 0 100px rgba(251,191,36,0.4); pointer-events: auto;
+            z-index: 1000; width: 88%; max-width: 360px;
         }
-        #gameOverScreen p {
-            color: #94a3b8;
-            font-size: 24px;
-            margin-bottom: 35px;
+        #gameOverScreen h1 { font-family: 'Press Start 2P'; color: #f43f5e; font-size: 18px; line-height: 1.5; margin-bottom: 10px; text-shadow: 0 0 20px rgba(244,63,94,0.5); }
+        #winScreen h1 { font-family: 'Press Start 2P'; color: #fbbf24; font-size: 16px; line-height: 1.5; margin-bottom: 10px; }
+        #gameOverScreen p, #winScreen p { color: #94a3b8; font-size: 13px; margin: 10px 0 20px; }
+        .arcade-btn {
+            background: linear-gradient(135deg, #f43f5e, #be123c);
+            color: white; border: none; padding: 14px 28px;
+            font-size: 13px; border-radius: 30px; cursor: pointer;
+            font-weight: 900; letter-spacing: 2px; width: 100%;
+            font-family: 'Orbitron', sans-serif; margin-bottom: 8px;
+            transition: transform 0.15s; box-shadow: 0 6px 20px rgba(244,63,94,0.4);
         }
-        button {
-            background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        .arcade-btn:hover { transform: scale(1.04); }
+        .arcade-btn.share-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 6px 20px rgba(16,185,129,0.4);
         }
-        button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 15px 35px rgba(244, 63, 94, 0.6);
+        #levelIndicator {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            font-family: 'Press Start 2P'; font-size: 32px; color: #fff;
+            opacity: 0; pointer-events: none; text-shadow: 0 0 20px rgba(56,189,248,0.8);
+            z-index: 20; transition: opacity 0.5s; white-space: nowrap;
         }
+        #bossAlert {
+            position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%);
+            font-family: 'Press Start 2P'; font-size: 20px; color: #f43f5e;
+            opacity: 0; pointer-events: none; text-shadow: 0 0 20px rgba(244,63,94,0.8);
+            z-index: 20; white-space: nowrap; animation: none;
+        }
+        @keyframes bossAlertAnim { 0%,100%{opacity:0;transform:translate(-50%,-50%) scale(0.8)} 20%,80%{opacity:1;transform:translate(-50%,-50%) scale(1.05)} }
         .controls-hint {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(148, 163, 184, 0.6);
-            font-size: 12px;
-            text-align: center;
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            color: rgba(148,163,184,0.4); font-size: 8px; text-align: center;
+            letter-spacing: 1px; line-height: 2; pointer-events: none; white-space: nowrap;
+        }
+        .scanlines {
+            position: absolute; inset: 0; pointer-events: none; z-index: 5;
+            background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.15) 50%),
+                        linear-gradient(90deg,rgba(255,0,0,0.04),rgba(0,255,0,0.01),rgba(0,0,255,0.04));
+            background-size: 100% 4px, 3px 100%;
+        }
+        /* LANDING PAGE BANNER */
+        #shareBanner {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(15,23,42,0.9); border-bottom: 2px solid #38bdf8;
+            padding: 6px 14px; width: 100%; font-size: 11px; font-weight: 900;
+            letter-spacing: 1px; color: #38bdf8;
+        }
+        #shareBanner button {
+            background: linear-gradient(135deg,#10b981,#059669); border: none;
+            color: white; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+            font-weight: 900; font-size: 10px; display: flex; align-items: center; gap: 5px;
         }
     </style>
 </head>
 <body>
+    <div id="shareBanner">
+        <span>🛩️ SERENITO 1945 · VLS MASTER · vecinoslaserena.cl/1945</span>
+        <button onclick="compartirJuego()">📤 COMPARTIR</button>
+    </div>
 
-    <canvas id="juegoCanvas"></canvas>
-    
-    <div id="uiLayer">
-        <div class="stats">
-            <div class="stat-box">SCORE: <span id="scoreVal">0</span></div>
-            <div class="stat-box">BOMBS: <span id="bombVal">10</span></div>
-        </div>
-        
-        <div id="gameOverScreen">
-            <h1>MISIÓN FALLIDA</h1>
-            <p>Puntuación: <strong id="finalScore" style="color: white;">0</strong></p>
-            <button onclick="reiniciarJuego()">REINTENTAR</button>
-        </div>
+    <div id="gameWrapper">
+        <canvas id="juegoCanvas"></canvas>
+        <div class="scanlines"></div>
 
-        <div class="controls-hint">
-            ESPACIO: METRALLETA • B/X: BOMBAS • FLECHAS: MOVER
+        <div id="uiLayer">
+            <div class="stats-bar">
+                <div class="stat-panel">
+                    <label>SCORE</label>
+                    <span id="scoreVal">0</span>
+                </div>
+                <div class="stat-panel" style="color:#fbbf24;border-color:rgba(251,191,36,0.3)">
+                    <label>LEVEL</label>
+                    <span id="levelVal">1</span>
+                </div>
+                <div class="stat-panel" style="color:#10b981;border-color:rgba(16,185,129,0.3)">
+                    <label>VIDA</label>
+                    <span id="healthVal">100%</span>
+                </div>
+                <div class="stat-panel" style="color:#818cf8;border-color:rgba(129,140,248,0.3)">
+                    <label>ARMAS</label>
+                    <span id="weaponVal">★</span>
+                </div>
+                <div class="stat-panel" style="color:#f97316;border-color:rgba(249,115,22,0.3)">
+                    <label>BOMBAS</label>
+                    <span id="bombVal">10</span>
+                </div>
+            </div>
+
+            <div id="shieldBar">
+                <div id="shieldLabel">🛡️ ESCUDO</div>
+                <div id="shieldOuter"><div id="shieldInner" style="width:100%"></div></div>
+            </div>
+
+            <div id="bossBar">
+                <div id="bossLabel">⚠️ JEFE FINAL</div>
+                <div id="bossHealthOuter"><div id="bossHealthInner" style="width:100%"></div></div>
+            </div>
+
+            <div id="levelIndicator">LEVEL 1</div>
+            <div id="bossAlert">⚠️ BOSS INCOMING!</div>
+
+            <div id="gameOverScreen">
+                <h1>GAME<br>OVER</h1>
+                <p>Puntuación: <strong id="finalScore" style="color:#FFD700;font-family:'Press Start 2P';font-size:18px">0</strong></p>
+                <button class="arcade-btn" onclick="reiniciarJuego()">🔄 REINTENTAR</button>
+                <button class="arcade-btn share-btn" onclick="compartirJuego()">📤 COMPARTIR</button>
+            </div>
+
+            <div id="winScreen">
+                <h1>🏆 VICTORIA!</h1>
+                <p>¡Serenito salvó La Serena!<br><strong id="winScore" style="color:#fbbf24;font-family:'Press Start 2P';font-size:18px">0</strong></p>
+                <button class="arcade-btn" onclick="reiniciarJuego()">🔄 JUGAR DE NUEVO</button>
+                <button class="arcade-btn share-btn" onclick="compartirJuego()">📤 COMPARTIR VICTORIA</button>
+            </div>
+
+            <div class="controls-hint">TÁCTIL: TOCA/ARRASTRA • TECLADO: FLECHAS + ESPACIO (fuego) + B (bomba)</div>
         </div>
     </div>
 
     <script>
-        const canvas = document.getElementById('juegoCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreUI = document.getElementById('scoreVal');
-        const bombUI = document.getElementById('bombVal');
-        const gameOverScreen = document.getElementById('gameOverScreen');
-        const finalScoreUI = document.getElementById('finalScore');
+    const canvas = document.getElementById('juegoCanvas');
+    const ctx = canvas.getContext('2d');
 
-        function resizeCanvas() {
-            let isMobile = window.innerWidth <= 600;
-            canvas.width = isMobile ? window.innerWidth : 500;
-            canvas.height = window.innerHeight;
+    // UI refs
+    const scoreUI    = document.getElementById('scoreVal');
+    const levelUI    = document.getElementById('levelVal');
+    const healthUI   = document.getElementById('healthVal');
+    const weaponUI   = document.getElementById('weaponVal');
+    const bombUI     = document.getElementById('bombVal');
+    const bossBar    = document.getElementById('bossBar');
+    const bossInner  = document.getElementById('bossHealthInner');
+    const bossLabel  = document.getElementById('bossLabel');
+    const shieldBar  = document.getElementById('shieldBar');
+    const shieldInner= document.getElementById('shieldInner');
+    const levelInd   = document.getElementById('levelIndicator');
+    const bossAlert  = document.getElementById('bossAlert');
+    const goScreen   = document.getElementById('gameOverScreen');
+    const winScreen  = document.getElementById('winScreen');
+    const goScore    = document.getElementById('finalScore');
+    const winScore   = document.getElementById('winScore');
+
+    // Assets
+    const IMG = {
+        player: new Image(),
+        enemy:  new Image(),
+        terrain:new Image(),
+        ficha:  new Image(),
+        halcon: new Image()
+    };
+    // VLS repo assets
+    IMG.player.src  = 'assets/player.png';
+    IMG.enemy.src   = 'assets/enemy.png';
+    IMG.terrain.src = 'assets/terrain.png';
+    IMG.ficha.src   = 'assets/ficha.png';
+    // Halcón de Serenito desde repo GitHub
+    IMG.halcon.src  = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/assets/halcon_serenito.png';
+    IMG.halcon.onerror = () => { IMG.halcon = IMG.player; }; // fallback
+
+    // Game State
+    let score=0, bombs=10, health=100, shield=0, level=1, frames=0;
+    let gameOver=false, bossActive=false, bossDefeated=0;
+    const MAX_LEVELS = 5;
+
+    let balas=[], enemyBalas=[], bolas=[], enemigos=[], items=[], clouds=[], particles=[], boss=null;
+
+    const jugador = { x:0, y:0, w:64, h:64, spd:9, weaponLevel:1 };
+    const teclas = { ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false, Space:false };
+
+    // Boss configs per level
+    const BOSS_CONFIGS = [
+        { name:'CONDOR NEGRO',  w:100, h:100, hp:80,  speed:1.5, color:'#7c3aed' },
+        { name:'CÓNDOR ROJO',   w:130, h:130, hp:150, speed:2,   color:'#ef4444' },
+        { name:'HALCÓN OSCURO', w:160, h:160, hp:240, speed:2.5, color:'#f97316' },
+        { name:'SÚPER ROBOT',   w:200, h:200, hp:350, speed:3,   color:'#ec4899' },
+        { name:'OMEGA BOSS',    w:250, h:250, hp:500, speed:3.5, color:'#fbbf24' }
+    ];
+
+    // ── Resize ──────────────────────────────────
+    function resizeCanvas() {
+        const maxH = window.innerHeight - 50;
+        const isMobile = window.innerWidth <= 600;
+        canvas.width  = isMobile ? Math.min(window.innerWidth, 420) : 480;
+        canvas.height = maxH;
+        document.getElementById('gameWrapper').style.width  = canvas.width + 'px';
+        document.getElementById('gameWrapper').style.height = canvas.height + 'px';
+        jugador.x = canvas.width/2 - jugador.w/2;
+        jugador.y = canvas.height - 160;
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    // ── Controls ─────────────────────────────────
+    window.addEventListener('keydown', e => {
+        if (teclas.hasOwnProperty(e.code)) teclas[e.code] = true;
+        if (e.code === 'Space') { e.preventDefault(); disparar(); }
+        if (e.code === 'KeyB' || e.code === 'KeyX') lanzarBomba();
+    });
+    window.addEventListener('keyup', e => { if (teclas.hasOwnProperty(e.code)) teclas[e.code] = false; });
+
+    // ── Touch ────────────────────────────────────
+    let lastTap = 0;
+    canvas.addEventListener('touchstart', e => { moverTactil(e); gameActive = true; }, { passive: true });
+    canvas.addEventListener('touchmove',  e => { e.preventDefault(); moverTactil(e); }, { passive: false });
+    canvas.addEventListener('touchend',   e => {
+        const now = Date.now();
+        if (now - lastTap < 300) lanzarBomba();
+        lastTap = now;
+        disparar();
+    });
+    let gameActive = false;
+
+    function moverTactil(e) {
+        if (gameOver) return;
+        const rect = canvas.getBoundingClientRect();
+        const t = e.touches[0];
+        jugador.x = Math.max(0, Math.min(canvas.width - jugador.w, t.clientX - rect.left - jugador.w/2));
+        jugador.y = Math.max(0, Math.min(canvas.height - jugador.h - 10, t.clientY - rect.top - jugador.h/2));
+        if (frames % 5 === 0) disparar();
+    }
+
+    // ── Disparo ──────────────────────────────────
+    function disparar() {
+        if (gameOver) return;
+        const cx = jugador.x + jugador.w/2;
+        const cy = jugador.y;
+        if (jugador.weaponLevel === 1) {
+            balas.push({ x: cx-4, y: cy, w:8, h:24, v:18, color:'#38bdf8' });
+        } else if (jugador.weaponLevel === 2) {
+            balas.push({ x: cx-14, y: cy+10, w:7, h:22, v:20, color:'#fbbf24' });
+            balas.push({ x: cx+7,  y: cy+10, w:7, h:22, v:20, color:'#fbbf24' });
+        } else {
+            balas.push({ x: cx-4,  y: cy,    w:10,h:28, v:22, color:'#f43f5e' });
+            balas.push({ x: cx-18, y: cy+12, w:7, h:22, v:20, color:'#fbbf24' });
+            balas.push({ x: cx+11, y: cy+12, w:7, h:22, v:20, color:'#fbbf24' });
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+    }
 
-        let score = 0;
-        let bombs = 10;
-        let gameOver = false;
-        let frames = 0;
-        
-        let fondoY1 = 0;
-        let fondoY2 = -canvas.height;
-        const velocidadMundo = 4;
+    function lanzarBomba() {
+        if (gameOver || bombs <= 0) return;
+        bombs--;
+        bolas.push({ x: jugador.x + jugador.w/2-15, y: jugador.y, w:30, h:40, v:2, t:55, s:1 });
+    }
 
-        const jugador = {
-            x: canvas.width / 2 - 25,
-            y: canvas.height - 150,
-            width: 56,
-            height: 60,
-            velocidad: 8,
-            color1: '#ef4444', // Red
-            color2: '#ffffff'  // White
+    // ── Spawn ─────────────────────────────────────
+    function spawnEnemy() {
+        const rate = Math.max(8, 55 - level*6);
+        if (frames % rate !== 0) return;
+        const heavy = Math.random() > 0.75;
+        enemigos.push({
+            x: Math.random() * (canvas.width - 70),
+            y: -90,
+            w: heavy ? 76 : 56,
+            h: heavy ? 76 : 56,
+            v: Math.random()*1.5 + 2.5 + level*0.4,
+            hp: heavy ? 4 : 1,
+            maxHp: heavy ? 4 : 1,
+            heavy,
+            lastShot: frames,
+            wobble: Math.random() * Math.PI * 2,
+            wobbleAmp: heavy ? 60 : 30
+        });
+    }
+
+    function trySpawnBoss() {
+        // Spawn boss every 3000*(level) score milestone if hasn't been defeated this level
+        const milestone = level * 3000;
+        if (!bossActive && !boss && bossDefeated < level && score >= milestone) {
+            spawnBoss();
+        }
+    }
+
+    function spawnBoss() {
+        bossActive = true;
+        const cfg = BOSS_CONFIGS[Math.min(level-1, BOSS_CONFIGS.length-1)];
+        boss = {
+            x: canvas.width/2 - cfg.w/2,
+            y: -cfg.h,
+            w: cfg.w, h: cfg.h,
+            hp: cfg.hp, maxHp: cfg.hp,
+            speed: cfg.speed,
+            dir: 1,
+            color: cfg.color,
+            name: cfg.name,
+            phase: 1,
+            lastShot: frames,
+            lastShot2: frames,
+            angle: 0
         };
+        bossBar.style.display  = 'block';
+        bossLabel.innerText    = `⚠️ JEFE ${level}: ${cfg.name}`;
+        bossInner.style.width  = '100%';
+        // Alert animation
+        bossAlert.style.animation = 'none';
+        bossAlert.offsetHeight;
+        bossAlert.style.animation = 'bossAlertAnim 2.5s ease forwards';
+        enemigos = []; // clear normal enemies
+    }
 
-        let balas = [];
-        let bombas_proyectiles = [];
-        let enemigos = [];
-        let groundElements = [];
-        let explosiones = [];
-
-        const teclas = { ArrowUp: false, ArrowDown: false, ArrowLeft: false, ArrowRight: false, Space: false, KeyB: false, KeyX: false };
-
-        window.addEventListener('keydown', (e) => {
-            if (teclas.hasOwnProperty(e.code)) teclas[e.code] = true;
-            if (e.code === 'Space') disparar();
-            if (e.code === 'KeyB' || e.code === 'KeyX') lanzarBomba();
+    function spawnCloud() {
+        if (frames % 80 !== 0) return;
+        const layer = Math.floor(Math.random()*3)+1;
+        clouds.push({
+            x: Math.random()*canvas.width,
+            y: -250,
+            w: Math.random()*280+180,
+            h: Math.random()*120+80,
+            v: 1.5 + layer*1.5,
+            alpha: layer*0.12 + 0.06,
+            layer,
+            circs: Array.from({length:5}, () => ({
+                ox:(Math.random()-0.5)*90,
+                oy:(Math.random()-0.5)*40,
+                r: Math.random()*45+25
+            }))
         });
-        window.addEventListener('keyup', (e) => {
-            if (teclas.hasOwnProperty(e.code)) teclas[e.code] = false;
-        });
+    }
 
-        canvas.addEventListener('touchstart', (e) => { moverTactil(e); });
-        canvas.addEventListener('touchmove', (e) => { e.preventDefault(); moverTactil(e); }, { passive: false });
+    function spawnItem(x, y) {
+        if (Math.random() > 0.65) return;
+        const types = ['bomb','health','token','weapon','shield'];
+        const weights=  [0.20,  0.25,   0.20,   0.15,    0.20];
+        let r = Math.random(), cumul = 0, chosen = 'health';
+        for (let i=0; i<types.length; i++) { cumul += weights[i]; if (r < cumul) { chosen = types[i]; break; } }
+        items.push({ x, y, w:36, h:36, type: chosen, v:1.5, anim: 0 });
+    }
 
-        function moverTactil(e) {
-            if (gameOver) return;
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            jugador.x = Math.max(0, Math.min(canvas.width - jugador.width, touch.clientX - rect.left - (jugador.width / 2)));
-            jugador.y = Math.max(0, Math.min(canvas.height - jugador.height, touch.clientY - rect.top - (jugador.height / 2)));
-            if (frames % 5 === 0) disparar();
-            if (frames % 20 === 0) lanzarBomba();
+    // ── Update ─────────────────────────────────────
+    function update() {
+        if (gameOver) return;
+        frames++;
+
+        // Level up
+        if (score >= level * 8000 && level < MAX_LEVELS) {
+            level++;
+            bossDefeated = 0;
+            levelUI.innerText = level;
+            levelInd.innerText = 'LEVEL ' + level;
+            levelInd.style.opacity = 1;
+            setTimeout(() => levelInd.style.opacity = 0, 2000);
         }
 
-        function disparar() {
-            if (gameOver) return;
-            balas.push({ x: jugador.x + (jugador.width / 2) - 4, y: jugador.y, width: 8, height: 20, velocidad: 15, color: '#fbbf24' });
-        }
+        // Movement
+        if (teclas.ArrowLeft  && jugador.x > 0) jugador.x -= jugador.spd;
+        if (teclas.ArrowRight && jugador.x < canvas.width - jugador.w) jugador.x += jugador.spd;
+        if (teclas.ArrowUp    && jugador.y > 0) jugador.y -= jugador.spd;
+        if (teclas.ArrowDown  && jugador.y < canvas.height - jugador.h) jugador.y += jugador.spd;
+        if (teclas.Space && frames % 6 === 0) disparar();
 
-        function lanzarBomba() {
-            if (gameOver || bombs <= 0) return;
-            bombs--;
-            bombas_proyectiles.push({ 
-                x: jugador.x + (jugador.width / 2) - 10, 
-                y: jugador.y + 20, 
-                width: 20, 
-                height: 30, 
-                velocidad: 2, 
-                scale: 1,
-                timer: 40 
-            });
-        }
+        // Auto fire on mobile
+        if (gameActive && frames % 8 === 0) disparar();
 
-        function spawnEnemy() {
-            if (frames % 40 === 0) {
-                const colors = ['#38bdf8', '#fbbf24', '#a855f7', '#10b981'];
-                const size = 50;
-                enemigos.push({
-                    x: Math.random() * (canvas.width - size),
-                    y: -size,
-                    width: size,
-                    height: size,
-                    velocidad: Math.random() * 3 + 3,
-                    color: colors[Math.floor(Math.random() * colors.length)]
-                });
+        // Player bullets
+        for (let i = balas.length-1; i >= 0; i--) {
+            balas[i].y -= balas[i].v;
+            if (balas[i].y < -30) { balas.splice(i,1); continue; }
+            // Hit boss
+            if (boss && colide(balas[i], boss)) {
+                damageBoss(1);
+                balas.splice(i,1);
+                continue;
             }
-        }
-
-        function spawnGround() {
-            if (frames % 100 === 0) {
-                const types = ['hangar', 'radar', 'tanque', 'planta'];
-                const type = types[Math.floor(Math.random() * types.length)];
-                groundElements.push({
-                    x: Math.random() * (canvas.width - 80),
-                    y: -100,
-                    width: type === 'hangar' ? 80 : 40,
-                    height: type === 'hangar' ? 60 : 40,
-                    type: type,
-                    hp: type === 'hangar' ? 3 : 1
-                });
-            }
-        }
-
-        function colision(r1, r2) {
-            return r1.x < r2.x + r2.width && r1.x + r1.width > r2.x && r1.y < r2.y + r2.height && r1.y + r1.height > r2.y;
-        }
-
-        function actualizar() {
-            if (gameOver) return;
-            
-            fondoY1 += velocidadMundo;
-            fondoY2 += velocidadMundo;
-            if (fondoY1 >= canvas.height) fondoY1 = fondoY2 - canvas.height;
-            if (fondoY2 >= canvas.height) fondoY2 = fondoY1 - canvas.height;
-
-            if (teclas.ArrowLeft && jugador.x > 0) jugador.x -= jugador.velocidad;
-            if (teclas.ArrowRight && jugador.x < canvas.width - jugador.width) jugador.x += jugador.velocidad;
-            if (teclas.ArrowUp && jugador.y > 0) jugador.y -= jugador.velocidad;
-            if (teclas.ArrowDown && jugador.y < canvas.height - jugador.height) jugador.y += jugador.velocidad;
-
-            balas.forEach((b, i) => {
-                b.y -= b.velocidad;
-                if (b.y < -50) balas.splice(i, 1);
-            });
-
-            bombas_proyectiles.forEach((b, i) => {
-                b.y += 1; // Cae lento respecto al avion
-                b.scale += 0.02; // Efecto de caer hacia el suelo
-                b.timer--;
-                if (b.timer <= 0) {
-                    crearExplosion(b.x + b.width/2, b.y + b.height/2, true);
-                    bombas_proyectiles.splice(i, 1);
+            // Hit enemies
+            let hit = false;
+            for (let j = enemigos.length-1; j >= 0; j--) {
+                if (colide(balas[i], enemigos[j])) {
+                    enemigos[j].hp--;
+                    if (enemigos[j].hp <= 0) {
+                        explosion(enemigos[j].x+enemigos[j].w/2, enemigos[j].y+enemigos[j].h/2, enemigos[j].heavy);
+                        spawnItem(enemigos[j].x, enemigos[j].y);
+                        score += enemigos[j].heavy ? 400 : 120;
+                        enemigos.splice(j,1);
+                    }
+                    hit = true; break;
                 }
-            });
-
-            enemigos.forEach((e, i) => {
-                e.y += e.velocidad;
-                if (e.y > canvas.height) enemigos.splice(i, 1);
-                
-                balas.forEach((b, bi) => {
-                    if (colision(b, e)) {
-                        crearExplosion(e.x + e.width/2, e.y + e.height/2);
-                        enemigos.splice(i, 1);
-                        balas.splice(bi, 1);
-                        score += 100;
-                    }
-                });
-
-                if (colision(jugador, e)) terminarJuego();
-            });
-
-            groundElements.forEach((g, i) => {
-                g.y += velocidadMundo;
-                if (g.y > canvas.height) groundElements.splice(i, 1);
-
-                bombas_proyectiles.forEach((b, bi) => {
-                    if (b.timer < 5 && colision(b, g)) {
-                        g.hp--;
-                        if (g.hp <= 0) {
-                            crearExplosion(g.x + g.width/2, g.y + g.height/2, true);
-                            groundElements.splice(i, 1);
-                            score += 500;
-                            bombs += 1; // Reward bomb
-                        }
-                    }
-                });
-            });
-
-            explosiones.forEach((ex, i) => {
-                ex.radius += 2;
-                ex.opacity -= 0.02;
-                if (ex.opacity <= 0) explosiones.splice(i, 1);
-            });
-
-            spawnEnemy();
-            spawnGround();
-            scoreUI.innerText = score;
-            bombUI.innerText = bombs;
-            frames++;
-        }
-
-        function crearExplosion(x, y, isBig = false) {
-            explosiones.push({ x, y, radius: 10, opacity: 1, color: isBig ? '#f59e0b' : '#f43f5e' });
-        }
-
-        function dibujarFondo() {
-            ctx.fillStyle = '#0f172a';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            ctx.strokeStyle = 'rgba(56, 189, 248, 0.05)';
-            ctx.beginPath();
-            for(let x = 0; x < canvas.width; x += 40) { ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); }
-            for(let y = (fondoY1 % 40); y < canvas.height; y += 40) { ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); }
-            ctx.stroke();
-        }
-
-        function dibujarJugador() {
-            ctx.save();
-            ctx.translate(jugador.x + jugador.width/2, jugador.y + jugador.height/2);
-            
-            // Wings
-            ctx.fillStyle = jugador.color1;
-            ctx.fillRect(-28, -5, 56, 12);
-            ctx.fillStyle = jugador.color2;
-            ctx.fillRect(-28, 0, 56, 2);
-            
-            // Fuselage
-            ctx.fillStyle = jugador.color2;
-            ctx.fillRect(-8, -25, 16, 50);
-            ctx.fillStyle = jugador.color1;
-            ctx.fillRect(-8, -10, 16, 5);
-            
-            // Cockpit
-            ctx.fillStyle = '#38bdf8';
-            ctx.fillRect(-4, -18, 8, 12);
-            
-            // Engines
-            ctx.fillStyle = '#1e293b';
-            ctx.fillRect(-22, 2, 8, 10);
-            ctx.fillRect(14, 2, 8, 10);
-
-            // Tail
-            ctx.fillStyle = jugador.color1;
-            ctx.fillRect(-15, 20, 30, 6);
-            
-            ctx.restore();
-        }
-
-        function dibujarEnemigo(e) {
-            ctx.save();
-            ctx.translate(e.x + e.width/2, e.y + e.height/2);
-            ctx.rotate(Math.PI);
-            
-            ctx.fillStyle = e.color;
-            ctx.fillRect(-20, -5, 40, 10); // Wings
-            ctx.fillRect(-6, -20, 12, 40); // Body
-            ctx.fillStyle = 'rgba(0,0,0,0.3)';
-            ctx.fillRect(-2, -15, 4, 8); // Cockpit
-            
-            ctx.restore();
-        }
-
-        function dibujarGround(g) {
-            ctx.save();
-            ctx.translate(g.x, g.y);
-            
-            if (g.type === 'hangar') {
-                ctx.fillStyle = '#334155';
-                ctx.fillRect(0, 0, g.width, g.height);
-                ctx.fillStyle = '#ef4444';
-                ctx.fillRect(0, 0, g.width, 10); // Roof
-                ctx.fillStyle = '#0f172a';
-                ctx.fillRect(10, 20, g.width - 20, g.height - 20); // Door
-            } else if (g.type === 'radar') {
-                ctx.fillStyle = '#94a3b8';
-                ctx.fillRect(g.width/2 - 5, g.height - 10, 10, 10); // Base
-                ctx.strokeStyle = '#38bdf8';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(g.width/2, g.height/2, 15, 0, Math.PI * 2);
-                ctx.stroke();
-                // Scanning line
-                ctx.save();
-                ctx.translate(g.width/2, g.height/2);
-                ctx.rotate(frames * 0.1);
-                ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(15, 0); ctx.stroke();
-                ctx.restore();
-            } else if (g.type === 'tanque') {
-                ctx.fillStyle = '#166534'; // Drab Green
-                ctx.fillRect(5, 10, 30, 20); // Body
-                ctx.fillStyle = '#14532d';
-                ctx.fillRect(10, 5, 20, 15); // Turret
-                ctx.fillRect(20, 0, 4, 15); // Cannon
             }
-            
+            if (hit) { balas.splice(i,1); }
+        }
+
+        // Enemy bullets
+        for (let i = enemyBalas.length-1; i >= 0; i--) {
+            enemyBalas[i].y += enemyBalas[i].v;
+            if (enemyBalas[i].y > canvas.height) { enemyBalas.splice(i,1); continue; }
+            if (colide(enemyBalas[i], jugador)) {
+                const dmg = shield > 0 ? Math.floor(6 * 0.3) : 6;
+                if (shield > 0) shield = Math.max(0, shield - 20);
+                damagePlayer(dmg);
+                enemyBalas.splice(i,1);
+            }
+        }
+
+        // Bombs
+        for (let i = bolas.length-1; i >= 0; i--) {
+            bolas[i].y += 3; bolas[i].t--;
+            bolas[i].s += 0.02;
+            if (bolas[i].t <= 0) {
+                bombExplode(bolas[i].x+bolas[i].w/2, bolas[i].y+bolas[i].h/2);
+                bolas.splice(i,1);
+            }
+        }
+
+        // Enemies AI
+        for (let i = enemigos.length-1; i >= 0; i--) {
+            const e = enemigos[i];
+            e.wobble += 0.04;
+            e.x += Math.sin(e.wobble) * (e.heavy ? 1.2 : 0.7);
+            e.y += e.v;
+            if (e.y > canvas.height) { enemigos.splice(i,1); continue; }
+
+            // Enemy shoots back
+            const shotRate = e.heavy ? 50 : 90;
+            if (frames - e.lastShot > shotRate + Math.random()*30) {
+                const bx = e.x + e.w/2 - 4;
+                const by = e.y + e.h;
+                const dx = jugador.x + jugador.w/2 - bx;
+                const dy = jugador.y + jugador.h/2 - by;
+                const dist = Math.hypot(dx, dy) || 1;
+                const spd = e.heavy ? 7 : 5;
+                const nx = (dx/dist)*spd;
+                const ny = (dy/dist)*spd;
+                enemyBalas.push({ x: bx, y: by, w:7, h:7, v:spd, vx:nx, vy:ny, color:'#f43f5e', aimed:true });
+                e.lastShot = frames;
+            }
+
+            if (colide(jugador, e)) { damagePlayer(15); enemigos.splice(i,1); }
+        }
+
+        // Update aimed bullets (diagonal motion)
+        for (let i = enemyBalas.length-1; i >= 0; i--) {
+            if (enemyBalas[i].aimed) {
+                enemyBalas[i].x += enemyBalas[i].vx;
+                enemyBalas[i].y += enemyBalas[i].vy;
+                if (enemyBalas[i].x < -20 || enemyBalas[i].x > canvas.width+20 || enemyBalas[i].y > canvas.height+20) {
+                    enemyBalas.splice(i,1); continue;
+                }
+                if (colide(enemyBalas[i], jugador)) {
+                    const dmg = shield > 0 ? 2 : 8;
+                    if (shield > 0) shield = Math.max(0, shield - 25);
+                    damagePlayer(dmg);
+                    enemyBalas.splice(i,1);
+                }
+            }
+        }
+
+        // Boss update
+        if (boss) {
+            // Entry
+            if (boss.y < 50) { boss.y += 3; }
+            else {
+                boss.angle += 0.025;
+                boss.x += boss.speed * boss.dir;
+                boss.x += Math.sin(boss.angle * 1.3) * 0.8;
+                if (boss.x + boss.w > canvas.width || boss.x < 0) boss.dir *= -1;
+
+                // Phase 2 at 50% hp
+                if (boss.hp <= boss.maxHp*0.5) boss.phase = 2;
+
+                // Boss shoots patterns
+                const sh1 = boss.phase === 1 ? 40 : 22;
+                if (frames - boss.lastShot > sh1) {
+                    const cx = boss.x+boss.w/2; const cy = boss.y+boss.h;
+                    const shots = boss.phase === 1 ? 3 : 5;
+                    for (let s=0; s<shots; s++) {
+                        const a = (Math.PI/shots)*s - Math.PI/2 + Math.PI/10;
+                        enemyBalas.push({ x:cx, y:cy, w:10, h:10, v:8, vx:Math.cos(a)*6.5, vy:Math.sin(a)*6.5, color:'#f97316', aimed:true });
+                    }
+                    boss.lastShot = frames;
+                }
+                // Spiral shots phase 2
+                if (boss.phase === 2 && frames - boss.lastShot2 > 15) {
+                    const a = boss.angle * 3;
+                    const cx = boss.x+boss.w/2; const cy = boss.y+boss.h;
+                    enemyBalas.push({ x:cx, y:cy, w:8, h:8, v:7, vx:Math.cos(a)*6, vy:Math.sin(a)*6, color:'#ef4444', aimed:true });
+                    enemyBalas.push({ x:cx, y:cy, w:8, h:8, v:7, vx:Math.cos(a+Math.PI)*6, vy:Math.sin(a+Math.PI)*6, color:'#ef4444', aimed:true });
+                    boss.lastShot2 = frames;
+                }
+
+                // Player collision
+                if (colide(jugador, boss)) damagePlayer(20);
+            }
+
+            // Update boss health bar
+            const bpct = (boss.hp / boss.maxHp) * 100;
+            bossInner.style.width = bpct + '%';
+            if (bpct < 30) bossInner.style.background = '#ef4444';
+            else if (bpct < 60) bossInner.style.background = 'linear-gradient(90deg,#ef4444,#f97316)';
+        }
+
+        // Items
+        for (let i = items.length-1; i >= 0; i--) {
+            items[i].y += items[i].v;
+            items[i].anim++;
+            if (items[i].y > canvas.height) { items.splice(i,1); continue; }
+            if (colide(items[i], jugador)) { collectItem(items[i]); items.splice(i,1); }
+        }
+
+        // Clouds
+        clouds.forEach((c,i) => { c.y += c.v; if (c.y > canvas.height+300) clouds.splice(i,1); });
+
+        // Particles
+        for (let i = particles.length-1; i >= 0; i--) {
+            const p = particles[i];
+            p.x += p.vx; p.y += p.vy; p.vy += 0.08;
+            p.alpha -= 0.025; p.size *= 0.97;
+            if (p.alpha <= 0) particles.splice(i,1);
+        }
+
+        spawnEnemy();
+        spawnCloud();
+        trySpawnBoss();
+
+        // UI update
+        scoreUI.innerText = score;
+        healthUI.innerText = health + '%';
+        weaponUI.innerText = '★'.repeat(jugador.weaponLevel);
+        bombUI.innerText = bombs;
+        if (health < 30) healthUI.style.color = '#ef4444';
+        else if (health < 60) healthUI.style.color = '#fbbf24';
+        else healthUI.style.color = '#10b981';
+
+        shieldBar.style.display = shield > 0 ? 'block' : 'none';
+        if (shield > 0) shieldInner.style.width = shield + '%';
+    }
+
+    function damageBoss(amt) {
+        if (!boss) return;
+        explosion(boss.x + boss.w/2 + (Math.random()-0.5)*boss.w*0.4,
+                  boss.y + boss.h/2 + (Math.random()-0.5)*boss.h*0.4, false, '#f97316');
+        boss.hp -= amt;
+        if (boss.hp <= 0) {
+            explosion(boss.x+boss.w/2, boss.y+boss.h/2, true, boss.color);
+            explosion(boss.x+boss.w/4, boss.y+boss.h/4, true, '#fbbf24');
+            score += 5000 * level;
+            bossDefeated++;
+            boss = null;
+            bossActive = false;
+            bossBar.style.display = 'none';
+            if (level >= MAX_LEVELS && bossDefeated >= MAX_LEVELS) {
+                // WIN!
+                gameOver = true;
+                winScore.innerText = score;
+                winScreen.style.display = 'block';
+            }
+        }
+    }
+
+    function bombExplode(x, y) {
+        explosion(x, y, true, '#f59e0b');
+        if (boss) damageBoss(30);
+        for (let i = enemigos.length-1; i >= 0; i--) {
+            if (Math.hypot(enemigos[i].x+enemigos[i].w/2-x, enemigos[i].y+enemigos[i].h/2-y) < 200) {
+                explosion(enemigos[i].x+enemigos[i].w/2, enemigos[i].y+enemigos[i].h/2, true);
+                score += 300;
+                enemigos.splice(i,1);
+            }
+        }
+    }
+
+    function collectItem(item) {
+        if (item.type === 'bomb')   bombs = Math.min(bombs+5, 30);
+        if (item.type === 'health') health = Math.min(health+30, 100);
+        if (item.type === 'token')  score += 800;
+        if (item.type === 'weapon') {
+            jugador.weaponLevel = Math.min(jugador.weaponLevel+1, 3);
+            setTimeout(() => { if(jugador.weaponLevel > 1) jugador.weaponLevel--; }, 12000);
+        }
+        if (item.type === 'shield') {
+            shield = Math.min(shield+60, 100);
+        }
+    }
+
+    function damagePlayer(amt) {
+        if (shield > 0) { shield = Math.max(0, shield - 30); return; }
+        health -= amt;
+        explosion(jugador.x+jugador.w/2, jugador.y+jugador.h/2, false, '#fff');
+        if (health <= 0) { health = 0; terminateGame(); }
+    }
+
+    function explosion(x, y, big=false, color='#f43f5e') {
+        const n = big ? 45 : 16;
+        for (let i=0; i<n; i++) {
+            const a = (Math.PI*2/n)*i + Math.random()*0.4;
+            const spd = Math.random() * (big ? 12 : 6) + 2;
+            particles.push({
+                x, y,
+                vx: Math.cos(a)*spd, vy: Math.sin(a)*spd - (big?2:0),
+                size: Math.random() * (big ? 10 : 5) + 2,
+                alpha: 1, color: i%2===0 ? color : '#fbbf24'
+            });
+        }
+    }
+
+    function colide(a, b, margin=8) {
+        return a.x+margin < b.x+b.w-margin &&
+               a.x+a.w-margin > b.x+margin &&
+               a.y+margin < b.y+b.h-margin &&
+               a.y+a.h-margin > b.y+margin;
+    }
+
+    // ── Draw ──────────────────────────────────────
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Sky
+        const grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        grad.addColorStop(0, '#0f172a');
+        grad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Terrain scroll
+        const ts     = 512;
+        const offset = (frames * 3) % ts;
+        if (IMG.terrain.complete) {
+            for (let x=0; x<canvas.width; x+=ts) for (let y=-ts; y<canvas.height; y+=ts)
+                ctx.drawImage(IMG.terrain, x, y+offset, ts, ts);
+        }
+
+        // Clouds layer 1-2
+        clouds.filter(c=>c.layer<3).forEach(c => { drawCloud(c); });
+
+        // Enemy bullets
+        ctx.save(); ctx.shadowBlur = 8;
+        enemyBalas.forEach(b => {
+            ctx.shadowColor = b.color; ctx.fillStyle = b.color;
+            ctx.beginPath();
+            ctx.arc(b.x, b.y, (b.w||7)/2, 0, Math.PI*2);
+            ctx.fill();
+        });
+        ctx.restore();
+
+        // Player bullets
+        ctx.save(); ctx.shadowBlur = 10;
+        balas.forEach(b => {
+            ctx.shadowColor = b.color; ctx.fillStyle = b.color;
+            ctx.fillRect(b.x, b.y, b.w, b.h);
+        });
+        ctx.restore();
+
+        // Bombs
+        bolas.forEach(b => {
+            ctx.save();
+            ctx.translate(b.x+b.w/2, b.y+b.h/2);
+            ctx.scale(b.s, b.s);
+            ctx.fillStyle = '#475569';
+            ctx.beginPath(); ctx.ellipse(0, 0, 10, 14, 0, 0, Math.PI*2); ctx.fill();
             ctx.restore();
+        });
+
+        // Enemies
+        enemigos.forEach(e => {
+            ctx.save();
+            ctx.translate(e.x+e.w/2, e.y+e.h/2);
+            ctx.rotate(Math.PI);
+            if (IMG.enemy.complete) ctx.drawImage(IMG.enemy, -e.w/2, -e.h/2, e.w, e.h);
+            ctx.restore();
+            // HP bar for heavy
+            if (e.heavy && e.hp > 0) {
+                ctx.fillStyle = '#0f172a'; ctx.fillRect(e.x, e.y-12, e.w, 7);
+                ctx.fillStyle = '#ef4444'; ctx.fillRect(e.x, e.y-12, (e.hp/e.maxHp)*e.w, 7);
+            }
+        });
+
+        // Boss
+        if (boss && boss.y > -boss.h) {
+            // Pulsing glow
+            const pulse = 0.5 + 0.5*Math.sin(frames*0.1);
+            ctx.save();
+            ctx.shadowBlur = 30 + pulse*20;
+            ctx.shadowColor = boss.color;
+            ctx.translate(boss.x+boss.w/2, boss.y+boss.h/2);
+            // Boss body: draw enemy sprite scaled up + color tint
+            if (IMG.enemy.complete) {
+                ctx.rotate(Math.PI);
+                ctx.drawImage(IMG.enemy, -boss.w/2, -boss.h/2, boss.w, boss.h);
+            } else {
+                ctx.fillStyle = boss.color;
+                ctx.beginPath(); ctx.arc(0, 0, boss.w/2, 0, Math.PI*2); ctx.fill();
+            }
+            ctx.restore();
+
+            // Phase 2: fire aura
+            if (boss.phase === 2) {
+                [0, Math.PI/2, Math.PI, Math.PI*1.5].forEach(a => {
+                    const px = boss.x+boss.w/2 + Math.cos(boss.angle*2+a)*(boss.w/2+10);
+                    const py = boss.y+boss.h/2 + Math.sin(boss.angle*2+a)*(boss.h/2+10);
+                    ctx.save(); ctx.shadowBlur=20; ctx.shadowColor='#ef4444';
+                    ctx.fillStyle='rgba(239,68,68,0.6)';
+                    ctx.beginPath(); ctx.arc(px, py, 8+pulse*5, 0, Math.PI*2); ctx.fill();
+                    ctx.restore();
+                });
+            }
         }
 
-        function dibujar() {
-            dibujarFondo();
-            
-            groundElements.forEach(dibujarGround);
-            
-            balas.forEach(b => {
-                ctx.fillStyle = b.color;
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = b.color;
-                ctx.fillRect(b.x, b.y, b.width, b.height);
-                ctx.shadowBlur = 0;
-            });
+        // Items
+        items.forEach(item => {
+            const bounce = Math.sin(item.anim*0.1)*3;
+            ctx.save();
+            ctx.translate(item.x+item.w/2, item.y+item.h/2+bounce);
+            if (item.type === 'token') {
+                ctx.rotate(item.anim*0.03);
+                if (IMG.ficha.complete) ctx.drawImage(IMG.ficha, -item.w/2, -item.h/2, item.w, item.h);
+            } else {
+                const colors = { bomb:'#fbbf24', health:'#10b981', weapon:'#818cf8', shield:'#38bdf8' };
+                const icons  = { bomb:'💣', health:'❤️', weapon:'⚡', shield:'🛡️' };
+                ctx.shadowBlur = 15; ctx.shadowColor = colors[item.type];
+                ctx.fillStyle = colors[item.type]+'33';
+                ctx.beginPath(); ctx.arc(0, 0, item.w/2, 0, Math.PI*2); ctx.fill();
+                ctx.fillStyle = '#fff'; ctx.font = '20px serif'; ctx.textAlign = 'center';
+                ctx.fillText(icons[item.type], 0, 7);
+            }
+            ctx.restore();
+        });
 
-            bombas_proyectiles.forEach(b => {
-                ctx.save();
-                ctx.translate(b.x + b.width/2, b.y + b.height/2);
-                ctx.scale(b.scale, b.scale);
-                ctx.fillStyle = '#475569';
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 10, 15, 0, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = '#f59e0b';
-                ctx.fillRect(-5, -15, 10, 4); // Fins
-                ctx.restore();
-            });
+        // Particles
+        particles.forEach(p => {
+            ctx.save(); ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
+            ctx.shadowBlur = 6; ctx.shadowColor = p.color;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+            ctx.restore();
+        });
 
-            enemigos.forEach(dibujarEnemigo);
-            dibujarJugador();
-            
-            explosiones.forEach(ex => {
-                ctx.save();
-                ctx.globalAlpha = ex.opacity;
-                ctx.fillStyle = ex.color;
-                ctx.beginPath(); ctx.arc(ex.x, ex.y, ex.radius, 0, Math.PI * 2); ctx.fill();
-                ctx.restore();
-            });
+        // Player (with halcón or player sprite)
+        ctx.save();
+        ctx.shadowBlur = shield > 0 ? 20 : 12;
+        ctx.shadowColor = shield > 0 ? '#38bdf8' : 'rgba(56,189,248,0.4)';
+        const pImg = (IMG.halcon.complete && IMG.halcon.naturalWidth > 0) ? IMG.halcon : IMG.player;
+        ctx.drawImage(pImg, jugador.x, jugador.y, jugador.w, jugador.h);
+        if (shield > 0) {
+            ctx.strokeStyle = 'rgba(56,189,248,0.5)';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.arc(jugador.x+jugador.w/2, jugador.y+jugador.h/2, 38+(Math.sin(frames*0.15)*4), 0, Math.PI*2); ctx.stroke();
         }
-
-        function terminarJuego() {
-            gameOver = true;
-            gameOverScreen.style.display = 'block';
-            finalScoreUI.innerText = score;
+        // Weapon level indicator
+        if (jugador.weaponLevel >= 2) {
+            ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+            ctx.setLineDash([4,4]);
+            ctx.beginPath(); ctx.arc(jugador.x+32, jugador.y+32, 45+jugador.weaponLevel*5, frames*0.04, frames*0.04+Math.PI*2); ctx.stroke();
+            ctx.setLineDash([]);
         }
+        ctx.restore();
 
-        function reiniciarJuego() {
-            score = 0;
-            bombs = 10;
-            frames = 0;
-            enemigos = [];
-            balas = [];
-            bombas_proyectiles = [];
-            groundElements = [];
-            explosiones = [];
-            jugador.x = canvas.width / 2 - (jugador.width / 2);
-            jugador.y = canvas.height - 150;
-            gameOver = false;
-            gameOverScreen.style.display = 'none';
+        // Clouds layer 3 (foreground)
+        clouds.filter(c=>c.layer===3).forEach(c => { drawCloud(c); });
+    }
+
+    function drawCloud(c) {
+        ctx.save(); ctx.globalAlpha = c.alpha; ctx.fillStyle = '#f8fafc';
+        c.circs.forEach(ci => {
+            ctx.beginPath(); ctx.arc(c.x+ci.ox, c.y+ci.oy, ci.r, 0, Math.PI*2); ctx.fill();
+        });
+        ctx.restore();
+    }
+
+    function terminateGame() {
+        gameOver = true;
+        goScore.innerText = score;
+        goScreen.style.display = 'block';
+        bossBar.style.display = 'none';
+    }
+
+    function reiniciarJuego() {
+        score=0; bombs=10; health=100; shield=0; level=1; frames=0;
+        jugador.weaponLevel=1; gameOver=false; bossActive=false; bossDefeated=0; boss=null;
+        balas=[]; enemyBalas=[]; bolas=[]; enemigos=[]; items=[]; clouds=[]; particles=[];
+        goScreen.style.display = 'none';
+        winScreen.style.display = 'none';
+        bossBar.style.display = 'none';
+        shieldBar.style.display = 'none';
+        levelUI.innerText = 1;
+        resizeCanvas();
+    }
+
+    function compartirJuego() {
+        const url = 'https://www.vecinoslaserena.cl/1945';
+        const msg = `🛩️ ¡Estoy jugando SERENITO 1945 y llevo ${score} puntos!\n✈️ Defiende La Serena desde el Halcón de Serenito.\n🎮 Juega gratis en: ${url}\n#Serenito1945 #VecinosLaSerena`;
+        if (navigator.share) {
+            navigator.share({ title: 'Serenito 1945', text: msg, url }).catch(()=>{});
+        } else {
+            const wa = 'https://wa.me/?text=' + encodeURIComponent(msg);
+            window.open(wa, '_blank');
         }
+    }
 
-        function loop() {
-            actualizar();
-            dibujar();
-            requestAnimationFrame(loop);
-        }
-
-        loop();
+    // ── Game Loop ───────────────────────────────────
+    function loop() { update(); draw(); requestAnimationFrame(loop); }
+    resizeCanvas();
+    loop();
     </script>
 </body>
 </html>

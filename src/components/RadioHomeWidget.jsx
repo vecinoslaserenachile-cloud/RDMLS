@@ -44,8 +44,9 @@ export default function RadioHomeWidget() {
     const [isMinimized, setIsMinimized] = useState(true);
     
     // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
-    const stations = [
-        { id: 10, sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3' },
+    const stations = isRDMLS ? [
+        { id: 10, sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3' }
+    ] : [
         { id: 1, sub: 'vls', name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3' }
     ];
 

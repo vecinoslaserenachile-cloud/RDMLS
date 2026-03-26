@@ -121,7 +121,7 @@ export default function CentroRadio() {
                 name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
                 dialLabel: 'RDMLS',
                 slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
-                url: "https://az11.yesstreaming.net:8630/radio.mp3", 
+                url: "https://az11.yesstreaming.net:8590/radio.mp3", 
                 color: '#f97316',
                 logo: '/logo_municipio.png',
                 badge: 'RDMLS'
@@ -131,7 +131,7 @@ export default function CentroRadio() {
                 name: 'ACADEMIA DE MÚSICA RDMLS',
                 dialLabel: 'CULTURA',
                 slogan: 'NUESTROS TALENTOS LOCALES EN RDMLS', 
-                url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
+                url: "https://az11.yesstreaming.net:8590/music_school.mp3", 
                 color: '#a855f7',
                 logo: '/piano_icon.png',
                 badge: 'MUNICIPAL'
@@ -141,7 +141,7 @@ export default function CentroRadio() {
                 name: 'ENTREVISTAS ESPECIALES',
                 dialLabel: 'RADIO',
                 slogan: 'LA ENTREVISTA RADIAL RDMLS', 
-                url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
+                url: "https://az11.yesstreaming.net:8590/sessions.mp3", 
                 color: '#10b981',
                 logo: '/sessions_icon.png',
                 badge: 'RDMLS'
@@ -1191,6 +1191,7 @@ export default function CentroRadio() {
                 </section>
 
                 {/* 3. CÁMARAS Y SEÑALES (TV) */}
+                {isVLS && (
                 <section id="cameras-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.5)', borderRadius: '24px', border: '1px solid rgba(255,215,0,0.2)', overflowX: 'hidden' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.2rem', borderBottom: '1px solid rgba(255,215,0,0.3)', paddingBottom: '0.8rem' }}>
                         <MonitorPlay size={24} color="#FFD700" />
@@ -1237,8 +1238,10 @@ export default function CentroRadio() {
                         </div>
                     </div>
                 </section>
+                )}
 
                 {/* 4. SERENAMET */}
+                {isVLS && (
                 <section id="serenamet-section" className="glass-panel" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(14,165,233,0.1), rgba(15,23,42,0.8))', borderRadius: '24px', border: '1px solid rgba(56,189,248,0.3)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                         <CloudSun size={28} color="#38bdf8" />
@@ -1249,8 +1252,10 @@ export default function CentroRadio() {
                         <iframe src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=11&overlay=wind&product=ecmwf&level=surface&lat=-29.904&lon=-71.248" frameBorder="0" style={{ width: '100%', height: '100%' }}></iframe>
                     </div>
                 </section>
+                )}
                 
                 {/* 5. NOTICIAS OFICIALES */}
+                {isVLS && (
                 <section id="noticias-section" className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(15,23,42,0.8)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.8rem' }}>
                         <FileText size={28} color="#f43f5e" />
@@ -1280,6 +1285,7 @@ export default function CentroRadio() {
                         </div>
                     )}
                 </section>
+                )}
 
             </main>
 

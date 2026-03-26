@@ -168,7 +168,15 @@ import { db } from './utils/firebase';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 import GlobalAnnouncer from './components/GlobalAnnouncer';
 
-const LoadingScreen = () => <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#020617', color: '#38bdf8' }}>Cargando VLS OS...</div>;
+const LoadingScreen = () => {
+  const host = (window.location.hostname || window.location.host || '').toLowerCase();
+  const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+  return (
+    <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#020617', color: isRDMLS ? '#dc2626' : '#38bdf8' }}>
+      {isRDMLS ? 'RDMLS: Estableciendo señal municipal...' : 'Cargando VLS OS...'}
+    </div>
+  );
+};
 
 const ALLOWED_ADMINS = [
     'directorio@vecinosmart.cl', 
@@ -912,6 +920,7 @@ function AppContent() {
     window.addEventListener('open-vls-game', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-play', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-aguas', () => setShowAguasValle(true));
+    window.addEventListener('open-propuesta-estrategica', handlePropuesta); // Added event listener
 
     
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
@@ -1020,6 +1029,24 @@ function AppContent() {
 
   if (!authInitialized && !isRDMLS) {
       return <LoadingScreen />;
+  }
+
+  if (isRDMLS) {
+      return (
+        <div className="app-layout animate-fade-in" style={{ background: '#020617', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+          <main className="page-content container" style={{ flex: 1, padding: 0 }}>
+            <Outlet context={{ weather, lang, setLang, t, currentUser, isRDMLS }} />
+          </main>
+          {/* Radio Player can remain as a hidden service if needed, but not the UI */}
+          <Suspense fallback={null}>
+            <RadioMasterEngine host="rdmls.cl" />
+          </Suspense>
+          <footer style={{ padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '1rem' }}>
+            <p>© 2026 ILUSTRE MUNICIPALIDAD DE LA SERENA · GESTIÓN INSTITUCIONAL</p>
+            <p>www.rdmls.cl · IMLS COMUNICACIONES</p>
+          </footer>
+        </div>
+      );
   }
 
   return (
