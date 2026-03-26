@@ -100,6 +100,7 @@ Estamos en fase de mapeo participativo: tus reportes nos ayudan a visualizar lo 
 
         if (platform !== 'qr') {
             setShowOptions(false);
+            setIsMinimized(true);
             
             // REWARD LOGIC: 2 tokens for sharing the platform (adjusted for economy)
             const rewardPlatforms = ['whatsapp', 'facebook', 'twitter', 'linkedin'];
@@ -214,52 +215,46 @@ Estamos en fase de mapeo participativo: tus reportes nos ayudan a visualizar lo 
             )}
 
             {showOptions && (
-                <div className="glass-panel animate-slide-up" style={{
-                    position: renderAsHiddenObserver ? 'fixed' : 'absolute',
-                    bottom: renderAsHiddenObserver ? '20%' : '110%',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    background: 'var(--bg-secondary)',
-                    padding: '1rem',
-                    borderRadius: '12px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem',
-                    minWidth: '240px',
-                    zIndex: 100000,
-                    boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-                    border: '1px solid rgba(236, 72, 153, 0.5)'
-                }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <h4 style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Compartir e Impactar (KPIs)</h4>
-                        {renderAsHiddenObserver && (
-                            <button onClick={() => setShowOptions(false)} className="btn-glass" style={{ padding: '0.2rem', borderRadius: '50%' }}>
-                                <X size={16} />
+                <div style={{
+                    position: 'fixed', inset: 0, zIndex: 99999, background: renderAsHiddenObserver ? 'rgba(0,0,0,0.7)' : 'transparent',
+                    display: 'flex', alignItems: renderAsHiddenObserver ? 'center' : 'flex-end', justifyContent: 'center',
+                    paddingBottom: renderAsHiddenObserver ? '0' : '60px'
+                }} onClick={() => setShowOptions(false)}>
+                    <div className="glass-panel animate-slide-up" style={{
+                        background: 'var(--bg-secondary)',
+                        padding: '1.5rem',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.6rem',
+                        minWidth: '280px',
+                        boxShadow: '0 20px 50px rgba(0,0,0,0.8)',
+                        border: '1px solid rgba(236, 72, 153, 0.5)',
+                        position: 'relative'
+                    }} onClick={(e) => e.stopPropagation()}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                            <h4 style={{ margin: 0, fontSize: '1.1rem', color: 'white', fontWeight: '900' }}>Difundir Plataforma</h4>
+                            <button onClick={() => setShowOptions(false)} className="btn-glass" style={{ padding: '0.3rem', borderRadius: '50%', border: 'none', color: '#cbd5e1' }}>
+                                <X size={20} />
                             </button>
-                        )}
-                    </div>
+                        </div>
 
-                    <button onClick={() => handleShare('qr')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#ff007f', border: '1px solid rgba(255, 0, 127, 0.3)', background: 'linear-gradient(90deg, rgba(255,0,127,0.1) 0%, transparent 100%)' }}>
-                        <QrCode size={18} /> Tarjeta Digital / QR
-                    </button>
-                    <button onClick={() => handleShare('whatsapp')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                        <MessageCircle size={18} /> WhatsApp
-                    </button>
-                    <button onClick={() => handleShare('facebook')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)' }}>
-                        <Facebook size={18} /> Facebook
-                    </button>
-                    <button onClick={() => handleShare('twitter')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                        <Twitter size={18} /> Twitter (X)
-                    </button>
-                    <button onClick={() => handleShare('instagram')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#ff0055', border: '1px solid rgba(255, 0, 85, 0.3)' }}>
-                        <Instagram size={18} /> Instagram VLS
-                    </button>
-                    <button onClick={() => handleShare('native')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: 'var(--serena-gold)', border: '1px solid rgba(255, 215, 0, 0.3)' }}>
-                        <Share2 size={18} /> Opciones del Móvil
-                    </button>
-                    <button onClick={() => handleShare('copy')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px', justifyContent: 'flex-start', color: '#cbd5e1' }}>
-                        <LinkIcon size={18} /> {copied ? '¡Enlace Copiado!' : 'Copiar Enlace'}
-                    </button>
+                        <button onClick={() => handleShare('native')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', justifyContent: 'flex-start', color: 'var(--serena-gold)', border: '1px solid rgba(255, 215, 0, 0.3)', fontWeight: 'bold' }}>
+                            <Share2 size={20} /> Compartir directo
+                        </button>
+                        <button onClick={() => handleShare('whatsapp')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', justifyContent: 'flex-start', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: 'bold' }}>
+                            <MessageCircle size={20} /> WhatsApp
+                        </button>
+                        <button onClick={() => handleShare('instagram')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', justifyContent: 'flex-start', color: '#ff0055', border: '1px solid rgba(255, 0, 85, 0.3)', fontWeight: 'bold' }}>
+                            <Instagram size={20} /> Perfil Oficial
+                        </button>
+                        <button onClick={() => handleShare('qr')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', justifyContent: 'flex-start', color: '#ff007f', border: '1px solid rgba(255, 0, 127, 0.3)', fontWeight: 'bold' }}>
+                            <QrCode size={20} /> Entregar Tarjeta/QR
+                        </button>
+                        <button onClick={() => handleShare('copy')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', justifyContent: 'flex-start', color: '#cbd5e1', fontWeight: 'bold' }}>
+                            <LinkIcon size={20} /> {copied ? '¡Enlace Copiado!' : 'Copiar link manual'}
+                        </button>
+                    </div>
                 </div>
             )}
 
