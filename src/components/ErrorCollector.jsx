@@ -131,9 +131,13 @@ export default function ErrorCollector() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ fontSize: '10px' }}>{isOpen ? '▼' : '▲'}</span>
                     <span style={{ color: hasErrors ? 'white' : '#64748b', fontWeight: 'bold', letterSpacing: '1px' }}>
-                        {hasErrors
-                            ? `⚠ VLS ERROR LOG — ${errorCount} error${errorCount !== 1 ? 'es' : ''} detectado${errorCount !== 1 ? 's' : ''}`
-                            : '✓ VLS ERROR LOG — Sin errores'}
+                        {(() => {
+                            const isRDMLS = window.location.hostname.toLowerCase().includes('rdmls') || (window.location.hostname.toLowerCase().includes('laserena.cl') && !window.location.hostname.toLowerCase().includes('vecinos'));
+                            const prefix = isRDMLS ? 'RDMLS SYSTEM LOG' : 'VLS ERROR LOG';
+                            return hasErrors
+                                ? `⚠ ${prefix} — ${errorCount} error${errorCount !== 1 ? 'es' : ''} detectado${errorCount !== 1 ? 's' : ''}`
+                                : `✓ ${prefix} — Sin errores`;
+                        })()}
                     </span>
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>

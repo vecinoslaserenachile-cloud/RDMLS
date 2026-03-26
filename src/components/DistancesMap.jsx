@@ -286,7 +286,7 @@ export default function DistancesMap({ onClose }) {
                                             <Marker position={selectedRoute.coords}><Popup>{selectedRoute.name}</Popup></Marker>
                                         </>
                                     )}
-                                    <Marker position={serenitoPos} icon={serenitoIcon}><Popup>Serenito en ruta VLS</Popup></Marker>
+                                    <Marker position={serenitoPos} icon={serenitoIcon}><Popup>Serenito en ruta {isRDMLS ? 'RDMLS' : 'VLS'}</Popup></Marker>
                                 </MapContainer>
                             </div>
                         </div>

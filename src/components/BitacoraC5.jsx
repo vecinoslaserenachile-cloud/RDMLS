@@ -13,6 +13,8 @@ const INITIAL_INCIDENTS = [
 export default function BitacoraC5() {
     const [incidents, setIncidents] = useState(INITIAL_INCIDENTS);
     const [selectedId, setSelectedId] = useState(null);
+    const host = (window.location.host || window.location.hostname || '').toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
 
     return (
         <div style={{ 
@@ -34,7 +36,7 @@ export default function BitacoraC5() {
                 <Terminal size={24} color="#10b981" />
                 <div style={{ flex: 1 }}>
                     <span style={{ color: '#10b981', fontWeight: 'bold', letterSpacing: '2px', fontFamily: 'monospace', fontSize: '1.2rem', display: 'block' }}>BITÁCORA PÚBLICA C5</span>
-                    <span style={{ color: 'rgba(16, 185, 129, 0.6)', fontSize: '0.75rem', fontFamily: 'monospace' }}>INFRAESTRUCTURA DE SEGURIDAD VLS</span>
+                    <span style={{ color: 'rgba(16, 185, 129, 0.6)', fontSize: '0.75rem', fontFamily: 'monospace' }}>{isRDMLS ? 'INFRAESTRUCTURA DE SEGURIDAD RDMLS' : 'INFRAESTRUCTURA DE SEGURIDAD VLS'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', animation: 'pulse 1.5s infinite', boxShadow: '0 0 10px #10b981' }}></span>

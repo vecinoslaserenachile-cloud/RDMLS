@@ -31,18 +31,21 @@ Write-Host " Ejecutando compilación crítica (npm run build)..." -ForegroundCol
 npm.cmd run build
 Write-Host " Inyectando a vecinoslaserena.cl (Wrangler)..." -ForegroundColor Yellow
 # npx wrangler pages deploy dist --project-name vecinos-la-serena
-npx.cmd wrangler pages deploy dist --project-name vecinos-la-serena
+npx.cmd wrangler pages deploy dist --project-name vecinos-la-serena --branch main
 Write-Host " (!) Recuerda ejecutar manualmente los comandos superiores si el sync de GitHub falla." -ForegroundColor Red
 
 Write-Host "`n[3/4] PURGANDO CACHÉ GLOBAL DE CLOUDFLARE (ANTI-ERRORES ROJOS)..." -ForegroundColor Cyan
+$Zones = @("f0daa77e49659c39fe7fd3f9b4abab35", "165c0c9a9631b72cd8d314232bc2f1f1")
 $Body = @{ purge_everything = $true } | ConvertTo-Json
-try {
-    $Response = Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/purge_cache" -Method Post -Headers $Headers -Body $Body
-    if ($Response.success) {
-        Write-Host " ¡ÉXITO! Cach purgado globalmente. Los vecinos vern la versin v3.2 limpia." -ForegroundColor Green
+foreach ($Zid in $Zones) {
+    try {
+        $Response = Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$Zid/purge_cache" -Method Post -Headers $Headers -Body $Body
+        if ($Response.success) {
+            Write-Host " ¡ÉXITO! Caché de zona $Zid purgado globalmente." -ForegroundColor Green
+        }
+    } catch {
+        Write-Error "Fallo en purga de $Zid - Error: $_"
     }
-} catch {
-    Write-Error "Fallo en purga: $_"
 }
 
 Write-Host "`n[4/4] VALIDANDO PORTAL VIVO (HEALTH CHECK)..." -ForegroundColor Cyan

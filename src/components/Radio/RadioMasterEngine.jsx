@@ -3,6 +3,8 @@ import { X as CloseIcon, Radio, Mic, Settings2, Activity, Play, Pause, BarChart3
 import NewsStudio from './NewsStudio';
 
 export default function RadioMasterEngine({ onClose }) {
+    const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
     const [activeStation, setActiveStation] = useState(1); // 1: RDMLS, 2: RVLS
     const [showStudio, setShowStudio] = useState(false);
     const [viewMode, setViewMode] = useState('status'); // 'status', 'alerts', 'programming'
@@ -95,7 +97,7 @@ export default function RadioMasterEngine({ onClose }) {
                             <Radio size={32} color="white" />
                         </div>
                         <div>
-                            <h2 style={{ color: 'white', margin: 0, fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-1px' }}>VLS RADIO <span style={{ color: '#38bdf8' }}>MASTER ENGINE</span></h2>
+                            <h2 style={{ color: 'white', margin: 0, fontSize: '1.8rem', fontWeight: '900', letterSpacing: '-1px' }}>{isRDMLS ? 'RDMLS' : 'VLS'} RADIO <span style={{ color: '#38bdf8' }}>MASTER ENGINE</span></h2>
                             <div style={{ color: '#94a3b8', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '10px', marginTop: '4px' }}>
                                 <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Activity size={12} color="#10b981" /> SISTEMA OPERATIVO CENTRAL</span>
                                 <span style={{ color: '#334155' }}>|</span>
@@ -304,7 +306,7 @@ export default function RadioMasterEngine({ onClose }) {
                         <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></div> CONECTADO A CENTRAL JETSTREAMING</span>
                         <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><CheckCircle size={12} color="#10b981" /> API V.2.1 AUTH_OK</span>
                     </div>
-                    <div>© 2026 VECINO SMART - SISTEMA PROFESIONAL DE RADIODIFUSIÓN</div>
+                    <div>© 2026 {isRDMLS ? 'RDMLS' : 'VECINO SMART'} - SISTEMA PROFESIONAL DE RADIODIFUSIÓN</div>
                 </div>
             </div>
         </div>

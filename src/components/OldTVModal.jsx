@@ -3,7 +3,9 @@ import { X, Tv, Volume2, Sun, Contrast, VolumeX } from 'lucide-react';
 import RetroPong from './RetroPong';
 
 export default function OldTVModal({ onClose, inline = false }) {
-    const isVLS = window.location.hostname.includes('vecinoslaserena');
+    const host = window.location.hostname.toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+    const isVLS = !isRDMLS;
     const [channel, setChannel] = useState(1);
     const [brightness, setBrightness] = useState(100);
     const [contrast, setContrast] = useState(100);
@@ -165,7 +167,7 @@ export default function OldTVModal({ onClose, inline = false }) {
                     <div style={{ fontFamily: 'serif', fontSize: '1.2rem', fontWeight: '900', color: '#ffd700', textShadow: '2px 2px 4px rgba(0,0,0,0.8)', letterSpacing: '1px', textAlign: 'center', textTransform: 'uppercase', lineHeight: '1.1' }}>
                         {isVLS ? 'VECINOS SMART · INNOVACIÓN CIUDADANA' : 'RDMLS RADIO DIGITAL MUNICIPAL LA SERENA'}
                     </div>
-                    <div style={{ fontSize: '0.6rem', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '3px', marginTop: '4px', fontWeight: 'bold' }}>{isVLS ? 'VECINOSLA SERENA 2026' : 'COMUNICACIONES TVLS 2026'}</div>
+                    <div style={{ fontSize: '0.6rem', color: '#d4af37', textTransform: 'uppercase', letterSpacing: '3px', marginTop: '4px', fontWeight: 'bold' }}>{isVLS ? 'VECINOS LA SERENA 2026' : 'PORTAL RDMLS.CL · MUNICIPALIDAD DE LA SERENA'}</div>
                 </div>
 
                 {/* Pantalla (Tubo CRT) */}

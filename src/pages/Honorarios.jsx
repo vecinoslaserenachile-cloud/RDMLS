@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { ArrowLeft, User, Briefcase, Landmark, History, PlusCircle, Trash2, Edit3, CheckCircle2, FileDown, ShieldAlert, FileSignature, Camera } from 'lucide-react';
 
 const DIRECCIONES = [
@@ -16,6 +16,7 @@ const MOCK_INFORMES = [
 ];
 
 export default function Honorarios() {
+    const { isRDMLS } = useOutletContext();
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('prestador');
 
@@ -152,7 +153,7 @@ export default function Honorarios() {
                                     <span style={{ fontSize: '0.8rem' }}>Use el mouse o panel táctil para firmar aquí</span>
                                     <div style={{ position: 'absolute', bottom: '1rem', right: '1rem', display: 'flex', gap: '0.5rem' }}>
                                         <button className="btn-glass" style={{ fontSize: '0.7rem', color: '#64748b' }}>Limpiar</button>
-                                        <span style={{ fontSize: '0.7rem', background: '#dcfce7', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 'bold' }}>BIOMETRÍA VLS ACTIVA</span>
+                                         <span style={{ fontSize: '0.7rem', background: '#dcfce7', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 'bold' }}>BIOMETRÍA {isRDMLS ? 'RDMLS' : 'VLS'} ACTIVA</span>
                                     </div>
                                 </div>
                                 <p style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '1rem' }}>

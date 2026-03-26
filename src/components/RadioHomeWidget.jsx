@@ -38,7 +38,9 @@ export default function RadioHomeWidget() {
     const vuRightRef = useRef(null);
     const analyzerRef = useRef(null);
     const animationRef = useRef(null);
-    const isRDMLS = window.location.hostname.includes('rdmls');
+    const currentHost = (window.location.host || window.location.hostname).toLowerCase();
+    const isRDMLS = currentHost.includes('rdmls') || (currentHost.includes('laserena.cl') && !currentHost.includes('vecinos'));
+    const isVLS = !isRDMLS;
     const [isMinimized, setIsMinimized] = useState(true);
     
     // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
@@ -50,7 +52,13 @@ export default function RadioHomeWidget() {
     const initialStation = isRDMLS ? stations[0] : stations[1];
     const [currentStation, setCurrentStation] = useState(initialStation);
 
-    const broadcastSchedule = [
+    const broadcastSchedule = isRDMLS ? [
+        { start: '08:00', end: '10:00', name: 'RDMLS: Actualidad Municipal' },
+        { start: '10:00', end: '12:00', name: 'Sesión Clásica: Maestro Peña Hen' },
+        { start: '12:00', end: '14:00', name: 'Entrevistas: Gestión La Serena' },
+        { start: '14:00', end: '16:00', name: 'Música & Cultura Regional' },
+        { start: '16:00', end: '18:00', name: 'RDMLS: Resumen de Noticias' }
+    ] : [
         { start: '08:00', end: '10:00', name: 'Mañanero con Rock Colapso' },
         { start: '10:00', end: '12:00', name: 'Tributos VLS: Maestro Peña Hen' },
         { start: '12:00', end: '14:00', name: 'EntreVecinos: Especial Soni Cev' },
@@ -62,7 +70,7 @@ export default function RadioHomeWidget() {
         const now = new Date();
         const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
         const current = broadcastSchedule.find(s => timeStr >= s.start && timeStr < s.end);
-        return current ? current.name : 'VLS Transmisión Continua';
+        return current ? current.name : (isRDMLS ? 'RDMLS Transmisión Continua' : 'VLS Transmisión Continua');
     };
 
     useEffect(() => {
@@ -183,7 +191,7 @@ export default function RadioHomeWidget() {
                     </div>
                     <div>
                         <h3 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>
-                            {isRDMLS ? 'RDMLS - RADIO DIGITAL MUNICIPAL' : 'RADIO VECINOS LA SERENA'}
+                            {isRDMLS ? 'RDMLS - RADIO DIGITAL MUNICIPAL' : 'VLS RADIO COMUNITARIA'}
                         </h3>
                     </div>
                 </div>
@@ -229,7 +237,7 @@ export default function RadioHomeWidget() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'rgba(0,0,0,0.3)', padding: '1.5rem', borderRadius: '20px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                     <div style={{ flex: 1, minWidth: '250px' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', letterSpacing: '2px', fontWeight: '900', marginBottom: '8px' }}>PLAYING NOW (VLS MASTER)</div>
+                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', letterSpacing: '2px', fontWeight: '900', marginBottom: '8px' }}>PLAYING NOW ({isRDMLS ? 'RDMLS MASTER' : 'VLS MASTER'})</div>
                         <div style={{ fontSize: '1.3rem', color: '#fff', fontWeight: 'bold', textShadow: '0 0 10px rgba(56,189,248,0.3)' }}>
                             {currentStation.name}
                         </div>
@@ -301,7 +309,7 @@ export default function RadioHomeWidget() {
                         ))}
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '5px' }}>
-                        <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 'bold', letterSpacing: '2px', opacity: 0.8 }}>V L S  P R O F E S S I O N A L  E Q</span>
+                        <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 'bold', letterSpacing: '2px', opacity: 0.8 }}>{isRDMLS ? 'R D M L S' : 'V L S'}  P R O F E S S I O N A L  E Q</span>
                     </div>
                 </div>
 

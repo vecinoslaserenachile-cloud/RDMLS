@@ -302,16 +302,26 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             if (!isDjTalking && (isPlaying || Math.random() > 0.6)) {
                 const hours = new Date().getHours();
                 const minutes = new Date().getMinutes().toString().padStart(2, '0');
-                const tips = [
+                const tips = isRDMLS ? [
+                    `Radio Municipal informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque informativo oficial.`,
+                    "En nuestro portal buscamos facilitar el acceso a trámites y servicios municipales de forma coordinada. Una herramienta para su día a día.",
+                    "Queremos que su experiencia al reportar incidencias urbanas sea eficiente. Gracias por su compromiso con nuestra comuna.",
+                    "¿Busca profundizar sus conocimientos? El portal de inducción elearning está a su disposición para el crecimiento profesional.",
+                    "Le invitamos a conocer el Paseo Histórico de nuestra ciudad. Un recorrido virtual por la identidad serenense.",
+                    "Nuestros observatorios son ventanas al universo. La Serena, capital mundial de la astronomía, le saluda.",
+                    "Fomentamos el desarrollo económico local. Conozca las iniciativas de fomento productivo en nuestro portal estratégico.",
+                    "El aprendizaje continuo es clave en la gestión digital. Explore nuestros módulos de capacitación para funcionarios y ciudadanos.",
+                    "Saludamos a la red de comunicadores regionales. Gracias por ser parte de esta señal oficial."
+                ] : [
                     `VLS informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque "${getCurrentShow()}".`,
-                    "En puertasmart.cl buscamos facilitar el acceso de sus visitas y proveedores de forma sencilla. Una pequeña herramienta para ayudar a organizar mejor su día.",
-                    "Queremos que su experiencia al reportar baches o luminarias sea lo más simple posible. Gracias por ayudarnos a cuidar los barrios de nuestra ciudad.",
-                    "¿Busca descansar un momento? Nuestra Zona Arcade está disponible para que disfrute de los clásicos de siempre en su portal.",
-                    "Le invitamos a recorrer el Paseo Histórico 3D. Es un viaje tranquilo por la memoria y los rincones que dan identidad a nuestra región.",
-                    "Si le gusta observar el cielo, nuestro simulador de estrellas es una ventana abierta a la belleza de nuestras noches en La Serena.",
-                    "Apoyamos el emprendimiento local. Si tiene un negocio, puede compartirlo en nuestro hub comercial para conectar con sus vecinos de forma cercana.",
-                    "Aprender algo nuevo siempre es un buen plan. Explore nuestros módulos de idiomas y descubra nuevas habilidades a su propio ritmo.",
-                    "Recordamos con cariño a los maestros de nuestra música regional. Gracias por acompañarnos en esta sintonía comunitaria."
+                    "En puertasmart.cl buscamos facilitar el acceso de sus visitas y proveedores de forma sencilla. Una herramienta vecinal.",
+                    "Queremos que su experiencia al reportar baches o luminarias sea lo más simple posible. Gracias por cuidar los barrios.",
+                    "¿Busca descansar un momento? Nuestra Zona Arcade está disponible para que disfrute de los clásicos de siempre.",
+                    "Le invitamos a recorrer el Paseo Histórico 3D. Es un viaje tranquilo por la memoria y los rincones de nuestra región.",
+                    "Si le gusta observar el cielo, nuestro simulador de estrellas es una ventana abierta a la belleza de nuestras noches.",
+                    "Apoyamos el emprendimiento local. Si tiene un negocio, puede compartirlo en nuestro hub comercial para conectar con vecinos.",
+                    "Aprender algo nuevo siempre es un buen plan. Explore nuestros módulos de idiomas y descubra nuevas habilidades.",
+                    "Recordamos con cariño a los maestros de nuestra música regional. Gracias por acompañarnos en esta sintonía."
                 ];
                 const nextIndex = (currentTipIndex + 1) % tips.length;
                 setCurrentTipIndex(nextIndex);
@@ -581,7 +591,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const playAIDJLocution = () => {
         const hours = new Date().getHours();
         const minutes = new Date().getMinutes();
-        const timeMsg = `V L S Radio informa: La hora exacta es, las ${hours} con ${minutes} minutos. Comuna Smart, tecnología al servicio del vecino.`;
+        const timeMsg = isRDMLS 
+            ? `Radio Digital Municipal informa: La hora exacta es, las ${hours} con ${minutes} minutos. RDMLS, tecnología al servicio de la comuna.`
+            : `V L S Radio informa: La hora exacta es, las ${hours} con ${minutes} minutos. Comuna Smart, tecnología al servicio del vecino.`;
         playTimeSignal();
         setTimeout(() => injectAIDJ(timeMsg), 1000);
     };
@@ -714,7 +726,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                         }}
                     >
                         <Zap size={14} className="pulse-fast" />
-                        <span>RADIO IA VECINOS LA SERENA: {djMessage}</span>
+                        <span>{isRDMLS ? 'RDMLS IA INSTITUCIONAL' : 'RADIO IA VECINOS LA SERENA'}: {djMessage}</span>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -786,7 +798,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
-                            <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>V L S {activeMediaType}</span>
+                            <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>{isRDMLS ? 'RDMLS' : 'V L S'} {activeMediaType}</span>
                             {stations.filter(s => s.type === activeMediaType || (activeMediaType === 'tv-premium' && s.type === 'tv-fast')).map(st => (
                                 <div key={st.id} onClick={() => { setCurrentStation(st); if (st.type === 'radio') setupStreamAndPlay(); }} style={{ padding: '10px 12px', borderRadius: '10px', cursor: 'pointer', background: currentStation.id === st.id ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255,255,255,0.03)', fontSize: '0.75rem', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: currentStation.id === st.id ? '1px solid #ef4444' : '1px solid transparent' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -829,7 +841,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                                 ))}
                             </div>
                             <div style={{ textAlign: 'center', marginTop: '5px' }}>
-                                <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 'bold', letterSpacing: '2px' }}>VLS PROFESSIONAL EQ</span>
+                                <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 'bold', letterSpacing: '2px' }}>{isRDMLS ? 'RDMLS' : 'VLS'} PROFESSIONAL EQ</span>
                             </div>
                         </div>
 

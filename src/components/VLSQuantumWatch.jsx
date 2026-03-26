@@ -11,7 +11,9 @@ import { motion, AnimatePresence } from 'framer-motion';
  * - Botón calendario
  * - No solapea otros elementos al estar minimizado (zIndex correcto)
  */
-export default function VLSQuantumWatch({ onCalendarClick, isRDMLS }) {
+export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop }) {
+    const host = (window.location.host || window.location.hostname || '').toLowerCase();
+    const isRDMLS = isRDMLS_prop ?? (host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos')));
     const [time, setTime] = useState(new Date());
     const [blink, setBlink] = useState(true);
     const [isMinimized, setIsMinimized] = useState(() =>

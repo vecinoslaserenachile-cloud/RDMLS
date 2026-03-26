@@ -72,25 +72,32 @@ import VLSNewsPoduje from '../components/VLSNewsPoduje';
 import VLSNotesGallery from '../components/VLSNotesGallery';
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
+import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
+
 
 export default function HubDashboard() {
-    const host = window.location.hostname.toLowerCase();
-    const isVLS = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('localhost');
-    const isRDMLS = host.includes('rdmls');
+    const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+    const isVLS = !isRDMLS;
     const navigate = useNavigate();
     const { lang, setLang, t: baseT } = useTranslation();
 
     const dict = {
         es: {
-            title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
-            citizensTitle: "Smart Citizens", citizensSub: "Atención Ciudadana y Radio Digital",
-            adminTitle: "Escuelas y Oficios", adminSub: "Formación Ciudadana, E-learning e Iniciativas de Empleo",
+            title: isRDMLS ? "Hub de Gestión Institucional - Portal RDMLS.cl" : "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
+            citizensTitle: "Smart Citizens", 
+            citizensSub: isRDMLS ? "Atención Ciudadana y Monitoreo Urbano" : "Atención Ciudadana y Radio Digital",
+            adminTitle: isRDMLS ? "Smart Administration" : "Escuelas y Oficios", 
+            adminSub: isRDMLS ? "Gestión Interna, RRHH y Portal de Inducción E-learning" : "Formación Ciudadana, E-learning e Iniciativas de Empleo",
             newsAlert: isRDMLS 
                 ? "INFORMATIVO MUNICIPAL: La Ilustre Municipalidad de La Serena informa despliegue de equipos en terreno para mantención urbana. Siga la señal de RDMLS.cl para más detalles."
                 : "COMUNA SMART Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos a través de vecinosmart.cl.",
-            eventsTitle: "Smart Events", eventsSub: "Monitor de Precedencia y Protocolo",
-            listeningTitle: "Smart Listening", listeningSub: "Centinel Faro y Red de Escucha Social",
-            paseo3dTitle: "Paseo Histórico 3D", paseo3dSub: "Arquitectura Tradicional y Museos",
+            eventsTitle: "Smart Events", 
+            eventsSub: isRDMLS ? "Gestión Automatizada y Monitor de Precedencias" : "Monitor de Precedencia y Protocolo",
+            listeningTitle: "Smart Listening", 
+            listeningSub: isRDMLS ? "Inteligencia Artificial y Social Listening" : "Centinel Faro y Red de Escucha Social",
+            paseo3dTitle: isRDMLS ? "Paseo Patrimonial 3D" : "Paseo Histórico 3D", 
+            paseo3dSub: "Arquitectura Tradicional y Museos",
             busdeltiempoTitle: "El Bus del Tiempo", busdeltiempoSub: "Viajes de 1948 a la Smart City",
             gameTitle: "Play Center VLS", gameSub: "Explora y Juega con Serenito",
             qrText: "Acceso Móvil",
@@ -249,6 +256,7 @@ export default function HubDashboard() {
     const [showPoduje, setShowPoduje] = useState(false);
     const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
+    const [selectedNews, setSelectedNews] = useState(null); // Estado para el juego VLSabes
 
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
     const [isMuted, setIsMuted] = useState(true);
@@ -363,6 +371,7 @@ export default function HubDashboard() {
         const handleBencinazo = () => setShowBencinazo(true);
         const handleSentinelNote = () => setShowSentinelNote(true);
 
+
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
         window.addEventListener('open-vls-roadmap', handleRoadmap);
@@ -383,6 +392,7 @@ export default function HubDashboard() {
         window.addEventListener('open-vls-investigacion', handleInvestigacion);
         window.addEventListener('open-vls-bencinazo', handleBencinazo);
         window.addEventListener('open-vls-sentinel', handleSentinelNote);
+
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -406,6 +416,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-vls-investigacion', handleInvestigacion);
             window.removeEventListener('open-vls-bencinazo', handleBencinazo);
             window.removeEventListener('open-vls-sentinel', handleSentinelNote);
+
         };
     }, []);
 
@@ -606,6 +617,10 @@ export default function HubDashboard() {
     }, []);
 
     const servicios = [
+        {
+            id: 'vls-trivia', title: 'VLSabes: Juegaprende', subtitle: 'Pilar #2: Trivia Educativa y Soberanía Comunicacional',
+            icon: Gamepad2, color: '#FFD700', path: '/vlsabes', active: true, badge: 'TRIVIA'
+        },
         {
             id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
             icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
@@ -848,7 +863,8 @@ export default function HubDashboard() {
         .filter(a => {
             if (!isRDMLS) return true;
             // Purge ludic/citizen-only apps from RDMLS
-            const vlsOnly = ['tienda-poleras', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'vhs-tv', 'cdls-club', 'difundir-app', 'stickers-portal', 'laico', 'ecumenico'];
+            const vlsOnly = ['tienda-poleras', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'vhs-tv', 'cdls-club', 'difundir-app', 'stickers-portal', 'laico', 'ecumenico', 'vls-motors', 'tornamesa-digital'];
+            // VLSabes (vls-trivia) is EXPLICITLY ALLOWED as it's part of the educational pillar
             return !vlsOnly.includes(a.id);
         });
     const filteredApps = allApps.filter(app =>
@@ -871,7 +887,7 @@ export default function HubDashboard() {
             description: 'Portal de inducción E-learning y digitalización de informes (Honorarios) con firma digital.',
             icon: Briefcase,
             color: '#10b981',
-            modules: ['smart-admin-internal', 'smart-admin', 'elearning']
+            modules: ['smart-admin-internal', 'smart-admin', 'elearning', 'vls-trivia']
         },
         {
             id: 'events',
@@ -1485,7 +1501,7 @@ export default function HubDashboard() {
                     </header>
 
                     {/* Pinned Apps Bar (Los Elegidos) */}
-                    {pinnedApps.length > 0 && (
+                    {!isRDMLS && pinnedApps.length > 0 && (
                         <div className="fade-in" style={{
                             maxWidth: '1200px', margin: '0 auto 2.5rem auto', width: '95%', padding: '0 1rem',
                             display: 'flex', flexDirection: 'column', gap: '1rem'
@@ -1535,6 +1551,7 @@ export default function HubDashboard() {
                     )}
 
                     {/* SALA DE INTELIGENCIA - 3 Pillars Grid Investigations */}
+                    {!isRDMLS && (
                     <div style={{ maxWidth: '1400px', margin: '4rem auto 1rem auto', width: '100%', padding: '0 2rem' }}>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2½rem' }}>
                             <div style={{ background: 'linear-gradient(45deg, #1e3a8a, #38bdf8)', padding: '12px', borderRadius: '15px', color: 'white' }}>
@@ -1716,8 +1733,10 @@ export default function HubDashboard() {
                             </div>
                          </div>
                     </div>
+                    )}
 
                     {/* VOCES VECINALES & HEMEROTECA SECTION */}
+                    {!isRDMLS && (
                     <div style={{ maxWidth: '1400px', margin: '6rem auto 4rem auto', width: '100%', padding: '0 2rem' }}>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '3rem' }}>
                             <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
@@ -1732,6 +1751,7 @@ export default function HubDashboard() {
 
                          <VLSNotesGallery />
                     </div>
+                    )}
 
                     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
                         {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
@@ -2178,6 +2198,7 @@ export default function HubDashboard() {
             {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
             {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
             {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
+
         </>
     );
 }

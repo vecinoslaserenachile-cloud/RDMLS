@@ -89,7 +89,7 @@ const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
 const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
 const VlsSmartBillionaire = lazy(() => import('./components/VlsSmartBillionaire'));
-import VLSGameMain from './components/VLSGameMain';
+
 
 const SOVEREIGN_NAMES = [
     "vecinoslaserena.cl",
@@ -190,12 +190,20 @@ function App() {
 function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
+  const host = window.location.host.toLowerCase();
+  const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+  const isVLS = !isRDMLS && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
+  const isMasterDomain = host.includes('vecinosmart.cl') || host.includes('vls.cl') || host.includes('smartcomuna.cl');
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('rdmls.cl'); 
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
+  const isVLSabes = location.pathname.includes('/vlsabes');
+  const isZeroDistraction = isInduccion || isVLSabes || isRDMLS;
+
   const { t, lang, setLang } = useTranslation();
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
-  const [authInitialized, setAuthInitialized] = useState(false);
+  const [authInitialized, setAuthInitialized] = useState(isRDMLS);
   const [notifications, setNotifications] = useState([]);
   const [showRadio, setShowRadio] = useState(true);
   const [showChat, setShowChat] = useState(false);
@@ -366,7 +374,7 @@ function AppContent() {
   const [showSmartTrivia, setShowSmartTrivia] = useState(false);
   const [showFaroCentinel, setShowFaroCentinel] = useState(false);
   const [showBotica, setShowBotica] = useState(false);
-  const [showVLSGame, setShowVLSGame] = useState(false);
+
   const [showVeterinaria, setShowVeterinaria] = useState(false);
   const [showSerenitoAntigravity, setShowSerenitoAntigravity] = useState(false);
   const [showSkyGuide, setShowSkyGuide] = useState(false);
@@ -380,22 +388,15 @@ function AppContent() {
   const [showNewsInvestigacion, setShowNewsInvestigacion] = useState(false);
   const [showSoveranix, setShowSoveranix] = useState(false);
 
-
-  const host = window.location.hostname.toLowerCase();
-  const isRDMLS = host.includes('rdmls');
-  const isVLS = !isRDMLS && !host.includes('radiovecino') && !host.includes('entrevecinas');
-  const isMasterDomain = host.includes('vecinosmart.cl') || host.includes('vls.cl') || host.includes('smartcomuna.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('laserena.cl') || host.includes('rdmls.cl'); 
-
   useEffect(() => {
-    // Título y Favicon Dinámico (solo depende de dominio/ruta, no de auth)
+    // Título y Favicon Dinámico
     let pageTitle = 'vecinoslaserena.cl';
     let favIconUrl = '/vls-crystal-icon.svg'; 
 
     if (isMasterDomain) {
        pageTitle = 'VecinoSmart - Red Inteligente';
        favIconUrl = '/vls-logo-3d.png';
-    } else if (host.includes('rdmls') || host.includes('rdmls.cl')) {
+    } else if (isRDMLS) {
        pageTitle = 'RDMLS - Radio Digital Municipal';
        favIconUrl = '/escudo.png';
     } else if (host.includes('entrevecinas')) {
@@ -437,19 +438,29 @@ function AppContent() {
   }, [currentUser]); // Solo re-ejecutar si cambia currentUser (ej: login/logout de Firebase)
 
   useEffect(() => {
+    // En RDMLS no se necesita autenticación — es un portal público de radio
+    if (isRDMLS) {
+      setAuthInitialized(true);
+      return;
+    }
     if (!auth) {
         setAuthInitialized(true);
         return;
     }
+    // Timeout de seguridad: si Firebase tarda más de 5s, renderizamos de todas formas
+    const safetyTimer = setTimeout(() => {
+      setAuthInitialized(true);
+    }, 5000);
     const unsubscribe = onAuthStateChanged(auth, (u) => {
+        clearTimeout(safetyTimer);
         setCurrentUser(u);
         setAuthInitialized(true);
         if (u) {
             window.dispatchEvent(new CustomEvent('vls-start-radio'));
         }
     });
-    return () => unsubscribe();
-  }, [auth]);
+    return () => { unsubscribe(); clearTimeout(safetyTimer); };
+  }, [auth, isRDMLS]);
 
   useEffect(() => {
     if (isGuest && authInitialized) {
@@ -898,8 +909,8 @@ function AppContent() {
     window.addEventListener('open-smart-business', () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowSmartBusiness(true); });
     window.addEventListener('open-emergency-directory', () => setShowEmergencyDirectory(true));
     window.addEventListener('open-smart-events', () => setShowSmartEvents(true));
-    window.addEventListener('open-vls-game', () => setShowVLSGame(true));
-    window.addEventListener('open-vls-play', () => setShowVLSGame(true));
+    window.addEventListener('open-vls-game', () => navigate('/vlsabes'));
+    window.addEventListener('open-vls-play', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-aguas', () => setShowAguasValle(true));
 
     
@@ -1007,7 +1018,7 @@ function AppContent() {
   // ELIMINADO: Bloqueo Maestro Passport que impedía acceso a pagos
   const showMasterLock = false; 
 
-  if (!authInitialized) {
+  if (!authInitialized && !isRDMLS) {
       return <LoadingScreen />;
   }
 
@@ -1017,15 +1028,15 @@ function AppContent() {
       </Suspense>
 
       <MartinSecurityShield />
-      {!isInduccion && <NetSpeedMonitor />}
+      {!isZeroDistraction && !isRDMLS && <NetSpeedMonitor />}
       <SerenitoSecurityGuard />
       <SecurityHoneypot />
       <SmartShare renderAsHiddenObserver={true} />
-      {!isInduccion && <FloatingActionPanel />}
+      {!isZeroDistraction && !isRDMLS && <FloatingActionPanel />}
       <ErrorCollector />
 
       {/* Módulo Vertical RRSS (Transversal) */}
-      {!isInduccion && (
+      {!isZeroDistraction && (
         <button 
           onClick={() => {
               window.dispatchEvent(new CustomEvent('open-vls-feed'));
@@ -1051,7 +1062,7 @@ function AppContent() {
       )}
 
       {/* VLSound — Transversal para VLS y RDMLS */}
-      {!isInduccion && (
+      {!isZeroDistraction && !isRDMLS && (
         <VLSConsoleSound 
            onOpenRadio={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRadio(true); }} 
            onOpenTV={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRetroTV(true); }}
@@ -1061,7 +1072,7 @@ function AppContent() {
 
 
       {/* Top Header — Branding dinámico según dominio */}
-      {!isInduccion && (
+      {!isZeroDistraction && !isRDMLS && (
         <header 
           className="glass-header animate-fade-in" 
           style={{ 
@@ -1260,18 +1271,18 @@ function AppContent() {
       </header>
       )}
 
-      <main className="page-content container" style={{ paddingBottom: isInduccion ? 0 : '4rem', paddingTop: isInduccion ? 0 : 'var(--nav-height)' }}>
-        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser }} />
-        {!isInduccion && (
+      <main className="page-content container" style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : 'var(--nav-height)' }}>
+        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS }} />
+        {!isZeroDistraction && (
           <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
-            <p>© 2026 {isVLS ? 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA' : 'ILUSTRE MUNICIPALIDAD DE LA SERENA · COMUNICACIONES ESTRATÉGICAS'}</p>
+            <p>© 2026 {isRDMLS ? 'ILUSTRE MUNICIPALIDAD DE LA SERENA · GESTIÓN INSTITUCIONAL' : 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA'}</p>
             <p>Contacto: <a href="mailto:contacto@vecinosmart.cl" style={{ color: '#FFD700' }}>contacto@vecinosmart.cl</a></p>
           </footer>
         )}
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
-      {!isInduccion && <SmartToolbox />}
+      {!isZeroDistraction && !isRDMLS && <SmartToolbox />}
 
       {/* Chat Botón y Panel */}
       {showChat && (
@@ -1280,7 +1291,7 @@ function AppContent() {
         </Suspense>
       )}
 
-      {!isInduccion && (
+      {!isZeroDistraction && !isRDMLS && (
         <>
           <Suspense fallback={<div/>}>
              <SmartTV weather={weather} />
@@ -1297,7 +1308,7 @@ function AppContent() {
       {/* Smart Hub 3D (Sistema Simplificado) */}
       {showHub3D && <SmartHub3D onClose={() => setShowHub3D(false)} />}
 
-      {!isInduccion && <PianoCompita />}
+      {!isZeroDistraction && !isRDMLS && <PianoCompita />}
 
       {/* Modal Distancias */}
       {showDistances && (
@@ -1351,9 +1362,7 @@ function AppContent() {
         </Suspense>
       )}
 
-      {showVLSGame && (
-          <VLSGameMain onClose={() => setShowVLSGame(false)} />
-      )}
+
 
       {/* Game KPI Impact screen */}
       {showGameKPI && (
@@ -1469,7 +1478,7 @@ function AppContent() {
              <div className="glass-panel" style={{ padding: '3rem', borderRadius: '24px', textAlign: 'center', border: '2px solid #ef4444' }}>
                 <ShieldAlert size={60} color="#ef4444" style={{ marginBottom: '1rem' }} />
                 <h2 style={{ color: 'white' }}>ACCESO RESTRINGIDO</h2>
-                <p style={{ color: '#94a3b8' }}>Este módulo es exclusivo para Administradores VLS.<br/>Favor contactar a vecinosmart@gmail.com</p>
+                <p style={{ color: '#94a3b8' }}>Este módulo es exclusivo para Administradores {isRDMLS ? 'RDMLS' : 'VLS'}.<br/>Favor contactar a {isRDMLS ? 'comunicaciones@laserena.cl' : 'vecinossmart@gmail.com'}</p>
                 <button onClick={() => setShowRadioMaster(false)} className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%', padding: '1rem' }}>VOLVER AL PORTAL</button>
              </div>
           </div>
@@ -1485,7 +1494,7 @@ function AppContent() {
              <div className="glass-panel" style={{ padding: '3rem', borderRadius: '24px', textAlign: 'center', border: '2px solid #ef4444' }}>
                 <ShieldAlert size={60} color="#ef4444" style={{ marginBottom: '1rem' }} />
                 <h2 style={{ color: 'white' }}>ESTUDIO RESTRINGIDO</h2>
-                <p style={{ color: '#94a3b8' }}>Para usar el Switcher profesional debe ser un creador autorizado.</p>
+                <p style={{ color: '#94a3b8' }}>Para usar el Switcher profesional debe ser un operador {isRDMLS ? 'municipal' : 'VLS'} autorizado.</p>
                 <button onClick={() => setShowBroadcaster(false)} className="btn btn-primary" style={{ marginTop: '1.5rem', width: '100%', padding: '1rem' }}>CERRAR</button>
              </div>
           </div>

@@ -161,7 +161,7 @@ const SmartAssistantInduccion = () => {
 };
 
 // --- APP PRINCIPAL INDUCCIÓN ---
-export default function VLSInduccion({ onClose }) {
+export default function VLSInduccion({ onClose, isRDMLS }) {
   const [step, setStep] = useState(0); 
   const [userData, setUserData] = useState({ 
     nombres: '', apellidos: '', rut: '', 
@@ -270,7 +270,7 @@ export default function VLSInduccion({ onClose }) {
            <div className="w-full h-full lg:rounded-[3rem] overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.8)] bg-black/60 border border-white/10 flex items-center justify-center relative group">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-transparent to-transparent opacity-60" />
               {visual}
-              <div className="absolute bottom-6 left-6 text-[10px] font-black text-white/10 uppercase tracking-[6px] border border-white/5 px-4 py-2 rounded-lg backdrop-blur-md">VLS-SMART-CORE</div>
+              <div className="absolute bottom-6 left-6 text-[10px] font-black text-white/10 uppercase tracking-[6px] border border-white/5 px-4 py-2 rounded-lg backdrop-blur-md">{isRDMLS ? 'RDMLS' : 'VLS'}-SMART-CORE</div>
            </div>
         </div>
 
@@ -355,7 +355,7 @@ export default function VLSInduccion({ onClose }) {
             src="/escudo.png" className="h-32 lg:h-48 mx-auto md:mx-0 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
           />
           <h1 className="text-5xl lg:text-[5rem] font-black text-white leading-[1] tracking-tighter uppercase italic">
-            PORTAL <br/><span className="text-red-600 font-normal italic">INDUCCIÓN 2026</span>
+            PORTAL <br/><span className="text-red-600 font-normal italic">INDUCCIÓN {isRDMLS ? 'RDMLS' : '2026'}</span>
           </h1>
           <p className="text-slate-400 font-extrabold uppercase tracking-[0.5em] text-xs pl-4 border-l-4 border-red-600 mt-6 mt-12 bg-slate-900/50 py-3 rounded-r-lg">
             Smart Administration • Patrimonio • Capital Humano
@@ -396,7 +396,7 @@ export default function VLSInduccion({ onClose }) {
             <img src="/serenito_v3.png" className="absolute bottom-0 right-0 h-[90%] object-contain z-10 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
             <div className="absolute inset-0 bg-gradient-to-t from-red-600/20 to-transparent"></div>
             <div className="p-12 h-full flex flex-col justify-start">
-              <span className="text-white font-black text-6xl italic leading-none opacity-10">VLS<br/>2026</span>
+              <span className="text-white font-black text-6xl italic leading-none opacity-10">{isRDMLS ? 'RDMLS' : 'VLS'}<br/>2026</span>
             </div>
           </div>
         }
@@ -427,7 +427,7 @@ export default function VLSInduccion({ onClose }) {
       />;
 
       case 3: return <ChapterLayout title="Estrategia" subtitle="Misión y Visión" 
-        visual={<div className="flex flex-col gap-10 items-center p-12 text-center"><Target size={140} className="text-red-600 animate-pulse"/><h4 className="font-black text-6xl uppercase tracking-tighter text-white leading-none italic">VALORES<br/>VLS</h4></div>}
+        visual={<div className="flex flex-col gap-10 items-center p-12 text-center"><Target size={140} className="text-red-600 animate-pulse"/><h4 className="font-black text-6xl uppercase tracking-tighter text-white leading-none italic">VALORES<br/>{isRDMLS ? 'RDMLS' : 'VLS'}</h4></div>}
         content={<><section className="space-y-4"><h4 className="text-red-500 font-black text-3xl uppercase tracking-widest flex items-center gap-3 border-b border-white/10 pb-4"><Star/> Nuestra Misión</h4><p className="font-light text-2xl">Proporcionar un servicio cercano, amable y de alta calidad a la comunidad, promoviendo la participación ciudadana para el desarrollo de la ciudad.</p></section><section className="space-y-4 pt-10"><h4 className="text-orange-500 font-black text-3xl uppercase tracking-widest flex items-center gap-3 border-b border-white/10 pb-4"><Landmark/> Nuestra Visión</h4><p className="font-light text-2xl">Ser un municipio que innova en la gestión, brindando soluciones eficientes y transparencia total.</p></section><div className="mt-8 flex flex-wrap gap-2">{["Transparencia", "Compromiso", "Respeto", "Ética Profesional", "Inclusión"].map(v => <span key={v} className="bg-white/5 border border-white/10 px-4 py-2 rounded-full text-[10px] font-black uppercase text-slate-400 tracking-tighter">{v}</span>)}</div></>} 
       />;
 
@@ -497,7 +497,7 @@ export default function VLSInduccion({ onClose }) {
 
       case 11: return <ChapterLayout title="Educación" subtitle="Capacitación Continua" 
         visual={<div className="p-12 animate-in zoom-in duration-1000"><GraduationCap size={160} className="text-red-600 drop-shadow-[0_0_40px_rgba(220,38,38,0.5)] animate-pulse"/></div>}
-        content={<><p className="text-4xl font-black text-white mb-8 uppercase italic leading-none border-l-8 border-red-600 pl-6">Impulsamos tu Crecimiento.</p><p className="text-2xl font-light leading-snug">En la IMLS no solo trabajas, también creces. Nuestro programa de capacitación continua busca que seas un líder en la gestión pública moderna:</p><div className="grid gap-8 mt-10"><div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center gap-8 hover:bg-white/10 transition-all group cursor-default"><div className="p-5 bg-red-600/20 rounded-2xl group-hover:bg-red-600 transition-colors"><BookOpen className="text-red-500 group-hover:text-white" size={50}/></div><div><h4 className="text-white font-black text-3xl uppercase italic leading-none">Academia VLS</h4><p className="text-slate-400 text-sm mt-2 tracking-widest uppercase font-bold">Cursos Certificados de Alto Nivel</p></div></div><div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center gap-8 hover:bg-white/10 transition-all group cursor-default"><div className="p-5 bg-orange-600/20 rounded-2xl group-hover:bg-orange-600 transition-colors"><Zap className="text-orange-500 group-hover:text-white" size={50}/></div><div><h4 className="text-white font-black text-3xl uppercase italic leading-none">Smart Skills</h4><p className="text-slate-400 text-sm mt-2 tracking-widest uppercase font-bold">Innovación y Herramientas Digitales</p></div></div></div></>} 
+        content={<><p className="text-4xl font-black text-white mb-8 uppercase italic leading-none border-l-8 border-red-600 pl-6">Impulsamos tu Crecimiento.</p><p className="text-2xl font-light leading-snug">En la IMLS no solo trabajas, también creces. Nuestro programa de capacitación continua busca que seas un líder en la gestión pública moderna:</p><div className="grid gap-8 mt-10"><div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center gap-8 hover:bg-white/10 transition-all group cursor-default"><div className="p-5 bg-red-600/20 rounded-2xl group-hover:bg-red-600 transition-colors"><BookOpen className="text-red-500 group-hover:text-white" size={50}/></div><div><h4 className="text-white font-black text-3xl uppercase italic leading-none">Academia {isRDMLS ? 'RDMLS' : 'VLS'}</h4><p className="text-slate-400 text-sm mt-2 tracking-widest uppercase font-bold">Cursos Certificados de Alto Nivel</p></div></div><div className="p-8 bg-white/5 rounded-[2.5rem] border border-white/10 flex items-center gap-8 hover:bg-white/10 transition-all group cursor-default"><div className="p-5 bg-orange-600/20 rounded-2xl group-hover:bg-orange-600 transition-colors"><Zap className="text-orange-500 group-hover:text-white" size={50}/></div><div><h4 className="text-white font-black text-3xl uppercase italic leading-none">Smart Skills</h4><p className="text-slate-400 text-sm mt-2 tracking-widest uppercase font-bold">Innovación y Herramientas Digitales</p></div></div></div></>} 
       />;
 
       case 12: return (
@@ -593,7 +593,7 @@ export default function VLSInduccion({ onClose }) {
                     
                     <div className="text-center relative z-10">
                         <h1 className="text-7xl lg:text-[9rem] font-serif font-black uppercase tracking-[0.1em] mb-4 leading-none text-[#1a1a1a]">CERTIFICADO</h1>
-                        <p className="text-2xl lg:text-3xl italic text-slate-500 mb-16 font-serif">De Aprobación Inducción Corporativa VLS 2026</p>
+                        <p className="text-2xl lg:text-3xl italic text-slate-500 mb-16 font-serif">De Aprobación Inducción Corporativa {isRDMLS ? 'RDMLS' : 'VLS'} 2026</p>
                         
                         <div className="mb-14">
                             <p className="text-slate-400 text-sm uppercase tracking-[0.5em] mb-4 font-bold">OTORGADO A:</p>
@@ -606,11 +606,11 @@ export default function VLSInduccion({ onClose }) {
     
                     <div className="flex justify-between items-end mt-24 text-[11px] font-extrabold uppercase text-slate-400 tracking-[0.3em] relative z-10 px-12">
                         <div className="text-center w-64">
-                            <div className="h-20 flex items-center justify-center opacity-80 mb-4 italic text-slate-300 font-serif text-3xl">Firma Digital VLS</div>
+                             <div className="h-20 flex items-center justify-center opacity-80 mb-4 italic text-slate-300 font-serif text-3xl">Firma Digital {isRDMLS ? 'RDMLS' : 'VLS'}</div>
                             <div className="border-t-2 border-slate-200 pt-4">Dirección de Gestión de Personas</div>
                         </div>
                         <div className="text-center space-y-4">
-                            <p className="text-[#C5A065] font-black text-lg">VLS-OK-2026</p>
+                             <p className="text-[#C5A065] font-black text-lg">{isRDMLS ? 'RDMLS' : 'VLS'}-OK-2026</p>
                             <div className="flex justify-center"><QrCode size={60} className="text-slate-300"/></div>
                         </div>
                         <div className="text-center w-64">

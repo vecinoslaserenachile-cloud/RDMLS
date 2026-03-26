@@ -204,7 +204,7 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
                 {note.type === 'MÚSICA' ? <Music size={180} color={note.color} /> : <Users size={180} color={note.color} />}
               </div>
 
-              <div style={{ position: 'relative', zIndex: 1 }}>
+              <div style={{ position: 'relative', zIndex: 1, opacity: note.id === 'CHAGO_CHEF_VLS' ? 0.5 : 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
                     <span style={{ fontSize: '0.7rem', fontWeight: '900', color: note.color, textTransform: 'uppercase', border: `1px solid ${note.color}`, padding: '2px 8px', borderRadius: '4px' }}>
                         {note.cat}
@@ -215,12 +215,24 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
                 <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: 0 }}>{note.bajada}</p>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem', position: 'relative', zIndex: 1, opacity: note.id === 'CHAGO_CHEF_VLS' ? 0.5 : 1 }}>
                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: note.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <User size={16} color="white" />
                  </div>
                  <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{note.title}</span>
               </div>
+              
+              {note.id === 'CHAGO_CHEF_VLS' && (
+                <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(2px)', zIndex: 2, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#f43f5e' }}>
+                    <div style={{ background: '#f43f5e', padding: '1rem', borderRadius: '50%', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <span style={{ fontWeight: '900', letterSpacing: '2px', color: 'white' }}>BLOQUEADO</span>
+                </div>
+              )}
             </motion.div>
           ))}
         </AnimatePresence>

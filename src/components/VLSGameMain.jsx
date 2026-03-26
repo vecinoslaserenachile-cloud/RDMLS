@@ -1,12 +1,25 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import VLSTriviaMain from './vls_trivia/VLSTriviaMain';
 
 export default function VLSGameMain({ onClose }) {
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Detener cualquier radio o TV en la plataforma al abrir el juego
     window.dispatchEvent(new CustomEvent('stop-all-audio'));
     window.dispatchEvent(new CustomEvent('stop-radio'));
+    // Asegurarse de que el body no haga scroll
+    document.body.style.overflow = 'hidden';
+    return () => {
+        document.body.style.overflow = '';
+    };
   }, []);
+
+  const handleClose = () => {
+      if (onClose) onClose();
+      else navigate('/');
+  };
 
   return (
     <div 
@@ -21,7 +34,7 @@ export default function VLSGameMain({ onClose }) {
         left: 0
       }}
     >
-      <VLSTriviaMain onClose={onClose} />
+      <VLSTriviaMain onClose={handleClose} />
     </div>
   );
 }

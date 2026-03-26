@@ -59,6 +59,78 @@ export const STAGES: Stage[] = [
         options: ["Bartholomew Sharp", "Jack Sparrow", "Francis Drake", "Capitán Garfio"],
         correctIndex: 0,
         explanation: "Bartholomew Sharp lideró el ataque que causó grandes daños a la ciudad colonial."
+      },
+      {
+        id: 6,
+        text: "En la esquina de Matta y Prat (Plaza de Armas) existieron edificios emblemáticos hoy desaparecidos. ¿Qué histórica fábrica funcionaba en la esquina central de esa imagen?",
+        options: ["Casa Fábrica de Papayas Ceres (Anastassiou)", "Fábrica de Carruajes Juan Bohón", "Cervecería La Serena", "Imprenta El Día"],
+        correctIndex: 0,
+        explanation: "La Casa Fábrica de Papayas Ceres de Anastassiou fue un punto icónico de la gastronomía serenense por décadas.",
+        image: "/img_trivia/stage_1_q6.jpg"
+      },
+      {
+        id: 7,
+        text: "¿Qué ciudad española, cuna de Francisco de Aguirre, donó las cerámicas de las emblemáticas bancas de la Avenida de Aguirre?",
+        options: ["Talavera de la Reina", "Madrid", "Sevilla", "Toledo"],
+        correctIndex: 0,
+        explanation: "Francisco de Aguirre nació en Talavera de la Reina, ciudad que donó estas hermosas piezas de cerámica para ornamentar La Serena.",
+        image: "/img_trivia/stage_1_q7.jpg"
+      },
+      {
+        id: 8,
+        text: "El Moai original que hoy reside en el Museo Arqueológico tuvo varias ubicaciones en la ciudad. ¿En qué zona estuvo emplazado anteriormente?",
+        options: ["En los faldeos del Cerro Santa Lucía (Regimiento)", "Frente al Faro Monumental", "En el Patio del Municipio", "En el Terminal de Buses"],
+        correctIndex: 0,
+        explanation: "Antes de llegar al museo, el Moai estuvo en el Regimiento Arica y también en la subida de calle Colo Colo.",
+        image: "/img_trivia/stage_1_q8.jpg"
+      },
+      {
+        id: 9,
+        text: "¿Qué importante sistema de pago electrónico en Chile tuvo a la Región de Coquimbo como piloto nacional para su primera etapa de instalación?",
+        options: ["Redcompra (Transbank)", "CuentaRUT", "Mercado Pago", "Onepay"],
+        correctIndex: 0,
+        explanation: "La Serena y Coquimbo fueron las ciudades elegidas como plan piloto para masificar el uso de tarjetas de débito Redcompra en el comercio local.",
+        image: "/img_trivia/stage_1_q9.jpg"
+      },
+      {
+        id: 10,
+        text: "Según la Ley de Convivencia Vial, ¿cuál es la distancia de respeto mínima que debe mantener un automovilista al adelantar a un ciclista?",
+        options: ["1.5 metros", "0.5 metros", "2 metros", "3 metros"],
+        correctIndex: 0,
+        explanation: "Respetar los 1.5 metros de distancia es una obligación legal y vital para la seguridad de quienes pedalean por la ciudad.",
+        image: "/img_trivia/stage_1_q10.jpg"
+      },
+      {
+        id: 11,
+        text: "¿Qué accidente geográfico de alto valor ecológico marca el límite natural entre las comunas de La Serena y Coquimbo?",
+        options: ["Quebrada de Peñuelas", "Río Elqui", "Cuesta Porotillos", "Humedal El Culebrón"],
+        correctIndex: 0,
+        explanation: "La Quebrada de Peñuelas es el límite natural entre ambas comunas y constituye un corredor biológico fundamental.",
+        image: "/img_trivia/stage_1_q11.jpg"
+      },
+      {
+        id: 12,
+        text: "En los humedales de la zona anidan diversas aves como el Pilpilén. ¿Cuál es la medida más importante al visitarlos con mascotas?",
+        options: ["Mantener siempre la mascota con correa", "Dejar que el perro explore libremente", "Traer comida para las aves", "Hacer ruidos fuertes para avisar"],
+        correctIndex: 0,
+        explanation: "Mantener a las mascotas con correa protege los nidos de aves que anidan a ras de suelo en dunas y humedales.",
+        image: "/img_trivia/stage_1_q12.jpg"
+      },
+      {
+        id: 13,
+        text: "¿Cómo se llama la concurrida plaza ubicada en la intersección de Avenida de Aguirre con Larraín Alcalde?",
+        options: ["Plaza Buenos Aires", "Plaza de Armas", "Plaza Tenri", "Plaza de los Poetas"],
+        correctIndex: 0,
+        explanation: "La Plaza Buenos Aires es un punto neurálgico que conecta la Avenida de Aguirre con Larraín Alcalde.",
+        image: "/img_trivia/stage_1_q13.jpg"
+      },
+      {
+        id: 14,
+        text: "¿Cerca de qué localidad de La Serena se encuentra el puente sobre el Río Elqui que está próximo a la captación de agua potable para la zona?",
+        options: ["Las Rojas", "Algarrobito", "Lambert", "Altovalsol"],
+        correctIndex: 0,
+        explanation: "El puente de la localidad de Las Rojas cruza el Río Elqui cerca de un punto vital de captación hídrica para La Serena y Coquimbo.",
+        image: "/img_trivia/stage_1_q14.jpg"
       }
     ]
   },
@@ -353,7 +425,8 @@ export const STAGES: Stage[] = [
         text: "¿Qué cerro de La Serena tiene leyendas sobre portales a otras dimensiones?",
         options: ["Cerro Grande", "Cerro Tololo", "Cerro Mamalluca", "Cerro Las Campanas"],
         correctIndex: 0,
-        explanation: "El Cerro Grande es centro de muchas historias sobre avistamientos y fenómenos inexplicables."
+        explanation: "El Cerro Grande es centro de muchas historias sobre avistamientos y fenómenos inexplicables.",
+        image: "/img_trivia/stage_8_q5.jpg"
       }
     ]
   },
@@ -374,7 +447,8 @@ export const STAGES: Stage[] = [
         text: "¿Qué mezquita es un símbolo de la hermandad cultural en Coquimbo?",
         options: ["Mezquita de Coquimbo (Centro Mohammed VI)", "Mezquita de Al-Aqsa", "Mezquita Azul", "Mezquita de Córdoba"],
         correctIndex: 0,
-        explanation: "La Mezquita de Coquimbo es un centro cultural y religioso único en Sudamérica."
+        explanation: "La Mezquita de Coquimbo es un centro cultural y religioso único en Sudamérica.",
+        image: "/img_trivia/stage_9_q2.jpg"
       },
       {
         id: 3,
@@ -382,6 +456,14 @@ export const STAGES: Stage[] = [
         options: ["Barrio Inglés", "Barrio Cívico", "Barrio Universitario", "Barrio Industrial"],
         correctIndex: 0,
         explanation: "El Barrio Inglés conserva la arquitectura de la época de oro del puerto."
+      },
+      {
+        id: 4,
+        text: "Desde la Avenida del Mar de La Serena es posible apreciar la Bahía de Coquimbo en toda su magnitud. ¿Qué hito domina la vista al mirar hacia el puerto?",
+        options: ["Puerto de Coquimbo y la Cruz del Tercer Milenio", "El Faro Monumental", "Pichidangui", "Totoralillo"],
+        correctIndex: 0,
+        explanation: "La Bahía une a La Serena y Coquimbo, ofreciendo una vista privilegiada del puerto y las grúas de carga.",
+        image: "/img_trivia/stage_9_q4.jpg"
       }
     ]
   },

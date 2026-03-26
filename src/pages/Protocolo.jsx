@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Users, Mic2, Camera, Calendar, Play, Pause, CheckCircle, MapPin, AlertTriangle, Save, ArrowLeft, DoorOpen, BadgeCheck, Eye, ExternalLink } from 'lucide-react';
 import LiveVenuesMonitor from '../components/LiveVenuesMonitor';
 
@@ -24,16 +24,18 @@ const VIPS_DEFAULT = [
     { id: 17, nombre: "Cristian Marín Pérez", cargo: "Concejal de La Serena", nivel: "concejo", orden: 17, estado: "pendiente" },
 ];
 
-const SONGS_HATS = [
-    { id: 1, title: "Sinfonía Blanca (Datos VLS)", url: "https://vecinoslaserena.cl/audioteca/blanca", hat: "Blanco", color: "#ffffff" },
-    { id: 2, title: "Ritmo Rojo (Emoción VLS)", url: "https://vecinoslaserena.cl/audioteca/roja", hat: "Rojo", color: "#ef4444" },
-    { id: 3, title: "Oscura Cautela (Negro VLS)", url: "https://vecinoslaserena.cl/audioteca/negra", hat: "Negro", color: "#1e293b" },
-    { id: 4, title: "Brillo Amarillo (Optimismo VLS)", url: "https://vecinoslaserena.cl/audioteca/amarilla", hat: "Amarillo", color: "#facc15" },
-    { id: 5, title: "Eco Verde (Creatividad VLS)", url: "https://vecinoslaserena.cl/audioteca/verde", hat: "Verde", color: "#22c55e" },
-    { id: 6, title: "Mando Azul (Control VLS)", url: "https://vecinoslaserena.cl/audioteca/azul", hat: "Azul", color: "#3b82f6" }
-];
+
 
 export default function Protocolo() {
+    const { isRDMLS } = useOutletContext();
+    const SONGS_HATS = [
+        { id: 1, title: `Sinfonía Blanca (Datos ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/blanca", hat: "Blanco", color: "#ffffff" },
+        { id: 2, title: `Ritmo Rojo (Emoción ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/roja", hat: "Rojo", color: "#ef4444" },
+        { id: 3, title: `Oscura Cautela (Negro ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/negra", hat: "Negro", color: "#1e293b" },
+        { id: 4, title: `Brillo Amarillo (Optimismo ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/amarilla", hat: "Amarillo", color: "#facc15" },
+        { id: 5, title: `Eco Verde (Creatividad ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/verde", hat: "Verde", color: "#22c55e" },
+        { id: 6, title: `Mando Azul (Control ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/azul", hat: "Azul", color: "#3b82f6" }
+    ];
     const navigate = useNavigate();
     const [rol, setRol] = useState('secretaria');
     const [eventos, setEventos] = useState([]);
@@ -221,7 +223,7 @@ export default function Protocolo() {
                                 </div>
                                 <div>
                                     <h2 style={{ fontSize: '2.4rem', fontWeight: 900, color: 'white', margin: 0, letterSpacing: '-0.05em' }}>VECINOS DEL MUNDO</h2>
-                                    <p style={{ color: '#38bdf8', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Relaciones Diplomáticas & Comerciales del Ecosistema VLS</p>
+                                     <p style={{ color: '#38bdf8', fontWeight: 'bold', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Relaciones Diplomáticas & Comerciales del {isRDMLS ? 'Ecosistema RDMLS' : 'Ecosistema VLS'}</p>
                                 </div>
                             </div>
                             <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.6', maxWidth: '800px' }}>
@@ -547,6 +549,7 @@ const VistaTecnica = ({ evento }) => {
 
 // --- MÓDULO VECINOS DEL MUNDO (ALMANAQUE 2026) ---
 const VecinosDelMundo = () => {
+    const { isRDMLS } = useOutletContext();
     const [search, setSearch] = useState('');
     const [selectedCountry, setSelectedCountry] = useState(null);
 
@@ -711,7 +714,7 @@ const VecinosDelMundo = () => {
                             }}
                         >
                             <div style={{ fontSize: '3.5rem', filter: 'drop-shadow(2px 2px 2px rgba(0,0,0,0.2))' }}>{c.flag}</div>
-                            <div style={{ position: 'absolute', bottom: '5px', width: '100%', textAlign: 'center', color: '#666', fontSize: '0.6rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>VLS.DIPLOMACY.2026</div>
+                             <div style={{ position: 'absolute', bottom: '5px', width: '100%', textAlign: 'center', color: '#666', fontSize: '0.6rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>{isRDMLS ? 'RDMLS' : 'VLS'}.DIPLOMACY.2026</div>
                         </div>
                         
                         <h3 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.6rem', fontWeight: '900', letterSpacing: '-0.02em' }}>{c.name}</h3>

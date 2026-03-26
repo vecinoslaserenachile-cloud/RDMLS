@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import EscuelaOficios from '../components/EscuelaOficios';
 
 export default function Elearning() {
+    const { isRDMLS } = useOutletContext();
     const navigate = useNavigate();
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -147,7 +148,7 @@ export default function Elearning() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div>
                                         <h3 style={{ margin: 0, color: 'white' }}>Lección Activa: {selectedCourse.modules[0]}</h3>
-                                        <p style={{ margin: '0.5rem 0 0 0', color: '#94a3b8', fontSize: '0.9rem' }}>Aprende paso a paso con la comunidad VLS.</p>
+                                         <p style={{ margin: '0.5rem 0 0 0', color: '#94a3b8', fontSize: '0.9rem' }}>Aprende paso a paso con la comunidad {isRDMLS ? 'RDMLS' : 'VLS'}.</p>
                                     </div>
                                     <button 
                                         onClick={() => markModuleComplete(selectedCourse.id, 0)}
@@ -170,7 +171,7 @@ export default function Elearning() {
                                 </div>
                                 <div style={{ flex: 1, padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
                                     <p style={{ color: '#94a3b8', fontSize: '0.8rem', margin: '0 0 0.5rem 0' }}>ENLACE</p>
-                                    <strong style={{ display: 'block', fontSize: '0.9rem' }}>Comunidad Discord VLS</strong>
+                                     <strong style={{ display: 'block', fontSize: '0.9rem' }}>Comunidad Discord {isRDMLS ? 'RDMLS' : 'VLS'}</strong>
                                 </div>
                             </div>
                         </div>
@@ -216,7 +217,7 @@ export default function Elearning() {
                                 disabled={!isCertified}
                                 style={{ background: isCertified ? '#f59e0b' : '#334155', color: isCertified ? 'white' : '#94a3b8', fontWeight: 'bold', width: '100%' }}
                                 onClick={() => {
-                                    alert("🎓 Autenticando Soberanía Digital...\nGenerando Diploma para: Usuario VLS Local.");
+                                     alert(`🎓 Autenticando Soberanía Digital...\nGenerando Diploma para: Usuario ${isRDMLS ? 'RDMLS' : 'VLS'} Local.`);
                                     window.open('https://firebasestorage.googleapis.com/v0/b/vecinos-la-serena.appspot.com/o/diploma_demo.pdf?alt=media', '_blank');
                                 }}
                             >
@@ -242,7 +243,7 @@ export default function Elearning() {
                             <GraduationCap size={32} color="#38bdf8" />
                         </div>
                         <div>
-                            <h2 className="text-gradient" style={{ margin: 0 }}>Academia Vecinal P2P</h2>
+                            <h2 className="text-gradient" style={{ margin: 0 }}>{isRDMLS ? 'Academia Institucional' : 'Academia Vecinal'} P2P</h2>
                             <p className="text-muted" style={{ margin: '0.25rem 0 0 0' }}>Soberanía del Conocimiento: Crea y consume cursos de la comunidad Serenense.</p>
                         </div>
                     </div>
@@ -286,7 +287,7 @@ export default function Elearning() {
                                     <textarea rows={3} style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white', resize: 'none' }}></textarea>
                                 </div>
                                 <div style={{ background: 'rgba(56, 189, 248, 0.1)', padding: '1rem', borderRadius: '12px', fontSize: '0.8rem', color: '#38bdf8' }}>
-                                    💡 <strong>Nota Técnica:</strong> El video se sirve desde CDNs externos para garantizar la fluidez de la plataforma. La Academia VLS solo gestiona los diplomas y el progreso.
+                                     💡 <strong>Nota Técnica:</strong> El video se sirve desde CDNs externos para garantizar la fluidez de la plataforma. La Academia {isRDMLS ? 'RDMLS' : 'VLS'} solo gestiona los diplomas y el progreso.
                                 </div>
                                 <button className="btn btn-primary" style={{ padding: '1.2rem', background: '#38bdf8', color: 'black', fontWeight: 'bold' }} onClick={() => { alert('Curso enviado a revisión por el Consejo Vecinal Smart.'); setShowCreateModal(false); }}>
                                     PUBLICAR EN LA ACADEMIA

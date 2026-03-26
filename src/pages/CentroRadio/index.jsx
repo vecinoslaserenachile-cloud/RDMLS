@@ -64,9 +64,9 @@ export default function CentroRadio() {
     const animationRef = useRef(null);
     const vuLeftRef = useRef(null);
     const vuRightRef = useRef(null);
-    const host = window.location.hostname.toLowerCase();
-    const isVLS = host.includes('vecinoslaserena');
-    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinoslaserena'));
+    const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isVLS = host.includes('vecinoslaserena') || host.includes('vls') || host.includes('localhost');
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
 
     useEffect(() => {
@@ -98,7 +98,7 @@ export default function CentroRadio() {
     
     const defaultStream = isVLS 
         ? "https://az11.yesstreaming.net:8630/radio.mp3" 
-        : "https://az11.yesstreaming.net:8590/radio.mp3";
+        : "https://az11.yesstreaming.net/public/radio-digital-municipal-la-serena";
 
     const [streamUrl, setStreamUrl] = useState(defaultStream);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
@@ -115,27 +115,36 @@ export default function CentroRadio() {
     ];
 
     const radioStations = [
-        ...(!isVLS ? [
+        ...(isRDMLS ? [
             { 
-                id: 'municipal', 
-                name: 'RADIO DIGITAL MUNICIPAL LA SERENA',
+                id: 'municipal',
+                name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
                 dialLabel: 'RDMLS',
-                slogan: 'LA SEÑAL SIEMPRE CONECTADA - IMLS 2026', 
-                url: "https://az11.yesstreaming.net:8590/radio.mp3",
-                color: '#FFD700',
+                slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
+                url: "https://az11.yesstreaming.net:8630/radio.mp3", 
+                color: '#f97316',
                 logo: '/logo_municipio.png',
-                badge: 'OFICIAL'
+                badge: 'RDMLS'
             },
             { 
-                id: 'concejo', 
-                name: 'CONCEJO MUNICIPAL',
-                dialLabel: 'CONCEJO',
-                slogan: 'TRANSPARENCIA Y GESTIÓN PÚBLICA', 
-                url: "https://www.youtube.com/embed/videoseries?list=PLcyI03xWq5PSGHhbwSKp0nw0tKNPCt6RM&autoplay=1", 
-                color: '#ef4444',
-                logo: '/escudo.png',
-                badge: 'TV CONCEJO',
-                isVideo: true
+                id: 'instrumental', 
+                name: 'ACADEMIA DE MÚSICA RDMLS',
+                dialLabel: 'CULTURA',
+                slogan: 'NUESTROS TALENTOS LOCALES EN RDMLS', 
+                url: "https://az11.yesstreaming.net:8630/music_school.mp3", 
+                color: '#a855f7',
+                logo: '/piano_icon.png',
+                badge: 'MUNICIPAL'
+            },
+            { 
+                id: 'entrevistas', 
+                name: 'ENTREVISTAS ESPECIALES',
+                dialLabel: 'RADIO',
+                slogan: 'LA ENTREVISTA RADIAL RDMLS', 
+                url: "https://az11.yesstreaming.net:8630/sessions.mp3", 
+                color: '#10b981',
+                logo: '/sessions_icon.png',
+                badge: 'RDMLS'
             }
         ] : [
             { 
@@ -798,6 +807,11 @@ export default function CentroRadio() {
                         <span style={{ fontSize: '0.9rem' }}>Escuela de Música</span>
                     </button>
                     <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
+                    <button onClick={() => navigate('/vlsabes')} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Juego de Trivia">
+                        <Gamepad2 size={18} color="#FFD700" />
+                        <span style={{ fontSize: '0.9rem' }}>Saberes</span>
+                    </button>
+                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
                     <button onClick={() => navigate('/')} style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }} title="Volver al Portal Central">
                         <Home size={18} color="#00e5ff" />
                         <span style={{ fontSize: '0.9rem' }}>Smart Comuna</span>
@@ -819,7 +833,74 @@ export default function CentroRadio() {
             }}>
 
 
-                {/* 2. EL REPRODUCTOR (CONSOLA RADIO) */}
+                {/* 1. SECCIÓN RELOJ (HORA SERENA) & MARQUEE INICIAL */}
+                <section id="clock-section" style={{ 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    alignItems: 'center', 
+                    gap: '1rem',
+                    width: '100%',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    paddingBottom: '1.5rem'
+                }}>
+                    <div className="glass-panel" style={{ 
+                        padding: '1.5rem 3rem',
+                        borderRadius: '50px',
+                        background: 'rgba(0,0,0,0.4)',
+                        border: '2px solid #FFD700',
+                        boxShadow: '0 0 30px rgba(255,215,0,0.2)',
+                        textAlign: 'center'
+                    }}>
+                        <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', letterSpacing: '3px', marginBottom: '0.5rem' }}>HORASERENA de rdmls.cl</div>
+                        <div style={{ fontSize: isMobile ? '3rem' : '4.5rem', fontWeight: '900', fontFamily: 'monospace', color: 'white', textShadow: '0 0 20px rgba(255,255,255,0.3)' }}>
+                            {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        </div>
+                        <div style={{ fontSize: '1rem', opacity: 0.8, fontWeight: 'bold', marginTop: '0.5rem', textTransform: 'uppercase' }}>
+                            {time.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                        </div>
+                    </div>
+
+                    {/* MARQUEE DINÁMICO */}
+                    <div style={{ 
+                        width: '100%', 
+                        background: '#000', 
+                        height: '35px', 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        overflow: 'hidden',
+                        borderRadius: '8px',
+                        border: '1px solid #333'
+                    }}>
+                        <div style={{ 
+                            background: '#FFD700', 
+                            color: '#000', 
+                            height: '100%', 
+                            display: 'flex', 
+                            alignItems: 'center', 
+                            padding: '0 1rem', 
+                            fontSize: '0.7rem', 
+                            fontWeight: '900',
+                            zIndex: 2,
+                            whiteSpace: 'nowrap'
+                        }}>
+                            INFO RDMLS
+                        </div>
+                        <div style={{ flex: 1, whiteSpace: 'nowrap', position: 'relative' }}>
+                            <div style={{ 
+                                display: 'inline-block', 
+                                whiteSpace: 'nowrap', 
+                                animation: 'marquee 40s linear infinite',
+                                color: '#00ff41',
+                                fontSize: '0.85rem',
+                                fontFamily: 'monospace',
+                                fontWeight: 'bold',
+                                paddingLeft: '100%'
+                            }}>
+                                {marquees.map(m => m.text).join('  ///  ')}
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <section id="radio-section" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
                     <div style={{ width: '100%', maxWidth: '680px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
 
@@ -1265,6 +1346,7 @@ export default function CentroRadio() {
             {showArcade && <RetroArcadeLobby onClose={() => setShowArcade(false)} />}
             {showAdmin && <RadioBackofficeModal onClose={() => setShowAdmin(false)} />}
             {selectedNews && <NewsDetailModal item={selectedNews} onClose={() => setSelectedNews(null)} />}
+
  
             <style>{`
                 @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-150%); } }
