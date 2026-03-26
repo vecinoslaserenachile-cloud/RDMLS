@@ -150,7 +150,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         {isRdmlsDns ? (
           <Routes>
             <Route path="/welcome" element={<Navigate to="/" replace />} />
-            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} isRDMLS={isRdmlsDns} />} />
+            <Route path="/induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
             <Route path="/" element={<CentroRadio />} />
             <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
@@ -159,7 +159,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Routes>
             <Route path="/" element={<Navigate to="/puerta" replace />} />
             <Route path="/puerta" element={<PuertaSmart />} />
-            <Route path="/induccion" element={<VLSInduccion onClose={() => window.history.back()} isRDMLS={isRdmlsDns} />} />
+            <Route path="/induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
             <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
             <Route path="*" element={<Navigate to="/puerta" replace />} />
           </Routes>
@@ -195,7 +195,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="acceso" element={<PuertaSerena />} />
               <Route path="dev" element={<DevPortal />} />
               <Route path="motors" element={<VLSMotorsShowroom />} />
-              <Route path="induccion" element={<VLSInduccion onClose={() => window.history.back()} isRDMLS={isRdmlsDns} />} />
+              <Route path="induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
             </Route>
             <Route path="/puerta" element={<PuertaSmart />} />
             <Route path="/bisabuelo" element={<GameVLS />} />

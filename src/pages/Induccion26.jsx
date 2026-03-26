@@ -6,7 +6,7 @@ import {
     CheckCircle, Shield, Globe, Award as Honor, Music, Volume2, VolumeX, ArrowRight
 } from 'lucide-react';
 
-export default function Induccion26() {
+export default function Induccion26({ isRDMLS }) {
     const navigate = useNavigate();
     const [progress, setProgress] = useState(0);
     const [showTrivia, setShowTrivia] = useState(false);
@@ -19,12 +19,28 @@ export default function Induccion26() {
     const [lastAnswerCorrect, setLastAnswerCorrect] = useState(false);
 
     // PPTX Viewer logic
-    const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/b5e722a37d90e48703b574f25448a3a9fc7bb473/Induccion%20IMLS%20beta26.pptx";
+    const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx";
     const iframeSrc = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX)}`;
 
-    const questions = [
+    const questions = isRDMLS ? [
         {
-            q: "Según la visión Smart City IMLS 2026, ¿cuál es el pilar de desarrollo ciudadano?",
+            q: "Según la visión Smart City IMLS 2026, ¿cuál es el primer pilar de la gestión?",
+            opts: ["Burocracia Tradicional", "Probidad y Cercanía Digital", "Privatización de Servicios"],
+            ans: 1
+        },
+        {
+            q: "El asistente IA de la plataforma se llama...",
+            opts: ["Serenito", "Robotito", "AlcaldeBot"],
+            ans: 0
+        },
+        {
+            q: "RDMLS corresponde a...",
+            opts: ["Red de Medios", "Radio Digital Municipal La Serena", "Región de La Serena"],
+            ans: 1
+        }
+    ] : [
+        {
+            q: "Según la visión Smart City VLS 2026, ¿cuál es el pilar de desarrollo ciudadano?",
             opts: ["Burocracia Tradicional", "Soberanía Digital Vecinal", "Privatización de Servicios"],
             ans: 1
         },
@@ -124,7 +140,7 @@ export default function Induccion26() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Shield size={32} color="#38bdf8" />
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>INDUCCIÓN VLS 2026</h1>
+                        <h1 style={{ margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '1px' }}>INDUCCIÓN {isRDMLS ? 'RDMLS' : 'VLS'} 2026</h1>
                         <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'bold' }}>EXPERT LEVEL MASTERCLASS</p>
                     </div>
                 </div>
