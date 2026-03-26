@@ -94,9 +94,9 @@ export default function CentroRadio() {
         };
     }, [isVLS]);
     
-    const MAIN_RADIO_URL = "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3";
-  // Enforced fixed stream mapping for RDMLS to bypass any port 8590 caching
-  const AUDIO_URL = MAIN_RADIO_URL;
+    const MAIN_RADIO_URL = "https://az11.yesstreaming.net:8590/radio.mp3";
+    // ENFORCED: always port 8590 — never reads AdminConfig stream override
+    const AUDIO_URL = MAIN_RADIO_URL;
     const [streamUrl, setStreamUrl] = useState(AUDIO_URL);
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [djImageError, setDjImageError] = useState(false);
@@ -117,7 +117,7 @@ export default function CentroRadio() {
             name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
             dialLabel: 'RDMLS',
             slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
-            url: "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3", 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3", 
             color: '#f97316',
             logo: '/escudo.png',
             badge: 'RDMLS'
@@ -282,7 +282,9 @@ export default function CentroRadio() {
         fetch('/AdminConfig.json')
             .then(r => r.json())
             .then(cfg => {
-                if (cfg.radioStreamUrl) setStreamUrl(cfg.radioStreamUrl);
+                // NOTE: radioStreamUrl in AdminConfig is IGNORED for RDMLS portal.
+                // Stream is always enforced to the official 8590 port.
+                // if (cfg.radioStreamUrl) setStreamUrl(cfg.radioStreamUrl);
             })
             .catch(() => {});
         
@@ -421,11 +423,24 @@ export default function CentroRadio() {
                 analyserRef.current = ctx.createAnalyser();
                 analyserRef.current.fftSize = 64;
 
-                // Bypass createMediaElementSource para evitar el bloqueo CORS estricto.
-                // El audio saldrá puro desde la etiqueta <audio>, y el Analyser se mantendrá pero sin datos reales
-                // para que el reproductor no falle al cargar flujos Icecast/Shoutcast externos.
+                // Re-enable real MediaElementSource chain for EQ + VU meter.
+                // Use crossOrigin="anonymous" on the <audio> element.
                 if (audioRef.current && !sourceRef.current) {
-                    sourceRef.current = true; // Flag para decir que ya pasamos la config
+                    try {
+                        const source = ctx.createMediaElementSource(audioRef.current);
+                        source.connect(low);
+                        low.connect(mid);
+                        mid.connect(high);
+                        high.connect(gainNodeRef.current);
+                        gainNodeRef.current.connect(analyserRef.current);
+                        analyserRef.current.connect(ctx.destination);
+                        sourceRef.current = source;
+                    } catch (corsErr) {
+                        console.warn('MediaElementSource CORS blocked — falling back to bypass:', corsErr);
+                        // Fallback: connect analyser directly to destination (no EQ, no VU data)
+                        analyserRef.current.connect(ctx.destination);
+                        sourceRef.current = true;
+                    }
                 }
             } catch (e) {
                 console.error("Error al inicializar AudioContext:", e);
@@ -663,6 +678,7 @@ export default function CentroRadio() {
             <audio
                 ref={audioRef}
                 preload="none"
+                crossOrigin="anonymous"
                 style={{ display: 'none' }}
             />
 
