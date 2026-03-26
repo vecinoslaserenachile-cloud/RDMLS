@@ -127,18 +127,7 @@ export default function CentroRadio() {
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
 
     // Handle station change by knob or buttons
-    useEffect(() => {
-        const fetchWeather = async () => {
-            try {
-                const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=-29.9027&longitude=-71.2519&current_weather=true");
-                const data = await res.json();
-                setWeather(data);
-            } catch (e) { console.error(e); }
-        };
-        fetchWeather();
-        const interval = setInterval(fetchWeather, 600000);
-        return () => clearInterval(interval);
-    }, []);
+    // weather fetch removed from here (handled below with correct temp extraction)
 
     const changeStation = (station) => {
         if (station.id === currentStation.id) return;
