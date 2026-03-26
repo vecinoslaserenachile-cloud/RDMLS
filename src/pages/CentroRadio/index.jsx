@@ -94,7 +94,7 @@ export default function CentroRadio() {
         };
     }, [isVLS]);
     
-    const MAIN_RADIO_URL = "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3";
+    const MAIN_RADIO_URL = "https://az11.yesstreaming.net:8590/radio.mp3";
   // Enforced fixed stream mapping for RDMLS to bypass any port 8590 caching
   const AUDIO_URL = MAIN_RADIO_URL;
     const [streamUrl, setStreamUrl] = useState(AUDIO_URL);

@@ -131,7 +131,7 @@ export default function Induccion26({ isRDMLS }) {
             {/* Audio oculto */}
             <audio 
                 ref={audioRef} 
-                src={isRDMLS ? "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3" : "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/audio/serenito_theme.mp3"} 
+                src={isRDMLS ? "https://az11.yesstreaming.net:8590/radio.mp3" : "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/audio/serenito_theme.mp3"} 
             />
 
             {/* HEADER INTERACTIVO */}
