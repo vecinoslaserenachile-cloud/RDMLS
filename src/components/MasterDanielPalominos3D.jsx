@@ -8,7 +8,7 @@ import { X, Navigation, Info, Award, RefreshCw, ZoomIn, MessageSquare, User, Hea
 // SERENITO 3D – El Guía Humanizado
 // ============================================================
 function SerenitoGuide({ avatarRef, headRef, isMoving }) {
-  const { scene, animations } = useGLTF('/serenito_draco.glb');
+  const { scene, animations } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
   const { actions } = useAnimations(animations, avatarRef);
 
   useEffect(() => {

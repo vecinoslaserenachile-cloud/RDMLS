@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import App from './App.jsx';
 import { LanguageProvider } from './context/LanguageContext';
 import Citizens from './pages/Citizens.jsx';
@@ -51,8 +52,16 @@ import VLSQuantumWatch from './components/VLSQuantumWatch';
 import VLSConsoleSound from './components/VLSConsoleSound';
 import DevPortal from './pages/DevPortal';
 import RDMLSOpciones from './pages/RDMLSOpciones.jsx';
+import RDMLSOpcionesV2026 from './pages/RDMLSOpcionesV2026.jsx';
+import VETcinos from './pages/VETcinos.jsx';
+import Pincha from './pages/Pincha.jsx';
+import SatelliteIntelligence from './pages/SatelliteIntelligence.jsx';
+import PlazaVecinal from './pages/PlazaVecinal.jsx';
+import SerenaMetPlus from './pages/SerenaMetPlus.jsx';
 import CentroRadioDev from './pages/CentroRadioDev.jsx';
 import BellaDashboard from './pages/BellaDashboard.jsx';
+import EntrevecinasHub from './pages/EntrevecinasHub.jsx';
+import PirataSmart from './pages/PirataSmart.jsx';
 import { Activity } from 'lucide-react';
 import './index.css';
 
@@ -63,6 +72,23 @@ if ('serviceWorker' in navigator) {
     }
   });
 }
+
+import LoadingScreen from './components/LoadingScreen';
+
+
+const GlobalOmniSyncOverlay = () => {
+    const [active, setActive] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => setActive(false), 2000);
+        return () => clearTimeout(timer);
+    }, []);
+    if (!active) return null;
+    return (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LoadingScreen isSyncing={true} />
+        </div>
+    );
+};
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -78,60 +104,30 @@ class ErrorBoundary extends React.Component {
     return { hasError: true, error, isChunkError: isChunk };
   }
 
-  componentDidCatch(error, errorInfo) {
-    console.error("ErrorBoundary:", error, errorInfo);
-    if (this.state.isChunkError) {
-      const reloadCnt = parseInt(sessionStorage.getItem('chunk_reload_cnt') || '0', 10);
-      if (reloadCnt < 2) {
-        sessionStorage.setItem('chunk_reload_cnt', reloadCnt + 1);
-        this.intervalRef = setInterval(() => {
-          this.setState(prev => {
-            if (prev.countdown <= 1) {
-              clearInterval(this.intervalRef);
-              window.location.reload();
-              return prev;
-            }
-            return { countdown: prev.countdown - 1 };
-          });
-        }, 1000);
-      } else {
-        // Stop infinite reloading loop if it's already failed twice
-        this.setState({ countdown: 0 });
-      }
-    }
-  }
-
-  componentWillUnmount() {
-    if (this.intervalRef) clearInterval(this.intervalRef);
-  }
-
   render() {
     if (this.state.hasError) {
-      if (this.state.isChunkError) {
-        return (
-          <div style={{ padding: '3rem', textAlign: 'center', background: '#0f172a', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white', fontFamily: 'sans-serif' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔄</div>
-            <h2 style={{ color: '#38bdf8', marginBottom: '0.5rem' }}>Actualizando...</h2>
-            {this.state.countdown > 0 ? (
-              <p style={{ color: '#94a3b8', marginBottom: '1rem' }}>Recargando en <strong style={{color:'white'}}>{this.state.countdown}</strong>s</p>
-            ) : (
-              <p style={{ color: '#ef4444', marginBottom: '1rem' }}>Error de conexión. Por favor, borre la caché de su navegador o espere unos minutos.</p>
-            )}
-            <button onClick={() => { sessionStorage.setItem('chunk_reload_cnt', '0'); window.location.reload(); }} style={{ marginTop: '2rem', background: '#38bdf8', color: '#0f172a', border: 'none', padding: '0.8rem 2rem', borderRadius: '30px', fontWeight: 'bold', cursor: 'pointer' }}>Forzar Actualización</button>
-          </div>
-        );
-      }
       return (
-        <div style={{ padding: '2rem', color: 'white', background: '#020617', height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', fontFamily: 'Inter, sans-serif' }}>
-          <Activity size={80} color="#38bdf8" style={{ marginBottom: '2rem', opacity: 0.8 }} />
-          <h2 style={{ color: '#38bdf8', marginBottom: '1rem' }}>Sincronizando Sistema...</h2>
-          <p style={{ color: '#94a3b8', maxWidth: '400px', marginBottom: '2rem' }}>Se ha detectado un ajuste necesario en la señal. Pulsa el botón para restaurar el portal.</p>
-          <button 
-            onClick={() => { sessionStorage.clear(); window.location.reload(); }}
-            style={{ padding: '1rem 3rem', background: 'linear-gradient(90deg, #38bdf8, #1d4ed8)', border: 'none', borderRadius: '30px', color: 'white', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 10px 20px rgba(56, 189, 248, 0.3)' }}
-          >
-            RESTAURAR SEÑAL
-          </button>
+        <div style={{ padding: '2rem', color: 'white', background: '#020617', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', fontFamily: 'Inter, sans-serif' }}>
+          <div style={{ maxWidth: '800px', width: '100%', position: 'relative', zIndex: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '3rem', alignItems: 'center' }}>
+                <div style={{ textAlign: 'left' }}>
+                    <div style={{ width: '80px', height: '3px', background: '#38bdf8', marginBottom: '2rem' }}></div>
+                    <h2 style={{ color: '#38bdf8', fontSize: '3rem', fontWeight: '900', letterSpacing: '-0.05em', marginBottom: '1rem', lineHeight: 1 }}>SISTEMA EN <br/><span style={{ color: 'white' }}>MANTENIMIENTO</span></h2>
+                    <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginBottom: '2rem', lineHeight: '1.6' }}>
+                        Estamos resolviendo un conflicto en la señal. Vuelve en un momento.
+                    </p>
+                    <button onClick={() => window.location.reload()} style={{ padding: '1rem 2rem', background: '#38bdf8', border: 'none', borderRadius: '15px', color: '#020617', fontWeight: '900', cursor: 'pointer' }}>
+                        REINTENTAR AHORA
+                    </button>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '30px', padding: '2.5rem' }}>
+                    <h3 style={{ color: 'white', fontSize: '0.9rem', fontWeight: 'bold', marginBottom: '1.5rem', letterSpacing: '0.1em' }}>REPORTE C5 AUTOMÁTICO</h3>
+                    <code style={{ fontSize: '0.7rem', color: '#94a3b8', display: 'block', wordBreak: 'break-all' }}>
+                        {this.state.error?.message}
+                    </code>
+                </div>
+            </div>
+          </div>
         </div>
       );
     }
@@ -142,81 +138,101 @@ class ErrorBoundary extends React.Component {
 const host = (window.location.hostname || window.location.host || '').toLowerCase();
 const isRdmlsDns = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
 const isPuertaDns = host.includes('puertasmart.cl');
+const isEntrevecinasDns = host.includes('entrevecinas.cl');
+const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmart.cl');
+const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
-    <LanguageProvider>
-      <BrowserRouter>
-        {(location.pathname !== '/induccion' && location.pathname !== '/induccion_imls' && location.pathname !== '/vlsabes' && !isRdmlsDns) && <VLSQuantumWatch isRDMLS={isRdmlsDns} />}
-        {isRdmlsDns ? (
+      <LanguageProvider>
+        <BrowserRouter>
+          <GlobalOmniSyncOverlay />
           <Routes>
-            <Route path="/welcome" element={<Navigate to="/" replace />} />
-            <Route path="/induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
-            <Route path="/opciones" element={<RDMLSOpciones />} />
-            <Route path="/dev" element={<CentroRadioDev />} />
-            <Route path="/" element={<CentroRadio />} />
-            <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            {/* Rutas para Dominios Específicos */}
+            {isRdmlsDns ? (
+              <>
+                <Route path="/induccion" element={<Induccion26 isRDMLS={true} />} />
+                <Route path="/opciones" element={<RDMLSOpciones />} />
+                <Route path="/flash-opciones" element={<RDMLSOpcionesV2026 />} />
+                <Route path="/vetcino" element={<VETcinos />} />
+                <Route path="/pincha" element={<Pincha />} />
+                <Route path="/satellite" element={<SatelliteIntelligence />} />
+                <Route path="/plaza" element={<PlazaVecinal />} />
+                <Route path="/dev" element={<CentroRadioDev />} />
+                <Route path="/" element={<CentroRadio />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </>
+            ) : isPuertaDns ? (
+              <>
+                <Route path="/" element={<PuertaSmart />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </>
+            ) : isEntrevecinasDns ? (
+              <>
+                <Route path="/" element={<EntrevecinasHub />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </>
+            ) : (isPirataDns || isProtocoloDns) ? (
+              <>
+                <Route path="/" element={isPirataDns ? <PirataSmart /> : <Protocolo />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </>
+            ) : (
+              <>
+                {/* Ruta Maestra para Todos los Demás (Aplica Layout de App) */}
+                <Route path="/" element={<App />}>
+                  <Route index element={<HubDashboard />} />
+                  <Route path="punto" element={<PuntoVecinal />} />
+                  <Route path="vecinos" element={<VecinoDashboard />} />
+                  <Route path="citizens" element={<Citizens />} />
+                  <Route path="panoramas" element={<Panoramas />} />
+                  <Route path="emprende" element={<Emprende />} />
+                  <Route path="elearning" element={<Elearning />} />
+                  <Route path="senior-games" element={<SeniorGames />} />
+                  <Route path="genealogy" element={<GenealogyPortal />} />
+                  <Route path="musica" element={<MusicaPage />} />
+                  <Route path="escuela-musica" element={<EscuelaMusicaVecinal />} />
+                  <Route path="escuela-artes" element={<EscuelaArtesHumanidades />} />
+                  <Route path="protocolo" element={<Protocolo />} />
+                  <Route path="eventos" element={<Protocolo />} />
+                  <Route path="smart-salud" element={<SmartSalud />} />
+                  <Route path="honorarios" element={<Honorarios />} />
+                  <Route path="pegatinas" element={<PegatinasVecinales />} />
+                  <Route path="glosario" element={<Glosario />} />
+                  <Route path="mediaplus" element={<MediaPlus />} />
+                  <Route path="rapido" element={<HomeLiviano />} />
+                  <Route path="inversores" element={<FaritoInversores />} />
+                  <Route path="legacy" element={<LegacyPortal />} />
+                  <Route path="serenamet" element={<Serenamet />} />
+                  <Route path="propiedades" element={<Propiedades />} />
+                  <Route path="acceso" element={<PuertaSerena />} />
+                  <Route path="dev" element={<DevPortal />} />
+                  <Route path="motors" element={<VLSMotorsShowroom />} />
+                  <Route path="induccion" element={<Induccion26 isRDMLS={false} />} />
+                  <Route path="vetcino" element={<VETcinos />} />
+                  <Route path="pincha" element={<Pincha />} />
+                  <Route path="satellite" element={<SatelliteIntelligence />} />
+                  <Route path="plaza" element={<PlazaVecinal />} />
+                  <Route path="serenametplus" element={<SerenaMetPlus />} />
+                  <Route path="entrevecinas" element={<EntrevecinasHub />} />
+                </Route>
+                <Route path="/welcome" element={<WelcomePortal />} />
+                <Route path="/welcome" element={<WelcomePortal />} />
+                <Route path="/smart-setup" element={<SuperAdminSetup />} />
+                <Route path="/bisabuelo" element={<GameVLS />} />
+                <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
+                <Route path="/bella" element={<BellaDashboard />} />
+                <Route path="/1945" element={<Serenito1945Page />} />
+                <Route path="/lite" element={<LitePortal />} />
+                <Route path="/sombreros" element={<DeBonoThinkingHats />} />
+                <Route path="/desk" element={<Backoffice />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </>
+            )}
           </Routes>
-        ) : isPuertaDns ? (
-          <Routes>
-            <Route path="/" element={<Navigate to="/puerta" replace />} />
-            <Route path="/puerta" element={<PuertaSmart />} />
-            <Route path="/induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
-            <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
-            <Route path="*" element={<Navigate to="/puerta" replace />} />
-          </Routes>
-        ) : (
-          <Routes>
-            <Route path="/welcome" element={<WelcomePortal />} />
-            <Route path="/smart-setup" element={<SuperAdminSetup />} />
-            <Route path="/" element={<App />}>
-              <Route index element={<HubDashboard />} />
-              <Route path="punto" element={<PuntoVecinal />} />
-              <Route path="hub" element={<HubDashboard />} />
-              <Route path="vecinos" element={<VecinoDashboard />} />
-              <Route path="citizens" element={<Citizens />} />
-              <Route path="panoramas" element={<Panoramas />} />
-              <Route path="emprende" element={<Emprende />} />
-              <Route path="elearning" element={<Elearning />} />
-              <Route path="senior-games" element={<SeniorGames />} />
-              <Route path="genealogy" element={<GenealogyPortal />} />
-              <Route path="musica" element={<MusicaPage />} />
-              <Route path="escuela-musica" element={<EscuelaMusicaVecinal />} />
-              <Route path="escuela-artes" element={<EscuelaArtesHumanidades />} />
-              <Route path="protocolo" element={<Protocolo />} />
-              <Route path="smart-salud" element={<SmartSalud />} />
-              <Route path="honorarios" element={<Honorarios />} />
-              <Route path="pegatinas" element={<PegatinasVecinales />} />
-              <Route path="glosario" element={<Glosario />} />
-              <Route path="mediaplus" element={<MediaPlus />} />
-              <Route path="rapido" element={<HomeLiviano />} />
-              <Route path="inversores" element={<FaritoInversores />} />
-              <Route path="legacy" element={<LegacyPortal />} />
-              <Route path="serenamet" element={<Serenamet />} />
-              <Route path="propiedades" element={<Propiedades />} />
-              <Route path="acceso" element={<PuertaSerena />} />
-              <Route path="dev" element={<DevPortal />} />
-              <Route path="motors" element={<VLSMotorsShowroom />} />
-              <Route path="induccion" element={<Induccion26 isRDMLS={isRdmlsDns} />} />
-            </Route>
-            <Route path="/puerta" element={<PuertaSmart />} />
-            <Route path="/bisabuelo" element={<GameVLS />} />
-            <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
-            <Route path="/radios" element={<App />}>
-              <Route index element={<HubDashboard />} />
-            </Route>
-            <Route path="/bella" element={<BellaDashboard />} />
-            <Route path="/1945" element={<Serenito1945Page />} />
-            <Route path="/lite" element={<LitePortal />} />
-            <Route path="/sombreros" element={<DeBonoThinkingHats />} />
-            <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/desk" element={<Backoffice />} />
-          </Routes>
-        )}
-      </BrowserRouter>
-    </LanguageProvider>
+        </BrowserRouter>
+      </LanguageProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

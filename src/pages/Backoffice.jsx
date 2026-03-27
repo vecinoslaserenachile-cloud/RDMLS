@@ -5,9 +5,10 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { supabase } from '../utils/supabase';
 import { socket } from '../utils/socket';
-import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users } from 'lucide-react';
 import RadioBackofficeModal from '../components/RadioBackofficeModal';
 import MartinSecurityShield from '../components/MartinSecurityShield';
+import OmniBackofficeDesk from '../components/OmniBackofficeDesk';
 
 // Fix para los iconos de Leaflet en React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -69,6 +70,7 @@ export default function Backoffice() {
     const [vipsStatus, setVipsStatus] = useState([]);
     const [showRadioBackoffice, setShowRadioBackoffice] = useState(false);
     const [showSecurityShield, setShowSecurityShield] = useState(false);
+    const [showNewsCodesManager, setShowNewsCodesManager] = useState(false); // Refiere al OmniBackofficeDesk
 
     // Auth States
     const [user, setUser] = useState(null);
@@ -324,9 +326,19 @@ export default function Backoffice() {
                         </div>
                         <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.5rem' }}>Operador: {user.email}</div>
                     </div>
-                    <button onClick={handleLogout} className="btn-glass" style={{ padding: '0.5rem', borderRadius: '50%' }} title="Cerrar Sesión">
-                        <LogOut size={18} color="var(--alert-danger)" />
-                    </button>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button 
+                            onClick={() => navigate('/')} 
+                            className="btn-glass" 
+                            style={{ padding: '0.5rem', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 'bold', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }} 
+                            title="Volver al Hub Principal"
+                        >
+                            HUB
+                        </button>
+                        <button onClick={handleLogout} className="btn-glass" style={{ padding: '0.5rem', borderRadius: '50%' }} title="Cerrar Sesión">
+                            <LogOut size={18} color="var(--alert-danger)" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Filtros de Vistas (Capas de Inteligencia) */}
@@ -428,6 +440,22 @@ export default function Backoffice() {
                             >
                                 <Lock size={20} color="#ef4444" />
                                 <span>Seguridad CF</span>
+                            </button>
+                            <button
+                                className="btn btn-glass"
+                                style={{ padding: '0.8rem 0.5rem', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', border: '1px solid #fbbf24', background: 'rgba(251, 191, 36, 0.1)' }}
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-coquismart-crm'))}
+                            >
+                                <LayoutGrid size={20} color="#fbbf24" />
+                                <span>CoquiSmart CRM</span>
+                            </button>
+                            <button
+                                className="btn btn-glass"
+                                style={{ padding: '0.8rem 0.5rem', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', border: '1px solid #38bdf8', background: 'rgba(56, 189, 248, 0.1)' }}
+                                onClick={() => setShowNewsCodesManager(true)}
+                            >
+                                <Database size={20} color="#38bdf8" />
+                                <span>Backoffice Desk</span>
                             </button>
                         </div>
                     </div>
@@ -773,6 +801,18 @@ export default function Backoffice() {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {showNewsCodesManager && (
+                <OmniBackofficeDesk onClose={() => setShowNewsCodesManager(false)} />
+            )}
+
+            {showRadioBackoffice && (
+                <RadioBackofficeModal onClose={() => setShowRadioBackoffice(false)} />
+            )}
+
+            {showSecurityShield && (
+                <MartinSecurityShield onClose={() => setShowSecurityShield(false)} />
             )}
 
             <style>{`

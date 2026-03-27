@@ -5,14 +5,39 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 
 dotenv.config();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-async function createServer() {
+async function startServer() {
   const app = express();
+  const httpServer = createServer(app);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
   app.use(express.json());
+
+  // SOCKET.IO REAL-TIME ENGINE
+  io.on('connection', (socket) => {
+    console.log('Vecino Conectado al Nodo Real-time:', socket.id);
+    
+    // Propagación de Alertas Globales (C5 -> Pueblos)
+    socket.on('vls-global-push', (alertData) => {
+      console.log('ALERTA PUSH RECIBIDA:', alertData.title);
+      io.emit('vls-receive-push', alertData);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Vecino Desconectado');
+    });
+  });
 
   // GEMINI SETUP
   const apiKey = process.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY || '';
@@ -106,13 +131,13 @@ async function createServer() {
   });
 
   const PORT = process.env.PORT || 5173;
-  app.listen(PORT, () => {
+  httpServer.listen(PORT, () => {
     console.log(`\x1b[36m%s\x1b[0m`, `🚀 COMUNASMART FULL-STACK SERVER RUNNING`);
     console.log(`\x1b[32m%s\x1b[0m`, `🔗 Local: http://localhost:${PORT}`);
-    console.log(`\x1b[35m%s\x1b[0m`, `✨ Vite Middleware Active`);
+    console.log(`\x1b[35m%s\x1b[0m`, `✨ Vite Middleware Active with Socket.io`);
   });
 }
 
-createServer().catch(err => {
+startServer().catch(err => {
     console.error('Failed to start server:', err);
 });

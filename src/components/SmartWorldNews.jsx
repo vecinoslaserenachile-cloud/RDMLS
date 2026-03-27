@@ -7,82 +7,52 @@ export default function SmartWorldNews({ onClose }) {
     const [activeNews, setActiveNews] = useState(null);
     const [isRefreshing, setIsRefreshing] = useState(false);
 
+    const [newsNodes, setNewsNodes] = useState([
+        { id: 'n1', type: 'local', name: 'Diario El Día', headline: 'Sincronizando...', location: { top: '78%', left: '28%' }, country: 'Chile (LS)', color: '#38bdf8', rss: 'https://www.diarioeldia.cl/rss' },
+        { id: 'n2', type: 'local', name: 'El Observatodo', headline: 'Sincronizando...', location: { top: '79%', left: '26%' }, country: 'Chile (Coq)', color: '#10b981', rss: 'https://www.elobservatodo.cl/rss.xml' },
+        { id: 'n3', type: 'national', name: 'El Mercurio', headline: 'Sincronizando...', location: { top: '82%', left: '30%' }, country: 'Chile (STGO)', color: '#f59e0b', rss: 'https://www.emol.com/rss/nacional.xml' },
+        { id: 'n4', type: 'international', name: 'NY Times', headline: 'Sincronizando...', location: { top: '35%', left: '22%' }, country: 'EE.UU.', color: '#ef4444', rss: 'https://rss.nytimes.com/services/xml/rss/nyt/World.xml' },
+        { id: 'n5', type: 'international', name: 'The Guardian', headline: 'Sincronizando...', location: { top: '25%', left: '46%' }, country: 'Reino Unido', color: '#a855f7', rss: 'https://www.theguardian.com/world/rss' },
+        { id: 'n6', type: 'international', name: 'Reuters', headline: 'Sincronizando...', location: { top: '38%', left: '80%' }, country: 'Global (CH)', color: '#f97316', rss: 'https://www.reutersagency.com/feed/?best-topics=top-news' },
+        { id: 'n7', type: 'international', name: 'Al Jazeera', headline: 'Sincronizando...', location: { top: '45%', left: '55%' }, country: 'Qatar', color: '#eab308', rss: 'https://www.aljazeera.com/xml/rss/all.xml' }
+    ]);
+
+    const fetchOmniNews = async () => {
+        setIsRefreshing(true);
+        console.log("Omniactualización 360 en curso...");
+        
+        const updatedNodes = await Promise.all(newsNodes.map(async (node) => {
+            try {
+                const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(node.rss)}`);
+                const data = await res.json();
+                if (data.status === 'ok' && data.items && data.items.length > 0) {
+                    let title = data.items[0].title;
+                    title = title.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&');
+                    return { ...node, headline: title };
+                }
+            } catch (e) {
+                console.error("Error en nodo:", node.name, e);
+            }
+            return node;
+        }));
+
+        setNewsNodes(updatedNodes);
+        setTimeout(() => setIsRefreshing(false), 1000);
+    };
+
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-        return () => clearInterval(timer);
+        fetchOmniNews();
+        const syncTimer = setInterval(fetchOmniNews, 3600000); // 1 hora
+        return () => {
+            clearInterval(timer);
+            clearInterval(syncTimer);
+        };
     }, []);
 
     const handleRefresh = () => {
-        setIsRefreshing(true);
-        setTimeout(() => setIsRefreshing(false), 800);
+        fetchOmniNews();
     };
-
-    // Simulated news markers from different parts of the world and local
-    const newsData = [
-        {
-            id: 'n1',
-            type: 'local',
-            name: 'Diario El Día',
-            headline: 'Más de cien detenidos tras megaoperativo policial en la Región',
-            location: { top: '78%', left: '28%' }, // Approximate for Chile in Gall-Peters
-            country: 'Chile (Coquimbo)',
-            color: '#38bdf8'
-        },
-        {
-            id: 'n2',
-            type: 'local',
-            name: 'Diario La Región',
-            headline: 'Siete detenidos en Coquimbo tras intenso operativo policial',
-            location: { top: '79%', left: '29%' },
-            country: 'Chile (Coquimbo)',
-            color: '#10b981'
-        },
-        {
-            id: 'n3',
-            type: 'national',
-            name: 'El Mercurio',
-            headline: 'Dólar repunta con fuerza y sube alrededor de $18',
-            location: { top: '82%', left: '30%' }, // Santiago
-            country: 'Chile',
-            color: '#f59e0b'
-        },
-        {
-            id: 'n4',
-            type: 'international',
-            name: 'The New York Times',
-            headline: 'Global Markets Rally Amid Positive Economic Data',
-            location: { top: '35%', left: '22%' }, // NYC
-            country: 'EE.UU.',
-            color: '#ef4444'
-        },
-        {
-            id: 'n5',
-            type: 'international',
-            name: 'Le Monde',
-            headline: 'Les avancées sur l\'accord climatique européen',
-            location: { top: '30%', left: '48%' }, // Paris
-            country: 'Francia',
-            color: '#a855f7'
-        },
-        {
-            id: 'n6',
-            type: 'international',
-            name: 'The Guardian',
-            headline: 'Tech giants face new regulations in the UK',
-            location: { top: '25%', left: '46%' }, // London
-            country: 'Reino Unido',
-            color: '#f97316'
-        },
-        {
-            id: 'n7',
-            type: 'international',
-            name: 'Xinhua',
-            headline: 'New technological breakthrough announced in Beijing',
-            location: { top: '38%', left: '80%' }, // Beijing
-            country: 'China',
-            color: '#eab308'
-        }
-    ];
 
     return (
         <div style={{
@@ -173,7 +143,7 @@ export default function SmartWorldNews({ onClose }) {
             <div style={{ flex: 1, position: 'relative', background: '#09152b', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: '10px', left: '10px', right: '10px', display: 'flex', justifyContent: 'center', pointerEvents: 'none', zIndex: 10 }}>
                     <div style={{ background: 'rgba(15,23,42,0.8)', padding: '0.5rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', gap: '1rem', color: 'white', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                        <Radio size={14} color="#10b981" /> ALERTA MUNDIAL: Monitoreando {newsData.length} nodos en tiempo real
+                        <Radio size={14} color="#10b981" /> ALERTA MUNDIAL: Monitoreando {newsNodes.length} nodos en tiempo real
                     </div>
                 </div>
 
@@ -203,7 +173,7 @@ export default function SmartWorldNews({ onClose }) {
                     }}></div>
 
                     {/* News Markers */}
-                    {newsData.map(node => (
+                    {newsNodes.map(node => (
                         <div 
                             key={node.id}
                             onMouseEnter={() => setActiveNews(node)}

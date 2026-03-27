@@ -248,19 +248,29 @@ export default function Serenamet() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
                     {/* Mapa Windy Premium */}
-                    <div className="mosaic-card" style={{ padding: 0, borderRadius: '24px', overflow: 'hidden', border: '2px solid rgba(56,189,248,0.3)', height: '500px', display: 'flex', flexDirection: 'column' }}>
+                    <div className="mosaic-card" style={{ 
+                        padding: 0, 
+                        borderRadius: '24px', 
+                        overflow: 'hidden', 
+                        border: '2px solid rgba(56,189,248,0.3)', 
+                        height: window.innerWidth < 768 ? '450px' : '500px', 
+                        minHeight: '400px',
+                        display: 'flex', 
+                        flexDirection: 'column',
+                        gridColumn: window.innerWidth < 1000 ? 'span 1' : 'span 2'
+                    }}>
                         <div style={{ padding: '15px 20px', background: '#020617', borderBottom: '1px solid rgba(56,189,248,0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 'bold' }}>
                                 <Wind size={18} color="#38bdf8" /> MAPA METEOROLÓGICO SATELITAL
                             </div>
                             <div style={{ display: 'flex', gap: '15px' }}>
-                                <span style={{ fontSize: '0.8rem', background: 'rgba(16,185,129,0.2)', color: '#10b981', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold' }}>MICRO-TURBINAS ACTIVAS</span>
+                                <span style={{ fontSize: '0.8rem', background: 'rgba(16,185,129,0.2)', color: '#10b981', padding: '4px 10px', borderRadius: '20px', fontWeight: 'bold' }}>{window.innerWidth < 768 ? 'ACTIVO' : 'MICRO-TURBINAS ACTIVAS'}</span>
                             </div>
                         </div>
                         <iframe 
                             src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=10&overlay=wind&product=ecmwf&level=surface&lat=-29.904&lon=-71.248" 
                             frameBorder="0" 
-                            style={{ width: '100%', flex: 1 }}
+                            style={{ width: '100%', flex: 1, minHeight: '350px' }}
                             title="SERENAMET Live Map"
                         />
                     </div>

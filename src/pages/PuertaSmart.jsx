@@ -7,12 +7,16 @@ import {
     Clock, Smartphone, Shield, Star, ExternalLink, Filter, Database, 
     Activity, ChevronRight, X, AlertTriangle, Info, Coffee, HelpCircle,
     Bell, ClipboardList, Eye, Download, ShieldClose, HardDrive,
-    Home, ShoppingCart, Tag, Ticket, Map as MapIcon
+    Home, ShoppingCart, Tag, Ticket, Map as MapIcon, Globe as VlsGlobe
 } from 'lucide-react';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
     BarChart, Bar, Cell, PieChart, Pie
 } from 'recharts';
+import { QRCodeSVG } from 'qrcode.react';
+import { db } from '../utils/firebase';
+import { collection, addDoc, serverTimestamp, getDocs, query, orderBy } from 'firebase/firestore';
+import HechoEnChile from '../components/HechoEnChile';
 
 // ==================================================================================================
 // CONSTANTES INSTITUCIONALES Y CONFIGURACIÓN TERRITORIAL
@@ -70,7 +74,65 @@ export default function PuertaSmart() {
     const [activeView, setActiveView] = useState('landing'); // landing, sales, citizen, monitor, admin
     const [activeAdminTab, setActiveAdminTab] = useState('dashboard'); // dashboard, guard, secretary, analytics, crm, logs
     
-    // Configuración de Marca
+    // === CRM: LEAD CAPTURE ===
+    const [showLeadCapture, setShowLeadCapture] = useState(false);
+    const [leadCaptured, setLeadCaptured] = useState(() => !!localStorage.getItem('puerta_lead_captured'));
+    const [leads, setLeads] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('puerta_smart_leads') || '[]'); } catch { return []; }
+    });
+    const [leadForm, setLeadForm] = useState({ nombre: '', email: '', empresa: '', cargo: '', telefono: '', interes: 'Demo Completa' });
+    const [leadSaving, setLeadSaving] = useState(false);
+    const [leadSaved, setLeadSaved] = useState(false);
+
+    // Trigger captación suave a los 45 segundos si no hay lead capturado
+    useEffect(() => {
+        if (leadCaptured) return;
+        const timer = setTimeout(() => setShowLeadCapture(true), 45000);
+        return () => clearTimeout(timer);
+    }, [leadCaptured]);
+
+    // Cargar leads de Firebase al montar (solo admin)
+    useEffect(() => {
+        const loadLeads = async () => {
+            try {
+                const q = query(collection(db, 'puerta_smart_leads'), orderBy('timestamp', 'desc'));
+                const snap = await getDocs(q);
+                const remote = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (remote.length > 0) setLeads(remote);
+            } catch (e) {
+                // Usar leads locales si Firebase falla
+            }
+        };
+        loadLeads();
+    }, []);
+
+    const saveLead = async () => {
+        if (!leadForm.nombre || !leadForm.email) return;
+        setLeadSaving(true);
+        const leadData = {
+            ...leadForm,
+            timestamp: new Date().toISOString(),
+            source: 'puertasmart.cl/demo',
+            userAgent: navigator.userAgent.substring(0, 100),
+            url: window.location.href,
+            status: 'Nuevo'
+        };
+        // Guardar local siempre
+        const newLeads = [leadData, ...leads];
+        setLeads(newLeads);
+        localStorage.setItem('puerta_smart_leads', JSON.stringify(newLeads));
+        localStorage.setItem('puerta_lead_captured', 'true');
+        // Guardar en Firebase
+        try {
+            await addDoc(collection(db, 'puerta_smart_leads'), { ...leadData, timestamp: serverTimestamp() });
+        } catch (e) {
+            console.warn('Lead guardado solo localmente');
+        }
+        setLeadSaving(false);
+        setLeadSaved(true);
+        setLeadCaptured(true);
+        setTimeout(() => setShowLeadCapture(false), 2500);
+    };
     const [orgName, setOrgName] = useState(localStorage.getItem('smart_custom_config') ? JSON.parse(localStorage.getItem('smart_custom_config')).orgName : 'I.M. La Serena');
     const [primaryColor, setPrimaryColor] = useState(localStorage.getItem('smart_custom_config') ? JSON.parse(localStorage.getItem('smart_custom_config')).primaryColor : '#1e3a8a');
 
@@ -222,24 +284,58 @@ export default function PuertaSmart() {
             {/* Header Soberano (Titanium Style) */}
             <div style={{ background: primaryColor, padding: '1rem', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 1000, boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button onClick={() => navigate('/welcome')} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', padding: '0.8rem', borderRadius: '50%', color: 'white', cursor: 'pointer' }}>
+                    <button onClick={() => navigate('/')} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', padding: '0.8rem', borderRadius: '50%', color: 'white', cursor: 'pointer' }} title="Volver al Hub">
                         <ArrowLeft size={20} />
                     </button>
                     <div>
-                        <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Puerta Smart v4.9</h1>
-                        <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>{orgName} | Misión Crítica</p>
+                        <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Puerta Smart v5.0</h1>
+                        <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>{orgName} | Misión Crítica B2B</p>
                     </div>
                 </div>
                 
                 {/* Navigation Desktop */}
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <TabButton active={activeView === 'landing'} label="Inicio" icon={<Home size={18} />} onClick={() => setActiveView('landing')} color={primaryColor} />
-                    <TabButton active={activeView === 'sales'} label="Catálogo & Ventas" icon={<ShoppingCart size={18} />} onClick={() => setActiveView('sales')} color={primaryColor} />
+                    <TabButton active={activeView === 'sales'} label="Servicios B2B" icon={<ShoppingCart size={18} />} onClick={() => setActiveView('sales')} color={primaryColor} />
                     <TabButton active={activeView === 'citizen'} label="Ciudadano" icon={<Smartphone size={18} />} onClick={() => setActiveView('citizen')} color={primaryColor} />
                     <TabButton active={activeView === 'monitor'} label="Monitor" icon={<Eye size={18} />} onClick={() => setActiveView('monitor')} color={primaryColor} />
                     <TabButton active={activeView === 'admin'} label="Gestión" icon={<Shield size={18} />} onClick={() => setActiveView('admin')} color={primaryColor} />
+                    
+                    <div style={{ width: '1px', height: '20px', background: 'rgba(255,255,255,0.2)', margin: '0 10px' }} />
+                    
+                    {/* Botón CRM flotante en header */}
+                    <button
+                        onClick={() => { setActiveView('admin'); setActiveAdminTab('crm'); }}
+                        style={{
+                            background: leads.length > 0 ? 'rgba(16,185,129,0.3)' : 'rgba(255,255,255,0.1)',
+                            border: leads.length > 0 ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.2)',
+                            color: 'white', padding: '0.4rem 0.8rem', borderRadius: '20px',
+                            cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold',
+                            display: 'flex', alignItems: 'center', gap: '4px'
+                        }}
+                        title="Ver Leads CRM"
+                    >
+                        <MessageSquare size={14} />
+                        CRM {leads.length > 0 && <span style={{ background: '#10b981', color: '#000', borderRadius: '10px', padding: '1px 6px', fontSize: '0.65rem' }}>{leads.length}</span>}
+                    </button>
+                    <button 
+                        onClick={() => {
+                            if(window.confirm("¿Confirma que desea cerrar el módulo de Puerta Smart?")) {
+                                navigate('/');
+                            }
+                        }}
+                        style={{ 
+                            background: '#ef4444', border: 'none', padding: '0.6rem 1.2rem', 
+                            borderRadius: '10px', color: 'white', fontWeight: 'bold', 
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem',
+                            boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)'
+                        }}
+                    >
+                        <ShieldClose size={18} /> SALIR
+                    </button>
                 </div>
             </div>
+
 
             <main style={{ padding: '1rem', maxWidth: '1400px', margin: '0 auto' }}>
                 {activeView === 'landing' && <LandingNode setView={setActiveView} primaryColor={primaryColor} orgName={orgName} />}
@@ -260,16 +356,134 @@ export default function PuertaSmart() {
                 )}
             </main>
 
-            {/* Footer Footer */}
-            <footer style={{ padding: '2rem', textAlign: 'center', background: '#f8fafc', color: '#64748b' }}>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                   <img src="/logo-smartls-v3.png" alt="SGAAC" style={{ height: '30px', opacity: 0.5 }} />
-                   <div style={{ width: '2px', height: '30px', background: '#e2e8f0' }} />
-                   <ShieldCheck size={30} opacity={0.5} />
+            {/* Footer Soberano */}
+            <HechoEnChile />
+
+            {/* === MODAL CRM: CAPTURA DE LEADS === */}
+            {showLeadCapture && (
+                <div style={{
+                    position: 'fixed', inset: 0, zIndex: 999998,
+                    background: 'rgba(2,6,23,0.75)', backdropFilter: 'blur(10px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '1.5rem', fontFamily: "'Outfit', 'Inter', sans-serif"
+                }}>
+                    <div style={{
+                        background: 'white', borderRadius: '32px',
+                        maxWidth: '520px', width: '100%',
+                        boxShadow: '0 40px 80px rgba(0,0,0,0.4)',
+                        overflow: 'hidden', position: 'relative'
+                    }}>
+                        {/* Header gradiente */}
+                        <div style={{
+                            background: `linear-gradient(135deg, ${primaryColor} 0%, #0f172a 100%)`,
+                            padding: '2rem', color: 'white', position: 'relative'
+                        }}>
+                            <button
+                                onClick={() => setShowLeadCapture(false)}
+                                style={{
+                                    position: 'absolute', top: '1rem', right: '1rem',
+                                    background: 'rgba(255,255,255,0.15)', border: 'none',
+                                    borderRadius: '50%', width: '32px', height: '32px',
+                                    color: 'white', cursor: 'pointer', fontSize: '1rem',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >✕</button>
+                            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🚀</div>
+                            <h3 style={{ margin: '0 0 0.4rem 0', fontSize: '1.5rem', fontWeight: '900' }}>
+                                ¿Le interesa implementar esto en su organización?
+                            </h3>
+                            <p style={{ margin: 0, opacity: 0.85, fontSize: '0.9rem' }}>
+                                Déjenos sus datos y le enviamos una cotización personalizada + demo en vivo gratis.
+                            </p>
+                        </div>
+
+                        {!leadSaved ? (
+                            <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: '4px' }}>NOMBRE *</label>
+                                        <input
+                                            value={leadForm.nombre}
+                                            onChange={e => setLeadForm(p => ({...p, nombre: e.target.value}))}
+                                            placeholder="Su nombre"
+                                            style={{ width: '100%', padding: '0.7rem', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: '4px' }}>CORREO *</label>
+                                        <input
+                                            type="email"
+                                            value={leadForm.email}
+                                            onChange={e => setLeadForm(p => ({...p, email: e.target.value}))}
+                                            placeholder="correo@empresa.cl"
+                                            style={{ width: '100%', padding: '0.7rem', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
+                                        />
+                                    </div>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                    <div>
+                                        <label style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: '4px' }}>EMPRESA / INSTITUCIÓN</label>
+                                        <input
+                                            value={leadForm.empresa}
+                                            onChange={e => setLeadForm(p => ({...p, empresa: e.target.value}))}
+                                            placeholder="Municipio, empresa..."
+                                            style={{ width: '100%', padding: '0.7rem', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: '4px' }}>CARGO / ROL</label>
+                                        <input
+                                            value={leadForm.cargo}
+                                            onChange={e => setLeadForm(p => ({...p, cargo: e.target.value}))}
+                                            placeholder="Alcalde, Gerente..."
+                                            style={{ width: '100%', padding: '0.7rem', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
+                                        />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#64748b', display: 'block', marginBottom: '4px' }}>¿QUÉ LE INTERESA?</label>
+                                    <select
+                                        value={leadForm.interes}
+                                        onChange={e => setLeadForm(p => ({...p, interes: e.target.value}))}
+                                        style={{ width: '100%', padding: '0.7rem', border: '2px solid #e2e8f0', borderRadius: '10px', fontSize: '0.95rem', outline: 'none', background: 'white', boxSizing: 'border-box' }}
+                                    >
+                                        <option>Demo Completa</option>
+                                        <option>Control de Acceso (Portería)</option>
+                                        <option>Gestión de Visitas Municipales</option>
+                                        <option>Control para Condominio</option>
+                                        <option>Control para Clínica / Centro Médico</option>
+                                        <option>Evento / Protocolo</option>
+                                        <option>Cotización Personalizada</option>
+                                    </select>
+                                </div>
+
+                                <button
+                                    onClick={saveLead}
+                                    disabled={!leadForm.nombre || !leadForm.email || leadSaving}
+                                    style={{
+                                        background: !leadForm.nombre || !leadForm.email ? '#94a3b8' : `linear-gradient(135deg, ${primaryColor}, #0ea5e9)`,
+                                        color: 'white', border: 'none', padding: '1rem',
+                                        borderRadius: '14px', fontWeight: '900', fontSize: '1rem',
+                                        cursor: !leadForm.nombre || !leadForm.email ? 'not-allowed' : 'pointer',
+                                        transition: 'all 0.3s'
+                                    }}
+                                >
+                                    {leadSaving ? '⏳ Enviando...' : '🚀 Solicitar Demo Gratuita'}
+                                </button>
+                                <p style={{ margin: 0, textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8' }}>
+                                    🔒 Sus datos son confidenciales. Sin spam. Solo un ejecutivo de cuenta lo contactará.
+                                </p>
+                            </div>
+                        ) : (
+                            <div style={{ padding: '3rem', textAlign: 'center' }}>
+                                <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>✅</div>
+                                <h3 style={{ color: '#10b981', fontWeight: '900' }}>¡Solicitud enviada con éxito!</h3>
+                                <p style={{ color: '#64748b' }}>Un ejecutivo de PuertaSmart se comunicará con <strong>{leadForm.email}</strong> en las próximas 24 horas.</p>
+                            </div>
+                        )}
+                    </div>
                 </div>
-                <p style={{ fontWeight: 'bold' }}>SGAAC-360 Version Platinum | Smart City Chile</p>
-                <p style={{ fontSize: '0.8rem' }}>Registro Inmutable de Transacciones Operativas</p>
-            </footer>
+            )}
         </div>
     );
 }
@@ -282,98 +496,293 @@ export default function PuertaSmart() {
 function LandingNode({ setView, primaryColor, orgName }) {
     return (
         <div className="animate-fade-in" style={{ textAlign: 'center', padding: '1rem 0' }}>
-            <div style={{ background: `linear-gradient(135deg, ${primaryColor}, #0f172a)`, padding: '4rem 2rem', borderRadius: '32px', color: 'white', marginBottom: '3rem', position: 'relative', overflow: 'hidden' }}>
-                <ShieldCheck size={80} style={{ opacity: 0.2, position: 'absolute', right: '-20px', top: '-20px', transform: 'scale(5)' }} />
-                <h2 style={{ fontSize: '3rem', fontWeight: '900', margin: '0 0 1rem 0', textTransform: 'uppercase', letterSpacing: '2px' }}>PuertaSmart: El Futuro Digital</h2>
-                <p style={{ fontSize: '1.2rem', maxWidth: '700px', margin: '0 auto 2rem auto', opacity: 0.9 }}>
-                    Integramos seguridad inquebrantable, control de accesos descentralizado y fomento al emprendimiento local en una sola plataforma corporativa para {orgName}.
+            {/* HERO SPECTACULAR - ILUSTRACIÓN DINÁMICA */}
+            <div style={{ 
+                background: `linear-gradient(135deg, ${primaryColor} 0%, #020617 100%)`, 
+                padding: '5rem 2rem', 
+                borderRadius: '40px', 
+                color: 'white', 
+                marginBottom: '3rem', 
+                position: 'relative', 
+                overflow: 'hidden',
+                boxShadow: '0 30px 60px rgba(0,0,0,0.4)',
+                minHeight: '450px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                {/* Background Decor (Grid) */}
+                <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(rgba(56, 189, 248, 0.1) 1px, transparent 1px)', backgroundSize: '30px 30px', opacity: 0.5 }}></div>
+                
+                {/* ILUSTRACIÓN ESPECTACULAR (SVG + CSS) */}
+                <div style={{ position: 'relative', width: '100%', maxWidth: '600px', height: '200px', marginBottom: '3rem' }}>
+                    {/* Celular Flotante */}
+                    <div className="float-anim" style={{ 
+                        position: 'absolute', left: '10%', top: '20px', width: '100px', height: '180px', 
+                        background: '#1e293b', borderRadius: '15px', border: '3px solid #334155', 
+                        zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                    }}>
+                        <div style={{ width: '80px', height: '140px', background: '#38bdf8', borderRadius: '8px', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                           <Smartphone size={40} color="black" />
+                           <div className="scan-line-v" style={{ position: 'absolute', height: '2px', width: '100%', background: 'white', top: 0, boxShadow: '0 0 10px white' }}></div>
+                        </div>
+                    </div>
+
+                    {/* Beam (Láser de Scan) */}
+                    <div style={{ 
+                        position: 'absolute', left: '25%', top: '80px', width: '30%', height: '40px', 
+                        background: 'linear-gradient(90deg, rgba(56,189,248,0.5), transparent)', 
+                        clipPath: 'polygon(0 40%, 100% 0, 100% 100%, 0 60%)',
+                        zIndex: 5, animation: 'pulse-beam 2s infinite'
+                    }}></div>
+
+                    {/* Cartel QR Rectangular */}
+                    <div style={{ 
+                        position: 'absolute', left: '55%', top: '30px', width: '120px', height: '160px', 
+                        background: 'white', borderRadius: '10px', padding: '10px', 
+                        display: 'flex', flexDirection: 'column', gap: '8px',
+                        boxShadow: '0 10px 30px rgba(56, 189, 248, 0.3)', transform: 'rotate(-5deg)'
+                    }}>
+                        <div style={{ width: '100%', height: '100px', background: '#000', borderRadius: '4px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{ width: '80px', height: '80px', background: 'white', padding: '5px' }}>
+                                <QRCodeSVG 
+                                    value="https://puertasmart.cl" 
+                                    size={70} 
+                                    bgColor="#ffffff"
+                                    fgColor="#001f3f"
+                                    level="H"
+                                />
+                            </div>
+                        </div>
+                        <div style={{ height: '8px', width: '100%', background: '#38bdf8', borderRadius: '2px' }}></div>
+                        <div style={{ height: '8px', width: '60%', background: '#e2e8f0', borderRadius: '2px' }}></div>
+                    </div>
+
+                    {/* Dashboard Mini Pop (KPI) */}
+                    <div className="float-anim-delayed" style={{ 
+                        position: 'absolute', right: '5%', bottom: '-20px', width: '160px', 
+                        background: 'rgba(56, 189, 248, 0.2)', backdropFilter: 'blur(10px)', 
+                        border: '1px solid rgba(56, 189, 248, 0.5)', borderRadius: '15px', 
+                        padding: '12px', zIndex: 12, boxShadow: '0 20px 40px rgba(0,0,0,0.5)' 
+                    }}>
+                        <div style={{ fontSize: '0.6rem', fontWeight: 'bold', color: '#bae6fd', marginBottom: '5px' }}>REPORTES EN VIVO</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '900', color: 'white' }}>98.2% <TrendingUp size={14} style={{ display: 'inline' }} /></div>
+                        <div style={{ fontSize: '0.5rem', opacity: 0.7 }}>Gestión de Tiempos OK</div>
+                    </div>
+                </div>
+
+                <h2 className="text-gradient" style={{ fontSize: '3.5rem', fontWeight: '900', margin: '0 0 1rem 0', textTransform: 'uppercase', letterSpacing: '2px' }}>Smart Access Control</h2>
+                <p style={{ fontSize: '1.4rem', maxWidth: '800px', margin: '0 auto 3rem auto', opacity: 0.9, lineHeight: '1.4' }}>
+                    La infraestructura de validación de identidad más avanzada para empresas, condominios e instituciones. Una solución B2B escalable al mundo entero.
                 </p>
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button onClick={() => setView('sales')} className="action-btn" style={{ background: '#f59e0b', maxWidth: '320px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', padding: '1rem' }}>
-                        <ShoppingCart size={24} /> Ver Tienda & Promos
+                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                    <button onClick={() => setView('sales')} className="action-btn" style={{ background: '#f59e0b', maxWidth: '350px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '1.2rem 2.5rem', fontSize: '1.2rem' }}>
+                        <ShoppingCart size={28} /> SERVICIOS EMPRESARIALES
                     </button>
-                    <button onClick={() => setView('citizen')} className="action-btn" style={{ background: 'white', maxWidth: '320px', color: primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', padding: '1rem' }}>
-                        <Lock size={24} /> Portal de Accesos Seguro
+                    <button onClick={() => setView('citizen')} className="action-btn" style={{ background: 'white', maxWidth: '350px', color: primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '1.2rem 2.5rem', fontSize: '1.2rem' }}>
+                        <Smartphone size={28} /> PORTAL DE ACCESO (QR)
                     </button>
                 </div>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-                <div className="glass-panel-white">
-                    <div style={{ background: '#f0fdf4', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#10b981' }}>
-                         <Shield size={32} />
+                <div className="glass-panel-white hover-lift">
+                    <div style={{ background: '#f0fdf4', width: '70px', height: '70px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#10b981' }}>
+                         <ShieldCheck size={36} />
                     </div>
-                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Control Absoluto</h3>
-                    <p style={{ color: '#64748b' }}>Monitoreo en tiempo real, trazabilidad ciudadana inteligente y evaluación de servicio en cada dependencia municipal o comercial (NPS).</p>
+                    <h3 style={{ fontSize: '1.6rem', color: primaryColor, margin: '0 0 0.8rem 0' }}>Seguridad de Grado Militar</h3>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.5' }}>Validación biométrica y documental cruzada con registros oficiales, garantizando que quien entra es realmente quien dice ser.</p>
                 </div>
-                <div className="glass-panel-white">
-                    <div style={{ background: '#fffbeb', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#f59e0b' }}>
-                         <Tag size={32} />
+                <div className="glass-panel-white hover-lift">
+                    <div style={{ background: '#fffbeb', width: '70px', height: '70px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#f59e0b' }}>
+                         <BarChart4 size={36} />
                     </div>
-                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Catálogo de Ventas</h3>
-                    <p style={{ color: '#64748b' }}>Espacios nativos para emprendedores: venta de tickets, reservas e inventarios promovidos junto al inmenso flujo de personas y visitas.</p>
+                    <h3 style={{ fontSize: '1.6rem', color: primaryColor, margin: '0 0 0.8rem 0' }}>KPIs de Gestión en Vivo</h3>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.5' }}>Monitorea tiempos de espera, permanencia y calidad de atención (NPS) desde cualquier dispositivo con nuestro dashboard estratégico.</p>
                 </div>
-                <div className="glass-panel-white">
-                    <div style={{ background: '#f1f5f9', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem', color: '#3b82f6' }}>
-                         <Activity size={32} />
+                <div className="glass-panel-white hover-lift">
+                    <div style={{ background: '#eff6ff', width: '70px', height: '70px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#3b82f6' }}>
+                         <VlsGlobe size={36} />
                     </div>
-                    <h3 style={{ fontSize: '1.4rem', color: primaryColor, margin: '0 0 0.5rem 0' }}>Analítica Avanzada</h3>
-                    <p style={{ color: '#64748b' }}>Dashboards integrados del ecosistema que recopilan las transacciones y tiempos de respuesta brindando un control táctico.</p>
+                    <h3 style={{ fontSize: '1.6rem', color: primaryColor, margin: '0 0 0.8rem 0' }}>Aplicación Universal</h3>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.5' }}>Desde condominios de lujo hasta clínicas de maternidad. El sistema se adapta a cada flujo operativo con módulos multi-idioma.</p>
                 </div>
             </div>
+
+            <style>{`
+                @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+                .float-anim { animation: float 4s ease-in-out infinite; }
+                .float-anim-delayed { animation: float 5s ease-in-out infinite 1s; }
+                @keyframes scan-v { 0% { top: 0; } 100% { top: 100%; } }
+                .scan-line-v { animation: scan-v 2s linear infinite; }
+                @keyframes pulse-beam { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+                .hover-lift:hover { transform: translateY(-10px); }
+            `}</style>
         </div>
     );
 }
 
-// --- NODO S: VENTAS Y PROMOCIÓN ---
+
+// --- NODO S: VENTAS Y PROMOCIÓN (B2B SERVICES) ---
 function SalesNode({ primaryColor }) {
-    const PROMOCIONES = [
-        { id: 1, title: 'Tour Astronómico Express', vendor: 'Turismo La Serena', price: '$15.000', icon: <Star />, color: '#8b5cf6', tag: 'Ticket Digital' },
-        { id: 2, title: 'Degustación Gastronómica', vendor: 'Recova Store', price: '$8.500', icon: <Coffee />, color: '#f59e0b', tag: 'Alimentación' },
-        { id: 3, title: 'Pase Full Estadio Portada', vendor: 'Deportes IMLS', price: '$4.000', icon: <Ticket />, color: '#10b981', tag: 'Deportes' },
-        { id: 4, title: 'Ruta de las Iglesias Doradas', vendor: 'Patrimonio VLS', price: 'GRATIS', icon: <MapIcon />, color: '#38bdf8', tag: 'Cultura' },
-        { id: 5, title: 'Reserva Cancha Avenida del Mar', vendor: 'Borde Costero', price: '$10.000 / hr', icon: <Activity />, color: '#ec4899', tag: 'Reserva' },
+    const SERVICIOS_PLATAFORMA = [
+        { 
+            id: 'smart-condo', 
+            title: 'Control de Accesos p/ Condominios', 
+            vendor: 'Puerta Smart Industrial', 
+            price: '$2.5M CL / Licencia', 
+            icon: <Building />, 
+            color: '#3b82f6', 
+            tag: 'Seguridad Residencial',
+            desc: 'Gestión QR para residentes, visitas y delivery. Bitácora inmutable de seguridad.'
+        },
+        { 
+            id: 'smart-clinic', 
+            title: 'Gestión de Flujo de Pacientes', 
+            vendor: 'División Salud Smart', 
+            price: '$3.8M CL / Anual', 
+            icon: <Activity />, 
+            color: '#10b981', 
+            tag: 'Salud & Clínicas',
+            desc: 'Monitoreo de tiempos de espera, asignación de box y KPIs de atención médica en tiempo real.'
+        },
+        { 
+            id: 'smart-school', 
+            title: 'Pórtico Escolar Inteligente', 
+            vendor: 'Educación & Futuro', 
+            price: '$1.2M CL / Setup', 
+            icon: <Users />, 
+            color: '#f59e0b', 
+            tag: 'Colegios & Academias',
+            desc: 'Validación de retiro de alumnos mediante QR dinámico y comunicación instantánea con apoderados.'
+        },
+        { 
+            id: 'smart-office', 
+            title: 'Dashboard Corporativo B2B', 
+            vendor: 'Puerta Smart Enterprise', 
+            price: '$0.8M CL / Mes', 
+            icon: <BarChart4 />, 
+            color: '#8b5cf6', 
+            tag: 'Oficinas & Hubs',
+            desc: 'Control de asistencia inteligente, gestión de salas de reuniones y analítica de productividad.'
+        },
+        { 
+            id: 'smart-event', 
+            title: 'Acreditación Masiva p/ Eventos', 
+            vendor: 'Protocolo & Eventos', 
+            price: '$0.5M CL / Evento', 
+            icon: <Ticket />, 
+            color: '#ec4899', 
+            tag: 'Eventos & Estadios',
+            desc: 'Validación rápida de entradas, control de aforo en vivo y trazabilidad de asistentes.'
+        },
+    ];
+
+    const SALES_WORKERS = [
+        { name: 'Worker Alpha (Ventas 24/7)', role: 'Bot de Prospección', status: 'ONLINE', progress: 85, calls: 450, deals: 12 },
+        { name: 'Worker Beta (Soporte B2B)', role: 'Asistente de Implementación', status: 'ONLINE', progress: 62, calls: 310, deals: 8 },
+        { name: 'Worker Gamma (KPI Analyst)', role: 'Optimización de Cuentas', status: 'SLEEPING', progress: 100, calls: 0, deals: 25 },
     ];
 
     return (
         <div className="animate-fade-in" style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                     <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: primaryColor, margin: 0 }}>Ventas & Promociones</h2>
-                     <p style={{ color: '#64748b', fontSize: '1.1rem' }}>Impulsando la economía circular y emprendimientos.</p>
+                     <h2 style={{ fontSize: '3rem', fontWeight: '900', color: primaryColor, margin: 0 }}>Catálogo de Soluciones</h2>
+                     <p style={{ color: '#64748b', fontSize: '1.2rem' }}>Implemente hoy mismo la infraestructura inteligente en su recinto.</p>
                 </div>
-                <button className="small-action-btn" style={{ background: primaryColor, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.1rem', padding: '1rem 1.5rem', borderRadius: '14px' }}>
-                     <ShoppingCart size={24} /> Ir al Checkout (0)
-                </button>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                    <button className="small-action-btn" style={{ background: '#f59e0b', display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem 1.5rem', fontWeight: 'bold' }}>
+                         <Smartphone size={22} /> SOLICITAR DEMO B2B
+                    </button>
+                    <button className="small-action-btn" style={{ background: primaryColor, display: 'flex', alignItems: 'center', gap: '0.8rem', padding: '1rem 1.5rem', fontWeight: 'bold' }}>
+                         <ShoppingCart size={22} /> COTIZAR LICENCIA
+                    </button>
+                </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                {PROMOCIONES.map(p => (
-                    <div key={p.id} className="venue-card-premium" style={{ borderTop: `5px solid ${p.color}`, display: 'flex', flexDirection: 'column' }}>
-                        <div style={{ background: `${p.color}15`, width: '100%', height: '140px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.color, marginBottom: '1rem' }}>
-                            {React.cloneElement(p.icon, { size: 56 })}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2rem' }}>
+                {SERVICIOS_PLATAFORMA.map(p => (
+                    <div key={p.id} className="venue-card-premium" style={{ borderTop: `6px solid ${p.color}`, padding: '2rem', display: 'flex', flexDirection: 'column', transition: 'all 0.3s' }}>
+                        <div style={{ background: `${p.color}10`, width: '100%', height: '160px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: p.color, marginBottom: '1.5rem' }}>
+                            {React.cloneElement(p.icon, { size: 64 })}
                         </div>
-                        <span style={{ fontSize: '0.75rem', fontWeight: '900', background: '#f1f5f9', color: '#64748b', padding: '6px 10px', borderRadius: '6px', alignSelf: 'flex-start', marginBottom: '0.8rem', textTransform: 'uppercase' }}>{p.tag}</span>
-                        <h4 style={{ margin: '0 0 0.5rem 0', fontSize: '1.3rem', color: '#001f3f' }}>{p.title}</h4>
-                        <p style={{ fontSize: '0.9rem', color: '#94a3b8', margin: '0 0 1.5rem 0', fontWeight: 'bold' }}>Operador: {p.vendor}</p>
+                        <span style={{ fontSize: '0.8rem', fontWeight: '900', background: `${p.color}20`, color: p.color, padding: '6px 14px', borderRadius: '10px', alignSelf: 'flex-start', marginBottom: '1rem', textTransform: 'uppercase' }}>{p.tag}</span>
+                        <h4 style={{ margin: '0 0 0.8rem 0', fontSize: '1.5rem', color: '#0f172a', fontWeight: 'bold' }}>{p.title}</h4>
+                        <p style={{ fontSize: '1rem', color: '#64748b', margin: '0 0 1.5rem 0', lineHeight: '1.4' }}>{p.desc}</p>
+                        <div style={{ fontSize: '0.9rem', color: '#94a3b8', fontStyle: 'italic', marginBottom: '1.5rem' }}>Proveedor: {p.vendor}</div>
                         
-                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '1.2rem' }}>
-                            <span style={{ fontSize: '1.6rem', fontWeight: '900', color: p.color }}>{p.price}</span>
-                            <button className="small-action-btn" style={{ background: p.color, display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem' }}>
-                                + AGREGAR
+                        <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '1.5rem' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.75rem', color: '#94a3b8', fontWeight: 'bold' }}>VALOR REFERENCIAL</span>
+                                <span style={{ fontSize: '1.8rem', fontWeight: '900', color: '#0f172a' }}>{p.price}</span>
+                            </div>
+                            <button className="small-action-btn" style={{ background: p.color, display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.8rem 1.2rem', borderRadius: '12px' }}>
+                                <ExternalLink size={18} /> INFO
                             </button>
                         </div>
                     </div>
                 ))}
             </div>
-            
-            <div className="promo-box" style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', gap: '2rem', background: '#f0fdf4', borderColor: '#10b981', flexWrap: 'wrap' }}>
-                <Ticket size={64} color="#10b981" />
-                <div style={{ flex: 1 }}>
-                     <h3 style={{ margin: '0 0 0.5rem 0', color: '#001f3f', fontSize: '1.5rem' }}>¿Eres emprendedor o proveedor local?</h3>
-                     <p style={{ margin: 0, color: '#64748b', fontSize: '1.1rem' }}>Suma tus tickets o catálogos a PuertaSmart y llega a cientos de vecinos diariamente mediante nuestra red de visitantes.</p>
+
+            {/* MÓDULO DE WORKERS IA - EXCLUSIVO PARA PERSONAL AUTORIZADO */}
+            <div style={{ marginTop: '5rem', background: '#0f172a', borderRadius: '32px', padding: '3rem', color: 'white', border: '1px solid rgba(56, 189, 248, 0.3)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3rem', flexWrap: 'wrap', gap: '2rem' }}>
+                    <div>
+                        <h3 style={{ fontSize: '2rem', fontWeight: '900', color: '#38bdf8', margin: '0 0 0.5rem 0', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <Zap size={32} /> Fuerza de Ventas IA (Workers)
+                        </h3>
+                        <p style={{ color: '#94a3b8', fontSize: '1.1rem', maxWidth: '600px' }}>Nuestros agentes virtuales trabajan incansablemente prospectando clientes B2B en todo el mundo. Solo accesible para operadores autorizados.</p>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold', marginBottom: '5px' }}>SISTEMA ACTIVO</div>
+                        <div style={{ fontSize: '2rem', fontWeight: '900' }}>{SALES_WORKERS.filter(w => w.status === 'ONLINE').length} / {SALES_WORKERS.length} ONLINE</div>
+                    </div>
                 </div>
-                <button className="small-action-btn" style={{ background: '#10b981', padding: '1rem 2rem', fontSize: '1.1rem' }}>ENVIAR MI CATÁLOGO</button>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
+                    {SALES_WORKERS.map(w => (
+                        <div key={w.name} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '24px', padding: '1.5rem', position: 'relative' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                                <div>
+                                    <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem' }}>{w.name}</h4>
+                                    <span style={{ fontSize: '0.8rem', color: '#38bdf8' }}>{w.role}</span>
+                                </div>
+                                <div style={{ width: '12px', height: '12px', background: w.status === 'ONLINE' ? '#10b981' : '#64748b', borderRadius: '50%', boxShadow: w.status === 'ONLINE' ? '0 0 10px #10b981' : 'none' }}></div>
+                            </div>
+                            
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
+                                <div style={{ textAlign: 'center', background: 'rgba(0,0,0,0.2)', padding: '0.8rem', borderRadius: '15px' }}>
+                                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{w.calls}</div>
+                                    <div style={{ fontSize: '0.6rem', color: '#94a3b8' }}>CONTACTOS</div>
+                                </div>
+                                <div style={{ textAlign: 'center', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem', borderRadius: '15px' }}>
+                                    <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#10b981' }}>{w.deals}</div>
+                                    <div style={{ fontSize: '0.6rem', color: '#10b981' }}>CIERRES</div>
+                                </div>
+                            </div>
+
+                            <div style={{ fontSize: '0.75rem', marginBottom: '8px', color: '#94a3b8', display: 'flex', justifyContent: 'space-between' }}>
+                                <span>Rendimiento Semanal</span>
+                                <span>{w.progress}%</span>
+                            </div>
+                            <div style={{ height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${w.progress}%`, background: '#38bdf8', boxShadow: '0 0 10px #38bdf8' }}></div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+            
+            <div className="promo-box" style={{ marginTop: '4rem', display: 'flex', alignItems: 'center', gap: '2rem', background: '#f8fafc', borderColor: '#e2e8f0', flexWrap: 'wrap', borderRadius: '24px' }}>
+                <Users size={64} color={primaryColor} />
+                <div style={{ flex: 1 }}>
+                     <h3 style={{ margin: '0 0 0.5rem 0', color: '#0f172a', fontSize: '1.6rem' }}>Programa de Partners Regionales</h3>
+                     <p style={{ margin: 0, color: '#64748b', fontSize: '1.1rem' }}>Si eres una empresa de tecnología o seguridad, únete a nuestra red de distribuidores Smart City. Traducida, probada y lista para el mercado global.</p>
+                </div>
+                <button className="action-btn" style={{ background: primaryColor, padding: '1rem 2.5rem', fontSize: '1.1rem', borderRadius: '15px' }}>POSTULAR COMO PARTNER</button>
             </div>
         </div>
     );
@@ -632,12 +1041,13 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
     
     // KPIs Cálculos
     const stats = useMemo(() => {
-        if (!history.length) return { avgDuration: 0, avgNps: 0, total: 0 };
+        if (!history.length && !leads.length) return { avgDuration: 0, avgNps: 0, total: 0, totalLeads: 0 };
         const total = history.length;
-        const avgDuration = history.reduce((acc, v) => acc + (v.permanencia || 0), 0) / total;
-        const avgNps = history.reduce((acc, v) => acc + (v.nps || 0), 0) / total;
-        return { avgDuration: Math.round(avgDuration), avgNps: avgNps.toFixed(2), total };
-    }, [history]);
+        const totalLeads = leads.length;
+        const avgDuration = history.length ? (history.reduce((acc, v) => acc + (v.permanencia || 0), 0) / total) : 0;
+        const avgNps = history.length ? (history.reduce((acc, v) => acc + (v.nps || 0), 0) / total) : 0;
+        return { avgDuration: Math.round(avgDuration), avgNps: avgNps.toFixed(2), total, totalLeads };
+    }, [history, leads]);
 
     return (
         <div className="admin-view scale-in">
@@ -654,11 +1064,11 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
             {/* TAB: DASHBOARD (OVERVIEW) */}
             {tab === 'dashboard' && (
                 <div className="animate-fade-in">
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem', marginBottom: '2rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                         <StatCardWhite title="Volumen Histórico" value={stats.total} icon={<Database />} color={primaryColor} />
+                        <StatCardWhite title="Leads Capturados" value={stats.totalLeads} icon={<TrendingUp />} color="#0ea5e9" />
                         <StatCardWhite title="Promedio NPS" value={`${stats.avgNps} / 5`} icon={<Star />} color="#f59e0b" />
                         <StatCardWhite title="Permanencia Media" value={`${stats.avgDuration} min`} icon={<Clock />} color="#8b5cf6" />
-                        <StatCardWhite title="Recintos Activos" value={Object.keys(INFRAESTRUCTURA_IMLS).length} icon={<Building />} color="#10b981" />
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
@@ -837,9 +1247,56 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
             {/* TAB: CRM & DATA */}
             {tab === 'crm' && (
                 <div className="crm-view animate-fade-in">
-                    <div className="glass-panel-white">
+                    {/* LEADS SECTION */}
+                    <div className="glass-panel-white" style={{ borderTop: '8px solid #0ea5e9' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                             <h3 style={{ margin: 0 }}>Base de Datos Ciudadana Pro</h3>
+                             <h3 style={{ margin: 0, display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                                <TrendingUp size={24} color="#0ea5e9" /> Prospección Comercial (Leads)
+                             </h3>
+                             <button className="small-action-btn" style={{ background: '#0ea5e9' }}>EXPORTAR LEADS (.CSV)</button>
+                        </div>
+                        <div style={{ overflowX: 'auto' }}>
+                             <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                <thead>
+                                    <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0' }}>
+                                        <th style={{ padding: '1rem' }}>Fecha/Hora</th>
+                                        <th style={{ padding: '1rem' }}>Contacto</th>
+                                        <th style={{ padding: '1rem' }}>Empresa / Cargo</th>
+                                        <th style={{ padding: '1rem' }}>Interés / Demo</th>
+                                        <th style={{ padding: '1rem' }}>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {leads.map((l, i) => (
+                                        <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={{ padding: '1rem', fontSize: '0.8rem' }}>{new Date(l.timestamp).toLocaleString()}</td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <div style={{ fontWeight: 'bold' }}>{l.nombre}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{l.email}</div>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <div style={{ fontSize: '0.85rem' }}>{l.empresa || 'Individual'}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{l.cargo || 'No especificado'}</div>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <span style={{ fontSize: '0.8rem', background: '#f1f5f9', padding: '4px 8px', borderRadius: '6px' }}>{l.interes}</span>
+                                            </td>
+                                            <td style={{ padding: '1rem' }}>
+                                                <span style={{ fontSize: '0.7rem', fontWeight: 'bold', background: '#10b98120', color: '#10b981', padding: '4px 10px', borderRadius: '20px' }}>{l.status || 'NUEVO'}</span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {leads.length === 0 && (
+                                        <tr><td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>No se han capturado leads aún durante esta sesión.</td></tr>
+                                    )}
+                                </tbody>
+                             </table>
+                        </div>
+                    </div>
+
+                    <div className="glass-panel-white" style={{ marginTop: '2rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                             <h3 style={{ margin: 0 }}>Base de Datos Ciudadana (Visitas)</h3>
                              <div style={{ display: 'flex', gap: '1rem' }}>
                                 <input type="text" placeholder="Buscar por RUT o Nombre..." className="titanium-input" style={{ width: '300px', margin: 0 }} />
                                 <button className="small-action-btn" style={{ background: primaryColor }}><Search size={18} /></button>

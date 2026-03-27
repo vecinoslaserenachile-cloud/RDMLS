@@ -58,11 +58,11 @@ const redactWithVLS_AI = (newsItem) => {
 
     if (newsItem.category === "Seguridad") {
         vlsHead = `🚨 [ALERTA SEGURIDAD]: ${newsItem.title}`;
-        vlsBody = `Megaoperativo regional verificado por Red VLS. El despliegue en la Provincia de Elqui busca fortalecer la paz comunitaria. Fuente: ${source.name}.`;
+        vlsBody = `Megaoperativo regional verificado por la Red de vecinoslaserena.cl. El despliegue en la Provincia de Elqui busca fortalecer la paz comunitaria. Fuente: ${source.name}.`;
         alertType = "CRITICAL";
     } else if (newsItem.category === "Meteorología") {
-        vlsHead = `⛈️ [VLS CLIMA]: Se avecinan las primeras lluvias`;
-        vlsBody = `Información confirmada para este fin de semana. Mantenga sus canaletas limpias. VLS monitorea el pulso del tiempo.`;
+        vlsHead = `⛈️ [CLIMA VECINAL]: Se avecinan las primeras lluvias`;
+        vlsBody = `Información confirmada para este fin de semana. Mantenga sus canaletas limpias. Nuestro sistema inteligente monitorea el pulso del tiempo.`;
         alertType = "WARNING";
     } else if (newsItem.category === "Comunidad") {
         vlsHead = `🔌 [ESTADO SUMINISTRO]: Robo de cables detectado`;
@@ -120,7 +120,7 @@ export const getVLSLocution = () => {
     ];
 
     const signals = [
-        `VLS Radio informa: Son las ${timeStr} en la capital regional.`,
+        `vecinosmart.cl informa: Son las ${timeStr} en la capital regional.`,
         `Faro Digital marcando el pulso: ${timeStr} minutos.`,
         `Identidad y Futuro: Transmitiendo en vivo a las ${timeStr}.`
     ];

@@ -47,7 +47,7 @@ const PORTALES = [
     id: 'vecinoslaserena',
     domain: 'www.vecinoslaserena.cl',
     url: 'https://www.vecinoslaserena.cl',
-    name: 'Vecinos La Serena',
+    name: 'Vecinos LA❤️SERENA',
     subtitle: 'Plataforma Smart City La Serena',
     desc: 'Portal georreferenciado de reportes vecinales, paseo histórico 3D y monitoreo urbano.',
     color: '#10b981',
@@ -90,6 +90,18 @@ const PORTALES = [
     gradient: 'linear-gradient(135deg, #0284c7 0%, #0c4a6e 100%)',
     icon: <Sparkles size={28} color="white" />,
     badge: 'IA'
+  },
+  {
+    id: 'piratasmart',
+    domain: 'comunasmart.cl/quimbo',
+    url: '/quimbo',
+    name: 'PirataSmart',
+    subtitle: 'Smart City Ecosistema Coquimbo',
+    desc: 'Versión soberana para la ciudad puerto. Seguridad, monitoreo pirata y gestión ciudadana local.',
+    color: '#facc15',
+    gradient: 'linear-gradient(135deg, #000000 0%, #451a03 100%)',
+    icon: <Landmark size={28} color="#facc15" />,
+    badge: 'QUIMBO'
   }
 ];
 
@@ -164,7 +176,8 @@ export default function WelcomePortal() {
                   
                   <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.1)', marginBottom: '2rem' }}>
                       <p style={{ fontSize: '1.1rem', color: '#cbd5e1', lineHeight: '1.6', margin: 0 }}>
-                          Estás ingresando a la plataforma comunal segura (Martin Shield activo). 
+                          Una filosofía de soberanía tecnológica en LA❤️SERENA
+                          segura (Martin Shield activo).
                           <br/><br/>
                           <strong>Instrucciones:</strong> Por favor lee detenidamente las indicaciones de cada módulo antes de operar. El ecosistema unificado permite acceso seguro a trámites, salud, eventos y seguridad.
                       </p>
@@ -591,7 +604,7 @@ export default function WelcomePortal() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', background: 'rgba(56,189,248,0.05)', padding: '5px 15px', borderRadius: '12px', border: '1px solid rgba(56,189,248,0.2)' }}>
             <Star size={14} color="#38bdf8" fill="#38bdf8" />
-            <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
+            <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA❤️SERENA · v3.2 CRISTAL</span>
           </div>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', maxWidth: '600px', margin: 0 }}>
             &copy; 2026 Vecinos La Serena. Plataforma Smart City de código abierto para la Región de Coquimbo.

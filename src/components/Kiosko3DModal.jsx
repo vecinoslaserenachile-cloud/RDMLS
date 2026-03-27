@@ -180,7 +180,7 @@ function KioskStructure() {
 }
 
 function SerenitoAvatar() {
-    const { scene } = useGLTF('/serenito_draco.glb');
+    const { scene } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     return (
         <group position={[0, -0.3, 0]} scale={1.8} rotation={[0, Math.PI, 0]}>
             <primitive object={scene} />

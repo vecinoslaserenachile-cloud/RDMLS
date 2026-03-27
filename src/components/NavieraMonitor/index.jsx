@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Ship, Anchor, Database, Radio, CheckCircle2, AlertTriangle, ExternalLink, CalendarDays, Map } from 'lucide-react';
 
-export default function NavieraMonitor() {
+export default function NavieraMonitor({ isMini = false }) {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [width, setWidth] = useState(window.innerWidth);
 
@@ -37,6 +37,49 @@ export default function NavieraMonitor() {
         return () => clearInterval(syncInt);
     }, []);
 
+    if (isMini) {
+        return (
+            <div className="glass-panel hover-lift" style={{ 
+                background: 'rgba(15,23,42,0.8)', 
+                borderRadius: '24px', 
+                padding: '1.5rem', 
+                border: '1px solid rgba(56,189,248,0.3)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ color: '#38bdf8', margin: 0, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Anchor size={18} /> PUERTO COQUIMBO
+                    </h4>
+                    <span style={{ fontSize: '0.6rem', background: '#10b981', color: '#000', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold' }}>LIVE AIS</span>
+                </div>
+                
+                <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', height: '120px' }}>
+                    <img src="/images/port_placeholder.png" alt="Puerto" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)' }}></div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {buquesSimulados.slice(0, 2).map((b, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
+                            <span style={{ color: 'white', fontWeight: 'bold' }}>{b.name}</span>
+                            <span style={{ color: b.estado.includes('Atracado') ? '#10b981' : '#f59e0b' }}>{b.estado.split(' ')[0]}</span>
+                        </div>
+                    ))}
+                </div>
+
+                <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-port-monitor'))}
+                    style={{ marginTop: 'auto', background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', color: '#38bdf8', padding: '8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                    MONITOR PORTUARIO COMPLETO
+                </button>
+            </div>
+        );
+    }
+
     return (
         <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%', fontFamily: "'Segoe UI', Roboto, sans-serif" }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
@@ -63,7 +106,7 @@ export default function NavieraMonitor() {
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button onClick={() => window.open('https://tpc.cl/wp-content/uploads/2026/03/Planificacion-Naviera-12-03-2026.pdf', '_blank')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.9rem', color: '#38bdf8', borderColor: '#38bdf8' }}>
+                        <button onClick={() => window.open('https://tpc.cl/planificacion-naviera/', '_blank')} className="btn-glass" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1rem', borderRadius: '8px', fontSize: '0.9rem', color: '#38bdf8', borderColor: '#38bdf8' }}>
                             <CalendarDays size={16} /> Planificador Oficial TPC
                         </button>
                     </div>
@@ -82,7 +125,7 @@ export default function NavieraMonitor() {
                                 <div key={idx} className="hover-lift" style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.05)', padding: '1rem', borderRadius: '12px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                                         <h6 style={{ margin: 0, color: 'white', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                            <Ship size={18} color={buque.estado === "Atracado" ? "#10b981" : "#f59e0b"} />
+                                            <Ship size={18} color={buque.estado.includes("Atracado") ? "#10b981" : "#f59e0b"} />
                                             {buque.name}
                                         </h6>
                                         <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.1)', color: '#cbd5e1', padding: '2px 6px', borderRadius: '4px' }}>
@@ -93,11 +136,11 @@ export default function NavieraMonitor() {
                                         <span>Bandera: <strong style={{color: '#fff'}}>{buque.bandera}</strong></span>
                                         <span>Eslora: <strong style={{color: '#fff'}}>{buque.eslora}</strong></span>
                                         <span>Fecha (ETA): <strong style={{color: '#38bdf8'}}>{buque.eta}</strong></span>
-                                        <span>Estado: <strong style={{color: buque.estado === "Atracado" ? '#10b981' : '#fcd34d'}}>{buque.estado}</strong></span>
+                                        <span>Estado: <strong style={{color: buque.estado.includes("Atracado") ? '#10b981' : '#fcd34d'}}>{buque.estado}</strong></span>
                                     </div>
                                     <div style={{ marginTop: '0.8rem', paddingTop: '0.8rem', borderTop: '1px dashed rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '0.8rem', color: '#64748b' }}><Anchor size={12} style={{display: 'inline', marginRight: '4px'}}/> Destino: {buque.muelle}</span>
-                                        <button onClick={() => window.open(`https://www.marinetraffic.com/en/ais/details/ships/shipid:0/vessel:${buque.name.replace(' ', '%20')}`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#38bdf8', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <button onClick={() => window.open(`https://www.marinetraffic.com/en/ais/home/centerx:-71.3/centery:-29.9/zoom:13`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#38bdf8', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                             Ficha AIS <ExternalLink size={12} />
                                         </button>
                                     </div>
@@ -109,29 +152,24 @@ export default function NavieraMonitor() {
                     {/* Simulación Mapa */}
                     <div style={{ flex: 1.5, position: 'relative', background: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '400px' }}>
                         <div style={{ position: 'absolute', inset: 0, borderRadius: '12px', overflow: 'hidden' }}>
-                            <iframe 
-                                title="MarineTraffic Live Map"
-                                width="100%" 
-                                height="100%" 
-                                frameBorder="0" 
-                                scrolling="no" 
-                                marginHeight="0" 
-                                marginWidth="0" 
-                                src="https://www.marinetraffic.com/en/ais/embed/zoom:13/centery:-29.9328/centerx:-71.3414/maptype:1/shownames:false/mmsi:0/shipid:0/fleet:/fleet_id:/vtypes:7,8,4/showmenu:false/remember:false"
-                                style={{ border: 'none' }}
-                                allow="geolocation"
-                                sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-                            ></iframe>
-                        </div>
-
-                        {/* Botón Flotante para expansión si es necesario */}
-                        <div style={{ position: 'absolute', bottom: '15px', right: '15px', zIndex: 10, display: 'flex', gap: '8px' }}>
-                            <button 
-                                onClick={() => window.open('https://www.marinetraffic.com', '_blank')}
-                                style={{ background: 'rgba(56,189,248,0.9)', color: '#000', border: 'none', padding: '6px 12px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 10px rgba(0,0,0,0.5)' }}
-                            >
-                                EXPANDIR RADAR
-                            </button>
+                            <img 
+                                src="/images/port_placeholder.png" 
+                                alt="MarineTraffic Placeholder" 
+                                style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }}
+                            />
+                            <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle, transparent 0%, rgba(15,23,42,0.8) 100%)' }}></div>
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', width: '80%' }}>
+                                <AlertTriangle size={48} color="#f59e0b" style={{ margin: '0 auto 1rem' }} />
+                                <h4 style={{ color: 'white', margin: '0 0 1rem 0' }}>SISTEMA AIS EXTERNO (MarineTraffic) Bloqueado</h4>
+                                <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '2rem' }}>Debido a restricciones de seguridad de MarineTraffic.com, el mapa en vivo debe abrirse en una ventana segura independiente para garantizar la soberanía de datos.</p>
+                                <button 
+                                    onClick={() => window.open('https://www.marinetraffic.com/en/ais/home/centerx:-71.3/centery:-29.9/zoom:13', '_blank')}
+                                    className="btn-glass" 
+                                    style={{ background: '#38bdf8', color: 'black', fontWeight: 'bold', padding: '1rem 2rem', borderRadius: '12px' }}
+                                >
+                                    ABRIR MAPA EN VIVO COMPLETO
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -139,4 +177,5 @@ export default function NavieraMonitor() {
         </div>
     );
 }
+
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { 
     Home, Radio, Clock, CloudSun, Calendar, MessageCircle, Music, Info, MonitorPlay, Gamepad2, 
     Volume2, VolumeX, Maximize, ExternalLink, Download, Settings, FileText, GraduationCap, 
@@ -47,7 +48,7 @@ const VUMeter = ({ label, needleRef }) => (
     </div>
 );
 
-export default function CentroRadio() {
+export default function CentroRadio({ isDevMode = false }) {
     const navigate = useNavigate();
     const [weather, setWeather] = useState(null);
     const [time, setTime] = useState(new Date());
@@ -103,6 +104,7 @@ export default function CentroRadio() {
     const [showArcade, setShowArcade] = useState(false);
     const [msgIndex, setMsgIndex] = useState(0);
     const [eqMode, setEqMode] = useState('90s'); // flat, claro, oscuro, 90s (90s default for punch)
+    const [is24h, setIs24h] = useState(() => localStorage.getItem('vls_time_format') === '24h');
     const [showAdmin, setShowAdmin] = useState(false);
     const [selectedNews, setSelectedNews] = useState(null);
 
@@ -111,17 +113,126 @@ export default function CentroRadio() {
         "CONNECTÉ", "DIFFUSION", "EMITINDO", "AO VIVO", "LIVE NOW"
     ];
 
+    const CONCEJO_ARCHIVE = [
+        {
+            id: 'track_01',
+            title: "Concejo Comunal La Serena",
+            date: "19 de noviembre de 2025",
+            points: [
+                "Inicio de la sesión ordinaria número 1416 y modificaciones en la tabla",
+                "Discusión técnica y legal sobre la Ley 21.411 para el cierre de pasajes (Marcial Martínez)"
+            ],
+            duration: "45:12"
+        },
+        {
+            id: 'track_02',
+            title: "Concejo Comunal La Serena",
+            date: "04 de junio de 2025",
+            points: [
+                "Presentación del Plan Invierno 2025: Limpieza de sumideros en Las Compañías",
+                "Convenio 40ª Feria del Libro: Suplemento de 35 millones de pesos"
+            ],
+            duration: "38:45"
+        },
+        {
+            id: 'track_03',
+            title: "Concejo Comunal La Serena",
+            date: "05 de marzo de 2025",
+            points: [
+                "Transferencia Pro-Empleo: 825 millones para áreas verdes y aseo",
+                "Adjudicación Proyecto 'Pórtico Seguro': Barrio El Romeral"
+            ],
+            duration: "52:10"
+        },
+        {
+            id: 'track_04',
+            title: "Concejo Comunal La Serena",
+            date: "07 de mayo de 2025",
+            points: [
+                "Exposición 'Punto Cultura Comunitaria' y actualización Plan de Cultura",
+                "Ordenanza Municipal: Retiro de cables aéreos en desuso en el Casco Histórico"
+            ],
+            duration: "41:30"
+        },
+        {
+            id: 'track_05',
+            title: "Concejo Comunal La Serena",
+            date: "10 de diciembre de 2025",
+            points: [
+                "Convenio GORE: Adquisición de camiones y equipos de mantenimiento",
+                "Reposición vehículos traslado pacientes diálisis (206 millones)",
+                "Adjudicación 'Quiero mi Barrio': Área verde Colo Colo (La Antena)"
+            ],
+            duration: "58:00"
+        },
+        {
+            id: 'track_06',
+            title: "Cuenta Pública La Serena",
+            date: "Gestión 2024",
+            points: [
+                "Rendición en Aula Magna ULS - Gestión 2024 completa",
+                "Ejecución 'Plan Serena Mayor': Atenciones domiciliarias integrales"
+            ],
+            duration: "1:15:20"
+        },
+        {
+            id: 'track_07',
+            title: "Desfile 481 Aniversario",
+            date: "26 de agosto de 2025",
+            points: [
+                "Anuncio recuperación: Parque Pedro de Valdivia, Coll y La Recoba",
+                "Medalla Ciudad de La Serena a ciudadanos destacados"
+            ],
+            duration: "2:05:00"
+        }
+    ];
+
+    const [selectedCouncilTrack, setSelectedCouncilTrack] = useState(CONCEJO_ARCHIVE[0]);
+
     const radioStations = [
         { 
             id: 'municipal',
             name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
             dialLabel: 'RDMLS',
             slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3", 
+            url: atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODU5MC9yYWRpby5tcDM='), 
             color: '#f97316',
             logo: '/escudo.png',
             badge: 'RDMLS'
-        }
+        },
+        ...(isDevMode ? [
+             { 
+                id: 'tv-concejo',
+                name: 'TV CONCEJO MUNICIPAL (Live)',
+                dialLabel: 'TV_CONCEJO',
+                slogan: 'TRANSMISIÓN EN VIVO - SESIÓN CONCEJO MUNICIPAL', 
+                url: "https://www.youtube.com/embed/live_stream?channel=UCvly2C2WzVvL5G_P9sA3Tig", 
+                color: '#ef4444',
+                badge: 'TV CONCEJO',
+                isVideo: true
+            },
+            { 
+                id: 'audio-concejo',
+                name: 'ARCHIVO CONCEJO (On-Demand)',
+                dialLabel: 'CONCEJO',
+                slogan: 'DIFUSIÓN SESIÓN PROCESADA - BROADCAST STANDARD', 
+                url: null, 
+                color: '#6366f1',
+                badge: 'AUDIO',
+                isPlaylist: true
+            }
+        ] : []),
+        ...(isVLS ? [
+            { 
+               id: 'vls',
+               name: 'VLS RADIO COMUNITARIA (Main)',
+               dialLabel: 'VLS_RADIO',
+               slogan: 'EL PULSO CIUDADANO DE LA SERENA', 
+               url: atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODYzMC9yYWRpby5tcDM='), 
+               color: '#0ea5e9',
+               badge: 'VLS'
+           }
+       ] : [])
     ];
 
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
@@ -714,10 +825,17 @@ export default function CentroRadio() {
                 </div>
 
                 <div className="hide-mobile" style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
+                    <button 
+                        onClick={() => {
+                            const next = !is24h;
+                            setIs24h(next);
+                            localStorage.setItem('vls_time_format', next ? '24h' : '12h');
+                        }}
+                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}
+                    >
                         <Clock size={18} color="#FFD700" />
-                        {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' })}
-                    </div>
+                        {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: !is24h })}
+                    </button>
                     <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
                         <CloudSun size={18} color="#FFD700" />
@@ -958,6 +1076,47 @@ export default function CentroRadio() {
                                             {/* Efecto Scanlines */}
                                             <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px)', pointerEvents: 'none', opacity: 0.3 }}></div>
                                         </div>
+                                    ) : currentStation.isPlaylist ? (
+                                        <div style={{ width: '100%', height: '100%', overflowY: 'auto', padding: '1rem', background: '#020617', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <div className="blink" style={{ width: '8px', height: '8px', background: '#38bdf8', borderRadius: '50%' }}></div>
+                                                    <span style={{ fontSize: '0.7rem', fontWeight: '900', color: '#38bdf8', letterSpacing: '1px' }}>SINTONIZADOR ARCHIVO_CONCEJO</span>
+                                                </div>
+                                                <span style={{ fontSize: '0.55rem', color: '#64748b' }}>TOTAL: {CONCEJO_ARCHIVE.length} TRACKS</span>
+                                            </div>
+                                            {CONCEJO_ARCHIVE.map(track => (
+                                                <div 
+                                                    key={track.id} 
+                                                    onClick={() => setSelectedCouncilTrack(track)}
+                                                    style={{ 
+                                                        padding: '10px', 
+                                                        borderRadius: '8px', 
+                                                        background: selectedCouncilTrack.id === track.id ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.03)',
+                                                        border: `1px solid ${selectedCouncilTrack.id === track.id ? '#6366f1' : 'transparent'}`,
+                                                        cursor: 'pointer',
+                                                        transition: '0.2s'
+                                                    }}
+                                                >
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                                                        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>{track.date}</div>
+                                                        <div style={{ fontSize: '0.65rem', color: '#6366f1', fontWeight: 'bold' }}>{track.duration}</div>
+                                                    </div>
+                                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', lineHeight: '1.4' }}>
+                                                        {track.points[0].substring(0, 60)}...
+                                                    </div>
+                                                    {selectedCouncilTrack.id === track.id && (
+                                                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '8px', overflow: 'hidden' }}>
+                                                            {track.points.map((p, idx) => (
+                                                                <div key={idx} style={{ fontSize: '0.65rem', color: '#38bdf8', display: 'flex', gap: '6px', marginBottom: '4px' }}>
+                                                                    <span>•</span><span>{p}</span>
+                                                                </div>
+                                                            ))}
+                                                        </motion.div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
                                     ) : (
                                         <>
                                             <canvas ref={canvasRef} style={{ width: '100%', height: '100%' }} />
@@ -1187,6 +1346,52 @@ export default function CentroRadio() {
                 </section>
                 )}
 
+                {/* 6. JUEGOS Y ENTRETENIMIENTO (isDevMode) */}
+                {isDevMode && (
+                <section id="games-section" className="glass-panel" style={{ padding: '2rem', background: 'rgba(255,115,22,0.05)', borderRadius: '32px', border: '2px solid rgba(255,115,22,0.2)', marginBottom: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                        <Gamepad2 size={32} color="#f97316" />
+                        <div>
+                            <h2 style={{ margin: 0, fontSize: isMobile ? '1.3rem' : '1.8rem', color: 'white', fontWeight: '900', letterSpacing: '-1px' }}>ZONA DE ENTRETENIMIENTO MUNICIPAL</h2>
+                            <p style={{ margin: 0, color: '#f97316', fontSize: '0.75rem', fontWeight: 'bold', letterSpacing: '1px' }}>VERSIONES EXPERIMENTALES RDMLS.CL/DEV</p>
+                        </div>
+                    </div>
+                    
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                        {/* Serenito 1945 */}
+                        <div style={{ background: 'rgba(0,0,0,0.5)', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ height: '140px', background: 'url(https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/serenito_1945_bg.png)', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative' }}>
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #000, transparent)' }}></div>
+                                <div style={{ position: 'absolute', bottom: '15px', left: '15px' }}>
+                                    <span style={{ background: '#f97316', color: 'black', padding: '2px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: '900' }}>ARCADE VLS</span>
+                                </div>
+                            </div>
+                            <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <h3 style={{ color: 'white', margin: '0 0 0.5rem 0', fontWeight: '800' }}>SERENITO 1945: AL RESCATE</h3>
+                                <p style={{ color: '#94a3b8', fontSize: '0.8rem', lineHeight: '1.5', margin: '0 0 1.5rem 0' }}>Vuela sobre La Serena, esquiva obstáculos y recolecta monedas para restaurar los monumentos históricos de la ciudad.</p>
+                                <button onClick={() => setShowArcade(true)} style={{ marginTop: 'auto', background: '#f97316', color: 'black', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', transition: 'all 0.3s' }}>JUGAR AHORA ✈️</button>
+                            </div>
+                        </div>
+
+                        {/* MuniSabios (vlsabes) */}
+                        <div style={{ background: 'rgba(0,0,0,0.5)', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ height: '140px', background: 'linear-gradient(135deg, #7c3aed 0%, #4338ca 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <GraduationCap size={60} color="white" opacity={0.3} style={{ position: 'absolute' }} />
+                                <h2 style={{ color: 'white', fontWeight: '900', letterSpacing: '4px', zIndex: 1 }}>MUNISABIOS</h2>
+                                <div style={{ position: 'absolute', bottom: '15px', left: '15px' }}>
+                                    <span style={{ background: '#7c3aed', color: 'white', padding: '2px 8px', borderRadius: '4px', fontSize: '0.65rem', fontWeight: '900' }}>TRIVIA IMLS</span>
+                                </div>
+                            </div>
+                            <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                <h3 style={{ color: 'white', margin: '0 0 0.5rem 0', fontWeight: '800' }}>EL GRAN MUNISABIO</h3>
+                                <p style={{ color: '#94a3b8', fontSize: '0.8rem', lineHeight: '1.5', margin: '0 0 1.5rem 0' }}>Desafía tus conocimientos sobre la historia de La Serena, geografía local y cultura patrimonial. ¿Eres un verdadero Sabio de la ciudad?</p>
+                                <button onClick={() => navigate('/vlsabes')} style={{ marginTop: 'auto', background: '#7c3aed', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', transition: 'all 0.3s' }}>DEMOSTRAR TALENTO 🎓</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                )}
+
             </main>
 
             {/* FOOTER INSTITUCIONAL */}
@@ -1204,10 +1409,14 @@ export default function CentroRadio() {
                                              <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>
                         
                         {/* Links */}
-                        <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start' }}>
-                            <a href="https://www.laserena.cl" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.8rem', textDecoration: 'none' }}>WWW.LASERENA.CL</a>
-                            <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.8rem', textDecoration: 'none' }}>NOTICIAS</a>
-                            <a href="mailto:comunicaciones@laserena.cl" style={{ color: '#FFD700', fontSize: '0.8rem', textDecoration: 'none' }}>CONTACTO</a>
+                        <div style={{ display: 'flex', gap: '1.2rem', marginTop: '1.2rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start', alignItems: 'center' }}>
+                            <a href="https://www.laserena.cl" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>WWW.LASERENA.CL</a>
+                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                            <a href="/induccion" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>INDUCCIÓN</a>
+                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                            <a href="/opciones" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>OPCIONES</a>
+                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                            <a href="mailto:comunicaciones@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>CONTACTO</a>
                         </div>
 
                         {/* Botón instalar APP */}

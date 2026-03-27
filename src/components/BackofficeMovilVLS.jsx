@@ -209,7 +209,7 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
 
             {/* FOOTER BRANDING */}
             <div style={{ padding: '0.8rem', textAlign: 'center', background: '#000', color: '#334155', fontSize: '0.6rem', fontWeight: 'bold' }}>
-                ADMINISTRADO POR COMUNASMART.CL — © COMUNASMART VLS 2026
+                ADMINISTRADO POR RDMLS.CL — © INSTITUCIONAL 2026
             </div>
         </div>
     );

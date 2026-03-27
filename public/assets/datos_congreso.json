@@ -1,0 +1,58 @@
+[
+    {
+        "nombre_completo": "Marco Antonio Sulantay Olivares",
+        "cargo": "Diputado - Distrito 5",
+        "partido": "Unión Demócrata Independiente",
+        "kpi_asistencia": "98.5%",
+        "kpi_proyectos": "45",
+        "biografia": "Periodista, representante de la Región de Coquimbo."
+    },
+    {
+        "nombre_completo": "Juan Manuel Fuenzalida Cobo",
+        "cargo": "Diputado - Distrito 5",
+        "partido": "Unión Demócrata Independiente",
+        "kpi_asistencia": "96.2%",
+        "kpi_proyectos": "52",
+        "biografia": "Abogado, ex Intendente de la Región de Coquimbo."
+    },
+    {
+        "nombre_completo": "Daniel Manouchehri Lobos",
+        "cargo": "Diputado - Distrito 5",
+        "partido": "Partido Socialista de Chile",
+        "kpi_asistencia": "97.8%",
+        "kpi_proyectos": "68",
+        "biografia": "Abogado, representante del Distrito 5."
+    },
+    {
+        "nombre_completo": "Nathalie Castillo Rojas",
+        "cargo": "Diputada - Distrito 5",
+        "partido": "Partido Comunista de Chile",
+        "kpi_asistencia": "99.1%",
+        "kpi_proyectos": "42",
+        "biografia": "Periodista, ex presidenta regional del Colegio de Periodistas."
+    },
+    {
+        "nombre_completo": "Ricardo Cifuentes Lillo",
+        "cargo": "Diputado - Distrito 5",
+        "partido": "Partido Demócrata Cristiano",
+        "kpi_asistencia": "95.4%",
+        "kpi_proyectos": "38",
+        "biografia": "Ex Subsecretario de Desarrollo Regional."
+    },
+    {
+        "nombre_completo": "Víctor Pino Fuentes",
+        "cargo": "Diputado - Distrito 5",
+        "partido": "Independiente",
+        "kpi_asistencia": "96.7%",
+        "kpi_proyectos": "31",
+        "biografia": "Representante de la Región de Coquimbo."
+    },
+    {
+        "nombre_completo": "Carolina Tello Rojas",
+        "cargo": "Diputada - Distrito 5",
+        "partido": "Frente Amplio",
+        "kpi_asistencia": "98.9%",
+        "kpi_proyectos": "55",
+        "biografia": "Abogada, activista por los derechos de las mujeres."
+    }
+]

@@ -54,7 +54,7 @@ export default function DevPortal() {
         }}>
             {/* Header / Navigator */}
             <header className="dev-header" style={{ 
-                padding: '1.5rem 4rem', 
+                padding: '1rem 2rem', 
                 borderBottom: '2px solid #38bdf8',
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -95,14 +95,14 @@ export default function DevPortal() {
                 </div>
             </header>
 
-            <main className="dev-main" style={{ padding: '4rem' }}>
+            <main className="dev-main" style={{ padding: '2rem' }}>
                 {/* Banner de Innovación */}
                 <div className="dev-banner" style={{ 
                     background: 'linear-gradient(90deg, rgba(56, 189, 248, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%)', 
                     border: '1px solid rgba(56, 189, 248, 0.3)', 
                     borderRadius: '40px', 
-                    padding: '2rem 3.5rem', 
-                    marginBottom: '4rem',
+                    padding: '1.5rem 2rem', 
+                    marginBottom: '2rem',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '3rem',
@@ -126,7 +126,7 @@ export default function DevPortal() {
                     </div>
                 </div>
 
-                <div className="dev-layout" style={{ display: 'grid', gridTemplateColumns: '450px 1fr', gap: '4rem', alignItems: 'start' }}>
+                <div className="dev-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(350px, 450px) 1fr', gap: '2rem', alignItems: 'start' }}>
                     {/* Sidebar: App List */}
                     <aside style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                         <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '2.5rem', borderRadius: '45px', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', boxShadow: '0 30px 60px rgba(0,0,0,0.4)' }}>

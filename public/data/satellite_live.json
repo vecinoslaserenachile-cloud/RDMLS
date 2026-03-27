@@ -1,0 +1,168 @@
+{
+    "metadata": {
+        "updated": "2026-03-26 22:14:02.764880",
+        "zone": "La Serena, Chile"
+    },
+    "biblioteca": [
+        {
+            "id": 13659250,
+            "tiempo_real": "2026-03-27T01:11:20Z",
+            "satelite": "0 OBJECT C",
+            "visual_url": null,
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": -2977882607325991847
+            }
+        },
+        {
+            "id": 13669426,
+            "tiempo_real": "2026-03-27T01:08:08Z",
+            "satelite": "0 OTP-2",
+            "visual_url": null,
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": 4116390301543874149
+            }
+        },
+        {
+            "id": 13671338,
+            "tiempo_real": "2026-03-27T01:05:57Z",
+            "satelite": "0 OBJECT G",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/1/13671338/waterfall_13671338_2026-03-27T01-05-57.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": 2217962601078748875
+            }
+        },
+        {
+            "id": 13670158,
+            "tiempo_real": "2026-03-27T00:58:01Z",
+            "satelite": "0 CUBEL",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13670158/waterfall_13670158_2026-03-27T00-58-01.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": 8223510529043862778
+            }
+        },
+        {
+            "id": 13671138,
+            "tiempo_real": "2026-03-27T00:57:48Z",
+            "satelite": "0 UWE-4",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13671138/waterfall_13671138_2026-03-27T00-57-48.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": -6390401274498077573
+            }
+        },
+        {
+            "id": 13669351,
+            "tiempo_real": "2026-03-27T00:57:47Z",
+            "satelite": "0 UWE-4",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13669351/waterfall_13669351_2026-03-27T00-57-47.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": -6006289706475348431
+            }
+        },
+        {
+            "id": 13663485,
+            "tiempo_real": "2026-03-27T00:55:28Z",
+            "satelite": "0 UWE-4",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13663485/waterfall_13663485_2026-03-27T00-55-28.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": 669315533076870088
+            }
+        },
+        {
+            "id": 13666685,
+            "tiempo_real": "2026-03-27T00:55:06Z",
+            "satelite": "0 REAL",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13666685/waterfall_13666685_2026-03-27T00-55-06.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": -4724434926448877280
+            }
+        },
+        {
+            "id": 13670782,
+            "tiempo_real": "2026-03-27T00:55:03Z",
+            "satelite": "0 UWE-4",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13670782/waterfall.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": 5240667910884954181
+            }
+        },
+        {
+            "id": 13671296,
+            "tiempo_real": "2026-03-27T00:54:37Z",
+            "satelite": "0 UWE-4",
+            "visual_url": "https://s3.eu-central-1.wasabisys.com/satnogs-network/data_obs/2026/3/27/0/13671296/waterfall_13671296_2026-03-27T00-54-37.png",
+            "mapa_referencia": "https://www.google.com/maps?q=-29.9027,-71.252",
+            "inteligencia": {
+                "rama_principal": "Telecomunicaciones",
+                "conceptos_clave": [
+                    "Radioafición",
+                    "Telemetría Satelital",
+                    "SSTV"
+                ],
+                "hash_antigravity": -6327366345963451081
+            }
+        }
+    ]
+}

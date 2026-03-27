@@ -76,9 +76,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const stations = isRDMLS ? [
         { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
     ] : [
-        { id: 1, type: 'radio', sub: 'vls', name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
-        { id: 14, type: 'radio', sub: 'vls', name: 'VLS Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones VLS' },
-        { id: 15, type: 'radio', sub: 'vls', name: 'VLS Entrevistas', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=entrevecinas', isLive: true, desc: 'EntreVecinas: Historias y Comunidad VLS' }
+        { id: 1, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
+        { id: 14, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones vecinoslaserena.cl' },
+        { id: 15, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Entrevistas', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=entrevecinas', isLive: true, desc: 'EntreVecinas: Historias y Comunidad vecinoslaserena.cl' }
     ];
     const [currentStation, setCurrentStation] = useState(stations[0]);
 
@@ -87,9 +87,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             es: "COMUNA INTELIGENTE Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos.",
             en: "SMART CITY News: The Highest Municipal Authority has led a strategic security round in the field. Real action for our neighbors' peace of mind.",
             it: "CITTÀ INTELLIGENTE Informa: La Massima Autorità Comunale ha guidato un giro di sicurezza strategica sul campo. Azione reale per la tranquillità dei nostri vicini.",
-            fr: "COMMUNE INTELIGENTE Informe : La Haute Autorité Comunale a mené une ronde de sécurité stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
+            fr: "COMMUNE INTELIGENTE Informe : La Haute Autorité Comunale a mené une ronde de seguridad stratégique sur le terrain. Action réelle pour la tranquillité de nos voisins.",
             zh: "智慧社区通知：最高市政当局已在实地领导了战略安保工作。为了邻居们的安宁采取真正的行动。",
-            pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidad de nossos vizinhos."
+            pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridad Municipal liderou una ronda de seguridad estratégica no terreno. Ação real pela tranquilidad de nuestros vecinos."
         },
         {
             es: isRDMLS 
@@ -97,19 +97,19 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 : "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
             en: isRDMLS
                 ? "Management Report: Digital Modernization is consolidated under the vision of the I. Municipality of La Serena. Towards an elite citizen service."
-                : "Management Report: Communicational Sovereignty is consolidated under the vision of An anonymous neighbor. Towards an elite digital ecosystem.",
+                : "Management Report: Communicational Sovereignty is consolidated under the vision of vecinosmart.cl. Towards an elite digital ecosystem.",
             it: isRDMLS
                 ? "Rapporto di Gestione: La Modernizzazione Digitale si consolida sotto la visione della I. Municipalità di La Serena. Verso un servizio cittadino d'élite."
-                : "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione di Un vicino anonimo. Verso un ecosistema digitale d'élite.",
+                : "Rapporto di Gestione: La Sovranità Comunicativa si consolida sotto la visione de vecinoslaserena.cl. Verso un ecosistema digitale d'élite.",
             fr: isRDMLS
                 ? "Rapport de Gestion : La Modernisation Numérique est consolidée sous la vision de la I. Municipalité de La Serena. Vers un service citoyen d'élite."
-                : "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée unter vision d'un voisin anonyme. Vers un écosystème numérique d'élite.",
+                : "Rapport de Gestion : La Souveraineté Communicationnelle est consolidée selon la vision de vecinosmart.cl. Vers un écosystème numérique d'élite.",
             zh: isRDMLS
                 ? "管理报告：在拉塞雷纳市第一市政当局的愿景下，数字化现代化得到巩固。迈向精英级公民服务。"
-                : "管理报告：通信主权在一匿名邻居's 愿景下得到巩固。迈向精英级数字生态系统。",
+                : "管理报告：通信主权在 vecinoslaserena.cl 的愿景下得到巩固。迈向精英级数字生态系统。",
             pt: isRDMLS
                 ? "Relatório de Gestão: A Modernização Digital consolida-se sob a visão da I. Municipalidade de La Serena. Rumo a um serviço cidadão de elite."
-                : "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de um vizinho anônimo. Rumo a un ecossistema digital de elite."
+                : "Relatório de Gestão: A Soberania Comunicacional consolida-se sob a visão de vecinosmart.cl. Rumo a un ecossistema digital de elite."
         }
     ];
 
@@ -308,15 +308,15 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                     "El aprendizaje continuo es clave en la gestión digital. Explore nuestros módulos de capacitación para funcionarios y ciudadanos.",
                     "Saludamos a la red de comunicadores regionales. Gracias por ser parte de esta señal oficial."
                 ] : [
-                    `VLS informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque "${getCurrentShow()}".`,
+                    `vecinoslaserena.cl informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque "${getCurrentShow()}".`,
                     "En puertasmart.cl buscamos facilitar el acceso de sus visitas y proveedores de forma sencilla. Una herramienta vecinal.",
-                    "Queremos que su experiencia al reportar baches o luminarias sea lo más simple posible. Gracias por cuidar los barrios.",
-                    "¿Busca descansar un momento? Nuestra Zona Arcade está disponible para que disfrute de los clásicos de siempre.",
-                    "Le invitamos a recorrer el Paseo Histórico 3D. Es un viaje tranquilo por la memoria y los rincones de nuestra región.",
-                    "Si le gusta observar el cielo, nuestro simulador de estrellas es una ventana abierta a la belleza de nuestras noches.",
-                    "Apoyamos el emprendimiento local. Si tiene un negocio, puede compartirlo en nuestro hub comercial para conectar con vecinos.",
-                    "Aprender algo nuevo siempre es un buen plan. Explore nuestros módulos de idiomas y descubra nuevas habilidades.",
-                    "Recordamos con cariño a los maestros de nuestra música regional. Gracias por acompañarnos en esta sintonía."
+                    "Queremos que su experiencia al reportar baches o luminarias sea lo más simple posible. Gracias por cuidar los barrios con vecinosmart.cl.",
+                    "¿Busca descansar un momento? Nuestra Zona Arcade está disponible para que disfrute de los clásicos de siempre en comunasmart.cl.",
+                    "Le invitamos a recorrer el Paseo Histórico 3D. Es un viaje tranquilo por la memoria y los rincones de nuestra región con vecinosmart.cl.",
+                    "Si le gusta observar el cielo, nuestro simulador de estrellas es una ventana abierta a la belleza de nuestras noches en vecinoslaserena.cl.",
+                    "Apoyamos el emprendimiento local. Si tiene un negocio, puede compartirlo en nuestro hub comercial de puertasmart.cl para conectar con vecinos.",
+                    "Aprender algo nuevo siempre es un buen plan. Explore nuestros módulos de idiomas y descubra nuevas habilidades en comunasmart.cl.",
+                    "Recordamos con cariño a los maestros de nuestra música regional. Gracias por acompañarnos en esta sintonía de vecinoslaserena.cl."
                 ];
                 const nextIndex = (currentTipIndex + 1) % tips.length;
                 setCurrentTipIndex(nextIndex);
@@ -587,8 +587,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const hours = new Date().getHours();
         const minutes = new Date().getMinutes();
         const timeMsg = isRDMLS 
-            ? `Radio Digital Municipal informa: La hora exacta es, las ${hours} con ${minutes} minutos. RDMLS, tecnología al servicio de la comuna.`
-            : `V L S Radio informa: La hora exacta es, las ${hours} con ${minutes} minutos. Comuna Smart, tecnología al servicio del vecino.`;
+            ? `Radio Digital Municipal informa: La hora exacta es, las ${hours} con ${minutes} minutos. R-D-M-L-S, tecnología al servicio de la comuna.`
+            : `vecinoslaserena.cl informa: La hora exacta es, las ${hours} con ${minutes} minutos. Comuna Smart, tecnología al servicio del vecino.`;
         playTimeSignal();
         setTimeout(() => injectAIDJ(timeMsg), 1000);
     };
@@ -793,7 +793,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                         )}
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
-                            <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>{isRDMLS ? 'RDMLS' : 'V L S'} {activeMediaType}</span>
+                            <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>{isRDMLS ? 'RDMLS' : 'VECINOS LA SERENA'} {activeMediaType}</span>
                             {stations.filter(s => s.type === activeMediaType || (activeMediaType === 'tv-premium' && s.type === 'tv-fast')).map(st => (
                                 <div key={st.id} onClick={() => { setCurrentStation(st); if (st.type === 'radio') setupStreamAndPlay(); }} style={{ padding: '10px 12px', borderRadius: '10px', cursor: 'pointer', background: currentStation.id === st.id ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255,255,255,0.03)', fontSize: '0.75rem', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: currentStation.id === st.id ? '1px solid #ef4444' : '1px solid transparent' }}>
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>

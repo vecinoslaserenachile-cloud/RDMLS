@@ -14,11 +14,11 @@ const PLAYLIST_INSTITUTIONAL = [
 ];
 
 const PLAYLIST_LUDIC = [
-    { url: 'https://www.instagram.com/reel/DWJTy7WjtXi/embed', title: 'IG REEL: @vecinoslaserena', platform: 'Instagram' },
-    { url: 'https://twitframe.com/show?url=https://x.com/i/status/2019962765981655395', title: 'X: @vecinoslaserena', platform: 'Twitter' },
-    { url: 'https://www.tiktok.com/embed/v2/7612606054030904597', title: 'TIKTOK VLS', platform: 'TikTok' },
-    { url: 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/share/v/1DXH72bPCw/&show_text=0&width=240', title: 'FB VIDEO 1', platform: 'Facebook' },
-    { url: 'https://www.facebook.com/plugins/video.php?href=https://www.facebook.com/share/v/1AtYd7iEgM/&show_text=0&width=240', title: 'FB VIDEO 2', platform: 'Facebook' }
+    { url: 'https://vimeo.com/712520/embed', title: 'DOC: CALETA SAN PEDRO', platform: 'VLS TV' },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: VETcinos SOS', isPoster: true },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: Pincha Dating', isPoster: true },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: La Plaza Vecinal', isPoster: true },
+    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: SerenaMet Real', isPoster: true }
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
@@ -28,7 +28,7 @@ import {
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -58,14 +58,17 @@ import SocialVision from '../components/SocialVision';
 import VLSGuide from '../components/VLSGuide';
 import VecinosAnalyticsApp from '../components/VecinosAnalyticsApp/VecinosAnalyticsApp.jsx';
 import VLSMotorsSpot from '../components/VLSMotorsSpot';
+import HechoEnChile from '../components/HechoEnChile';
 import VecnityPay from '../components/VecnityPay';
-import TiendaPoleras3D from '../components/TiendaPoleras3D';
+import LaFloridaAirport from '../components/LaFloridaAirport';
+
 import OrientacionLegal from '../components/OrientacionLegal';
 import SerenaMetAdmin from '../components/SerenaMetAdmin';
 import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
 import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
+import VLSNewsSemanaSanta from '../components/VLSNewsSemanaSanta';
 import VLSNewsBencinazo from '../components/VLSNewsBencinazo';
 import VLSNewsSentinel from '../components/VLSNewsSentinel';
 import VLSNewsPoduje from '../components/VLSNewsPoduje';
@@ -74,6 +77,9 @@ import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
 import SmartFloatingTV from '../components/SmartFloatingTV';
+import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
+import AlcaldesHistory from './AlcaldesHistory';
+import LoadingScreen from '../components/LoadingScreen';
 
 
 export default function HubDashboard() {
@@ -92,7 +98,7 @@ export default function HubDashboard() {
             adminSub: isRDMLS ? "Gestión Interna, RRHH y Portal de Inducción E-learning" : "Formación Ciudadana, E-learning e Iniciativas de Empleo",
             newsAlert: isRDMLS 
                 ? "INFORMATIVO MUNICIPAL: La Ilustre Municipalidad de La Serena informa despliegue de equipos en terreno para mantención urbana. Siga la señal de RDMLS.cl para más detalles."
-                : "COMUNA SMART Informa: La Máxima Autoridad Comunal ha liderado una ronda de seguridad estratégica en terreno. Acción real por la tranquilidad de nuestros vecinos a través de vecinosmart.cl.",
+                : "VECINOS LA SERENA Informa: Se detecta patrullaje preventivo en cuadrantes residenciales. Seguridad comunitaria activa para la familia serenense.",
             eventsTitle: "Smart Events", 
             eventsSub: isRDMLS ? "Gestión Automatizada y Monitor de Precedencias" : "Monitor de Precedencia y Protocolo",
             listeningTitle: "Smart Listening", 
@@ -104,7 +110,7 @@ export default function HubDashboard() {
             qrText: "Acceso Móvil",
             distancesTitle: "Cuadro de Distancias VLS", distancesSub: "Trayectos sobre Mapa Región de Coquimbo",
             projectTitle: "Gestión de Proyectos", projectSub: "Avance Obra y Planificación Territorio",
-            councilTitle: "Consejo Municipal", councilSub: "Actas, Acuerdos y Transmisiones en Vivo",
+            councilTitle: isRDMLS ? "Consejo Municipal" : "Transparencia Comunal", councilSub: "Actas, Acuerdos y Transmisiones en Vivo",
             cdlsTitle: "Club Deportes La Serena", cdlsSub: "Socio VLS - Seguimiento e Historia Granate",
             musicTitle: "Tornamesa Digital", musicSub: "Selección de Música Tradicional y Regional",
             retroTitle: "Retro TV Master", retroSub: "Canales Clásicos y Archivo Histórico",
@@ -213,6 +219,10 @@ export default function HubDashboard() {
             pt: "NOTÍCIAS CIDADE INTELIGENTE: A Autoridade Municipal liderou uma ronda de segurança estratégica no terreno. Ação real pela tranquilidade dos nossos vizinhos."
         },
         {
+            es: "RED REGIONAL UNIFICADA: Se ha activado el nuevo cerebro digital de elite. Soberanía avanzada y monitoreo inteligente ya disponible.",
+            en: "UNIFIED REGIONAL NETWORK: The new elite digital brain has been activated. Advanced sovereignty and smart monitoring now available.",
+        },
+        {
             es: isRDMLS 
                 ? "Gestión Institucional: Se consolida la Soberanía Comunicacional Digital en el Portal Principal RDMLS.cl."
                 : "Reporte de Gestión: Se consolida la Soberanía Comunicacional bajo la visión de vecinoslaserena.cl. Hacia un ecosistema digital de élite.",
@@ -266,7 +276,9 @@ export default function HubDashboard() {
     const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
     const [showSmartAdminPortal, setShowSmartAdminPortal] = useState(false);
     const [showVirtualAssistant, setShowVirtualAssistant] = useState(false); // New state for virtual assistant
-    const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
+    const [showAirportMonitor, setShowAirportMonitor] = useState(false);
+    const [showPortMonitor, setShowPortMonitor] = useState(false); // Added as per instruction, though NavieraMonitor is already used
+
     const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
     const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
     const [showSerenaMetAdmin, setShowSerenaMetAdmin] = useState(false);
@@ -274,9 +286,12 @@ export default function HubDashboard() {
     const [showSafeRoute, setShowSafeRoute] = useState(false);
     const [showSocialVision, setShowSocialVision] = useState(false);
     const [showInvestigacion, setShowInvestigacion] = useState(false);
+    const [showSemanaSanta, setShowSemanaSanta] = useState(false);
     const [showBencinazo, setShowBencinazo] = useState(false);
     const [showSentinelNote, setShowSentinelNote] = useState(false);
     const [showPoduje, setShowPoduje] = useState(false);
+    const [showParliamentary, setShowParliamentary] = useState(false);
+    const [showAlcaldes, setShowAlcaldes] = useState(false);
     const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
     const [selectedNews, setSelectedNews] = useState(null); // Estado para el juego VLSabes
@@ -362,7 +377,7 @@ export default function HubDashboard() {
         if (videoSelected) return;
         const interval = setInterval(() => {
             setPreviewIndex(prev => (prev + 1) % TVLS_VIDEOS.length);
-        }, 10000);
+        }, 8000); // 8 segundos por clip/cartel para dinamismo
         return () => clearInterval(interval);
     }, [videoSelected, currentPlaylist, TVLS_VIDEOS.length]);
 
@@ -381,7 +396,7 @@ export default function HubDashboard() {
         const handleAmbient = () => setShowAmbientMode(true);
         const handleDifusion = () => setShowCentralDifusion(true);
         const handleFaroIA = () => setShowVirtualAssistant(true);
-        const handleTienda = () => setShowTiendaPoleras(true);
+
         const handleMotors = () => setShowVLSMotors(true);
         const handleLegal = () => setShowOrientacionLegal(true);
         const handleMetAdmin = () => setShowSerenaMetAdmin(true);
@@ -391,8 +406,13 @@ export default function HubDashboard() {
         const handleAnalytics = () => setShowAnalyticsApp(true);
         const handleSmartAdmin = () => setShowSmartAdminPortal(true);
         const handleInvestigacion = () => setShowInvestigacion(true);
+        const handleSemanaSanta = () => setShowSemanaSanta(true);
         const handleBencinazo = () => setShowBencinazo(true);
         const handleSentinelNote = () => setShowSentinelNote(true);
+        const handleAirport = () => setShowAirportMonitor(true);
+        const handlePort = () => setShowPortMonitor(true);
+        const handleParliamentary = () => setShowParliamentary(true);
+        const handleAlcaldes = () => setShowAlcaldes(true);
 
 
         window.addEventListener('open-decision-vecinal', handleDecision);
@@ -403,7 +423,7 @@ export default function HubDashboard() {
         window.addEventListener('open-ambient-mode', handleAmbient);
         window.addEventListener('open-central-difusion', handleDifusion);
         window.addEventListener('open-faro-ia', handleFaroIA);
-        window.addEventListener('open-tienda-poleras', handleTienda);
+
         window.addEventListener('open-vls-motors', handleMotors);
         window.addEventListener('open-orientacion-legal', handleLegal);
         window.addEventListener('open-serenamet-admin', handleMetAdmin);
@@ -413,8 +433,13 @@ export default function HubDashboard() {
         window.addEventListener('open-analytics', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
         window.addEventListener('open-vls-investigacion', handleInvestigacion);
+        window.addEventListener('open-vls-semanasanta', handleSemanaSanta);
         window.addEventListener('open-vls-bencinazo', handleBencinazo);
         window.addEventListener('open-vls-sentinel', handleSentinelNote);
+        window.addEventListener('open-airport-monitor', handleAirport);
+        window.addEventListener('open-port-monitor', handlePort);
+        window.addEventListener('open-parlamento-regional', handleParliamentary);
+        window.addEventListener('open-alcaldes-history', handleAlcaldes);
 
 
         return () => {
@@ -427,7 +452,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-ambient-mode', handleAmbient);
             window.removeEventListener('open-central-difusion', handleDifusion);
             window.removeEventListener('open-faro-ia', handleFaroIA);
-            window.removeEventListener('open-tienda-poleras', handleTienda);
+
             window.removeEventListener('open-vls-motors', handleMotors);
             window.removeEventListener('open-orientacion-legal', handleLegal);
             window.removeEventListener('open-serenamet-admin', handleMetAdmin);
@@ -437,8 +462,13 @@ export default function HubDashboard() {
             window.removeEventListener('open-analytics', handleAnalytics);
             window.removeEventListener('open-smart-admin', handleSmartAdmin);
             window.removeEventListener('open-vls-investigacion', handleInvestigacion);
+            window.removeEventListener('open-vls-semanasanta', handleSemanaSanta);
             window.removeEventListener('open-vls-bencinazo', handleBencinazo);
             window.removeEventListener('open-vls-sentinel', handleSentinelNote);
+            window.removeEventListener('open-airport-monitor', handleAirport);
+            window.removeEventListener('open-port-monitor', handlePort);
+            window.removeEventListener('open-parlamento-regional', handleParliamentary);
+            window.removeEventListener('open-alcaldes-history', handleAlcaldes);
 
         };
     }, []);
@@ -453,9 +483,9 @@ export default function HubDashboard() {
                 } catch (e) { }
             } else if (window.innerWidth > 1024) {
                 setOfficialNews([
+                    { title: "Semana Santa 2026: Historia y Tradición", date: "26 de Marzo, 2026", category: "INVESTIGACIÓN ESPECIAL", desc: "Más allá de la fe: Un viaje por las tradiciones globales y chilenas.", iconStr: "Church", color: "#7c3aed", eventId: "open-vls-semanasanta" },
                     { title: "Centinel Faro: El Ojo Social Predictivo", date: "24 de Marzo, 2026", category: "INTELIGENCIA", desc: "Cómo la IA de VLS detecta crisis antes de que ocurran.", iconStr: "Brain", color: "#38bdf8", eventId: "open-vls-sentinel" },
-                    { title: "La Serena en Alerta: El Bencinazo de Quiroz", date: "24 de Marzo, 2026", category: "ALERTA VLS", desc: "Análisis profundo sobre el alza de combustibles y su impacto local.", iconStr: "Fuel", color: "#fbbf24", eventId: "open-vls-bencinazo" },
-                    { title: "La Gran Paradoja del 2026: El Futuro Apagado", date: "23 de Marzo, 2026", category: "INVESTIGACIÓN VLS", desc: "Reportaje Especial sobre la crisis educativa y tecnológica.", iconStr: "Newspaper", color: "#ef4444", eventId: "open-vls-investigacion" }
+                    { title: "La Serena en Alerta: El Bencinazo de Quiroz", date: "24 de Marzo, 2026", category: "ALERTA VLS", desc: "Análisis profundo sobre el alza de combustibles y su impacto local.", iconStr: "Fuel", color: "#fbbf24", eventId: "open-vls-bencinazo" }
                 ]);
             }
         };
@@ -468,7 +498,7 @@ export default function HubDashboard() {
         const iMap = {
             'Users': Users, 'Globe': Globe, 'ShieldAlert': ShieldAlert,
             'Activity': Heart, 'Building': Building, 'Stethoscope': Stethoscope,
-            'Newspaper': BookOpen
+            'Newspaper': BookOpen, 'Church': Church
         };
         const Res = iMap[iconStr] || BookOpen;
         // Blindaje para React 19: nos aseguramos de devolver algo que React pueda renderizar
@@ -691,7 +721,7 @@ export default function HubDashboard() {
         },
         {
             id: 'smart-learning', title: 'Portal de Inducción VLS', subtitle: 'Pilar #2: Capacitación, Diplomas y Soberanía',
-            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: true, badge: 'INDUCCIÓN'
+            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: isRDMLS, badge: 'INDUCCIÓN'
         },
         {
             id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',
@@ -836,6 +866,18 @@ export default function HubDashboard() {
         {
             id: 'central-difusion', title: 'Central de Difusión', subtitle: 'Envío Masivo RRSS e IA Google',
             icon: Share2, color: '#10b981', isEvent: 'open-central-difusion', active: true, badge: 'MUNICIPAL'
+        },
+        {
+            id: 'vetcinos', title: 'VETcinos: Rescate Animal', subtitle: 'Pilar #1: Alerta, Voluntariado y SOS Mascotas',
+            icon: Heart, color: '#ec4899', isEvent: 'open-veterinaria', active: true, badge: 'SOS'
+        },
+        {
+            id: 'pincha', title: 'Pincha: Dating Premium', subtitle: 'Conexión Segura entre Vecinos Verificados',
+            icon: Heart, color: '#f43f5e', isEvent: 'open-pincha', active: true, badge: 'NUEVO'
+        },
+        {
+            id: 'plaza-vecinal', title: 'La Plaza Vecinal', subtitle: 'Pilar #4: Micro Red Social e Inteligencia Ciudadana',
+            icon: MessageSquare, color: '#38bdf8', isEvent: 'open-plaza-vecinal', active: true, badge: 'VLS SOCIAL'
         }
     ].filter(s => {
         if (!s.active) return false;
@@ -877,6 +919,14 @@ export default function HubDashboard() {
         {
             id: 'vecinos-analytics', title: 'Centinel Faro Analítica', subtitle: 'Análisis de Redes y IA Ciudadana',
             icon: Brain, color: '#00e5ff', isEvent: 'open-analytics', active: true, badge: 'IA PRO'
+        },
+        {
+            id: 'parlamento-regional', title: 'Observatorio Parlamentario', subtitle: 'Transparencia y Auditoría de Representantes Regionales',
+            icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: true, badge: 'NUEVO'
+        },
+        {
+            id: 'alcaldes-history', title: 'Archivo Alcaldes Regionales', subtitle: 'Hemeroteca y Cronología de Liderazgo Comunal',
+            icon: History, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: true, badge: 'HISTORIAL'
         }
     ];
 
@@ -909,73 +959,52 @@ export default function HubDashboard() {
         (app.subtitle || '').toLowerCase().includes((searchTerm || '').toLowerCase())
     );
 
-    const categories = isRDMLS ? [
+    const baseCategories = [
         {
             id: 'citizens',
-            name: 'Smart Citizens (Atención Ciudadana)',
-            description: 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.',
+            name: isRDMLS ? 'Smart Citizens (Atención Ciudadana)' : 'Smart Citizens (Atención Ciudadana & Radio)',
+            description: isRDMLS ? 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.' : 'Registro digital de accesos, reportes vecinales y Radio Digital VLS.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'identity-gate', 'distances', 'paseo3d', 'historic-3d', 'servicios-publicos']
+            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'vls-manifesto', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history']
         },
         {
             id: 'admin',
-            name: 'Smart Administration (Gestión Interna)',
-            description: 'Portal de inducción E-learning y digitalización de informes (Honorarios) con firma digital.',
+            name: isRDMLS ? 'Smart Administration (Gestión Interna)' : 'Escuelas y Oficios (Formación Ciudadana)',
+            description: isRDMLS ? 'Portal de inducción E-learning y digitalización de informes (Honorarios) con firma digital.' : 'Portal de inducción E-learning, Escuelas de Música/Artes y diplomados vecinales.',
             icon: Briefcase,
             color: '#10b981',
-            modules: ['smart-admin-internal', 'smart-admin', 'elearning', 'vls-trivia']
+            modules: ['smart-learning', 'smart-admin-internal', 'vls-trivia', 'legal', 'vls-pyme-builder', 'smart-architecture', 'smart-real-estate', 'vlspeak', 'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales']
         },
         {
             id: 'events',
-            name: 'Smart Events (Protocolo)',
-            description: 'Gestión automatizada de eventos y Monitor de Precedencias en tiempo real.',
+            name: 'Smart Events (Protocolo & Agenda)',
+            description: isRDMLS ? 'Gestión automatizada de eventos y Monitor de Precedencias en tiempo real.' : 'Gestión automatizada de eventos, Turnos y Monitor de Precedencias.',
             icon: PartyPopper,
             color: '#f59e0b',
-            modules: ['protocolo', 'events', 'qr-acc']
+            modules: ['protocolo', 'almanaque-2026', 'muralismo', 'decision-vecinal']
         },
         {
             id: 'listening',
-            name: 'Smart Listening (Inteligencia)',
-            description: 'Centinel Faro, Social Listening y Radio Digital Municipal.',
+            name: 'Smart Listening (Inteligencia & IA)',
+            description: isRDMLS ? 'Centinel Faro, Social Listening y Radio Digital Municipal.' : 'Centinel Faro, Social Listening y Análisis de Redes mediante IA.',
             icon: Radio,
             color: '#38bdf8',
-            modules: ['vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 'radio-master']
-        }
-    ] : [
-        {
-            id: 'citizens',
-            name: 'Smart Citizens (Atención Ciudadana)',
-            description: 'Registro digital de accesos, reportes vecinales y Radio Digital VLS.',
-            icon: Users,
-            color: '#ef4444',
-            modules: ['citizens', 'listening', 'vecinos', 'auditoria-vecinal', 'parlamento-vecinal', 'ecumenico', 'laico', 'smart-salud', 'vecinojos', 'camaras-faro', 'glosario-vls', 'enfermeria-smart', 'identity-gate']
+            modules: ['vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 'central-difusion', 'plaza-vecinal', 'parlamento-regional']
         },
         {
-            id: 'admin',
-            name: 'ESCUELAS Y OFICIOS (FORMACIÓN CIUDADANA)',
-            description: 'Portal de inducción E-learning, Escuelas de Música/Artes y diplomados vecinales.',
-            icon: GraduationCap,
-            color: '#10b981',
-            modules: ['smart-learning', 'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales', 'smart-admin-internal', 'web-builder', 'vls-crm-admin']
-        },
-        {
-            id: 'events',
-            name: 'Smart Events (Protocolo)',
-            description: 'Gestión automatizada de eventos, Turnos y Monitor de Precedencias.',
-            icon: PartyPopper,
-            color: '#f59e0b',
-            modules: ['events', 'qr-acc', 'distances', 'paseo3d', 'cdls-club', 'embajadas', 'protocolo', 'historic-3d', 'busdeltiempo']
-        },
-        {
-            id: 'listening',
-            name: 'Smart Listening (Inteligencia)',
-            description: 'Centinel Faro, Social Listening y Análisis de Redes mediante IA.',
-            icon: Radio,
-            color: '#38bdf8',
-            modules: ['debono', 'tornamesa-digital', 'radio-master', 'sentinel-mini', 'faro-ia', 'premium', 'sentinel-apex', 'social-vision', 'vecinos-analytics', 'vls-investigacion-2026']
+            id: 'patrimonio',
+            name: isRDMLS ? 'Digitalización Patrimonial & Multimedia' : 'Experiencias 3D, Juegos y Memoria Histórica',
+            description: isRDMLS ? 'Recorridos digitales interactivos del Casco Histórico y archivos visuales.' : 'Disfruta con Serenito, juegos Retro, y archivos nostálgicos.',
+            icon: Sparkles,
+            color: '#c084fc',
+            modules: ['historic-3d', 'busdeltiempo', 'tienda-poleras', 'kiosko-diarios', 'tornamesa-digital', 'memorial-hijos', 'memory-portal', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'faro-ia', 'legacy-game', 'serenito-1945', 'galaxia-disco', 'vls-precolombino', 'estudio-musical', 'vhs-tv', 'operacion-ls', 'stickers-portal', 'glosario-vls', 'ambient-mode', 'vls-motors', 'cdls-club', 'pincha']
         }
     ];
+
+    const categories = isRDMLS 
+        ? baseCategories // Si es RDMLS, la función filter de allApps ya se encarga de eliminar módulos lúdicos no deseados
+        : baseCategories;
 
 
     const displayApps = viewMode === 'personalized'
@@ -1215,31 +1244,50 @@ export default function HubDashboard() {
                     width: '100%',
                     background: 'linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)',
                     borderBottom: '2px solid #ef4444',
-                    padding: '0.5rem 1rem',
+                    padding: '0.4rem 1.5rem',
                     display: 'flex',
-                    flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+                    flexDirection: window.innerWidth < 1200 ? 'column' : 'row',
                     alignItems: 'center',
-                    justifyContent: 'center',
+                    justifyContent: 'space-between',
                     color: 'white',
                     fontSize: '0.85rem',
                     zIndex: 1000,
                     position: 'relative',
-                    gap: '1rem',
-                    minHeight: '60px',
-                    overflowX: 'auto',
-                    WebkitOverflowScrolling: 'touch',
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none'
+                    gap: '1.5rem',
+                    minHeight: '65px',
+                    overflowX: 'hidden'
                 }}>
-                    {/* Botón 3D Movido para no solapar mensajes activos */}
-                    <div style={{
-                        position: window.innerWidth < 768 ? 'static' : 'absolute',
-                        right: '1rem',
-                        top: '50%',
-                        transform: window.innerWidth < 768 ? 'none' : 'translateY(-50%)',
-                        zIndex: 1001,
+                    {/* Mensaje Informativo (Izquierda/Centro) */}
+                    <div key={msgIndex} className="animate-slide-up" style={{
                         display: 'flex',
-                        gap: '10px'
+                        alignItems: 'center',
+                        gap: '1rem',
+                        textAlign: 'left',
+                        flex: 1,
+                        minWidth: 0,
+                        padding: '0.2rem 0',
+                        overflow: 'hidden'
+                    }}>
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.4rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50`, boxShadow: `0 0 10px ${CurrentMessage.color}30` }}>
+                            {CurrentIcon ? <CurrentIcon size={18} color={CurrentMessage.color} /> : <Sparkles size={18} color={CurrentMessage.color} />}
+                        </div>
+                        <span style={{ lineHeight: '1.4', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', flex: 1, overflow: 'hidden' }}>
+                            <span style={{ width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, letterSpacing: '0.3px' }}>
+                                <strong style={{ color: CurrentMessage.color, marginRight: '5px' }}>[{CurrentMessage.category || 'VLS'}]</strong>
+                                {CurrentMessage.text}
+                            </span>
+                        </span>
+                    </div>
+
+                    {/* Botones de Acción (Derecha) */}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        flexShrink: 0,
+                        flexWrap: 'wrap',
+                        justifyContent: 'center'
                     }}>
                         <button
                             onClick={() => navigate('/glosario')}
@@ -1331,26 +1379,70 @@ export default function HubDashboard() {
                             </button>
                         </div>
                     )}
-                    </div>
-
-                    <div key={msgIndex} className="animate-slide-up" style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        textAlign: 'left',
-                        minWidth: '280px',
-                        maxWidth: '100%',
-                        padding: '0 0.5rem'
-                    }}>
-                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50` }}>
-                            {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
-                        </div>
-                        <span style={{ lineHeight: '1.2', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', flex: 1 }}>
-                            <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
-                            {CurrentMessage.text}
-                        </span>
+                    
+                    {host.includes('quimbo') && (
+                        <button
+                            onClick={() => navigate('/quimbo')}
+                            className="btn-glass animate-float"
+                            style={{
+                                background: 'rgba(245, 158, 11, 0.2)',
+                                border: '1px solid rgba(245, 158, 11, 0.4)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: '#f59e0b',
+                                fontWeight: '900',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 10px rgba(245, 158, 11, 0.2)',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <Skull size={14} /> QUIMBO SMART
+                        </button>
+                    )}
                     </div>
                 </div>
+
+                {/* ══════════════════════════════════════════════════════════ */}
+                {/* NODO MAESTRO: RED REGIONAL UNIFICADA - EL NUEVO CEREBRO     */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                {isVLS && (
+                <div className="animate-fade-in" style={{
+                    width: '100%',
+                    background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
+                    borderBottom: '4px solid #fbbf24',
+                    padding: '3rem 2rem',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center'
+                }}>
+                    <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle at 50% 50%, #fbbf24 0%, transparent 60%)' }}></div>
+                    <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}>
+                        <div style={{ background: '#fbbf24', padding: '10px 25px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 0 30px rgba(251,191,36,0.3)' }}>
+                            <Rocket size={20} color="black" />
+                            <span style={{ color: 'black', fontWeight: '900', fontSize: '0.85rem', letterSpacing: '2px' }}>DESPLIEGUE MUNDIAL: RED v2026</span>
+                        </div>
+                        <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', fontWeight: '900', margin: 0, color: 'white', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
+                            LA REVOLUCIÓN DE LA <br/> <span style={{ color: '#fbbf24' }}>INTELIGENCIA HUMANA</span>
+                        </h2>
+                        <p style={{ maxWidth: '900px', fontSize: '1.15rem', color: '#94a3b8', margin: '0.5rem 0', lineHeight: '1.6' }}>
+                            El futuro del ecosistema regional ha llegado. Soberanía digital avanzada, nuevos nodos de monitoreo inteligente y una arquitectura unificada de elite ahora integrados.
+                        </p>
+                        <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                            <button className="btn-vls-action-yellow" onClick={() => window.dispatchEvent(new CustomEvent('open-roadmap-vls'))} style={{ fontSize: '1rem', padding: '1rem 2rem' }}>VER HOJA DE RUTA 2026</button>
+                            {isRDMLS && (
+                                <button className="btn-vls-action-light" onClick={() => navigate('/induccion')} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8' }}>CAPACITACIÓN MUNICIPAL</button>
+                            )}
+                        </div>
+                    </div>
+                </div>
+                )}
 
                 {/* ══════════════════════════════════════════════════ */}
                 {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
@@ -1997,70 +2089,8 @@ export default function HubDashboard() {
                     {/* Featured Business Spotlight - VLS MOTORS */}
                     {!isRDMLS && <VLSMotorsSpot />}
 
-                    <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
-                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2))' }}></div>
-                            <h3 style={{ color: 'white', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase' }}>
-                                {isRDMLS ? 'Herramientas de Gestión Municipal' : 'Catálogo de Servicios Smart'}
-                            </h3>
-                            <div style={{ height: '1px', flex: 1, background: 'linear-gradient(-90deg, transparent, rgba(255,255,255,0.2))' }}></div>
-                        </div>
-                        <div style={{
-                            display: 'grid',
-                            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                            gap: '1.2rem'
-                        }}>
-                            {servicios.map((srv) => {
-                                const locked = isLockedForResident(srv.id);
-                                return (
-                                    <button
-                                        key={srv.id}
-                                        className="glass-panel"
-                                        onClick={() => {
-                                            if (locked) {
-                                                alert('Modulo Reservado: Este espacio requiere credenciales de Directorio / Admin para acceso total.');
-                                                return;
-                                            }
-                                            if (srv.id === 'vls-investigacion-2026') {
-                                                setShowInvestigacion(true);
-                                            } else if (srv.isEvent) {
-                                                window.dispatchEvent(new CustomEvent(srv.isEvent));
-                                            } else if (srv.isExternal) {
-                                                window.open(srv.path, '_blank');
-                                            } else if (window.innerWidth > 1024) {
-                                                navigate(srv.path);
-                                            }
-                                        }}
-                                        style={{
-                                            display: 'flex', alignItems: 'center', gap: '1.25rem', padding: '1.5rem',
-                                            border: locked ? '1px solid rgba(255,50,50,0.2)' : '1px solid rgba(255, 255, 255, 0.1)',
-                                            background: locked ? 'rgba(0,0,0,0.6)' : 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%)',
-                                            cursor: locked ? 'not-allowed' : 'pointer', transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                            borderRadius: '16px', position: 'relative', overflow: 'hidden', textAlign: 'left',
-                                            filter: locked ? 'grayscale(1) opacity(0.6)' : 'none'
-                                        }}
-                                    >
-                                        {locked && (
-                                            <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(239, 68, 68, 0.2)', color: '#ef4444', display: 'flex', alignItems: 'center', gap: '2px', padding: '1px 6px', borderRadius: '50px', fontSize: '0.6rem', fontWeight: 'bold' }}>
-                                                <Lock size={8} /> ADMIN
-                                            </div>
-                                        )}
-                                        <div style={{ background: locked ? '#1e293b' : `${srv.color}20`, padding: srv.customLogo ? '0.5rem' : '1rem', borderRadius: '12px', border: `1px solid ${locked ? 'rgba(255,255,255,0.1)' : `${srv.color}40`}`, flexShrink: 0, width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            {srv.customLogo ? (
-                                                <img src={srv.customLogo} alt={srv.title} style={{ width: '100%', height: '100%', objectFit: 'contain', filter: locked ? 'grayscale(1)' : `drop-shadow(0 0 5px ${srv.color})` }} />
-                                            ) : (
-                                                <srv.icon size={26} color={locked ? '#475569' : srv.color} />
-                                            )}
-                                        </div>
-                                        <div style={{ zIndex: 1 }}>
-                                            <span style={{ color: locked ? '#64748b' : 'white', fontWeight: 'bold', display: 'block', fontSize: '1.15rem', marginBottom: '0.3rem' }}>{srv.title}</span>
-                                            <span style={{ color: locked ? '#475569' : 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: '1.4', display: 'block' }}>{srv.subtitle}</span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-                        </div>
-                    </div>
+                    {/* GRID PLANO ELIMINADO PARA MANTENER LA VISTA "MASTER CEO" (BENTO GRID POR CATEGRÍAS FUNCIONANDO ARRIBA) */}
+
 
                     {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
                     {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
@@ -2083,12 +2113,15 @@ export default function HubDashboard() {
                     )}
                     {/* SECCIONES EXCLUSIVAS VLS - HIDDEN IN RDMLS */}
                     {isVLS && (
-                        <>
-                            <NavieraMonitor />
+                        <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
+                                <NavieraMonitor isMini={true} />
+                                <LaFloridaAirport isMini={true} />
+                            </div>
                             <MusicRanking />
                             <PolideportivoVecinal />
                             <TuercaVecinos />
-                        </>
+                        </div>
                     )}
 
                     {/* SECCIÓN GUARDIANES DE LA REGIÓN (Personajes 3D) */}
@@ -2172,33 +2205,49 @@ export default function HubDashboard() {
                                 <AnimatePresence>
                                     <SmartFloatingTV
                                         key="tv1-vertical"
-                                        title="SMART SOCIAL VISOR"
+                                        title="SOCIAL VISOR"
                                         isVertical={true}
-                                        initialX="40px"
-                                        initialY="140px"
+                                        initialX="20px"
+                                        initialY="120px"
                                         bottom="auto"
-                                        widthDesktop="240px"
-                                        widthMobile="90px"
-                                        heightDesktop="426px"
-                                        heightMobile="160px"
+                                        widthDesktop="82px"
+                                        widthMobile="65px"
+                                        heightDesktop="145px"
+                                        heightMobile="115px"
                                         item={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]}
                                     />
                                     
                                     {isVLS && (
-                                        <SmartFloatingTV
-                                            key="tv2-horizontal"
-                                            title="TVLS INSTITUCIONAL"
-                                            isVertical={false}
-                                            initialX="25px"
-                                            initialY={undefined}
-                                            bottom="100px"
-                                            widthDesktop="280px"
-                                            widthMobile="120px"
-                                            heightDesktop="158px"
-                                            heightMobile="68px"
-                                            item={TVLS_VIDEOS[previewIndex]}
-                                            onEnded={nextVideo}
-                                        />
+                                        <>
+                                            <SmartFloatingTV
+                                                key="tv2-horizontal"
+                                                title="VLS PROMOS"
+                                                isVertical={false}
+                                                initialX="20px"
+                                                initialY={undefined}
+                                                bottom="100px"
+                                                widthDesktop="120px"
+                                                widthMobile="80px"
+                                                heightDesktop="70px"
+                                                heightMobile="45px"
+                                                item={TVLS_VIDEOS[previewIndex]}
+                                                onEnded={nextVideo}
+                                            />
+                                            {/* Nueva ventanita para el Faro Live en móvil */}
+                                            <SmartFloatingTV
+                                                key="tv3-faro-live"
+                                                title="FARO EN VIVO"
+                                                isVertical={false}
+                                                initialX="20px"
+                                                initialY="300px"
+                                                bottom="auto"
+                                                widthDesktop="110px"
+                                                widthMobile="80px"
+                                                heightDesktop="65px"
+                                                heightMobile="45px"
+                                                item={PLAYLIST_INSTITUTIONAL.find(v => v.id === 'b9LTH4muxR8')}
+                                            />
+                                        </>
                                     )}
                                 </AnimatePresence>
                             )}
@@ -2211,7 +2260,7 @@ export default function HubDashboard() {
                     )}
                 </div>
             </div>
-            {showTiendaPoleras && <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />}
+
             {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
             {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
             {showSerenaMetAdmin && <SerenaMetAdmin onClose={() => setShowSerenaMetAdmin(false)} />}
@@ -2258,11 +2307,35 @@ export default function HubDashboard() {
             {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
             {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
             {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
+            {showSemanaSanta && <VLSNewsSemanaSanta onClose={() => setShowSemanaSanta(false)} />}
             {showBencinazo && <VLSNewsBencinazo onClose={() => setShowBencinazo(false)} />}
             {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
             {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
             {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
+            {showAirportMonitor && <LaFloridaAirport onClose={() => setShowAirportMonitor(false)} />}
+            {showPortMonitor && (
+                <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(10px)', overflowY: 'auto', padding: '2rem' }}>
+                    <div style={{ maxWidth: '1250px', margin: '0 auto', position: 'relative' }}>
+                        <button onClick={() => setShowPortMonitor(false)} className="btn-glass" style={{ position: 'absolute', top: 0, right: 0, zIndex: 1000, padding: '0.8rem', borderRadius: '50%' }}><X color="white" /></button>
+                        <NavieraMonitor isMini={false} />
+                    </div>
+                </div>
+            )}
 
+            {showParliamentary && (
+                <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
+                    <ParliamentaryObservatory onClose={() => setShowParliamentary(false)} />
+                </Suspense>
+            )}
+
+            {showAlcaldes && (
+                <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
+                    <AlcaldesHistory onClose={() => setShowAlcaldes(false)} />
+                </Suspense>
+            )}
+
+            {/* FOOTER SOBERANO */}
+            <HechoEnChile dark={true} />
         </>
     );
 }

@@ -252,6 +252,13 @@ select:focus {
   padding: 0 1.5rem;
 }
 
+.full-width-dev {
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .page-content {
   flex: 1;
   display: flex;

@@ -14,7 +14,7 @@ L.Icon.Default.mergeOptions({
 
 const TODAY_STR = new Date().toLocaleDateString('es-CL');
 
-export default function LaFloridaAirport({ onClose }) {
+export default function LaFloridaAirport({ onClose, isMini = false }) {
     const [arrivals, setArrivals] = useState([
         { airline: "LATAM", flight: "LA 100", origin: "SANTIAGO", date: TODAY_STR, time: "08:45", belt: "1", status: "ATERRIZADO" },
         { airline: "SKY", flight: "H2 1714", origin: "CALAMA", date: TODAY_STR, time: "10:30", belt: "2", status: "EN VUELO" },
@@ -72,6 +72,52 @@ export default function LaFloridaAirport({ onClose }) {
         { id: 1, pos: [-29.85, -71.25], flight: "LA 100", type: "Arrival" },
         { id: 2, pos: [-29.98, -71.10], flight: "H2 1714", type: "Arrival" },
     ];
+
+    if (isMini) {
+        return (
+            <div className="glass-panel hover-lift" style={{ 
+                background: 'rgba(15,23,42,0.8)', 
+                borderRadius: '24px', 
+                padding: '1.5rem', 
+                border: '1px solid rgba(56,189,248,0.3)',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1rem'
+            }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h4 style={{ color: '#38bdf8', margin: 0, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Plane size={18} /> AEROPUERTO LA FLORIDA
+                    </h4>
+                    <span style={{ fontSize: '0.6rem', background: '#38bdf8', color: '#000', padding: '2px 6px', borderRadius: '10px', fontWeight: 'bold' }}>SCSE</span>
+                </div>
+                
+                <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '12px', padding: '0.5rem', display: 'flex', gap: '4px' }}>
+                    <button onClick={() => setActiveTab('arrivals')} style={{ flex: 1, fontSize: '0.65rem', padding: '4px', borderRadius: '6px', border: 'none', background: activeTab === 'arrivals' ? '#38bdf8' : 'transparent', color: activeTab === 'arrivals' ? 'black' : 'white', fontWeight: 'bold' }}>LLEGADAS</button>
+                    <button onClick={() => setActiveTab('departures')} style={{ flex: 1, fontSize: '0.65rem', padding: '4px', borderRadius: '6px', border: 'none', background: activeTab === 'departures' ? '#38bdf8' : 'transparent', color: activeTab === 'departures' ? 'black' : 'white', fontWeight: 'bold' }}>SALIDAS</button>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                    {filteredFlights.slice(0, 3).map((f, i) => (
+                        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94a3b8', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
+                            <div>
+                                <strong style={{ color: 'white' }}>{f.flight}</strong>
+                                <span style={{ marginLeft: '6px', opacity: 0.6 }}>{f.origin || f.destination}</span>
+                            </div>
+                            <span style={{ color: f.status.includes('ATERRIZADO') || f.status.includes('FINALIZADO') ? '#10b981' : '#38bdf8' }}>{f.time}</span>
+                        </div>
+                    ))}
+                </div>
+
+                <button 
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-airport-monitor'))}
+                    style={{ marginTop: 'auto', background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', color: '#38bdf8', padding: '8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+                >
+                    MONITOR DE VUELOS COMPLETO
+                </button>
+            </div>
+        );
+    }
 
     return (
         <div className="airport-module animate-scale-in" style={{
@@ -242,3 +288,4 @@ export default function LaFloridaAirport({ onClose }) {
         </div>
     );
 }
+

@@ -9,18 +9,39 @@ const QUESTIONS = [
   { id: 3, text: "¿En qué área del ecosistema se concentra el nivel estratégico y deliberativo?", ans: "Cúpula Central", options: ["Tuberías Doradas", "Cúpula Central", "Nodos Laterales", "Base Map"] }
 ];
 
-export default function ExamenModulo() {
+export default function ExamenModulo({ timeSpent }) {
   const [qIdx, setQIdx] = useState(0);
   const [score, setScore] = useState(0);
+  
+  const SFX_CORRECT = "https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3";
+  const SFX_ERROR = "https://assets.mixkit.co/active_storage/sfx/2573/2573-preview.mp3";
+  const SFX_FANFARE = "https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3";
+
+  const playSfx = (url) => {
+    const audio = new Audio(url);
+    audio.volume = 0.4;
+    audio.play().catch(e => console.log("SFX block:", e));
+  };
   const [complete, setComplete] = useState(false);
   const [userName, setUserName] = useState("");
   const [isFinished, setIsFinished] = useState(false);
 
   const handleAnswer = (opt) => {
-    if (opt === QUESTIONS[qIdx].ans) setScore(prev => prev + 1);
+    if (opt === QUESTIONS[qIdx].ans) {
+        playSfx(SFX_CORRECT);
+        setScore(prev => prev + 1);
+    } else {
+        playSfx(SFX_ERROR);
+    }
+
     if (qIdx < QUESTIONS.length - 1) {
       setQIdx(prev => prev + 1);
     } else {
+      setTimeout(() => {
+        if (score + (opt === QUESTIONS[qIdx].ans ? 1 : 0) === QUESTIONS.length) {
+            playSfx(SFX_FANFARE);
+        }
+      }, 500);
       setComplete(true);
     }
   };
@@ -78,7 +99,8 @@ export default function ExamenModulo() {
                  <motion.div key="success" initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="result-card success">
                     <Award size={64} color="#fbbf24" />
                     <h2>¡Excelencia Municipal!</h2>
-                    <p>Has aprobado con {score}/{QUESTIONS.length} aciertos. Ingresa tu nombre completo para emitir el certificado oficial.</p>
+                    <p>Has aprobado con {score}/{QUESTIONS.length} aciertos en un tiempo récord de {Math.floor(timeSpent/60)}m {timeSpent%60}s.</p>
+                    <p style={{ fontSize: '0.8rem', marginTop: '-1rem' }}>Ingresa tu nombre completo para emitir el certificado oficial.</p>
                     <input 
                       type="text" 
                       className="name-input"

@@ -92,27 +92,28 @@ export default function VLSRoadmap({ onClose }) {
                         background: 'rgba(15, 23, 42, 0.95)',
                         border: '2px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '32px', display: 'flex', flexDirection: 'column',
-                        overflow: 'hidden', boxShadow: '0 0 100px rgba(0,0,0,0.8)'
+                        overflow: 'hidden', boxShadow: '0 0 100px rgba(0,0,0,0.8)',
+                        touchAction: 'pan-y'
                     }}
                 >
                     {/* Header */}
-                    <div style={{ padding: '2rem', background: 'linear-gradient(90deg, #1e3a8a 0%, #312e81 100%)', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ padding: '1.5rem 2rem', background: 'linear-gradient(90deg, #1e3a8a 0%, #312e81 100%)', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <div style={{ background: '#3b82f6', padding: '12px', borderRadius: '15px', color: 'white' }}>
-                                <Zap size={24} />
+                            <div style={{ background: '#3b82f6', padding: '10px', borderRadius: '15px', color: 'white' }}>
+                                <Zap size={22} />
                             </div>
                             <div>
-                                <h2 style={{ margin: 0, color: 'white', fontSize: '1.8rem', fontWeight: '900', letterSpacing: '2px' }}>VLS ROADMAP 2026</h2>
-                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', fontWeight: 'bold' }}>INVENTARIO INTEGRAL DE SERVICIOS SMART CITY</p>
+                                <h2 style={{ margin: 0, color: 'white', fontSize: '1.4rem', fontWeight: '900', letterSpacing: '1px' }}>VLS ROADMAP 2026</h2>
+                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.7rem', fontWeight: 'bold' }}>INVENTARIO INTEGRAL DE SERVICIOS SMART CITY</p>
                             </div>
                         </div>
-                        <button onClick={onClose} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', color: '#ef4444', padding: '12px', borderRadius: '50%', cursor: 'pointer' }}>
-                            <X size={28} />
+                        <button onClick={onClose} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', color: '#ef4444', padding: '10px', borderRadius: '50%', cursor: 'pointer' }}>
+                            <X size={24} />
                         </button>
                     </div>
 
                     {/* Content Scrollable */}
-                    <div style={{ flex: 1, padding: '2rem', overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '2rem' }}>
+                    <div className="vls-scrollbar" style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 450px), 1fr))', gap: '1.5rem', WebkitOverflowScrolling: 'touch' }}>
                         {pillars.map(pillar => (
                             <div key={pillar.title} style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: `1px solid ${pillar.color}40` }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem', borderBottom: `2px solid ${pillar.color}20`, paddingBottom: '10px' }}>

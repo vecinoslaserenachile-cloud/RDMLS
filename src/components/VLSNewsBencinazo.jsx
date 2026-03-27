@@ -223,7 +223,7 @@ export default function VLSNewsBencinazo({ onClose }) {
                     </p>
                   </div>
                   <img 
-                    src="https://images.unsplash.com/photo-1543163521-1bf539c55dd2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" 
+                    src="/bencinazo_fuel_pump.png" 
                     alt="Bencinera de Noche" 
                     style={{ width: '100%', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} 
                   />

@@ -7,7 +7,7 @@ import {
     Search, Map, Bell, Wifi, Activity,
     Music, Share2, ShieldCheck,
     Twitter, Facebook, Instagram,
-    Calendar, Rocket
+    Calendar, Rocket, Shirt
 } from 'lucide-react';
 
 
@@ -141,6 +141,22 @@ export default function SmartToolbox() {
             event: 'open-smart-events',
             color: '#fcd34d',
             bgColor: 'rgba(252, 211, 77, 0.2)'
+        },
+        { 
+            id: 'roadmap-vls', 
+            icon: Map, 
+            label: 'Hoja de Ruta 2026', 
+            event: 'open-roadmap-vls',
+            color: '#34d399',
+            bgColor: 'rgba(52, 211, 153, 0.2)'
+        },
+        { 
+            id: 'tienda-poleras', 
+            icon: Shirt,
+            label: 'Tienda de Poleras', 
+            event: 'open-tienda-poleras',
+            color: '#fbbf24',
+            bgColor: 'rgba(251, 191, 36, 0.2)'
         },
 
         localStorage.getItem('master_bypass') === 'true' && {

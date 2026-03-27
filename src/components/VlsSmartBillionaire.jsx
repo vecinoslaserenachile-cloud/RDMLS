@@ -11,19 +11,21 @@ import Soundfont from 'soundfont-player';
 
 // --- IMÁGENES EXACTAS POR PREGUNTA ---
 const IMAGENES_REALES = {
-    "default": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Faro_Monumental_de_La_Serena%2C_Chile.jpg",
-    "q1_aniversario": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Faro_Monumental_de_La_Serena%2C_Chile.jpg",
-    "q1_fundador": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Estatua_de_Francisco_de_Aguirre.jpg", 
-    "q1_iglesias": "https://upload.wikimedia.org/wikipedia/commons/8/87/Iglesia_de_Santo_Domingo%2C_La_Serena.jpg",
-    "q1_faro": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Faro_Monumental_de_La_Serena%2C_Chile.jpg",
-    "q2_cruz": "https://upload.wikimedia.org/wikipedia/commons/6/64/Cruz_del_Tercer_Milenio_Coquimbo.jpg",
-    "q3_tololo": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Cerro_Tololo_Inter-American_Observatory.jpg",
-    "q3_rio": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Valle_del_Elqui.jpg",
-    "q1_plan_serena": "https://upload.wikimedia.org/wikipedia/commons/e/e0/Valle_del_Elqui.jpg",
-    "q1_estilo": "https://upload.wikimedia.org/wikipedia/commons/8/87/Iglesia_de_Santo_Domingo%2C_La_Serena.jpg",
-    "q1_parque": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Jard%C3%ADn_del_Coraz%C3%B3n_en_La_Serena.jpg/1280px-Jard%C3%ADn_del_Coraz%C3%B3n_en_La_Serena.jpg",
-    "q1_regimiento": "https://upload.wikimedia.org/wikipedia/commons/4/4b/Cerro_Tololo_Inter-American_Observatory.jpg",
-    "q1_dulce": "https://upload.wikimedia.org/wikipedia/commons/b/b3/Chumbeque.jpg"
+    "default": "/img_trivia/50serenitoBisabueloVLSABES.png",
+    "q1_aniversario": "/img_trivia/stage_1_q1.jpg",
+    "q1_fundador": "/img_trivia/stage_1_q2.jpg", 
+    "q1_pirata": "/img_trivia/stage_1_q3.jpg",
+    "q1_iglesias": "/img_trivia/stage_1_q4.jpg",
+    "q1_plan_serena": "/img_trivia/stage_1_q5.jpg",
+    "q1_faro": "/img_trivia/50serenitoBisabueloVLSABES.png",
+    "q1_estilo": "/img_trivia/50serenitoBisabueloVLSABES.png",
+    "q1_parque": "/img_trivia/50serenitoJovenVLSABES.png",
+    "q1_regimiento": "/img_trivia/50serenitoJovenVLSABES.png",
+    "q1_dulce": "/img_trivia/50serenitoJovenVLSABES.png",
+    "q2_cruz": "/img_trivia/stage_2_q1.jpg",
+    "q2_barrio": "/img_trivia/stage_2_q2.jpg",
+    "q3_tololo": "/img_trivia/stage_3_q1.jpg",
+    "q3_rio": "/img_trivia/stage_3_q2.jpg"
 };
 
 const VLSTokenIcon = ({ size = 100 }) => (
@@ -316,7 +318,7 @@ export default function VlsSmartBillionaire({ onClose }) {
                                 <div className="mt-16 mb-8">
                                     <VLSTokenIcon size={120} />
                                 </div>
-                                <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-[#0f172a] drop-shadow-sm">¿Quién quiere estar informado?</h1>
+                                <h1 className="text-5xl md:text-7xl font-black mb-4 tracking-tighter text-[#0f172a] drop-shadow-sm uppercase">¿QUIÉN QUIERE ESTAR INFORMADO?</h1>
                                 <h2 className="text-xl md:text-2xl font-bold text-red-600 mb-12 uppercase tracking-[0.3em] bg-white/30 inline-block px-4 py-1 rounded-lg">Master Edition 2026</h2>
                                 
                                 <div className="flex flex-col items-center">

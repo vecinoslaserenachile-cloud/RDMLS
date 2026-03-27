@@ -14,8 +14,8 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
 
         const img = new Image();
         img.src = image;
-        
         let frame = 0;
+        let animId;
         const draw = () => {
             frame++;
             ctx.clearRect(0, 0, W, H);
@@ -87,10 +87,10 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                 ctx.stroke();
             }
 
-            requestAnimationFrame(draw);
+            animId = requestAnimationFrame(draw);
         };
 
-        const animId = requestAnimationFrame(draw);
+        animId = requestAnimationFrame(draw);
         return () => cancelAnimationFrame(animId);
     }, [image, color]);
 

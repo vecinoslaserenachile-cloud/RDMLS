@@ -16,17 +16,22 @@ import {
   Search,
   MapPin
 } from 'lucide-react';
+import { TwitterSentinelService } from '../services/TwitterSentinelService';
+import { FacebookSentinelService } from '../services/FacebookSentinelService';
+import { YouTubeSentinelService } from '../services/YouTubeSentinelService';
+import { TikTokSentinelService } from '../services/TikTokSentinelService';
 
 /**
  * SocialVision: El "Radar Vecinal" de la Red VLS.
  */
 const SocialVision = ({ onClose }) => {
-
     const [activePlatform, setActivePlatform] = useState('facebook');
     const [locality, setLocality] = useState('La Serena');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedPost, setSelectedPost] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [posts, setPosts] = useState({ facebook: [], twitter: [], instagram: [], tiktok: [] });
+    const [connectionStatus, setConnectionStatus] = useState({ twitter: 'simulated', facebook: 'simulated', instagram: 'simulated', tiktok: 'simulated' });
 
     const localities = [
         'La Serena', 'Coquimbo', 'Vicuña', 'Andacollo', 'Paihuano', 
@@ -34,44 +39,38 @@ const SocialVision = ({ onClose }) => {
         'Salamanca', 'Los Vilos', 'Canela', 'La Higuera', 'Río Hurtado'
     ];
 
-    // Mock de datos para demostración del "Árbol de Comentarios"
-    const mockPosts = {
-        facebook: [
-            {
-                id: 'fb1',
-                author: `Red Vecinal - ${locality}`,
-                text: searchQuery 
-                    ? `Resultados para "${searchQuery}" en el radar de ${locality}...`
-                    : `¡Alerta Vecinal! Reportan gran congestión en el acceso a ${locality}. Preferir rutas alternativas. 🚗⚠️ #RadarVecinal`,
-                time: 'Hace 2 horas',
-                likes: 452,
-                comments: [
-                    {
-                        id: 'c1',
-                        user: 'Vecino Vigilante',
-                        text: 'Gracias por el reporte, por acá en el centro todo despejado.',
-                        replies: [
-                            { user: 'Carmen L.', text: 'En El Milagro también está tranquilo.' }
-                        ]
-                    }
-                ]
+    // Efecto para cargar datos reales según la plataforma activa
+    useEffect(() => {
+        const fetchRealData = async () => {
+            setIsLoading(true);
+            try {
+                let fetchedPosts = [];
+                switch (activePlatform) {
+                    case 'twitter':
+                        fetchedPosts = await TwitterSentinelService.searchLaSerenaIncidents();
+                        setConnectionStatus(prev => ({ ...prev, twitter: fetchedPosts.length > 0 ? 'real' : 'simulated' }));
+                        break;
+                    case 'facebook':
+                        fetchedPosts = await FacebookSentinelService.getLatestPageInteractions();
+                        setConnectionStatus(prev => ({ ...prev, facebook: 'real' }));
+                        break;
+                    default:
+                        fetchedPosts = [];
+                }
+                
+                setPosts(prev => ({ ...prev, [activePlatform]: fetchedPosts }));
+            } catch (error) {
+                console.error(`Error cargando ${activePlatform}:`, error);
+            } finally {
+                setIsLoading(false);
             }
-        ],
-        twitter: [
-            {
-                id: 'x1',
-                author: `@vecinos_${locality.toLowerCase().replace(' ', '')}`,
-                text: `¿Alguien sabe qué pasó con el corte de luz en el sector alto de ${locality}? #VecinoInformado`,
-                time: 'Hace 15 min',
-                likes: 89,
-                comments: []
-            }
-        ],
-        instagram: [],
-        tiktok: []
-    };
+        };
+
+        fetchRealData();
+    }, [activePlatform]);
 
     const renderCommentTree = (comments, depth = 0) => {
+        if (!comments) return null;
         return comments.map((comment) => (
             <div key={comment.id || comment.user} className={`ml-${depth * 4} mt-2`}>
                 <div className="bg-white/5 p-3 rounded-lg border-l-2 border-red-500/50 backdrop-blur-sm">
@@ -163,12 +162,20 @@ const SocialVision = ({ onClose }) => {
                 >
                     <Instagram size={18} /> Instagram
                 </button>
-                <button 
+                    <button 
                     onClick={() => setActivePlatform('tiktok')}
                     className={`flex-shrink-0 p-3 px-6 rounded-xl transition-all flex items-center gap-2 font-bold text-sm ${activePlatform === 'tiktok' ? 'bg-gradient-to-r from-cyan-400 to-pink-500 text-white' : 'hover:bg-white/5 text-gray-400'}`}
                 >
                     <Video size={18} /> TikTok
                 </button>
+                
+                {/* Indicador de Conexión Real */}
+                <div className="ml-auto flex items-center px-4 gap-2">
+                    <div className={`w-2 h-2 rounded-full ${connectionStatus[activePlatform] === 'real' ? 'bg-green-500 animate-pulse' : 'bg-yellow-500'}`} />
+                    <span className="text-[10px] uppercase font-black tracking-widest text-gray-400">
+                        {connectionStatus[activePlatform] === 'real' ? 'Real-Time Link' : 'Simulated Mirror'}
+                    </span>
+                </div>
             </div>
 
             {/* Contenido Principal */}
@@ -176,8 +183,13 @@ const SocialVision = ({ onClose }) => {
                 
                 {/* Listado de Posts */}
                 <div className="lg:col-span-12 overflow-y-auto pr-2 space-y-4 custom-scrollbar">
-                    {mockPosts[activePlatform].length > 0 ? (
-                        mockPosts[activePlatform].map((post) => (
+                    {isLoading ? (
+                        <div className="h-64 flex flex-col items-center justify-center gap-4">
+                            <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin" />
+                            <p className="text-gray-500 font-bold italic">Sincronizando con {activePlatform.toUpperCase()}...</p>
+                        </div>
+                    ) : posts[activePlatform] && posts[activePlatform].length > 0 ? (
+                        posts[activePlatform].map((post) => (
                             <motion.div 
                                 key={post.id}
                                 initial={{ opacity: 0, y: 20 }}
@@ -186,22 +198,22 @@ const SocialVision = ({ onClose }) => {
                             >
                                 <div className="flex justify-between items-start mb-4">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg">
-                                            {post.author[0]}
+                                        <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center font-bold text-lg overflow-hidden">
+                                            {post.avatar ? <img src={post.avatar} alt="" className="w-full h-full object-cover" /> : post.author?.[0] || 'V'}
                                         </div>
                                         <div>
                                             <h4 className="font-bold text-white">{post.author}</h4>
-                                            <span className="text-xs text-gray-500">{post.time}</span>
+                                            <span className="text-xs text-gray-500">{post.username} · {post.time}</span>
                                         </div>
                                     </div>
                                     <div className="flex gap-4">
                                         <div className="flex items-center gap-1 text-gray-400">
                                             <Smile size={16} className="text-red-500" />
-                                            <span className="text-sm font-bold">{post.likes}</span>
+                                            <span className="text-sm font-bold">{post.metrics?.like_count || 0}</span>
                                         </div>
                                         <div className="flex items-center gap-1 text-gray-400">
                                             <MessageCircle size={16} className="text-blue-500" />
-                                            <span className="text-sm font-bold">{post.comments.length}</span>
+                                            <span className="text-sm font-bold">{post.metrics?.reply_count || post.comments?.length || 0}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -210,15 +222,17 @@ const SocialVision = ({ onClose }) => {
                                     {post.text}
                                 </p>
 
-                                {/* Sección de Comentarios Sabrosos (Árbol) */}
-                                <div className="mt-4 pt-4 border-t border-white/5">
-                                    <h5 className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4 flex items-center gap-2">
-                                        <MessageCircle size={12} /> Comentarios de los Vecinos
-                                    </h5>
-                                    <div className="space-y-4">
-                                        {renderCommentTree(post.comments)}
+                                {/* Sección de Comentarios (Árbol) */}
+                                {post.comments && post.comments.length > 0 && (
+                                    <div className="mt-4 pt-4 border-t border-white/5">
+                                        <h5 className="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-4 flex items-center gap-2">
+                                            <MessageCircle size={12} /> Comentarios de los Vecinos
+                                        </h5>
+                                        <div className="space-y-4">
+                                            {renderCommentTree(post.comments)}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                             </motion.div>
                         ))
                     ) : (
@@ -226,7 +240,7 @@ const SocialVision = ({ onClose }) => {
                            <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center grayscale opacity-50">
                                 <Video size={32} />
                            </div>
-                           <p className="italic font-bold tracking-widest text-sm uppercase">Cargando material municipal...</p>
+                           <p className="italic font-bold tracking-widest text-sm uppercase">No se detectaron reportes recientes en {activePlatform}</p>
                         </div>
                     )}
                 </div>

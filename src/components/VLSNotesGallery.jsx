@@ -101,12 +101,12 @@ const LEGACY_NOTES = [
         color: "#f43f5e"
     },
     { 
-        id: "AGUAS_VALLE_VLS", type: "INVESTIGACIÓN", cat: "Hemeroteca", title: "Aguas del Valle", 
-        titular: "Sanitaria dispuesta a evaluar el Emisario Submarino (Investigación 2023)", 
-        bajada: "Sanitaria de La Serena dispuesta a evaluar mantener tratamiento y disposición instalada en 1987.", 
-        body: "Publicado originalmente en Diciembre de 2023. Desde Vecinos La Serena contactamos a Aguas del Valle respecto al emisario submarino. Mientras la OCDE ya no los reconoce como sistemas de tratamiento propiamente tal, la conurbación sigue descargando aguas residuales con tratamiento primario, en contraste con modelos de cero descarga como los de Tongoy y Guanaqueros.",
-        contacto: "Autor VLS Intelligence / Blog Noticioso", cita: "OCDE cuestiona: no es tratamiento propiamente tal.",
-        color: "#38bdf8"
+        id: "SEMANA_SANTA_VLS", type: "INVESTIGACIÓN", cat: "Hemeroteca", title: "Investigación Especial", 
+        titular: "Semana Santa 2026: Historia y Tradición (Reseña Histórica)", 
+        bajada: "Más allá de la fe: Un viaje por las tradiciones globales y chilenas que definen nuestro patrimonio.", 
+        body: "Una mirada profunda al significado histórico, religioso y cultural de la Semana Santa. Desde las calles antiguas hasta las costumbres de la zona colonial, exploramos cómo esta fecha sigue moldeando la identidad social y reflexiva de La Serena y el mundo.",
+        contacto: "Editorial Documental VLS", cita: "Memoria, fe y reflexión viva.",
+        color: "#7c3aed"
     },
 
 ];
@@ -178,8 +178,8 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
                    // Disabled until content is ready
                    return;
                 }
-                if (note.id === 'AGUAS_VALLE_VLS') {
-                   window.dispatchEvent(new CustomEvent('open-vls-aguas'));
+                if (note.id === 'SEMANA_SANTA_VLS') {
+                   window.dispatchEvent(new CustomEvent('open-vls-semanasanta'));
                    onClose && onClose();
                    return;
                 }

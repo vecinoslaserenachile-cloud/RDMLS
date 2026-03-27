@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageSquare, X, Send, Bot, Leaf, Mic, Sliders, Mail, Minimize2, Maximize2, Move } from 'lucide-react';
+import { MessageSquare, X, Send, Bot, Leaf, Mic, Sliders, Mail, Minimize2, Maximize2, Move, Download, FileText, Shield } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ChatAssistant({ onClose, isOpenDefault = false }) {
@@ -10,15 +10,24 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
     const host = window.location.hostname.toLowerCase();
     const isRDMLS = host.includes('rdmls');
     
-    const [messages, setMessages] = useState([
-        { 
-            id: 1, 
-            sender: 'bot', 
-            text: isRDMLS 
-                ? '¡Hola! Soy **Faro IA**, tu asistente inteligente del **Portal RDMLS.cl**.<br/><br/>Estoy aquí para apoyarte en la gestión municipal, consultas técnicas y soporte de plataforma regional. ¿En qué puedo asistirte hoy?'
-                : '¡Hola! Soy **Faro IA**, tu asistente inteligente de **ComunaSmart La Serena**.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' 
-        }
-    ]);
+    const [messages, setMessages] = useState(() => {
+        const saved = localStorage.getItem('vls_chat_history');
+        if (saved) return JSON.parse(saved);
+        return [
+            { 
+                id: Date.now(), 
+                sender: 'bot', 
+                text: isRDMLS 
+                    ? '¡Hola! Soy **Faro IA**, tu asistente inteligente del **Portal RDMLS.cl**.<br/><br/>Estoy aquí para apoyarte en la gestión municipal, consultas técnicas y soporte de plataforma regional. ¿En qué puedo asistirte hoy?'
+                    : '¡Hola! Soy **Faro IA**, tu asistente inteligente de **ComunaSmart La Serena**.<br/><br/>Estoy aquí para ayudarte a cuidar nuestra hermosa ciudad, resolver tus dudas y mantener la armonía de nuestros barrios históricos. ¿En qué te puedo orientar hoy?' 
+            }
+        ];
+    });
+
+    // Guardar historial en localStorage cada vez que cambien los mensajes
+    useEffect(() => {
+        localStorage.setItem('vls_chat_history', JSON.stringify(messages));
+    }, [messages]);
     const [inputText, setInputText] = useState('');
     const messagesEndRef = useRef(null);
     const [showSettings, setShowSettings] = useState(false);
@@ -41,6 +50,22 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
         window.addEventListener('minimize-all', handleMinimize);
         const handleCloseAll = () => setIsOpen(false);
         window.addEventListener('close-all-floating', handleCloseAll);
+
+        // ESCUCHA DE NOTIFICACIONES PUSH PARA EL CHAT (Dato Real solicitado por el usuario)
+        const handlePushNotification = (e) => {
+            if (e.detail && e.detail.text) {
+                const newMessage = {
+                    id: Date.now(),
+                    sender: 'bot',
+                    text: `📢 **NOTIFICACIÓN VECINAL:**<br/>${e.detail.text}`,
+                    isPush: true
+                };
+                setMessages(prev => [...prev, newMessage]);
+                setIsOpen(true); // Abrimos el chat para que el vecino lo vea
+                setIsMinimized(false);
+            }
+        };
+        window.addEventListener('vls-push-notification', handlePushNotification);
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (SpeechRecognition) {
@@ -167,6 +192,64 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
         }
     };
 
+    const exportToPDF = () => {
+        const printWindow = window.open('', '_blank');
+        const historyHtml = messages.map(m => {
+            const formattedText = m.text
+                .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+                .replace(/<br\/>/g, '<br/>')
+                .replace(/\n/g, '<br/>');
+            
+            return `
+                <div style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                    <div style="font-weight: bold; color: ${m.sender === 'bot' ? '#1e3a8a' : '#333'}; font-size: 12px; margin-bottom: 5px;">
+                        ${m.sender === 'bot' ? 'FARO IA (OFICIAL)' : 'VECINO IDENTIFICADO'} - ${new Date(m.id).toLocaleString('es-CL')}
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.5;">${formattedText}</div>
+                </div>
+            `;
+        }).join('');
+
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Bitácora Institucional - Vecinos La Serena</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 40px; color: #1e293b; max-width: 800px; margin: auto; }
+                        .header { text-align: center; border-bottom: 4px solid #1e3a8a; padding-bottom: 20px; margin-bottom: 40px; }
+                        .logo { width: 100px; margin-bottom: 15px; }
+                        h1 { color: #1e3a8a; margin: 0; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; }
+                        .subtitle { color: #64748b; font-size: 12px; margin-top: 5px; }
+                        .footer { margin-top: 60px; text-align: center; font-size: 10px; color: #94a3b8; border-top: 1px solid #eee; padding-top: 20px; }
+                        .seal { margin-top: 30px; opacity: 0.1; position: fixed; top: 40%; left: 30%; width: 300px; pointer-events: none; z-index: -1; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <img src="/escudo.png" class="logo" />
+                        <h1>Certificado de Bitácora Ciudadana</h1>
+                        <p class="subtitle">Plataforma ComunaSmart - Vecinos La Serena OS v1.0.1</p>
+                    </div>
+                    <img src="/escudo.png" class="seal" />
+                    <div class="content">
+                        ${historyHtml}
+                    </div>
+                    <div class="footer">
+                        Este documento es un registro oficial de interacción ciudadana generado por el ecosistema de inteligencia artificial de VecinosLaSerena.cl.<br/>
+                        Generado el: ${new Date().toLocaleString('es-CL')} | ID Transacción: ${Math.random().toString(36).substr(2, 9).toUpperCase()}
+                    </div>
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                            setTimeout(() => { window.close(); }, 500);
+                        }
+                    </script>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+    };
+
     const handleSend = async (e) => {
         e.preventDefault();
         if (!inputText.trim()) return;
@@ -242,12 +325,20 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
                         </button>
                     ) : (
                         <>
-                            <div style={{ padding: '1rem', background: 'linear-gradient(90deg, #0f172a, #065f46)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'grab' }}>
+                            <div style={{ padding: '1rem', background: isRDMLS ? 'var(--rdmls-red)' : 'linear-gradient(90deg, #1e3a8a, #020617)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'grab', borderRadius: '20px 20px 0 0' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <Bot size={20} color="#10b981" />
-                                    <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900 }}>FARO IA</h3>
+                                    <h3 style={{ margin: 0, fontSize: '0.9rem', fontWeight: 900 }}>{isRDMLS ? 'ASISTENTE RDMLS' : 'FARO IA'}</h3>
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px' }}>
+                                    {/* BOTÓN DE EXPORTACIÓN (Soberanía Vecinal) */}
+                                    <button 
+                                       onClick={exportToPDF}
+                                       title="Exportar Bitácora Institucional"
+                                       style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', color: '#38bdf8', borderRadius: '50%', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                                    >
+                                        <Download size={16} />
+                                    </button>
                                     {!isMobile && <Move size={16} color="#94a3b8" />}
                                     <button onClick={() => setIsMinimized(true)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><Minimize2 size={18} /></button>
                                     <button onClick={() => setIsOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}><X size={18} /></button>

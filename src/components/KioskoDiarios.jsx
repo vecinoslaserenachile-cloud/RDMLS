@@ -80,22 +80,45 @@ export default function KioskoDiarios({ onClose }) {
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         
-        // Refresh headlines every hour
-        const headlinesTimer = setInterval(() => {
-            console.log("Refreshing headlines...");
-            // Simulate headline update logic here
-            const newHeadlines = {};
-            diarios.forEach(d => {
-                const variations = [
-                    "Última Hora: Avances en infraestructura regional.",
-                    "Reporte VLS: Nuevas medidas de seguridad ciudadana.",
-                    "Economía local: Crecimiento sostenido este trimestre.",
-                    "Cultura: Festival de las artes anuncia fechas."
-                ];
-                newHeadlines[d.id] = variations[Math.floor(Math.random() * variations.length)];
+        const fetchRealNews = async () => {
+            console.log("Sincronizando fuentes reales...");
+            // Usamos rss2json para evitar problemas de CORS y obtener datos frescos
+            const feeds = {
+                'eldia': 'https://www.diarioeldia.cl/rss',
+                'elmercurio': 'https://www.emol.com/rss/nacional.xml',
+                'latercera': 'https://www.latercera.com/arc/outboundfeeds/rss/?outputType=xml',
+                'lun': 'https://www.lun.com/rss/nacional.xml'
+            };
+            
+            setHeadlines(prev => {
+                const updated = { ...prev };
+                return updated;
             });
-            setHeadlines(newHeadlines);
-        }, 3600000); // 1 hour
+
+            const newHeadlines = {};
+            for (const [id, url] of Object.entries(feeds)) {
+                try {
+                    const res = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+                    const data = await res.json();
+                    if (data.status === 'ok' && data.items && data.items.length > 0) {
+                        // Limpiamos entidades HTML comunes
+                        let titulo = data.items[0].title;
+                        titulo = titulo.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&');
+                        newHeadlines[id] = titulo;
+                    }
+                } catch (e) {
+                    console.error("Error sincronizando fuente de noticias:", id, e);
+                }
+            }
+            
+            if (Object.keys(newHeadlines).length > 0) {
+                setHeadlines(prev => ({ ...prev, ...newHeadlines }));
+            }
+        };
+
+        // Fetch de inmediato y luego cada hora
+        fetchRealNews();
+        const headlinesTimer = setInterval(fetchRealNews, 3600000);
 
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);

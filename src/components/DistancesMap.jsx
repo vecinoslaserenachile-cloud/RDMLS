@@ -178,7 +178,7 @@ export default function DistancesMap({ onClose }) {
                         <div style={{ padding: '1.2rem', background: 'linear-gradient(90deg, #0f172a, #1e293b)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', flexShrink: 0 }}>
                             <h2 style={{ margin: 0, fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '10px', color: 'white', fontWeight: 900 }}>
                                 <Navigation size={24} color="#38bdf8" />
-                                {isRDMLS ? 'RDMLS MUNICIPAL: CUADRO DE DISTANCIAS' : 'CUADRO DE DISTANCIAS VLS'}
+                                {isRDMLS ? 'DISTANCIAS REGIONALES – PORTAL RDMLS' : 'CUADRO DE DISTANCIAS VLS'}
                             </h2>
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button onClick={() => setIsMinimized(true)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Minimizar">
@@ -205,35 +205,41 @@ export default function DistancesMap({ onClose }) {
                         <div className="distances-pills-container" style={{ 
                             padding: '1.2rem', 
                             display: 'flex', 
-                            gap: '0.6rem', 
+                            gap: '0.8rem', 
                             flexWrap: 'wrap', 
-                            background: 'rgba(15, 23, 42, 0.4)', 
+                            background: 'rgba(15, 23, 42, 0.6)', 
                             overflowY: 'auto', 
-                            maxHeight: isMobile ? '120px' : '180px', 
+                            maxHeight: isMobile ? '160px' : '220px', 
                             flexShrink: 0,
                             justifyContent: 'center',
-                            borderBottom: '1px solid rgba(255,255,255,0.05)'
+                            borderBottom: '2px solid rgba(56, 189, 248, 0.2)',
+                            boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5)'
                         }}>
                             {locations.map(loc => (
                                 <motion.button
                                     key={loc.id}
-                                    whileHover={{ scale: 1.05 }}
+                                    whileHover={{ scale: 1.05, boxShadow: `0 0 20px ${loc.color}40` }}
                                     whileTap={{ scale: 0.95 }}
                                     style={{
                                         borderRadius: '99px',
-                                        padding: '0.6rem 1.2rem',
-                                        fontSize: '0.75rem',
-                                        border: '1.5px solid',
+                                        padding: '0.7rem 1.4rem',
+                                        fontSize: '0.8rem',
+                                        border: '2px solid',
                                         borderColor: selectedRoute?.id === loc.id ? loc.color : 'rgba(255,255,255,0.2)',
-                                        background: selectedRoute?.id === loc.id ? loc.color : 'rgba(255,255,255,0.1)',
+                                        background: selectedRoute?.id === loc.id ? loc.color : 'rgba(255,255,255,0.05)',
                                         color: selectedRoute?.id === loc.id ? 'black' : 'white',
-                                        fontWeight: '900',
+                                        fontWeight: '950',
                                         cursor: 'pointer',
                                         transition: '0.3s',
-                                        boxShadow: selectedRoute?.id === loc.id ? `0 0 15px ${loc.color}50` : 'none'
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        boxShadow: selectedRoute?.id === loc.id ? `0 0 30px ${loc.color}50` : 'none',
+                                        textShadow: selectedRoute?.id === loc.id ? 'none' : '0 2px 4px rgba(0,0,0,0.5)'
                                     }}
                                     onClick={() => { setSelectedRoute(loc); setShowBillboard(false); }}
                                 >
+                                    <img src="/images/papaya_3d_flag.png" style={{ width: '22px', height: '22px', filter: selectedRoute?.id === loc.id ? 'none' : 'drop-shadow(0 0 5px rgba(255,255,255,0.5))' }} alt="P" />
                                     {loc.name.toUpperCase()}
                                 </motion.button>
                             ))}

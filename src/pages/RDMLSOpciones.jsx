@@ -22,7 +22,7 @@ const FEATURES = [
     label: 'STREAMING PROFESIONAL',
     subtitle: 'Emisión Digital 24/7',
     items: [
-      'Señal principal: az11.yesstreaming.net puerto 8590',
+      'Señal principal: Servidor Institucional RDMLS (Streaming de Alta Fidelidad)',
       'Protocolo Icecast2 / Shoutcast con redundancia',
       'Bitrate 128 kbps MP3 para máxima compatibilidad',
       'Latencia menor a 3 segundos en dispositivos móviles',
@@ -110,7 +110,7 @@ const FEATURES = [
 const TECH_STACK = [
   { label: 'Web Audio API', desc: 'Cadena de audio digital con EQ y análisis de espectro en tiempo real', icon: Volume2 },
   { label: 'React 18 + Vite', desc: 'SPA de carga ultra rápida con lazy loading de módulos pesados', icon: Zap },
-  { label: 'Icecast2 / az11', desc: 'Servidor de streaming profesional con soporte multi-oyente masivo', icon: Radio },
+  { label: 'Icecast2 / Broadcast', desc: 'Servidor de streaming profesional con soporte multi-oyente masivo', icon: Radio },
   { label: 'Firebase Hosting', desc: 'CDN de Google con 99.9% de disponibilidad y HTTPS automático', icon: Globe },
   { label: 'Cloudflare Pages', desc: 'Distribución edge global con Workers como capa de redundancia', icon: Shield },
   { label: 'PWA + Service Worker', desc: 'Instalación nativa sin tiendas de apps y funcionalidad offline', icon: Smartphone },
@@ -161,7 +161,7 @@ const ROAD_PHASES = [
     fase: 'FASE 1 · FUNDACIÓN', label: 'Señal Digital Institucional', status: 'ACTIVO', color: '#10b981',
     items: [
       'Dominios rdmls.cl y laserena-d1263.web.app activos con HTTPS',
-      'Stream Icecast en az11.yesstreaming.net:8590/radio.mp3 operativo 24/7',
+      'Stream Icecast en Servidor Principal RDMLS operativo 24/7',
       'Reproductor web con dial, EQ 4 presets y VU Meters',
       'Reloj oficial HoraSerena con temperatura en tiempo real',
       'PWA instalable con icono en pantalla de inicio'
@@ -549,7 +549,7 @@ export default function RDMLSOpciones() {
                   { label: '→', bg: 'transparent', border: 'transparent', small: true },
                   { label: 'Transcodificador\nIcecast2', bg: '#431407', border: '#f97316' },
                   { label: '→', bg: 'transparent', border: 'transparent', small: true },
-                  { label: 'az11.yes\n:8590/radio.mp3', bg: '#1c1917', border: '#f59e0b' },
+                  { label: 'Servidor\nPrincipal RDMLS', bg: '#1c1917', border: '#f59e0b' },
                   { label: '→', bg: 'transparent', border: 'transparent', small: true },
                   { label: 'CDN\nFirebase+CF', bg: '#0c1a2e', border: '#38bdf8' },
                   { label: '→', bg: 'transparent', border: 'transparent', small: true },
