@@ -714,7 +714,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         type: type || 'info'
       };
       setNotifications(prev => [newNotif, ...prev]);
-      setShowNotificationsMenu(true);
+      // NO forzar apertura del panel: el badge rojo indica la alerta sin bloquear la UI
       // Despachamos al Chat (Faro IA) para historial permanente solicitado por el usuario
       window.dispatchEvent(new CustomEvent('vls-push-notification', { detail: { text: message } }));
       // Play notification sound
@@ -931,7 +931,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         timestamp: new Date().toLocaleTimeString()
       };
       setNotifications(prev => [notif, ...prev]);
-      setShowNotificationsMenu(true);
+      // No forzar apertura del panel automáticamente
       alert("SISTEMA DE SEGURIDAD MARTIN SHIELD:\n\nAcceso denegado a Información Estratégica. Su identidad ha sido registrada pero no posee permisos de 'Zero Trust' para este módulo.");
     }
   };
@@ -1476,7 +1476,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
                 {/* Billetera VLS: Visible Token Economy */}
                 <button
-                  onClick={() => setShowVecnityPay(true)}
+                  onClick={() => { setShowNotificationsMenu(false); setShowVecnityPay(true); }}
                   className="glass-panel animate-pulse-slow"
                   style={{
                     padding: '0.35rem 0.6rem',
