@@ -62,6 +62,7 @@ import CentroRadioDev from './pages/CentroRadioDev.jsx';
 import BellaDashboard from './pages/BellaDashboard.jsx';
 import EntrevecinasHub from './pages/EntrevecinasHub.jsx';
 import PirataSmart from './pages/PirataSmart.jsx';
+import Aprende from './pages/Aprende.jsx';
 import { Activity } from 'lucide-react';
 import './index.css';
 
@@ -136,7 +137,7 @@ class ErrorBoundary extends React.Component {
 }
 
 const host = (window.location.hostname || window.location.host || '').toLowerCase();
-const isRdmlsDns = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+const isRdmlsDns = host.includes('rdmls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos'));
 const isPuertaDns = host.includes('puertasmart.cl');
 const isEntrevecinasDns = host.includes('entrevecinas.cl');
 const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmart.cl');
@@ -152,7 +153,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             {/* Rutas para Dominios Específicos */}
             {isRdmlsDns ? (
               <>
-                <Route path="/induccion" element={<Induccion26 isRDMLS={true} />} />
+                <Route path="/induccion" element={<Aprende isRDMLS={true} />} />
+                <Route path="/INDUCCION" element={<Aprende isRDMLS={true} />} />
+                <Route path="/aprende" element={<Aprende isRDMLS={true} />} />
+                <Route path="/APRENDE" element={<Aprende isRDMLS={true} />} />
                 <Route path="/opciones" element={<RDMLSOpciones />} />
                 <Route path="/flash-opciones" element={<RDMLSOpcionesV2026 />} />
                 <Route path="/vetcino" element={<VETcinos />} />
@@ -209,7 +213,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="acceso" element={<PuertaSerena />} />
                   <Route path="dev" element={<DevPortal />} />
                   <Route path="motors" element={<VLSMotorsShowroom />} />
-                  <Route path="induccion" element={<Induccion26 isRDMLS={false} />} />
+                  <Route path="induccion" element={<Aprende isRDMLS={true} />} />
+                  <Route path="INDUCCION" element={<Aprende isRDMLS={true} />} />
+                  <Route path="aprende" element={<Aprende isRDMLS={true} />} />
+                  <Route path="APRENDE" element={<Aprende isRDMLS={true} />} />
                   <Route path="vetcino" element={<VETcinos />} />
                   <Route path="pincha" element={<Pincha />} />
                   <Route path="satellite" element={<SatelliteIntelligence />} />

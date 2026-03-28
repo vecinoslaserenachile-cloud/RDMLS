@@ -195,7 +195,7 @@ export default function TiendaPoleras3D({ onClose, currentUser }) {
                                 textColor={isDark ? '#ffffff' : textColor}
                                 textFont={fontFamily}
                                 uploadedImg={uploadedImgUrl}
-                                logoUrl={isRDMLS ? '/escudo.png' : '/logo_vls.png'}
+                                logoUrl={isRDMLS ? '/escudo.png' : '/vls-logo-3d.png'}
                             />
                         </div>
                     </motion.div>

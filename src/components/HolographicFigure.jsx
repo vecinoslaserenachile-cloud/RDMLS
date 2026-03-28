@@ -21,8 +21,9 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             ctx.clearRect(0, 0, W, H);
             
             // Glow base
-            const grad = ctx.createRadialGradient(W/2, H-50, 0, W/2, H-50, 100);
-            grad.addColorStop(0, `${color}66`);
+            const grad = ctx.createRadialGradient(W/2, H-50, 0, W/2, H-50, 160);
+            grad.addColorStop(0, `${color}bb`);
+            grad.addColorStop(0.3, `${color}44`);
             grad.addColorStop(1, 'transparent');
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
@@ -31,59 +32,86 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                 ctx.save();
                 
                 // Hologram transformation (floating & slight rotation)
-                const floatingY = Math.sin(frame * 0.05) * 10;
-                const scaleX = 0.8 + Math.sin(frame * 0.02) * 0.05;
+                const floatingY = Math.sin(frame * 0.04) * 15;
+                const scaleX = 0.85 + Math.sin(frame * 0.015) * 0.03;
                 
                 ctx.translate(W/2, H/2 + floatingY);
                 ctx.scale(scaleX, 1);
                 
-                // Draw image with low opacity
-                ctx.globalAlpha = 0.6;
-                ctx.drawImage(img, -W/3, -H/3, (W/3)*2, (H/3)*2);
+                // Multiple layers for depth
+                for(let i=0; i<3; i++) {
+                    ctx.globalAlpha = 0.2 + (i * 0.1);
+                    const offset = Math.sin(frame * 0.02 + i) * 2;
+                    ctx.drawImage(img, -W/3 + offset, -H/3, (W/3)*2, (H/3)*2);
+                }
                 
                 // Add color tint
                 ctx.globalCompositeOperation = 'source-atop';
                 ctx.fillStyle = color;
-                ctx.globalAlpha = 0.3;
+                ctx.globalAlpha = 0.25;
                 ctx.fillRect(-W/3, -H/3, (W/3)*2, (H/3)*2);
                 
                 ctx.restore();
 
-                // Scanlines
+                // Scanlines & Interference
                 ctx.globalCompositeOperation = 'source-over';
-                ctx.strokeStyle = `rgba(255,255,255,0.1)`;
-                ctx.lineWidth = 1;
-                for (let i = 0; i < H; i += 4) {
-                    const offset = (frame % 4);
+                for (let i = 0; i < H; i += 3) {
+                    const alpha = 0.05 + Math.sin(frame * 0.1 + i * 0.5) * 0.03;
+                    ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
+                    ctx.lineWidth = 1;
                     ctx.beginPath();
-                    ctx.moveTo(0, i + offset);
-                    ctx.lineTo(W, i + offset);
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(W, i);
                     ctx.stroke();
                 }
 
-                // Glitch effect occasionally
-                if (Math.random() > 0.98) {
-                    ctx.fillStyle = color;
-                    ctx.fillRect(Math.random() * W, Math.random() * H, 50, 2);
+                // High-freq jitter lines
+                if (Math.random() > 0.95) {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath();
+                    const y = Math.random() * H;
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(W, y);
+                    ctx.stroke();
                 }
             }
 
-            // Pedestal
-            ctx.fillStyle = '#1e293b';
+            // Pedestal (Advanced Cyber Style)
+            ctx.fillStyle = '#0f172a';
             ctx.beginPath();
-            ctx.ellipse(W/2, H-30, 60, 15, 0, 0, Math.PI * 2);
+            ctx.ellipse(W/2, H-30, 80, 20, 0, 0, Math.PI * 2);
             ctx.fill();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
-            ctx.stroke();
-
-            // Beams
-            ctx.strokeStyle = `${color}33`;
-            ctx.lineWidth = 1;
-            for (let i = 0; i < 5; i++) {
+            
+            // Neon rings
+            for(let i=0; i<3; i++) {
+                ctx.strokeStyle = color;
+                ctx.globalAlpha = 1 / (i + 1);
+                ctx.lineWidth = 2 - (i*0.5);
                 ctx.beginPath();
-                ctx.moveTo(W/2 - 40 + i * 20, H-30);
-                ctx.lineTo(W/2, H/2);
+                ctx.ellipse(W/2, H-30, 80 + i*5, 20 + i*2, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Projector Core
+            ctx.fillStyle = color;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = color;
+            ctx.beginPath();
+            ctx.arc(W/2, H-35, 10, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+
+            // Light Beams (Volumetric Style)
+            for (let i = 0; i < 8; i++) {
+                const gradBeam = ctx.createLinearGradient(W/2, H-35, W/2, H/2);
+                gradBeam.addColorStop(0, `${color}66`);
+                gradBeam.addColorStop(1, 'transparent');
+                ctx.strokeStyle = gradBeam;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(W/2 - 50 + i * 14.2, H-35);
+                ctx.lineTo(W/2, H/2 - 20);
                 ctx.stroke();
             }
 

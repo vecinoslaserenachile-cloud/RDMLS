@@ -15,10 +15,10 @@ const PLAYLIST_INSTITUTIONAL = [
 
 const PLAYLIST_LUDIC = [
     { url: 'https://vimeo.com/712520/embed', title: 'DOC: CALETA SAN PEDRO', platform: 'VLS TV' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: VETcinos SOS', isPoster: true },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: Pincha Dating', isPoster: true },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: La Plaza Vecinal', isPoster: true },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/vls_promos_vertical.png', title: 'PROMO: SerenaMet Real', isPoster: true }
+    { url: '/serenito_security_guard_close_up_1773392164475.png', title: 'PROMO: Seguridad Ciudadana VLS', isPoster: true },
+    { url: '/portada_vls_trivia.jpg', title: 'PROMO: VLSabes - ¡Juega & Gana!', isPoster: true },
+    { url: '/kiosko_3d_la_serena.png', title: 'PROMO: Kiosko Inteligente VLS', isPoster: true },
+    { url: '/vls_motors_spot_premium.png', title: 'PROMO: VLS Motors Eléctrico', isPoster: true }
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
@@ -80,6 +80,8 @@ import SmartFloatingTV from '../components/SmartFloatingTV';
 import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
 import AlcaldesHistory from './AlcaldesHistory';
 import LoadingScreen from '../components/LoadingScreen';
+import MemorialHijosRegion from '../components/MemorialHijosRegion';
+import TiendaPoleras3D from '../components/TiendaPoleras3D';
 
 
 export default function HubDashboard() {
@@ -277,7 +279,9 @@ export default function HubDashboard() {
     const [showSmartAdminPortal, setShowSmartAdminPortal] = useState(false);
     const [showVirtualAssistant, setShowVirtualAssistant] = useState(false); // New state for virtual assistant
     const [showAirportMonitor, setShowAirportMonitor] = useState(false);
-    const [showPortMonitor, setShowPortMonitor] = useState(false); // Added as per instruction, though NavieraMonitor is already used
+    const [showPortMonitor, setShowPortMonitor] = useState(false);
+    const [showMemorialHijos, setShowMemorialHijos] = useState(false);
+    const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
 
     const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
     const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
@@ -413,6 +417,8 @@ export default function HubDashboard() {
         const handlePort = () => setShowPortMonitor(true);
         const handleParliamentary = () => setShowParliamentary(true);
         const handleAlcaldes = () => setShowAlcaldes(true);
+        const handleMemorial = () => setShowMemorialHijos(true);
+        const handleTienda = () => setShowTiendaPoleras(true);
 
 
         window.addEventListener('open-decision-vecinal', handleDecision);
@@ -440,6 +446,8 @@ export default function HubDashboard() {
         window.addEventListener('open-port-monitor', handlePort);
         window.addEventListener('open-parlamento-regional', handleParliamentary);
         window.addEventListener('open-alcaldes-history', handleAlcaldes);
+        window.addEventListener('open-memorial-hijos', handleMemorial);
+        window.addEventListener('open-tienda-poleras', handleTienda);
 
 
         return () => {
@@ -469,6 +477,8 @@ export default function HubDashboard() {
             window.removeEventListener('open-port-monitor', handlePort);
             window.removeEventListener('open-parlamento-regional', handleParliamentary);
             window.removeEventListener('open-alcaldes-history', handleAlcaldes);
+            window.removeEventListener('open-memorial-hijos', handleMemorial);
+            window.removeEventListener('open-tienda-poleras', handleTienda);
 
         };
     }, []);
@@ -2201,56 +2211,7 @@ export default function HubDashboard() {
 
                             <BitacoraC5 />
 
-                            {isVideoPlaying && (
-                                <AnimatePresence>
-                                    <SmartFloatingTV
-                                        key="tv1-vertical"
-                                        title="SOCIAL VISOR"
-                                        isVertical={true}
-                                        initialX="20px"
-                                        initialY="120px"
-                                        bottom="auto"
-                                        widthDesktop="82px"
-                                        widthMobile="65px"
-                                        heightDesktop="145px"
-                                        heightMobile="115px"
-                                        item={PLAYLIST_LUDIC[previewIndex % PLAYLIST_LUDIC.length]}
-                                    />
-                                    
-                                    {isVLS && (
-                                        <>
-                                            <SmartFloatingTV
-                                                key="tv2-horizontal"
-                                                title="VLS PROMOS"
-                                                isVertical={false}
-                                                initialX="20px"
-                                                initialY={undefined}
-                                                bottom="100px"
-                                                widthDesktop="120px"
-                                                widthMobile="80px"
-                                                heightDesktop="70px"
-                                                heightMobile="45px"
-                                                item={TVLS_VIDEOS[previewIndex]}
-                                                onEnded={nextVideo}
-                                            />
-                                            {/* Nueva ventanita para el Faro Live en móvil */}
-                                            <SmartFloatingTV
-                                                key="tv3-faro-live"
-                                                title="FARO EN VIVO"
-                                                isVertical={false}
-                                                initialX="20px"
-                                                initialY="300px"
-                                                bottom="auto"
-                                                widthDesktop="110px"
-                                                widthMobile="80px"
-                                                heightDesktop="65px"
-                                                heightMobile="45px"
-                                                item={PLAYLIST_INSTITUTIONAL.find(v => v.id === 'b9LTH4muxR8')}
-                                            />
-                                        </>
-                                    )}
-                                </AnimatePresence>
-                            )}
+                            {/* Reproductores de TV flotantes eliminados (SmartFloatingTV) para evitar distracciones y errores de carga */}
                             {/* End of TV Section */}
                             <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                                 <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
@@ -2332,6 +2293,14 @@ export default function HubDashboard() {
                 <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
                     <AlcaldesHistory onClose={() => setShowAlcaldes(false)} />
                 </Suspense>
+            )}
+
+            {showMemorialHijos && (
+                <MemorialHijosRegion onClose={() => setShowMemorialHijos(false)} />
+            )}
+
+            {showTiendaPoleras && (
+                <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} />
             )}
 
             {/* FOOTER SOBERANO */}

@@ -10,7 +10,10 @@ import VhsTVModal from '../../components/VhsTVModal';
 import RetroArcadeLobby from '../../components/RetroArcadeLobby';
 import RadioBackofficeModal from '../../components/RadioBackofficeModal';
 import NewsDetailModal from '../../components/NewsDetailModal';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import VLSInduccion from '../VLSInduccion';
+import Induccion26 from '../Induccion26';
+import Aprende from '../Aprende';
 
 const VUMeter = ({ label, needleRef }) => (
     <div style={{
@@ -50,6 +53,16 @@ const VUMeter = ({ label, needleRef }) => (
 
 export default function CentroRadio({ isDevMode = false }) {
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // EMERGENCY BYPASS: If mode=aprende is in URL, override everything and show the portal
+    const queryParams = new URLSearchParams(location.search);
+    const mode = queryParams.get('mode');
+    
+    if (mode === 'aprende' || mode === 'induccion') {
+        return <Aprende isRDMLS={isRDMLS} />;
+    }
+
     const [weather, setWeather] = useState(null);
     const [time, setTime] = useState(new Date());
     const [isPlaying, setIsPlaying] = useState(false);
@@ -836,6 +849,24 @@ export default function CentroRadio({ isDevMode = false }) {
                         <Clock size={18} color="#FFD700" />
                         {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: !is24h })}
                     </button>
+                    <button 
+                        onClick={() => navigate('/induccion')}
+                        style={{
+                            padding: '0.4rem 1rem',
+                            background: 'rgba(234, 179, 8, 0.2)',
+                            border: '1px solid #eab308',
+                            borderRadius: '20px',
+                            color: '#eab308',
+                            fontSize: '0.7rem',
+                            fontWeight: '900',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}
+                    >
+                        <GraduationCap size={16} /> PORTAL INDUCCIÓN
+                    </button>
                     <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
                         <CloudSun size={18} color="#FFD700" />
@@ -884,6 +915,33 @@ export default function CentroRadio({ isDevMode = false }) {
                             {time.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </div>
                     </div>
+                    
+                    {/* ACCESO RÁPIDO INDUCCIÓN - REGLA: VISIBLE EN MÓVIL */}
+                    <button 
+                        onClick={() => navigate('/induccion')}
+                        style={{
+                            width: '100%',
+                            maxWidth: '450px',
+                            background: 'linear-gradient(90deg, #FFD700, #C5A065)',
+                            color: 'black',
+                            border: 'none',
+                            borderRadius: '50px',
+                            padding: '1.2rem',
+                            fontSize: '1.2rem',
+                            fontWeight: '900',
+                            letterSpacing: '3px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '15px',
+                            boxShadow: '0 15px 40px rgba(197,160,101,0.3)',
+                            transform: 'translateY(-10px)',
+                            transition: 'all 0.3s'
+                        }}
+                    >
+                        <GraduationCap size={30} /> ENTRAR A INDUCCIÓN →
+                    </button>
 
                     {/* MARQUEE DINÁMICO */}
                     <div style={{ 

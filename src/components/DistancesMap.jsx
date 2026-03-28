@@ -275,8 +275,10 @@ export default function DistancesMap({ onClose }) {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Footprints size={14} color="#ec4899" /> <span>{selectedRoute.times.walk}</span></div>
                                     </div>
                                     <div style={{ marginTop: '0.8rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '0.6rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <motion.img animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }} src="/ananuca_flower_3d_icon_1773625751027.png" style={{ height: '25px' }} alt="flor" />
-                                        <span style={{ fontSize: '0.65rem', color: '#fca5a5', fontWeight: '900' }}>¡RECOMPENSA: AÑAÑUCA!</span>
+                                        <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }} style={{ color: '#fbbf24' }}>
+                                            <Award size={25} />
+                                        </motion.div>
+                                        <span style={{ fontSize: '0.65rem', color: '#fca5a5', fontWeight: '900' }}>¡RECOMPENSA: AÑAÑUCA DE ORO!</span>
                                     </div>
                                 </div>
                             )}

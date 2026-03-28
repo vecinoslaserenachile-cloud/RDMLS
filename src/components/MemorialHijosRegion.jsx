@@ -6,21 +6,27 @@ import HolographicFigure from './HolographicFigure';
 const ImageFallback = ({ src, alt, style, className }) => {
     const [status, setStatus] = React.useState('loading');
     return (
-        <div style={{ position: 'relative', width: style.width || '100%', height: style.height || '100%', flexShrink: 0, borderRadius: style.borderRadius, overflow: 'hidden', background: 'rgba(255,255,255,0.05)' }}>
+        <div style={{ position: 'relative', width: style.width || '100%', height: style.height || '100%', flexShrink: 0, borderRadius: style.borderRadius, overflow: 'hidden', background: '#020617' }}>
             {status === 'loading' && (
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <div className="pulse-fast" style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'rgba(56,189,248,0.5)' }}></div>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', background: 'rgba(0,0,0,0.8)' }}>
+                    <div className="pulse-fast" style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid transparent', borderTopColor: '#38bdf8', animation: 'spin 1s linear infinite' }}></div>
+                    <span style={{ color: '#38bdf8', fontSize: '0.55rem', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Sincronizando IA...</span>
+                </div>
+            )}
+            {status === 'error' && (
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
+                    <span style={{ color: '#ef4444', fontSize: '0.6rem', fontWeight: 'bold' }}>OFFLINE</span>
                 </div>
             )}
             <img 
                 src={src} 
                 alt={alt} 
                 className={className} 
-                style={{ ...style, opacity: status === 'success' ? 1 : 0, transition: 'opacity 0.5s ease' }} 
+                style={{ ...style, opacity: status === 'success' ? 1 : 0, transition: 'opacity 0.6s ease-in-out' }} 
                 onLoad={() => setStatus('success')} 
                 onError={(e) => {
                     setStatus('error');
-                    e.target.src = 'https://picsum.photos/seed/vls_avatar/400/600';
+                    e.target.src = 'https://picsum.photos/seed/vls_memorial/800/600?grayscale';
                 }} 
             />
         </div>
@@ -134,7 +140,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '7 de abril de 1889, Vicuña',
             death: '10 de enero de 1957',
             legacy: 'Poetisa, diplomática y pedagoga. Primera mujer iberoamericana en recibir el Nobel de Literatura.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/mistral_3d.png',
+            image: '/memorial-mistral.png',
             category: 'Letras',
             location: 'Vicuña / La Serena',
             icon: BookOpen,
@@ -147,7 +153,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '23 de noviembre de 1898, La Serena',
             death: '22 de agosto de 1980',
             legacy: 'Impulsor del "Plan Serena", transformó la arquitectura de la ciudad al estilo neo-colonial. Estableció la presencia de Chile en la Antártida.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/videla_3d.png',
+            image: '/memorial-videla.png',
             category: 'Política / Historia',
             location: 'La Serena',
             icon: Star,
@@ -160,7 +166,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '3 de abril de 1940, Coquimbo',
             death: '20 de julio de 2023',
             legacy: 'Legendario DT de Coquimbo Unido y creador de la base del éxito del fútbol chileno moderno. Un maestro de disciplina y visión.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/sulantay_3d.png',
+            image: '/memorial-sulantay.png',
             category: 'Deportes',
             location: 'Coquimbo',
             icon: Medal,
@@ -173,11 +179,50 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '16 de enero de 1928',
             death: '16 de octubre de 1973',
             legacy: 'Fundador de la primera Orquesta Sinfónica Infantil en Latinoamérica. Su legado vive en cada niño que toma un instrumento en la región.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/penahan_3d.png',
+            image: '/memorial-pena.png',
             category: 'Música',
             location: 'La Serena',
             icon: Music,
             color: '#db2777'
+        },
+        {
+            id: 'vdsilva',
+            name: 'Víctor Domingo Silva',
+            title: 'El Poeta de la Bandera',
+            birth: '12 de mayo de 1882, Tongoy',
+            death: '20 de agosto de 1960',
+            legacy: 'Poeta, diplomático y dramaturgo chileno. Premio Nacional de Literatura y de Teatro. Autor de "Al pie de la bandera".',
+            image: 'https://picsum.photos/seed/vls_silva/800/600?grayscale',
+            category: 'Letras',
+            location: 'Tongoy / La Serena',
+            icon: BookOpen,
+            color: '#10b981'
+        },
+        {
+            id: 'bohon',
+            name: 'Juan Bohón',
+            title: 'Fundador de La Serena',
+            birth: 'Siglo XVI, Países Bajos',
+            death: '1548, Chile',
+            legacy: 'Capitán español que fundó la ciudad de San Bartolomé de La Serena en 1544 por orden de Pedro de Valdivia.',
+            image: 'https://picsum.photos/seed/vls_bohon/800/600?grayscale',
+            category: 'Historia',
+            location: 'La Serena',
+            icon: Castle,
+            color: '#f59e0b'
+        },
+        {
+            id: 'ppmunoz',
+            name: 'Pedro Pablo Muñoz',
+            title: 'Revolucionario Constituyente',
+            birth: '1828, La Serena',
+            death: '1882, La Serena',
+            legacy: 'Líder de la Revolución de 1851 y 1859. Defensor de la descentralización y la soberanía de las regiones del norte.',
+            image: 'https://picsum.photos/seed/vls_munoz/800/600?grayscale',
+            category: 'Política',
+            location: 'La Serena',
+            icon: Shield,
+            color: '#ef4444'
         },
         {
             id: 'palominos',

@@ -38,6 +38,9 @@ const SmartCalendar = lazy(() => import('./components/SmartCalendar.jsx'));
 const LeanStartupMaster = lazy(() => import('./components/LeanStartupMaster.jsx'));
 const TiendaPoleras3D = lazy(() => import('./components/TiendaPoleras3D'));
 const CoquiSmartKanban = lazy(() => import('./components/CoquiSmartKanban'));
+const Aprende = lazy(() => import('./pages/Aprende'));
+const VLSInduccion = lazy(() => import('./pages/VLSInduccion'));
+import Induccion26 from './pages/Induccion26';
 
 const MemorialHijosRegion = lazy(() => import('./components/MemorialHijosRegion.jsx'));
 const PersonalStereo = lazy(() => import('./components/PersonalStereo.jsx'));
@@ -366,6 +369,24 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [systemHealth, setSystemHealth] = useState('optimal'); // 'optimal', 'polishing', 'issue'
   const [showMaintenanceNotice, setShowMaintenanceNotice] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
+
+  // SUPREME OVERRIDE: If mode=aprende is in URL, LOCK the screen to the induction portal
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const mode = queryParams.get('mode');
+    if (mode === 'aprende' || mode === 'induccion') {
+        // Prevent any other system from taking over
+        console.log("IMLS_OS: Locking to Induction/Aprende Mode...");
+    }
+  }, []);
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const mode = (queryParams.get('mode') || '').toLowerCase();
+  if (mode === 'aprende' || mode === 'induccion') {
+    return (
+            <Aprende isRDMLS={isRDMLS} />
+    );
+  }
 
   // Sentinel Health Monitoring
   useEffect(() => {
@@ -1582,10 +1603,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
       {!isZeroDistraction && !isRDMLS && (
         <>
-          <Suspense fallback={<div />}>
-            <SmartTV weather={weather} />
-          </Suspense>
-
+          {/* Reproductores de TV flotantes eliminados (SmartTV) para evitar distracciones y errores de carga de señales externas */}
           <GlobalAnnouncer />
 
           <Suspense fallback={<div style={{ position: 'fixed', bottom: 20, right: 20, color: 'white' }}>Cargando Señal VLS...</div>}>
@@ -2020,6 +2038,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showChileHub && (
         <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>Iniciando Red Nacional Vecinos Chile...</div>}>
           <VecinosChileHub onClose={() => setShowChileHub(false)} />
+        </Suspense>
+      )}
+      {showVecnityPay && (
+        <Suspense fallback={null}>
+          <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />
         </Suspense>
       )}
     </div>
