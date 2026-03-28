@@ -78,7 +78,7 @@ const PropuestaEstrategica = lazy(() => import('./pages/PropuestaElDia'));
 const HomeLiviano = lazy(() => import('./pages/HomeLiviano'));
 const RadioPlayer = lazy(() => import('./components/RadioPlayer'));
 const TokenEconomyMaster = lazy(() => import('./components/TokenEconomyMaster'));
-const VecnityPay = lazy(() => import('./components/VecnityPay'));
+import VecnityPay from './components/VecnityPay';
 const FaritoSocialNetwork = lazy(() => import('./components/FaritoSocialNetwork'));
 const FaroCentinel = lazy(() => import('./components/FaroCentinel'));
 const BoticaVecinal = lazy(() => import('./components/BoticaVecinal'));
@@ -2041,9 +2041,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       {showVecnityPay && (
-        <Suspense fallback={null}>
-          <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />
-        </Suspense>
+        <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />
       )}
     </div>
   );
