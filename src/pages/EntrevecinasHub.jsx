@@ -82,7 +82,13 @@ export default function EntrevecinasHub() {
             duration: '02:52', 
             tag: 'Soberanía',
             desc: 'La visión fundacional de nuestro ecosistema digital. Un recorrido por los valores que unen a la comunidad de LA❤️SERENA bajo una tecnología propia y transparente.',
-            img: '/images/entrevecinas_manifiesto.png'
+            img: '/images/entrevecinas_manifiesto.png',
+            quote: 'La soberanía digital no es una opción, es nuestra defensa como comunidad.',
+            stats: [
+                { icon: ShieldCheck, title: "Soberanía", desc: "Datos unificados" },
+                { icon: Globe, title: "Territorio", desc: "Conquista digital" },
+                { icon: Zap, title: "Impacto", desc: "+20k Alcance" }
+            ]
         },
         { 
             id: 'HHHC7oEyyj4', 
@@ -91,7 +97,13 @@ export default function EntrevecinasHub() {
             duration: '01:26', 
             tag: 'Innovación',
             desc: 'Un viaje onírico por la historia de Coquimbo y LA❤️SERENA. Nuestro avatar institucional nos guía hacia el futuro de los Smart Citizens.',
-            img: '/images/entrevecinas_serenito.png'
+            img: '/images/entrevecinas_serenito.png',
+            quote: 'Soñamos con una ciudad donde la tecnología sea tan humana como un saludo vecinal.',
+            stats: [
+                { icon: Sparkles, title: "Avatar", desc: "Identidad 3D" },
+                { icon: Rocket, title: "Futuro", desc: "Rumbo Smart" },
+                { icon: Zap, title: "Impacto", desc: "Viralidad 3D" }
+            ]
         },
         { 
             id: 'R-hC2QuUdE8', 
@@ -100,7 +112,13 @@ export default function EntrevecinasHub() {
             duration: '23:26', 
             tag: 'Cultura',
             desc: 'Grabado para Thema TV y Montecarlo. La sofisticación del Jazz regional en un formato cinematográfico íntimo y elegante.',
-            img: '/images/entrevecinas_jazz.png'
+            img: '/images/entrevecinas_jazz.png',
+            quote: 'Traducimos el silencio de la Pampa en una sinfonía eléctrica.',
+            stats: [
+                { icon: Music, title: "Jazz", desc: "Maestría Reg" },
+                { icon: Mic, title: "Grabación", desc: "Alta Fide" },
+                { icon: Zap, title: "Vibra", desc: "Sello VLS" }
+            ]
         },
         { 
             id: 'wzNKbSUFHQk', 
@@ -109,7 +127,13 @@ export default function EntrevecinasHub() {
             duration: '25:21', 
             tag: 'Liderazgo',
             desc: 'Conversación sobre las influencias y el proceso creativo de un disco que redefine la identidad sonora de nuestra región.',
-            img: '/images/entrevecinas_fernando.png'
+            img: '/images/entrevecinas_fernando.png',
+            quote: 'Cada acorde es una historia que el Valle nos ha contado al oído.',
+            stats: [
+                { icon: Heart, title: "Pasión", desc: "Entrega total" },
+                { icon: BookOpen, title: "Relatos", desc: "Memoria Aud" },
+                { icon: Zap, title: "Ritmo", desc: "Voz Elquina" }
+            ]
         },
         { 
             id: 'e4AYdzIF6OQ', 
@@ -118,7 +142,13 @@ export default function EntrevecinasHub() {
             duration: '34:43', 
             tag: 'Especial',
             desc: 'Despliegue total en una sesión de larga duración. Registro histórico del talento musical que nace en nuestra conurbación.',
-            img: '/images/entrevecinas_sesion.png' 
+            img: '/images/entrevecinas_sesion.png',
+            quote: 'El sonido de La Serena es el latido de su gente despierta.',
+            stats: [
+                { icon: Activity, title: "Ritmo", desc: "Mestizaje" },
+                { icon: Award, title: "Distinción", desc: "Sello VLS" },
+                { icon: Zap, title: "Impacto", desc: "Oro Regional" }
+            ]
         },
         { 
             id: 'ZAJpC9o-Mok', 
@@ -127,11 +157,17 @@ export default function EntrevecinasHub() {
             duration: '40:03', 
             tag: 'Maestros',
             desc: 'El encuentro magistral de dos leyendas. Historia viva de la música local capturada en alta fidelidad y narrativa visual premium.',
-            img: '/images/entrevecinas_final.png'
+            img: '/images/entrevecinas_final.png',
+            quote: 'Cerrar este ciclo es abrir la puerta a una nueva generación.',
+            stats: [
+                { icon: Users, title: "Encuentro", desc: "Magistral" },
+                { icon: Star, title: "Legado", desc: "Trasfusión" },
+                { icon: Zap, title: "Impacto", desc: "Final de Gala" }
+            ]
         }
     ];
 
-    const [selectedVideo, setSelectedVideo] = useState(interviews[0].id);
+    const selectedData = interviews.find(v => v.id === selectedVideo) || interviews[0];
 
     const handleSubmitBooking = (e) => {
         e.preventDefault();
@@ -372,16 +408,16 @@ export default function EntrevecinasHub() {
                 <div className="absolute top-0 left-0 text-[15rem] font-black text-white/[0.02] tracking-tighter select-none -z-10 italic uppercase">Voz</div>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
                     <div className="lg:col-span-3 space-y-12">
-                        <SourceCard icon={Landmark} title="Memoria" desc="Registro histórico" />
-                        <SourceCard icon={Zap} title="Impacto" desc="+15k Reproducciones" />
-                        <SourceCard icon={Award} title="Sello" desc="Distinción Regional" />
+                        {selectedData.stats.map((s, i) => (
+                            <SourceCard key={i} icon={s.icon} title={s.title} desc={s.desc} />
+                        ))}
                     </div>
                     <div className="lg:col-span-9">
                         <h2 className="text-6xl lg:text-8xl font-black uppercase tracking-tighter mb-16 italic">El Arte de <span className="text-pink-400">Escucharnos</span></h2>
                         <div className="prose prose-invert prose-xl font-serif text-gray-200 space-y-8 max-w-none leading-relaxed">
-                            <p className="text-3xl font-black font-sans text-pink-400 italic">Bienvenidos al despliegue total de 'Entrevecinas'.</p>
-                            <p>Usted tiene las claves de este despliegue. Entrevecinas.cl se erige hoy como una declaración de principios: la elegancia y firmeza de la mujer de LA❤️SERENA.</p>
-                            <QuoteBlock text="Ser vecina en el 2026 es ser protagonista de una red neuronal de apoyo." author="Helena Moreno" sub="Vol. 2.0" />
+                            <p className="text-3xl font-black font-sans text-pink-400 italic">Bienvenidos al despliegue total de '{selectedData.guest}'.</p>
+                            <p>{selectedData.desc}</p>
+                            <QuoteBlock text={selectedData.quote} author={selectedData.guest} sub={selectedData.tag} />
                         </div>
                     </div>
                 </div>

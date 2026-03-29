@@ -9,6 +9,37 @@ const FX_SAMPLES = [
     { id: 'ai_intro', name: 'AI INTRO', color: '#a855f7' }
 ];
 
+const AnalogVUMeter = ({ label, value }) => {
+    // value is 0-100
+    const rotation = -45 + (value / 100) * 90;
+    return (
+        <div style={{
+            width: '80px', height: '55px', background: 'linear-gradient(to bottom, #fcfae3 0%, #e8e3c1 100%)', 
+            borderRadius: '6px', border: '2px solid #1e293b', position: 'relative', overflow: 'hidden',
+            boxShadow: 'inset 0 0 10px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.5)', 
+            display: 'flex', flexDirection: 'column', alignItems: 'center'
+        }}>
+            <svg viewBox="0 0 100 60" style={{ width: '100%', marginTop: '4px' }}>
+                <path d="M 12 48 A 45 45 0 0 1 88 48" fill="none" stroke="#222" strokeWidth="1.5" strokeDasharray="1,2" />
+                <path d="M 72 48 A 45 45 0 0 1 88 48" fill="none" stroke="#ef4444" strokeWidth="3" />
+                {[...Array(7)].map((_, i) => {
+                    const angle = Math.PI + 0.5 + i * (Math.PI - 1) / 6;
+                    const x1 = 50 + 40 * Math.cos(angle); const y1 = 55 + 40 * Math.sin(angle);
+                    const x2 = 50 + 48 * Math.cos(angle); const y2 = 55 + 48 * Math.sin(angle);
+                    return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={i >= 5 ? "#ef4444" : "#222"} strokeWidth="1.5" />;
+                })}
+            </svg>
+            <div style={{ 
+                position: 'absolute', bottom: '-4px', left: '50%', width: '1.5px', height: '45px', 
+                background: '#111', marginLeft: '-0.75px', transformOrigin: 'bottom center', 
+                transform: `rotate(${rotation}deg)`, transition: 'transform 0.05s linear', zIndex: 5 
+            }} />
+            <div style={{ position: 'absolute', bottom: '-8px', left: '50%', transform: 'translateX(-50%)', width: '16px', height: '16px', borderRadius: '50%', background: 'radial-gradient(circle, #444, #111)', border: '2px solid #000', zIndex: 6 }} />
+            <div style={{ position: 'absolute', bottom: '4px', left: '6px', fontSize: '0.45rem', fontWeight: '900', color: '#111', opacity: 0.8 }}>{label}</div>
+        </div>
+    );
+};
+
 const Deck = ({ id, track, isPlaying, volume, pitch, onPlayPause, onPitchChange, scratchPos }) => {
     return (
         <div className="glass-panel" style={{ 
@@ -66,17 +97,33 @@ const Deck = ({ id, track, isPlaying, volume, pitch, onPlayPause, onPitchChange,
                 >
                     {isPlaying ? <Pause size={28} /> : <Play size={28} style={{ marginLeft: '4px' }} />}
                 </button>
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#94a3b8', fontWeight: 'bold' }}>
-                        <span>PITCH CONTROL</span>
-                        <span>{(pitch * 100).toFixed(1)}%</span>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', gap: '5px' }}>
+                        {[33, 45, 78].map(rpm => (
+                            <button 
+                                key={rpm} 
+                                onClick={() => onPitchChange(rpm === 33 ? 1.0 : (rpm === 45 ? 1.35 : 2.34))}
+                                style={{ 
+                                    flex: 1, padding: '4px', borderRadius: '4px', 
+                                    background: (rpm === 33 && pitch === 1.0) || (rpm === 45 && pitch === 1.35) || (rpm === 78 && pitch === 2.34) ? '#38bdf8' : 'rgba(255,255,255,0.1)',
+                                    color: (rpm === 33 && pitch === 1.0) || (rpm === 45 && pitch === 1.35) || (rpm === 78 && pitch === 2.34) ? '#000' : '#fff',
+                                    border: 'none', fontSize: '0.6rem', fontWeight: '900', cursor: 'pointer'
+                                }}
+                            >
+                                {rpm}
+                            </button>
+                        ))}
                     </div>
                     <input 
-                        type="range" min="0.5" max="1.5" step="0.01" 
+                        type="range" min="0.5" max="2.5" step="0.01" 
                         value={pitch} 
                         onChange={(e) => onPitchChange(parseFloat(e.target.value))} 
                         style={{ width: '100%', accentColor: '#38bdf8', cursor: 'pointer' }} 
                     />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.6rem', color: '#94a3b8', fontWeight: 'bold' }}>
+                        <span>PITCH</span>
+                        <span>{(pitch * 100).toFixed(1)}%</span>
+                    </div>
                 </div>
             </div>
 
@@ -97,25 +144,56 @@ export default function VlsDjMixer() {
     const fileInputRef = useRef(null);
     const [customUrl, setCustomUrl] = useState('');
 
-    // Audio Engine Sync
+    const [masterSpectrum, setMasterSpectrum] = useState(Array(12).fill(0));
+    const [vuLevels, setVuLevels] = useState({ left: 0, right: 0 });
+    
+    // Audio Engine Refs
+    const audioContextRef = useRef(null);
+    const analyserARef = useRef(null);
+    const analyserBRef = useRef(null);
+    const sourceARef = useRef(null);
+    const sourceBRef = useRef(null);
+    const animationRef = useRef(null);
+
+    const initAudioContext = () => {
+        if (!audioContextRef.current) {
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            audioContextRef.current = new AudioContext();
+            
+            analyserARef.current = audioContextRef.current.createAnalyser();
+            analyserARef.current.fftSize = 256;
+            analyserBRef.current = audioContextRef.current.createAnalyser();
+            analyserBRef.current.fftSize = 256;
+
+            if (audioARef.current && !sourceARef.current) {
+                sourceARef.current = audioContextRef.current.createMediaElementSource(audioARef.current);
+                sourceARef.current.connect(analyserARef.current);
+                analyserARef.current.connect(audioContextRef.current.destination);
+            }
+            if (audioBRef.current && !sourceBRef.current) {
+                sourceBRef.current = audioContextRef.current.createMediaElementSource(audioBRef.current);
+                sourceBRef.current.connect(analyserBRef.current);
+                analyserBRef.current.connect(audioContextRef.current.destination);
+            }
+        }
+        if (audioContextRef.current.state === 'suspended') {
+            audioContextRef.current.resume();
+        }
+    };
+
     useEffect(() => {
         if (!audioARef.current) return;
+        initAudioContext();
         const vol = deckA.volume * (1 - crossfader / 100);
         audioARef.current.volume = Math.max(0, Math.min(1, vol));
         audioARef.current.playbackRate = deckA.pitch;
         
-        // Force load if src changed
         if (audioARef.current.src !== deckA.track?.audio) {
             audioARef.current.load();
         }
 
         if (deckA.isPlaying) {
-            const playPromise = audioARef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Deck A play interrupted or blocked:", error);
-                });
-            }
+            audioARef.current.play().catch(e => console.log("Play A error:", e));
         } else {
             audioARef.current.pause();
         }
@@ -123,26 +201,80 @@ export default function VlsDjMixer() {
 
     useEffect(() => {
         if (!audioBRef.current) return;
+        initAudioContext();
         const vol = deckB.volume * (crossfader / 100);
         audioBRef.current.volume = Math.max(0, Math.min(1, vol));
         audioBRef.current.playbackRate = deckB.pitch;
 
-        // Force load if src changed
         if (audioBRef.current.src !== deckB.track?.audio) {
             audioBRef.current.load();
         }
 
         if (deckB.isPlaying) {
-            const playPromise = audioBRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log("Deck B play interrupted or blocked:", error);
-                });
-            }
+            audioBRef.current.play().catch(e => console.log("Play B error:", e));
         } else {
             audioBRef.current.pause();
         }
     }, [deckB.isPlaying, deckB.volume, deckB.pitch, crossfader, deckB.track]);
+
+    // Sincronización con el Motor de Audio Global (Radio RDMLS/VLS)
+    useEffect(() => {
+        const handleRadioSync = (e) => {
+            if (e.detail && !deckA.isPlaying && !deckB.isPlaying) {
+                if (e.detail.spectrum) {
+                    // Adaptamos de 10 bandas de radio a las barras del mixer (que ahora unificaremos a 10 para coherencia)
+                    setMasterSpectrum(e.detail.spectrum);
+                }
+                if (e.detail.left !== undefined) {
+                    // Convertimos rotación (-45 a 45) a valor 0-100 para AnalogVUMeter
+                    const valL = ((e.detail.left + 45) / 90) * 100;
+                    const valR = ((e.detail.right + 45) / 90) * 100;
+                    setVuLevels({ left: valL, right: valR });
+                }
+            }
+        };
+        window.addEventListener('vls-audio-spectrum-sync', handleRadioSync);
+        return () => window.removeEventListener('vls-audio-spectrum-sync', handleRadioSync);
+    }, [deckA.isPlaying, deckB.isPlaying]);
+
+    // Spectrometer Loop
+    useEffect(() => {
+        const update = () => {
+            if (!deckA.isPlaying && !deckB.isPlaying) {
+                animationRef.current = requestAnimationFrame(update);
+                return;
+            }
+
+            const dataA = new Uint8Array(analyserARef.current?.frequencyBinCount || 0);
+            const dataB = new Uint8Array(analyserBRef.current?.frequencyBinCount || 0);
+            
+            if (analyserARef.current) analyserARef.current.getByteFrequencyData(dataA);
+            if (analyserBRef.current) analyserBRef.current.getByteFrequencyData(dataB);
+
+            // Combine data based on crossfader
+            const mixA = 1 - crossfader / 100;
+            const mixB = crossfader / 100;
+            
+            const newSpectrum = Array(10).fill(0).map((_, i) => {
+                const valA = dataA[i * 2] || 0;
+                const valB = dataB[i * 2] || 0;
+                return (valA * mixA + valB * mixB) / 255 * 100;
+            });
+            setMasterSpectrum(newSpectrum);
+
+            const avgA = dataA.reduce((a, b) => a + b, 0) / (dataA.length || 1);
+            const avgB = dataB.reduce((a, b) => a + b, 0) / (dataB.length || 1);
+            
+            setVuLevels({
+                left: (avgA * mixA + avgB * mixB) / 128 * 100, // Normalized roughly
+                right: (avgA * mixA + avgB * mixB) / 140 * 100
+            });
+
+            animationRef.current = requestAnimationFrame(update);
+        };
+        animationRef.current = requestAnimationFrame(update);
+        return () => cancelAnimationFrame(animationRef.current);
+    }, [crossfader, deckA.isPlaying, deckB.isPlaying]);
 
     const processFile = (file) => {
         if (!file) return;
@@ -253,18 +385,39 @@ export default function VlsDjMixer() {
                 }}>
                     <div style={{ fontSize: '0.7rem', color: '#38bdf8', fontWeight: '900', letterSpacing: '2px' }}>MASTER MIXER</div>
                     
-                    {/* VU Meters */}
-                    <div style={{ display: 'flex', gap: '10px', height: '100px', alignItems: 'flex-end', background: '#000', padding: '10px', borderRadius: '8px', border: '1px solid #334155' }}>
-                        {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} style={{ 
-                                width: '6px', 
-                                height: (deckA.isPlaying || deckB.isPlaying) ? `${Math.random() * 80 + 10}%` : '5%', 
-                                background: i > 4 ? '#ef4444' : (i > 2 ? '#fbbf24' : '#10b981'), 
-                                borderRadius: '2px',
-                                transition: 'height 0.1s'
-                            }}></div>
-                        ))}
+                    {/* VU Meters Real-time */}
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '10px' }}>
+                        <AnalogVUMeter label="L" value={vuLevels.left} />
+                        <AnalogVUMeter label="R" value={vuLevels.right} />
                     </div>
+
+                    <div style={{ display: 'flex', gap: '8px', height: '100px', width: '100%', alignItems: 'flex-end', background: '#000', padding: '10px', borderRadius: '8px', border: '1px solid #334155', position: 'relative', overflow: 'hidden' }}>
+                        {/* Track Title Display in Center */}
+                        <div style={{ position: 'absolute', top: '5px', left: 0, width: '100%', textAlign: 'center', zIndex: 10 }}>
+                            <div style={{ fontSize: '0.5rem', color: '#10b981', fontWeight: '900', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', padding: '0 5px', animation: 'vls-marquee 3s linear infinite' }}>
+                                {deckA.isPlaying ? `PLAYING A: ${deckA.track?.title}` : (deckB.isPlaying ? `PLAYING B: ${deckB.track?.title}` : 'IDLE - READY TO MIX')}
+                            </div>
+                        </div>
+                        <div style={{ display: 'flex', gap: '3px', flex: 1, height: '100%', alignItems: 'flex-end' }}>
+                            {masterSpectrum.map((level, i) => (
+                                <div key={i} style={{ 
+                                    flex: 1, 
+                                    height: `${Math.max(5, level)}%`, 
+                                    background: i > 10 ? '#ef4444' : (i > 8 ? '#fbbf24' : '#10b981'), 
+                                    borderRadius: '1px',
+                                    transition: 'height 0.05s ease-out'
+                                }}></div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <style>{`
+                        @keyframes vls-marquee {
+                            0% { opacity: 1; transform: translateX(10%); }
+                            50% { opacity: 0.8; transform: translateX(0); }
+                            100% { opacity: 1; transform: translateX(-10%); }
+                        }
+                    `}</style>
 
                     {/* Crossfader */}
                     <div style={{ width: '100%' }}>

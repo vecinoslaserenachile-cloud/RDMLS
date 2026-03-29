@@ -173,7 +173,17 @@ function MuralFrame({ position, rotation, texturePath, title, description, size 
   );
 }
 
-function PalominosExhibition({ setTargetPos, muralImages }) {
+function PalominosExhibition({ setTargetPos, muralImages = [] }) {
+  if (!muralImages || muralImages.length < 4) {
+    console.warn("VLS Master: muralImages incomplete or missing, using fallbacks.");
+    muralImages = [
+      muralImages[0] || '/homenaje/palominos_mural_humanity_1773806652665.png',
+      muralImages[1] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_2.jpg',
+      muralImages[2] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_3.jpg',
+      muralImages[3] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_4.jpg'
+    ];
+  }
+
   return (
     <group>
       {/* Suelo de mármol/piedra del museo */}

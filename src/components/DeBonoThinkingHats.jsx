@@ -43,11 +43,19 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
     const [audioProgress, setAudioProgress] = useState(0);
     const [currentTime, setCurrentTime] = useState("0:00");
 
-    const musicRef = useRef(new Audio());
+    const audioContextRef = useRef(null);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);
         window.addEventListener('resize', handleResize);
+        
+        // Initialize AudioContext on first interaction
+        const initAudio = () => {
+            if (!audioContextRef.current) {
+                audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        };
+        window.addEventListener('click', initAudio, { once: true });
         
         const handleStop = () => {
             musicRef.current.pause();
@@ -93,44 +101,35 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
 
     const toggleMusic = async (idx) => {
         try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            const ctx = new AudioContext();
-            if (ctx.state === 'suspended') await ctx.resume();
+            if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+                await audioContextRef.current.resume();
+            }
 
             if (idx === activeIdx && isPlaying) {
-                // Esperar promise activo antes de pausar
-                if (playPromiseRef.current) {
-                    await playPromiseRef.current.catch(() => {});
-                }
                 musicRef.current.pause();
                 setIsPlaying(false);
             } else {
-                // Pausar limpiamente antes de cambiar track
-                if (playPromiseRef.current) {
-                    await playPromiseRef.current.catch(() => {});
-                }
                 musicRef.current.pause();
                 setActiveIdx(idx);
                 setIsPlaying(false);
+                
                 const directUrl = SONGS[idx].url;
                 musicRef.current.src = directUrl;
                 musicRef.current.load();
                 
-                // Use a proper promise handling for play()
-                playPromiseRef.current = musicRef.current.play();
-                if (playPromiseRef.current !== undefined) {
-                    playPromiseRef.current.then(() => {
+                const playPromise = musicRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
                         setIsPlaying(true);
+                        console.log(`VLS Audio: Sintonizando ${SONGS[idx].title}`);
                     }).catch(error => {
-                        console.error("Audio playback failed:", error);
+                        console.warn("VLS Audio: Error sintonía digital:", error.message);
                         setIsPlaying(false);
                     });
                 }
             }
         } catch (err) {
-            if (err.name !== 'AbortError') {
-                console.warn("Lab audio:", err.message);
-            }
+            console.warn("VLS Audio Trace:", err.message);
             setIsPlaying(false);
         }
     };

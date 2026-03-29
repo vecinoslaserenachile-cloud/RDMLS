@@ -15,12 +15,14 @@ export default function StickerManager() {
         },
         { 
             id: 2, 
-            name: 'Patrimonio de La Serena', 
+            name: 'Patrimonio & Elite VLS', 
             stickers: [
-                { id: 201, url: '/avatars/alpino.png', label: 'Hito Histórico' },
-                { id: 202, url: '/avatars/kevin_costanera.png', label: 'Bahía Limpia' }
+                { id: 201, url: '/avatars/alpino.png', label: 'Alpino: Informática & Cerro' },
+                { id: 202, url: '/avatars/serenito_v3.png', label: 'Serenito: Líder Smart' },
+                { id: 203, url: '/avatars/farino.png', label: 'Fariño: Tu Guía Pro' },
+                { id: 204, url: '/avatars/kevin_costanera.png', label: 'Kevin Costanera' }
             ],
-            downloads: 850
+            downloads: 1420
         }
     ]);
 

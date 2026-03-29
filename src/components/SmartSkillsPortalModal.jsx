@@ -225,7 +225,7 @@ export default function SmartSkillsPortalModal({ onClose }) {
                         </div>
                     )}
 
-                    {/* TAB 4: Red Serena Mundo (Diáspora y Nuevos Residentes) */}
+                    {/* TAB 4: Red Serena Mundo (Diáspora y Nuevos Vecinos) */}
                     {activeTab === 'diaspora' && (
                         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
@@ -243,7 +243,7 @@ export default function SmartSkillsPortalModal({ onClose }) {
 
                                 <div style={{ background: highContrast ? '#111' : 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(0,0,0,0.8))', padding: '2rem', borderRadius: '24px', border: `1px solid ${highContrast ? '#FFF' : '#10b981'}`, textAlign: 'center' }}>
                                     <Users size={48} color={highContrast ? '#FFF' : "#10b981"} style={{ margin: '0 auto 1.5rem auto' }} />
-                                    <h4 style={{ color: highContrast ? '#FFF' : 'white', fontSize: '1.5rem', marginBottom: '1.5rem' }}>Nuevos Colonos y Residentes</h4>
+                                    <h4 style={{ color: highContrast ? '#FFF' : 'white', fontSize: '1.5rem', marginBottom: '1.5rem' }}>Nuevos Colonos y Vecinos</h4>
                                     <p style={{ color: textColor, marginBottom: '2rem' }}>¿Acabas de llegar a establecerte en La Serena rural o urbana? Accede aquí a redes de contacto primarias, recomendaciones de oficios locales y grupos de adaptación a tu nuevo barrio.</p>
                                     <button className="btn" style={{ background: highContrast ? '#FFF' : '#10b981', color: '#000', fontWeight: 'bold', width: '100%', padding: '1rem', borderRadius: '12px', border: 'none' }}>Bienvenido a tu Nueva Ciudad</button>
                                 </div>

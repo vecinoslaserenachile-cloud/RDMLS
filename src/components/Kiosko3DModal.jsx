@@ -112,81 +112,27 @@ function Newspaper3D({ position, rotation, textureUrl, title, color, url }) {
     );
 }
 
-// Procedural Kiosk Component
-function KioskStructure() {
+// Real Kiosk 3D Model Component
+function RealKiosk3D() {
+    const { scene } = useGLTF('/models/kiosko_periodicos_3d.glb');
     return (
-        <group>
-            {/* Octagonal Base */}
-            <mesh position={[0, -1.9, 0]} receiveShadow>
-                <cylinderGeometry args={[2.2, 2.5, 0.2, 8]} />
-                <meshStandardMaterial color="#1e293b" roughness={0.5} />
-            </mesh>
-
-            {/* Main Body (Lower part) */}
-            <mesh position={[0, -1, 0]} castShadow receiveShadow>
-                <cylinderGeometry args={[1.8, 1.8, 1.5, 8]} />
-                <meshStandardMaterial color="#065f46" roughness={0.3} metalness={0.2} />
-            </mesh>
-
-            {/* Counter */}
-            <mesh position={[0, -0.2, 0]} castShadow receiveShadow>
-                <cylinderGeometry args={[2.1, 1.9, 0.15, 8]} />
-                <meshStandardMaterial color="#047857" roughness={0.1} metalness={0.5} />
-            </mesh>
-
-            {/* Pillars */}
-            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <mesh 
-                    key={i} 
-                    position={[
-                        Math.cos((i * Math.PI) / 4) * 1.7, 
-                        0.75, 
-                        Math.sin((i * Math.PI) / 4) * 1.7
-                    ]} 
-                    castShadow
-                >
-                    <boxGeometry args={[0.15, 1.8, 0.15]} />
-                    <meshStandardMaterial color="#064e3b" />
-                </mesh>
-            ))}
-
-            {/* Roof (Green Octagon) */}
-            <mesh position={[0, 1.8, 0]} castShadow>
-                <cylinderGeometry args={[2.3, 2.0, 0.6, 8]} />
-                <meshStandardMaterial color="#065f46" roughness={0.2} metalness={0.4} />
-            </mesh>
-            
-            {/* Top decorative part */}
-            <mesh position={[0, 2.2, 0]} castShadow>
-                <cylinderGeometry args={[1.2, 2.3, 0.4, 8]} />
-                <meshStandardMaterial color="#059669" />
-            </mesh>
-
-            {/* "vecinoslaserena.cl" Sign */}
-            <mesh position={[0, 1.5, 1.8]} rotation={[0, 0, 0]}>
-                <boxGeometry args={[2.5, 0.4, 0.05]} />
-                <meshStandardMaterial color="#064e3b" />
-                <Text
-                    position={[0, 0, 0.03]}
-                    fontSize={0.18}
-                    color="#fcd34d"
-                    font="https://fonts.gstatic.com/s/outfit/v11/Q8bc8v06WWiYxKRYmZSQ_mS7.woff"
-                >
-                    www.vecinoslaserena.cl
-                </Text>
-            </mesh>
+        <group position={[0, -2, 0]} scale={[1.8, 1.8, 1.8]}>
+            <primitive object={scene} castShadow receiveShadow />
         </group>
     );
 }
 
 function SerenitoAvatar() {
-    const { scene } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    const { scene } = useGLTF('/models/Serenito_polera_blancacuerpo_entero.glb');
     return (
-        <group position={[0, -0.3, 0]} scale={1.8} rotation={[0, Math.PI, 0]}>
+        <group position={[0.8, -0.2, 1.2]} scale={1.2} rotation={[0, Math.PI * 0.8, 0]}>
             <primitive object={scene} />
         </group>
     );
 }
+
+useGLTF.preload('/models/kiosko_periodicos_3d.glb');
+useGLTF.preload('/models/Serenito_polera_blancacuerpo_entero.glb');
 
 export default function Kiosko3DModal({ onClose, diarios }) {
     const [viewMode, setViewMode] = useState('orbit');
@@ -261,7 +207,7 @@ export default function Kiosko3DModal({ onClose, diarios }) {
                     <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
                     <group position={[0, 0, 0]}>
-                        <KioskStructure />
+                        <RealKiosk3D />
                         <SerenitoAvatar />
                         <DulcesVLS3D />
 

@@ -26,6 +26,7 @@ const APOYO_PACKS = [
     { id: 'apoyo_vecino',   fichas: 150,  priceCLP: 2490,    priceUSD: 2.75,  label: 'Vecino Activo',   popular: true,  color: '#38bdf8', desc: 'Gran espaldarazo a los creadores' },
     { id: 'apoyo_comunidad',fichas: 400,  priceCLP: 5990,    priceUSD: 6.60,  label: 'Comunidad Fuerte',color: '#10b981', desc: 'Aporte de alto impacto social' },
     { id: 'apoyo_fundador', fichas: 1200, priceCLP: 14990,   priceUSD: 16.50, label: 'Padrino Smart',   color: '#f59e0b', desc: 'Financiador VIP de VLS', badge: 'MÁXIMO PODER' },
+    { id: 'apoyo_libre',    fichas: 0,    priceCLP: 0,       priceUSD: 0,     label: 'Vecino del Mundo',color: '#8b5cf6', desc: 'Aporte libre sin límites (Tú decides)', isCustom: true, badge: 'INTERNACIONAL' },
 ];
 
 // ─── MODELO FREEMIUM GASTRO (Fichas por uso extra) ───────────────────────────
@@ -40,8 +41,8 @@ const GASTRO_FICHAS = [
 // ─── URLs de backend (Cloudflare Functions) ─────────────────────────────────
 const API_BASE = '/api/vecinity-pay';
 
-export default function VecnityPay({ onClose, currentUser }) {
-    const [tab, setTab] = useState('fichas');           // 'fichas' | 'subs'
+export default function VecnityPay({ onClose, currentUser, initialOrder }) {
+    const [tab, setTab] = useState(initialOrder ? 'store' : 'fichas');
     const [engine, setEngine] = useState('national');   // 'national' (Flow) | 'global' (PayPal)
     const [selected, setSelected] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -50,6 +51,7 @@ export default function VecnityPay({ onClose, currentUser }) {
     const [promoCode, setPromoCode] = useState('');
     const [promoApplied, setPromoApplied] = useState(null); // { message, type: 'discount' | 'fichas', val }
     const [isCheckingCode, setIsCheckingCode] = useState(false);
+    const [customAmount, setCustomAmount] = useState(''); // Monto para aporte libre
 
     // Sincronización de Saldo Local si no se provee vía props
     const currentBalance = parseInt(localStorage.getItem('vls_tokens') || '0');
@@ -66,7 +68,17 @@ export default function VecnityPay({ onClose, currentUser }) {
         // Simulamos la verificación de los 10 códigos maestros mencionados por el usuario
         // "obviamente yo manejo ese código... siempre son 10 códigos que funcionan"
         setTimeout(() => {
+            if (tab === 'apoyo') {
+                setError('Los aportes cívicos solidarios no aplican para cupones. ¡Gracias por tu donación!');
+                setIsCheckingCode(false);
+                return;
+            }
+
             const VALID_CODES = {
+                'TEST99': { type: 'discount', val: 0.99, msg: '¡Modo Test: 99% OFF (Mín Flow $350)!' },
+                'SEMANASANTA_20': { type: 'discount', val: 0.20, msg: '¡Pascua: 20% OFF en tu suscripción!' },
+                'SEMANASANTA_50': { type: 'discount', val: 0.50, msg: '¡Semana Santa Gold: 50% OFF!' },
+                'SEMANASANTA_75': { type: 'discount', val: 0.75, msg: '¡Beneficio Mayor: 75% OFF!' },
                 'SERENITO2026': { type: 'fichas', val: 50, msg: '¡Código Maestro Validado! +50 Fichas VLS' },
                 'PUERTASMART': { type: 'discount', val: 0.3, msg: '¡Descuento 30% corporativo aplicado!' },
                 'VECINOSMART': { type: 'fichas', val: 100, msg: '¡Bono Fundador: +100 Fichas VLS!' },
@@ -104,19 +116,38 @@ export default function VecnityPay({ onClose, currentUser }) {
     };
 
     const handlePay = async () => {
-        if (!selected) return;
+        if (tab !== 'store' && !selected) return;
         setLoading(true);
         setError(null);
 
         try {
-            const payload = {
+            let finalCLP = selected?.isCustom ? parseFloat(customAmount) || 0 : selected?.priceCLP || 0;
+            let finalUSD = selected?.isCustom ? parseFloat(customAmount) || 0 : selected?.priceUSD || 0;
+
+            if (promoApplied?.type === 'discount' && tab !== 'store') {
+                finalCLP = finalCLP * (1 - promoApplied.val);
+                finalUSD = finalUSD * (1 - promoApplied.val);
+            }
+
+            finalCLP = Math.max(350, Math.round(finalCLP)); // Mínimo de Flow $350 CLP
+
+            const payload = tab === 'store' && initialOrder ? {
+                orderId: initialOrder.orderId,
+                itemId: initialOrder.orderId, // Required by backend validation
+                amountCLP: initialOrder.amount, // TODO: Store discount
+                type: 'store_purchase',
+                items: initialOrder.items,
+                engine, // Required by backend validation
+                userId: currentUser?.uid || 'guest', // Required by backend validation
+                email: currentUser?.email || 'guest@farito.cl'
+            } : {
                 itemId: selected.id,
                 engine,
                 userId: currentUser?.uid || 'guest',
                 email: currentUser?.email || 'guest@farito.cl',
-                amountCLP: selected.priceCLP,
-                amountUSD: selected.priceUSD,
-                type: tab, // 'fichas' o 'subs'
+                amountCLP: finalCLP,
+                amountUSD: Number(finalUSD.toFixed(2)),
+                type: tab,
                 fichas: selected.fichas || 0,
                 promoCode: promoApplied ? promoCode : null
             };
@@ -127,20 +158,68 @@ export default function VecnityPay({ onClose, currentUser }) {
                 body: JSON.stringify(payload),
             });
 
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.detail || errData.error || 'Error al conectar con el servidor de pagos');
+            }
+
             const data = await res.json();
 
             if (data.redirectUrl) {
+                // Guarda las fichas pendientes en localStorage para acreditarlas en el callback
+                if (tab !== 'store' && selected?.fichas) {
+                    localStorage.setItem('vls_pending_fichas', selected.fichas.toString());
+                } else {
+                    localStorage.removeItem('vls_pending_fichas');
+                }
+
+                // ABRE LA PASARELA REAL (Flow/PayPal)
                 window.open(data.redirectUrl, '_blank', 'noopener,noreferrer');
-                setStatus('pending');
+                
+                // UX: Muestra estado pendiente hasta que el Webhook procese el pago real
+                setTimeout(() => {
+                    setLoading(false);
+                    setStatus('pending');
+                }, 1000);
             } else {
-                throw new Error(data.message || 'Error al crear la orden');
+                throw new Error(data.detail || data.error || 'Error desconocido al generar la orden de pago');
             }
+
         } catch (err) {
             setError(err.message);
-        } finally {
             setLoading(false);
         }
     };
+
+    // ── UI: Estado de éxito final ───────────────────────────────────────────
+    if (status === 'success') {
+        return (
+            <div style={overlay}>
+                <div style={{ ...card, maxWidth: '550px', textAlign: 'center', border: '2px solid #10b981', boxShadow: '0 0 50px rgba(16,185,129,0.2)' }}>
+                    <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>✨</div>
+                    <h2 style={{ margin: '0 0 1rem 0', color: '#10b981', fontSize: '2.2rem', fontWeight: 950 }}>TRANSACCIÓN EXITOSA</h2>
+                    
+                    {tab === 'store' && initialOrder ? (
+                        <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', marginBottom: '2rem', textAlign: 'left' }}>
+                            <div style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: 900, marginBottom: '10px' }}>ORDEN CONFIRMADA: {initialOrder.orderId}</div>
+                            {initialOrder.items.map((it, idx) => (
+                                <div key={idx} style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'white' }}>{it.quantity}x {it.name}</div>
+                            ))}
+                            <div style={{ marginTop: '15px', fontSize: '0.8rem', color: '#94a3b8' }}>Se ha enviado la orden al taller de producción VLS.</div>
+                        </div>
+                    ) : (
+                        <p style={{ color: '#cbd5e1', lineHeight: 1.6, marginBottom: '2rem', fontSize: '1.1rem' }}>
+                            Su recarga de fichas o suscripción ha sido procesada correctamente. El saldo se actualizará en su billetera en segundos.
+                        </p>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '15px' }}>
+                        <button onClick={onClose} style={{ ...btnSecondary, background: '#10b981', color: '#0f172a', border: 'none', padding: '1.2rem', fontWeight: 950 }}>FINALIZAR TRANSACCIÓN</button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 
     // ── UI: Estado de espera post-redirección ───────────────────────────────
     if (status === 'pending') {
@@ -196,14 +275,18 @@ export default function VecnityPay({ onClose, currentUser }) {
 
                 {/* ── Selector de tipo de producto ───────────────────────── */}
                 <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem', flexWrap: 'wrap' }}>
+                    {initialOrder && (
+                        <button onClick={() => setTab('store')} style={{ ...tabBtn, background: tab === 'store' ? '#10b981' : 'rgba(16,185,129,0.1)', color: tab === 'store' ? '#0f172a' : '#10b981', borderColor: '#10b981' }}>
+                            🛒 MI PEDIDO VLS
+                        </button>
+                    )}
                     {[['fichas', '🎟️ Pack de Fichas VLS'], ['subs', '🏢 Suscripciones Pro'], ['apoyo', '🤝 Apoyo Ciudadano']].map(([key, label]) => (
-                        <button key={key} onClick={() => { setTab(key); setSelected(null); }} style={{ ...tabBtn, background: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.05)', color: tab === key ? '#0f172a' : '#94a3b8', borderColor: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>
+                        <button key={key} onClick={() => { setTab(key); setSelected(null); setPromoApplied(null); setPromoCode(''); setError(null); }} style={{ ...tabBtn, background: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.05)', color: tab === key ? '#0f172a' : '#94a3b8', borderColor: tab === key ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>
                             {label}
                         </button>
                     ))}
                 </div>
 
-                {/* ── Banners Informativos ──────────────────────────── */}
                 {tab === 'subs' && (
                     <div style={{ background: 'linear-gradient(135deg, rgba(245,158,11,0.1), rgba(239,68,68,0.05))', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '16px', padding: '1rem 1.5rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
                         <Gift size={20} color="#f59e0b" style={{ flexShrink: 0, marginTop: '2px' }} />
@@ -213,51 +296,96 @@ export default function VecnityPay({ onClose, currentUser }) {
                     </div>
                 )}
 
+                {tab === 'apoyo' && (
+                    <div style={{ background: 'linear-gradient(135deg, rgba(56,189,248,0.1), rgba(139,92,246,0.05))', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '16px', padding: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+                        <Globe size={24} color="#38bdf8" style={{ flexShrink: 0, marginTop: '4px' }} />
+                        <div style={{ fontSize: '0.85rem', color: '#cbd5e1', lineHeight: 1.6 }}>
+                            <strong style={{ color: 'white', fontSize: '0.95rem', display: 'block', marginBottom: '5px' }}>Sovereignty & Code: ¿Por qué apoyarnos?</strong>
+                            Todo el portal es <strong>"Home-Made"</strong> (Hecho en La Serena), pero con colaboración global de ingenieros e IA del mundo. Tus aportes logran mantener a flote la pesada logística de red, las facturas de infraestructura Cloud y más de <strong style={{color: '#10b981'}}>75.347 líneas de código limpio</strong> que hacen funcionar este ecosistema ciudadano revolucionario con independencia absoluta.
+                        </div>
+                    </div>
+                )}
+
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '2rem' }}>
 
                     {/* ── Panel izquierdo: Lista de productos ────────────── */}
                     <div>
-                        <h3 style={{ margin: '0 0 1rem 0', color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px' }}>
-                            {tab === 'fichas' ? 'SELECCIONA TU PACK' : (tab === 'apoyo' ? 'SELECCIONA TU APORTE' : 'PLAN PROFESIONAL')}
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {items.map(item => (
-                                <button key={item.id} onClick={() => setSelected(item)} style={{
-                                    background: selected?.id === item.id ? `${item.color}18` : 'rgba(255,255,255,0.03)',
-                                    border: `2px solid ${selected?.id === item.id ? item.color : 'rgba(255,255,255,0.07)'}`,
-                                    borderRadius: '16px', padding: '1.2rem 1.5rem', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    color: 'white', textAlign: 'left', transition: 'all 0.2s', position: 'relative'
-                                }}>
-                                    {(item.popular || item.badge) && (
-                                        <div style={{ position: 'absolute', top: '-10px', left: '20px', background: item.color, color: '#0f172a', fontSize: '0.65rem', fontWeight: '900', padding: '2px 10px', borderRadius: '10px' }}>
-                                            {item.badge || 'MÁS POPULAR'}
+                        {tab === 'store' && initialOrder ? (
+                            <div className="animate-fade-in" style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.2)', borderRadius: '24px', padding: '2rem' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                    <h4 style={{ margin: 0, color: '#10b981' }}>DETALLE DEL CARRITO PREVIO</h4>
+                                    <span style={{ fontSize: '0.7rem', background: '#10b981', color: '#0f172a', padding: '2px 8px', borderRadius: '50px', fontWeight: 900 }}>{initialOrder.orderId}</span>
+                                </div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                    {initialOrder.items.map((item, idx) => (
+                                        <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <div>
+                                                <div style={{ fontWeight: 900, color: 'white' }}>{item.name}</div>
+                                                <div style={{ fontSize: '0.75rem', color: '#64748b' }}>Cant: {item.quantity} · ${item.price.toLocaleString()} c/u</div>
+                                            </div>
+                                            <div style={{ fontWeight: 950, color: '#10b981' }}>${(item.price * item.quantity).toLocaleString()}</div>
+                                        </div>
+                                    ))}
+                                    {initialOrder.shipping && (
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '1rem', color: '#94a3b8', fontSize: '0.9rem' }}>
+                                            <span>Envío: {initialOrder.shipping.name}</span>
+                                            <span>${initialOrder.shipping.price.toLocaleString()}</span>
                                         </div>
                                     )}
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        {tab === 'subs' ? (
-                                            <div style={{ fontSize: '2rem' }}>{item.icon}</div>
-                                        ) : (
-                                            <div style={{ background: `${item.color}20`, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                {tab === 'apoyo' ? <Heart size={24} color={item.color} /> : <Ticket size={24} color={item.color} />}
+                                </div>
+                                <div style={{ marginTop: '2rem', textAlign: 'center', background: 'rgba(56, 189, 248, 0.05)', padding: '1rem', borderRadius: '15px' }}>
+                                    <p style={{ margin: 0, fontSize: '0.8rem', color: '#38bdf8' }}>Este pago se vinculará a tu pedido para iniciar la producción inmediata.</p>
+                                </div>
+                            </div>
+                        ) : (
+                            <>
+                                <h3 style={{ margin: '0 0 1rem 0', color: '#94a3b8', fontSize: '0.8rem', letterSpacing: '2px' }}>
+                                    {tab === 'fichas' ? 'SELECCIONA TU PACK' : (tab === 'apoyo' ? 'SELECCIONA TU APORTE' : 'PLAN PROFESIONAL')}
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    {items.map(item => (
+                                        <button key={item.id} onClick={() => setSelected(item)} style={{
+                                            background: selected?.id === item.id ? `${item.color}18` : 'rgba(255,255,255,0.03)',
+                                            border: `2px solid ${selected?.id === item.id ? item.color : 'rgba(255,255,255,0.07)'}`,
+                                            borderRadius: '16px', padding: '1.2rem 1.5rem', cursor: 'pointer',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                            color: 'white', textAlign: 'left', transition: 'all 0.2s', position: 'relative'
+                                        }}>
+                                            {(item.popular || item.badge) && (
+                                                <div style={{ position: 'absolute', top: '-10px', left: '20px', background: item.color, color: '#0f172a', fontSize: '0.65rem', fontWeight: '900', padding: '2px 10px', borderRadius: '10px' }}>
+                                                    {item.badge || 'MÁS POPULAR'}
+                                                </div>
+                                            )}
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                {tab === 'subs' ? (
+                                                    <div style={{ fontSize: '2rem' }}>{item.icon}</div>
+                                                ) : (
+                                                    <div style={{ background: `${item.color}20`, width: '48px', height: '48px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        {tab === 'apoyo' ? <Heart size={24} color={item.color} /> : <Ticket size={24} color={item.color} />}
+                                                    </div>
+                                                )}
+                                                <div>
+                                                    <div style={{ fontWeight: '800', fontSize: '1.05rem' }}>
+                                                        {item.label}
+                                                        {item.fichas && <span style={{ color: item.color, marginLeft: '8px' }}>{item.fichas} fichas</span>}
+                                                    </div>
+                                                    <div style={{ color: '#64748b', fontSize: '0.8rem', marginTop: '3px' }}>{item.desc}</div>
+                                                </div>
                                             </div>
-                                        )}
-                                        <div>
-                                            <div style={{ fontWeight: '800', fontSize: '1.05rem' }}>
-                                                {item.label}
-                                                {item.fichas && <span style={{ color: item.color, marginLeft: '8px' }}>{item.fichas} fichas</span>}
+                                            <div style={{ textAlign: 'right' }}>
+                                                <div style={{ fontSize: '1.3rem', fontWeight: '900', color: item.color }}>
+                                                    {item.isCustom ? (
+                                                        <span style={{ fontSize: '1rem' }}>Monto Libre</span>
+                                                    ) : (
+                                                        <>{engine === 'national' ? `$${item.priceCLP.toLocaleString('es-CL')} CLP` : `USD ${item.priceUSD.toFixed(2)}`}{tab === 'subs' && <span style={{fontSize: '0.8rem', opacity: 0.8}}> / mes</span>}</>
+                                                    )}
+                                                </div>
                                             </div>
-                                            <div style={{ color: '#64748b', fontSize: '0.8rem', marginTop: '3px' }}>{item.desc}</div>
-                                        </div>
-                                    </div>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <div style={{ fontSize: '1.3rem', fontWeight: '900', color: item.color }}>
-                                            {engine === 'national' ? `$${item.priceCLP.toLocaleString('es-CL')} CLP` : `USD ${item.priceUSD.toFixed(2)}`}
-                                        </div>
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </>
+                        )}
                     </div>
 
                     {/* ── Panel derecho: Motor de pago + Resumen ─────────── */}
@@ -300,14 +428,39 @@ export default function VecnityPay({ onClose, currentUser }) {
                                 </div>
                                 <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', marginTop: '8px', paddingTop: '8px', display: 'flex', justifyContent: 'space-between' }}>
                                     <span style={{ fontWeight: '800', color: 'white' }}>TOTAL</span>
-                                    <span style={{ fontWeight: '900', color: '#38bdf8', fontSize: '1.1rem' }}>
-                                        {(() => {
-                                            const rawPrice = engine === 'national' ? selected.priceCLP : selected.priceUSD;
-                                            const finalPrice = promoApplied?.type === 'discount' ? rawPrice * (1 - promoApplied.val) : rawPrice;
-                                            return engine === 'national' ? `$${Math.round(finalPrice).toLocaleString('es-CL')} CLP` : `USD ${finalPrice.toFixed(2)}`;
-                                        })()}
+                                    <span style={{ fontWeight: '900', color: '#10b981', fontSize: '1.5rem' }}>
+                                        {tab === 'store' && initialOrder ? (
+                                            `$${initialOrder.amount.toLocaleString('es-CL')} CLP`
+                                        ) : (
+                                            (() => {
+                                                if (selected.isCustom) {
+                                                    const val = parseFloat(customAmount) || 0;
+                                                    return engine === 'national' ? `$${val.toLocaleString('es-CL')} CLP` : `USD ${val.toFixed(2)}`;
+                                                }
+                                                const rawPrice = engine === 'national' ? selected.priceCLP : selected.priceUSD;
+                                                const finalPrice = promoApplied?.type === 'discount' ? rawPrice * (1 - promoApplied.val) : rawPrice;
+                                                const suffix = tab === 'subs' ? ' / mes' : '';
+                                                return (engine === 'national' ? `$${Math.round(finalPrice).toLocaleString('es-CL')} CLP` : `USD ${finalPrice.toFixed(2)}`) + suffix;
+                                            })()
+                                        )}
                                     </span>
                                 </div>
+
+                                {selected.isCustom && (
+                                    <div style={{ marginTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
+                                        <label style={{ fontSize: '0.75rem', color: '#8b5cf6', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>
+                                            DEFINE TU APORTE ({engine === 'national' ? 'Pesos Chilenos' : 'Dólares'})
+                                        </label>
+                                        <input 
+                                            type="number"
+                                            min="1"
+                                            placeholder={engine === 'national' ? 'Ej. 5000' : 'Ej. 10'}
+                                            value={customAmount} 
+                                            onChange={e => setCustomAmount(e.target.value)}
+                                            style={{ ...inputBase, width: '100%', fontSize: '1.2rem', padding: '12px', borderColor: '#8b5cf6', background: 'rgba(139, 92, 246, 0.1)' }}
+                                        />
+                                    </div>
+                                )}
 
                                 {/* Casilla de Código (Petición Audio 1742) */}
                                 <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
@@ -347,16 +500,16 @@ export default function VecnityPay({ onClose, currentUser }) {
                         {/* Botón de pago */}
                         <button
                             onClick={handlePay}
-                            disabled={!selected || loading}
+                            disabled={tab !== 'store' && (!selected || loading || (selected.isCustom && (!customAmount || parseFloat(customAmount) <= 0)))}
                             style={{
-                                background: selected ? 'linear-gradient(135deg, #38bdf8, #0ea5e9)' : 'rgba(255,255,255,0.05)',
-                                color: selected ? '#0f172a' : '#475569',
+                                background: (selected || tab === 'store') ? 'linear-gradient(135deg, #10b981, #059669)' : 'rgba(255,255,255,0.05)',
+                                color: (selected || tab === 'store') ? '#0f172a' : '#475569',
                                 border: 'none', borderRadius: '16px', padding: '1.2rem',
-                                fontWeight: '900', fontSize: '1.1rem', cursor: selected ? 'pointer' : 'not-allowed',
-                                transition: 'all 0.2s', boxShadow: selected ? '0 10px 30px rgba(56,189,248,0.3)' : 'none'
+                                fontWeight: '900', fontSize: '1.1rem', cursor: (selected || tab === 'store') ? 'pointer' : 'not-allowed',
+                                transition: 'all 0.2s', boxShadow: (selected || tab === 'store') ? '0 10px 30px rgba(16,185,129,0.3)' : 'none'
                             }}
                         >
-                            {loading ? <Loader size={20} className="spin" /> : <><Shield size={20} /> {selected ? 'Confirmar Pago Seguro' : 'Selecciona un pack'}</>}
+                            {loading ? <Loader size={20} className="spin" /> : <><Shield size={20} /> {(selected || tab === 'store') ? 'Confirmar Pago Seguro' : 'Selecciona un pack'}</>}
                         </button>
                     </div>
                 </div>

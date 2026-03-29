@@ -32,6 +32,24 @@ export default function HomeLiviano() {
         const params = new URLSearchParams(window.location.search);
         if (params.get('pay_status') === 'success') {
             setShowSuccess(true);
+            
+            // Reclamar las fichas pendientes compradas a través del portal de pagos
+            const pendingFichas = parseInt(localStorage.getItem('vls_pending_fichas') || '0');
+            if (pendingFichas > 0) {
+                const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+                const newTokens = currentTokens + pendingFichas;
+                localStorage.setItem('vls_tokens', newTokens.toString());
+                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+                
+                // Limpiar caché de pago
+                localStorage.removeItem('vls_pending_fichas');
+                
+                // Levantar notificación para disparar el render del confetti o alert
+                window.dispatchEvent(new CustomEvent('vls-payment-success', { 
+                    detail: { type: 'fichas', amount: pendingFichas } 
+                }));
+            }
+
             // Clear params to avoid re-triggering on reload
             window.history.replaceState({}, document.title, window.location.pathname);
         }

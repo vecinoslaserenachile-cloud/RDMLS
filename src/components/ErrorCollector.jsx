@@ -17,7 +17,10 @@ export default function ErrorCollector() {
             'chrome-extension',
             'blob:',
             'Speed test failed',
-            'Error fetching real weather'
+            'Error fetching real weather',
+            'open-meteo.com',
+            'corsproxy.io',
+            'Failed to fetch'
         ];
 
         const addError = (msg, source, lineno, colno, errorObj) => {

@@ -231,7 +231,7 @@
     // VLS repo assets
     IMG.player.src  = 'assets/player.png';
     IMG.enemy.src   = 'assets/enemy.png';
-    IMG.terrain.src = 'assets/terrain.png';
+    IMG.terrain.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/6e1d59e662c94867237851aacb4e5a412bcfe7c1/laserena_1945.jpeg';
     IMG.ficha.src   = 'assets/ficha.png';
     IMG.vitamin.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/assets/vitamin.png';
     // Halcón de Serenito desde repo GitHub
@@ -749,12 +749,14 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Terrain scroll
-        const ts     = 512;
-        const offset = (frames * 3) % ts;
+        // Terrain scroll (Historical La Serena 1945)
         if (IMG.terrain.complete) {
-            for (let x=0; x<canvas.width; x+=ts) for (let y=-ts; y<canvas.height; y+=ts)
-                ctx.drawImage(IMG.terrain, x, y+offset, ts, ts);
+            const tw = canvas.width;
+            const th = (tw / IMG.terrain.width) * IMG.terrain.height;
+            const offset = (frames * 2) % th;
+            for (let y = -th; y < canvas.height; y += th) {
+                ctx.drawImage(IMG.terrain, 0, y + offset, tw, th);
+            }
         }
 
         // Clouds layer 1-2

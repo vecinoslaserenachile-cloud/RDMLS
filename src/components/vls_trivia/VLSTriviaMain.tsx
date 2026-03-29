@@ -189,13 +189,23 @@ export default function VLSTriviaMain({ onClose }: { onClose?: () => void }) {
       setCurrentUser(user);
     });
 
-    const q = query(collection(db, 'leaderboard'), orderBy('totalPoints', 'desc'), orderBy('totalTimeSeconds', 'asc'), limit(20));
+    const q = query(collection(db, 'leaderboard'), limit(100));
     const unsubscribeLeaderboard = onSnapshot(q, (snapshot) => {
       const entries: LeaderboardEntry[] = [];
       snapshot.forEach((doc) => {
         entries.push(doc.data() as LeaderboardEntry);
       });
-      setLeaderboard(entries);
+      
+      // Ordenamiento manual en memoria para evitar el error de Firebase [code=failed-precondition]
+      // Primero por puntos (descendente), luego por tiempo (ascendente)
+      entries.sort((a, b) => {
+        if (b.totalPoints !== a.totalPoints) {
+          return b.totalPoints - a.totalPoints;
+        }
+        return a.totalTimeSeconds - b.totalTimeSeconds;
+      });
+      
+      setLeaderboard(entries.slice(0, 20));
     }, (error) => {
       handleFirestoreError(error, OperationType.LIST, 'leaderboard');
     });

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
 import L from 'leaflet';
-import { X, Navigation, Car, Bus, Bike, Plane, Footprints, Minimize2 } from 'lucide-react';
+import { X, Navigation, Car, Bus, Bike, Plane, Footprints, Minimize2, Award } from 'lucide-react';
 
 const MapController = ({ selectedRoute }) => {
     const map = useMap();
@@ -19,12 +19,15 @@ const MapController = ({ selectedRoute }) => {
     return null;
 };
 
-const serenitoIcon = new L.Icon({
-    iconUrl: '/serenito_v3.png', // Avatar de serenito público
-    iconSize: [60, 60],
-    iconAnchor: [30, 60],
-    popupAnchor: [0, -60]
+const carIcon = new L.Icon({
+    iconUrl: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', // Icono de auto premium
+    iconSize: [45, 45],
+    iconAnchor: [22, 22],
+    popupAnchor: [0, -20],
+    className: 'vls-car-marker'
 });
+
+const serenitoIcon = carIcon; // Fallback for any other reference
 
 export default function DistancesMap({ onClose }) {
     const [selectedRoute, setSelectedRoute] = useState(null);
@@ -181,6 +184,9 @@ export default function DistancesMap({ onClose }) {
                                 {isRDMLS ? 'DISTANCIAS REGIONALES – PORTAL RDMLS' : 'CUADRO DE DISTANCIAS VLS'}
                             </h2>
                             <div style={{ display: 'flex', gap: '12px' }}>
+                                <button onClick={() => window.dispatchEvent(new CustomEvent('open-smart-admin-fixed'))} style={{ background: 'rgba(234, 179, 8, 0.2)', border: 'none', color: '#eab308', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Gestión">
+                                    <Folder size={18} />
+                                </button>
                                 <button onClick={() => setIsMinimized(true)} style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', borderRadius: '50%', width: '35px', height: '35px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Minimizar">
                                     <Minimize2 size={18} />
                                 </button>
@@ -294,7 +300,7 @@ export default function DistancesMap({ onClose }) {
                                             <Marker position={selectedRoute.coords}><Popup>{selectedRoute.name}</Popup></Marker>
                                         </>
                                     )}
-                                    <Marker position={serenitoPos} icon={serenitoIcon}><Popup>Serenito en ruta {isRDMLS ? 'RDMLS' : 'VLS'}</Popup></Marker>
+                                    <Marker position={serenitoPos} icon={carIcon}><Popup>Serenito en ruta {isRDMLS ? 'RDMLS' : 'VLS'}</Popup></Marker>
                                 </MapContainer>
                             </div>
                         </div>
@@ -306,6 +312,16 @@ export default function DistancesMap({ onClose }) {
                 @keyframes pulse_vls_m { from { filter: brightness(1); transform: scale(1); } to { filter: brightness(1.5); transform: scale(1.1); } }
                 .scale-in { animation: scaleIn 0.3s ease-out; }
                 @keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+                
+                .vls-serenito-marker {
+                    background: none !important;
+                    border: none !important;
+                    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.4)) !important;
+                }
+                .leaflet-container .leaflet-marker-icon {
+                    background: none;
+                    border: none;
+                }
             `}</style>
         </AnimatePresence>
     );

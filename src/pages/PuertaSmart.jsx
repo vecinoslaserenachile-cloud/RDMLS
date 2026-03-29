@@ -636,7 +636,7 @@ function SalesNode({ primaryColor }) {
             icon: <Building />, 
             color: '#3b82f6', 
             tag: 'Seguridad Residencial',
-            desc: 'Gestión QR para residentes, visitas y delivery. Bitácora inmutable de seguridad.'
+            desc: 'Gestión QR para vecinos, visitantes, turistas y delivery. Bitácora inmutable de seguridad.'
         },
         { 
             id: 'smart-clinic', 

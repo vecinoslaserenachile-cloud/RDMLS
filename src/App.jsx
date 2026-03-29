@@ -1,7 +1,7 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt } from 'lucide-react';
+import { ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
 
@@ -102,7 +102,17 @@ const EntreVecinasHub = lazy(() => import('./pages/EntrevecinasHub'));
 const AlcaldesHistory = lazy(() => import('./pages/AlcaldesHistory'));
 const VecinosChileHub = lazy(() => import('./pages/VecinosChileHub'));
 const ParliamentaryObservatory = lazy(() => import('./components/ParliamentaryObservatory'));
-
+const VecinosAnalyticsApp = lazy(() => import('./components/VecinosAnalyticsApp/VecinosAnalyticsApp.jsx'));
+const VLSNewsBencinazo = lazy(() => import('./components/VLSNewsBencinazo'));
+const VLSNewsPoduje = lazy(() => import('./components/VLSNewsPoduje'));
+const VLSNewsSentinel = lazy(() => import('./components/VLSNewsSentinel'));
+const VLSNewsInvestigacion = lazy(() => import('./components/VLSNewsInvestigacion'));
+const VLSNewsSemanaSanta = lazy(() => import('./components/VLSNewsSemanaSanta'));
+const VLSMotorsSpot = lazy(() => import('./components/VLSMotorsSpot'));
+const SafeRouteAI = lazy(() => import('./components/SafeRouteAI'));
+const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
+const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
+const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
 
 const SOVEREIGN_NAMES = [
   "vecinoslaserena.cl",
@@ -188,7 +198,55 @@ const LoadingScreen = ({ isSyncing = false }) => {
 
   return (
     <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#020617', color: isEntrevecinas ? '#f472b6' : (isRDMLS ? '#dc2626' : '#38bdf8'), fontFamily: 'Inter, sans-serif' }}>
-      <div className="animate-pulse" style={{ width: '40px', height: '40px', border: '2px solid currentColor', borderRadius: '50%', borderTopColor: 'transparent', marginBottom: '2rem' }}></div>
+      
+      {/* Animación de Faro en Líneas Vectoriales */}
+      <div style={{ position: 'relative', zIndex: 1, width: '120px', height: '150px', marginBottom: '1.5rem' }}>
+          <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+              <motion.path
+                  d="M 46 25 L 54 25 L 56 100 L 44 100 Z"
+                  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
+                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                  transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+              />
+              <motion.path
+                  d="M 43 25 L 57 25 M 44 20 L 56 20 L 56 25 L 44 25 Z M 47 20 L 53 20 L 53 15 L 47 15 Z M 50 15 L 50 10"
+                  stroke="currentColor" strokeWidth="1.5"
+                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                  transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
+              />
+              <motion.path
+                  d="M 20 100 L 80 100 L 85 115 L 15 115 Z M 25 100 L 25 95 L 30 95 L 30 100 M 70 100 L 70 95 L 75 95 L 75 100"
+                  stroke="currentColor" strokeWidth="1.5"
+                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                  transition={{ duration: 4, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
+              />
+              <motion.circle cx="15" cy="115" r="4" stroke="currentColor" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity }} />
+              <motion.circle cx="85" cy="115" r="4" stroke="currentColor" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, delay: 0.2 }} />
+              
+              <motion.path
+                  d="M 15 115 L 15 90 M 15 90 L 22 93 L 15 96"
+                  stroke="currentColor" strokeWidth="1"
+                  animate={{ x: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <motion.path
+                  d="M 85 115 L 85 85 M 85 85 L 92 88 L 85 91"
+                  stroke="currentColor" strokeWidth="1"
+                  animate={{ x: [0, -2, 0] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+              />
+
+              {[35, 50, 65, 80].map((y, i) => (
+                  <motion.rect key={i} x="48.5" y={y} width="3" height="5" stroke="currentColor" strokeWidth="1" 
+                      initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }} />
+              ))}
+              
+              <motion.circle 
+                  cx="50" cy="18" r="8" fill="currentColor"
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
+              />
+          </svg>
+      </div>
+
       <div style={{ textAlign: 'center' }}>
         <span style={{ fontSize: '0.7rem', fontWeight: 'black', letterSpacing: '0.3em', opacity: 0.5, display: 'block', marginBottom: '0.5rem' }}>OMNIDIRECTIONAL_SYNC_ACTIVE</span>
         <h2 style={{ fontSize: '1.2rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
@@ -346,11 +404,19 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const isCommercial = isAcademy;
 
   const { t, lang, setLang } = useTranslation();
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode');
+  const memorialId = searchParams.get('m');
+  const stratParam = searchParams.get('strategy');
+  const mKey = searchParams.get('vls_master');
+  const appId = searchParams.get('app');
+  const newsId = searchParams.get('news');
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
   const [authInitialized, setAuthInitialized] = useState(isRDMLS);
   const [notifications, setNotifications] = useState([]);
+  const [showSafeRoute, setShowSafeRoute] = useState(false);
   const [showRadio, setShowRadio] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
@@ -364,29 +430,20 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showLeanMaster, setShowLeanMaster] = useState(false);
   const [showSmartAdmin, setShowSmartAdmin] = useState(false);
   const [showDronDrigo, setShowDronDrigo] = useState(false);
-  const [showSocialVision, setShowSocialVision] = useState(false);
+  const [showVLSInduccion, setShowVLSInduccion] = useState(false);
   const [showIntercom, setShowIntercom] = useState(false);
   const [systemHealth, setSystemHealth] = useState('optimal'); // 'optimal', 'polishing', 'issue'
   const [showMaintenanceNotice, setShowMaintenanceNotice] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
 
-  // SUPREME OVERRIDE: If mode=aprende is in URL, LOCK the screen to the induction portal
+  // SUPREME OVERRIDE: If mode=aprende is in URL, LOCK the screen to the induction portal - NO EARLY RETURN HERE TO PRESERVE HOOK COUNT
   useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const mode = queryParams.get('mode');
     if (mode === 'aprende' || mode === 'induccion') {
-        // Prevent any other system from taking over
         console.log("IMLS_OS: Locking to Induction/Aprende Mode...");
     }
-  }, []);
+  }, [mode]);
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const mode = (queryParams.get('mode') || '').toLowerCase();
-  if (mode === 'aprende' || mode === 'induccion') {
-    return (
-            <Aprende isRDMLS={isRDMLS} />
-    );
-  }
+  const isAprendeMode = mode === 'aprende' || mode === 'induccion';
 
   // Sentinel Health Monitoring
   useEffect(() => {
@@ -417,6 +474,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
   const [showSmartTV, setShowSmartTV] = useState(false);
+  const [pendingPayment, setPendingPayment] = useState(null);
 
   // ── Sync con Firestore (El CRM del Vecino) ─────────────────────────────────
   useEffect(() => {
@@ -573,10 +631,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showNewsPoduje, setShowNewsPoduje] = useState(false);
   const [showNewsSentinel, setShowNewsSentinel] = useState(false);
   const [showNewsInvestigacion, setShowNewsInvestigacion] = useState(false);
+  const [showNewsSemanaSanta, setShowNewsSemanaSanta] = useState(false);
   const [showSoveranix, setShowSoveranix] = useState(false);
   const [showAlcaldes, setShowAlcaldes] = useState(false);
+  const [showVLSpeak, setShowVLSpeak] = useState(false);
   const [showChileHub, setShowChileHub] = useState(false);
   const [showParliamentary, setShowParliamentary] = useState(false);
+  const [showPortMonitor, setShowPortMonitor] = useState(false);
+  const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
+  const [showVLSMotors, setShowVLSMotors] = useState(false);
+  const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
 
   useEffect(() => {
     // Título y Favicon Dinámico
@@ -610,7 +674,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
     if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !isRDMLS && !host.includes('localhost') && !host.includes('127.0.0.1')) {
       if (location.pathname !== '/welcome') {
-        navigate('/welcome');
+        // Preservar parámetros durante la redirección (Deep Linking Mundial)
+        navigate('/welcome' + location.search);
       }
     }
 
@@ -622,6 +687,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     }
     const saved = localStorage.getItem('smart_notifications');
     if (saved) setNotifications(JSON.parse(saved));
+
+    // Force scroll to top on every route transition
+    window.scrollTo({ top: 0, behavior: 'instant' });
   }, [navigate, location.pathname]);
 
   // ── Efecto de auto-invitado: corre SOLO al montar (una vez) ──
@@ -678,30 +746,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
   }, [showAlert]);
 
   useEffect(() => {
-    const handleOpenDron = () => setShowDronDrigo(true);
-    const handleRetroTv = () => setShowRetroTV(true);
-    const handleVhsTv = () => setShowVhsTV(true);
-    const handleGame = () => setShowGame(true);
-    const handlePersonalStereo = () => setShowPersonalStereo(true);
-    const handleTimeBus = () => setShowTimeBus(true);
-    const handleGym = () => setShowGym3D(true);
-    const handleRetroRoom = () => setShowRetroRoom(true);
-    const handleFaritoSocial = () => setShowFaritoSocial(true);
-    const handleVecnityPay = () => setShowVecnityPay(true);
-    const handleSmartTV = () => setShowSmartTV(true);
-    const handleTienda = () => setShowTiendaPoleras(true);
-    const handleCoquiCRM = () => setShowCoquiSmartCRM(true);
+    // Global Listeners moved to main useEffect for consistency
+  }, []);
 
-    const handleFaroChat = () => setShowChat(true);
-    const handlePrecolombino = () => setShowPrecolombino(true);
-    const handleParlamento = () => setShowParlamento(true);
-
-    const handleOpenSmartTrivia = () => setShowSmartTrivia(true);
-    const handleOpenBencinazo = () => setShowNewsBencinazo(true);
-    const handleOpenPoduje = () => setShowNewsPoduje(true);
-    const handleOpenSentinelNews = () => setShowNewsSentinel(true);
-    const handleOpenInvestigacion = () => setShowNewsInvestigacion(true);
-
+  useEffect(() => {
     // Global listener for rewards and mission alerts
     const handleGlobalAlert = (e) => {
       const { title, message, type } = e.detail;
@@ -714,58 +762,14 @@ function AppContent({ setShowCoquiSmartCRM }) {
         type: type || 'info'
       };
       setNotifications(prev => [newNotif, ...prev]);
-      // NO forzar apertura del panel: el badge rojo indica la alerta sin bloquear la UI
-      // Despachamos al Chat (Faro IA) para historial permanente solicitado por el usuario
+      // NO forzar apertura del panel
       window.dispatchEvent(new CustomEvent('vls-push-notification', { detail: { text: message } }));
-      // Play notification sound
       window.dispatchEvent(new CustomEvent('vls-play-sfx', { detail: 'win' }));
     };
 
-    window.addEventListener('open-dron-drigo', handleOpenDron);
-    window.addEventListener('open-retro-tv', handleRetroTv);
-    window.addEventListener('open-vhs-tv', handleVhsTv);
-    window.addEventListener('open-game', handleGame);
-    window.addEventListener('open-vls-game', handleOpenSmartTrivia);
-    window.addEventListener('open-personal-stereo', handlePersonalStereo);
-    window.addEventListener('open-time-bus', handleTimeBus);
-    window.addEventListener('open-gym-3d', handleGym);
-    window.addEventListener('open-retro-room', handleRetroRoom);
-    window.addEventListener('open-farito-social', handleFaritoSocial);
-    window.addEventListener('open-vecinity-pay', handleVecnityPay);
-    window.addEventListener('open-smart-tv', handleSmartTV);
-    window.addEventListener('open-tienda-poleras', handleTienda);
-    window.addEventListener('open-faro-ia', handleFaroChat);
-    window.addEventListener('open-precolombino', handlePrecolombino);
-    window.addEventListener('open-decision-vecinal', handleParlamento);
-    window.addEventListener('open-vls-bencinazo', handleOpenBencinazo);
-    window.addEventListener('open-vls-poduje', handleOpenPoduje);
-    window.addEventListener('open-vls-sentinel', handleOpenSentinelNews);
-    window.addEventListener('open-vls-investigacion', handleOpenInvestigacion);
-    window.addEventListener('open-coquismart-crm', handleCoquiCRM);
     window.addEventListener('vls-show-alert', handleGlobalAlert);
 
     return () => {
-      window.removeEventListener('open-dron-drigo', handleOpenDron);
-      window.removeEventListener('open-retro-tv', handleRetroTv);
-      window.removeEventListener('open-vhs-tv', handleVhsTv);
-      window.removeEventListener('open-game', handleGame);
-      window.removeEventListener('open-vls-game', handleOpenSmartTrivia);
-      window.removeEventListener('open-personal-stereo', handlePersonalStereo);
-      window.removeEventListener('open-time-bus', handleTimeBus);
-      window.removeEventListener('open-gym-3d', handleGym);
-      window.removeEventListener('open-retro-room', handleRetroRoom);
-      window.removeEventListener('open-farito-social', handleFaritoSocial);
-      window.removeEventListener('open-vecinity-pay', handleVecnityPay);
-      window.removeEventListener('open-smart-tv', handleSmartTV);
-      window.removeEventListener('open-tienda-poleras', handleTienda);
-      window.removeEventListener('open-faro-ia', handleFaroChat);
-      window.removeEventListener('open-precolombino', handlePrecolombino);
-      window.removeEventListener('open-decision-vecinal', handleParlamento);
-      window.removeEventListener('open-vls-bencinazo', handleOpenBencinazo);
-      window.removeEventListener('open-vls-poduje', handleOpenPoduje);
-      window.removeEventListener('open-vls-sentinel', handleOpenSentinelNews);
-      window.removeEventListener('open-vls-investigacion', handleOpenInvestigacion);
-      window.removeEventListener('open-coquismart-crm', handleCoquiCRM);
       window.removeEventListener('vls-show-alert', handleGlobalAlert);
     };
   }, []);
@@ -807,9 +811,30 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const handleTokensUpdate = (e) => setVlsTokens(e.detail);
     window.addEventListener('tokens-updated', handleTokensUpdate);
 
+    // Módulos Críticos: Listeners de Activación Directa
+    const handleSpeak = () => setShowVLSpeak(true);
+    const handleAlcaldes = () => { setShowAlcaldes(true); window.scrollTo({ top:0, behavior: 'smooth' }); };
+    const handleEntrevecinas = () => setShowEntreVecinas(true);
+    const handleReportes = () => navigate('/reportes');
+    const handleParliamentary = () => setShowParliamentary(true);
+    const handleInduccionFixed = () => setShowVLSInduccion(true);
+
+    window.addEventListener('open-vlspeak', handleSpeak);
+    window.addEventListener('open-alcaldes-history', handleAlcaldes);
+    window.addEventListener('open-entrevecinas', handleEntrevecinas);
+    window.addEventListener('open-smart-business', handleReportes);
+    window.addEventListener('open-parlamento-regional', handleParliamentary);
+    window.addEventListener('open-smart-admin-fixed', handleInduccionFixed);
+
     return () => {
       comSocket.off('receive_push_notification');
       window.removeEventListener('tokens-updated', handleTokensUpdate);
+      window.removeEventListener('open-vlspeak', handleSpeak);
+      window.removeEventListener('open-alcaldes-history', handleAlcaldes);
+      window.removeEventListener('open-entrevecinas', handleEntrevecinas);
+      window.removeEventListener('open-smart-business', handleReportes);
+      window.removeEventListener('open-parlamento-regional', handleParliamentary);
+      window.removeEventListener('open-smart-admin-fixed', handleInduccionFixed);
     };
   }, []);
 
@@ -845,49 +870,52 @@ function AppContent({ setShowCoquiSmartCRM }) {
       return;
     }
     const provider = new GoogleAuthProvider();
-    localStorage.removeItem('smart_logout');
+    provider.setCustomParameters({ prompt: 'select_account' });
+
     signInWithPopup(auth, provider).then((result) => {
       const rewardKey = `vls_tokens_rewarded_${result.user.uid}`;
-      const isNewUser = localStorage.getItem(rewardKey) === null;
+      // VLS TOKEN INTELLIGENCE: Evitar duplicidad de recompensa por ingreso
+      const userDocRef = doc(db, "vls_accounts", result.user.uid);
+      getDoc(userDocRef).then(snap => {
+          const alreadyRewarded = snap.exists() && snap.data().rewarded_entry;
+          const isNewLocal = localStorage.getItem(rewardKey) === null;
+
+          if (isNewLocal && !alreadyRewarded) {
+            const reward = 20; 
+            const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+            const newTokens = currentTokens + reward;
+            setVlsTokens(newTokens);
+            localStorage.setItem('vls_tokens', newTokens.toString());
+            localStorage.setItem(rewardKey, 'true');
+            
+            // Persistir en Firestore para que no ocurra en otros dispositivos
+            setDoc(userDocRef, { rewarded_entry: true }, { merge: true });
+
+            const msg = `Por bienvenida cargamos tu VecinityBank con ${reward} fichas VLS. ¡Disfruta el portal!`;
+            const newNotif = {
+              id: Date.now(),
+              title: "🎁 RECOMPENSA DE INGRESO",
+              body: msg,
+              read: false,
+              timestamp: new Date().toLocaleString('es-CL'),
+              type: 'token_gift'
+            };
+            setNotifications(prev => [newNotif, ...prev]);
+            window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+          }
+      });
 
       setCurrentUser(result.user);
       setIsGuest(false);
       localStorage.removeItem('smart_is_guest');
       localStorage.removeItem('smart_logout');
-      localStorage.setItem('smart_is_guest', 'false');
-
-      if (isNewUser) {
-        const reward = 20; // Recompensa de 20 FICHAS (VLS Tokens) por ingresar con Identidad VLS
-        const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
-        const newTokens = currentTokens + reward;
-        setVlsTokens(newTokens);
-        localStorage.setItem('vls_tokens', newTokens.toString());
-        localStorage.setItem(rewardKey, 'true');
-
-        // Notificar al usuario (Actualizado a petición de experiencia)
-        const msg = `Por bienvenida cargamos tu VecinityBank con ${reward} fichas VLS. ¡Disfruta el portal!`;
-        const newNotif = {
-          id: Date.now(),
-          title: "🎁 RECOMPENSA DE INGRESO",
-          body: msg,
-          read: false,
-          timestamp: new Date().toLocaleString('es-CL'),
-          type: 'token_gift'
-        };
-        setNotifications(prev => [newNotif, ...prev]);
-        window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
-      }
 
       window.dispatchEvent(new CustomEvent('vls-start-radio'));
-    }).catch((err) => {
-      console.error("Auth Error:", err);
-      // Solo en caso de bloqueo drástico del navegador, intentamos redirect real
-      if (err.code === 'auth/popup-blocked') {
-        signInWithRedirect(auth, provider);
-      } else if (err.code === 'auth/popup-closed-by-user') {
-        console.warn("Usuario detuvo el login de Google. Cancelado sin alerta.");
+    }).catch((error) => {
+      if (error.code === 'auth/popup-closed-by-user') {
+        console.warn("VLS Auth: Login cancelado por el usuario.");
       } else {
-        alert("⚠️ CRÍTICO: No se pudo conectar con los servidores de Google Identidad. El sistema de pagos requiere una sesión real. " + err.message);
+        console.error("Auth Error:", error.message);
       }
     });
   };
@@ -951,12 +979,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const handleOpenAirport = () => setShowAirport(true);
   const handleOpenCity3D = () => setShowCity3D(true);
   const handleOpenOperacionLS = () => setShowOperacionLS(true);
-  const handleOpenIdentityGate = () => setShowIdentityGate(true);
   const handleOpenMemorial = () => setShowMemorial(true);
   const handleOpenSmartAdmin = () => setShowSmartAdmin(true);
   const handleOpenPersonalStereo = () => setShowPersonalStereo(true);
   const handleOpenRetroRoom = () => setShowRetroRoom(true);
   const handleOpenFaritoSocial = () => setShowFaritoSocial(true);
+  const handleOpenVecnityPay = (e) => {
+    if (e?.detail) setPendingPayment(e.detail);
+    else setPendingPayment(null);
+    setShowVecnityPay(true);
+  };
+  const handleOpenTienda = () => setShowTiendaPoleras(true);
+  const handleOpenRoadmap = () => setShowRoadmap(true);
   const handleNavMusica = () => navigate('/escuela-musica');
   const handleNavArtes = () => navigate('/escuela-artes');
   const handleOpenHub3D = () => setShowHub3D(true);
@@ -964,22 +998,39 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.dispatchEvent(new CustomEvent('stop-all-audio'));
     setShowChat(true);
   };
+
+  const handleOpenBencinazo = () => setShowNewsBencinazo(true);
+  const handleOpenPoduje = () => setShowNewsPoduje(true);
+  const handleOpenSentinelNews = () => setShowNewsSentinel(true);
+  const handleOpenInvestigacion = () => setShowNewsInvestigacion(true);
+  const handleOpenVeterinaria = () => setShowVeterinaria(true);
+  const handleOpenSafeRoute = () => setShowSafeRoute(true);
+  const handleOpenEnfermeria = () => setShowEnfermeria(true);
+  const handleOpenPincha = () => setShowPincha(true);
+  const handleOpenSmartSalud = () => navigate('/smart-salud');
+  const handleOpenArquitectura = () => navigate('/arquitectura');
+  const handleOpenPropiedades = () => navigate('/propiedades');
+  const handleOpenIdentityGate = () => setShowIdentityGate(true);
+  const handleOpenGym = () => setShowGym3D(true);
+
   const handleToggleRadio = () => {
     if (!showRadio) window.dispatchEvent(new CustomEvent('stop-all-audio'));
     setShowRadio(prev => !prev);
   };
 
+
   useEffect(() => {
-    // Detectar Deep Link de Memorial a hijos de la región
-    const params = new URLSearchParams(window.location.search);
-    const memorialId = params.get('m');
-    const stratParam = params.get('strategy');
-    const mKey = params.get('vls_master');
+    // Detectar Deep Link reactivamente (Deep Linking Mundial v5.0)
+    const path = location.pathname;
 
     // Validación de Clave Maestra vía URL para activación rápida
     if (mKey === 'admin2026' || mKey === 'admin123') {
       localStorage.setItem('master_bypass', 'true');
-      console.log("VLS_SECURITY: MASTER_BYPASS_ACTIVATED_VIA_URL");
+    }
+
+    // Ruta directa de fichas: /fichas
+    if (path === '/fichas' || path.includes('/fichas')) {
+      setTimeout(() => setShowVecnityPay(true), 1000);
     }
 
     if (memorialId) {
@@ -989,26 +1040,42 @@ function AppContent({ setShowCoquiSmartCRM }) {
       }, 1500);
     }
 
-    if (stratParam === 'lean') {
-      // Si tiene el bypass o la clave es correcta, abrimos
-      if (localStorage.getItem('master_bypass') === 'true') {
-        setShowLeanMaster(true);
-      }
+    if (stratParam === 'lean' && localStorage.getItem('master_bypass') === 'true') {
+      setShowLeanMaster(true);
     }
 
-    // -- DEEP LINKING PARA NOTICIAS DE INVESTIGACIÓN (Bypass Home) --
-    const newsId = params.get('news');
+    if (appId) {
+      setTimeout(() => {
+        if (appId === 'vecinity-pay') setShowVecnityPay(true);
+        if (appId === 'memorial') setShowMemorial(true);
+        if (appId === 'distances') setShowDistances(true);
+        if (appId === 'bus') setShowTimeBus(true);
+        if (appId === 'walk') setShow3DWalk(true);
+        if (appId === 'backoffice') setShowSmartAdmin(true);
+        if (appId === 'tienda') setShowTiendaPoleras(true);
+        if (appId === 'roadmap') setShowRoadmap(true);
+        if (appId === 'council') setShowCouncil(true);
+        if (appId === 'faro' || appId === 'chat' || appId === 'ia') handleOpenFaro();
+        if (appId === 'motors') setShowVLSMotors(true);
+        if (appId === 'legal') setShowOrientacionLegal(true);
+        if (appId === 'airport') setShowAirport(true);
+        if (appId === 'port') setShowPortMonitor(true);
+        if (appId === 'sentinel') setShowSentinelApex(true);
+        if (appId === 'analytics') setShowAnalyticsApp(true);
+      }, 1000);
+    }
+
     if (newsId) {
-      console.log("VLS_AI: Detectado Deep Link de Investigación:", newsId);
       setTimeout(() => {
         if (newsId === 'bencinazo') setShowNewsBencinazo(true);
+        if (newsId === 'semanasanta' || newsId === 'semana-santa') setShowNewsSemanaSanta(true);
         if (newsId === 'poduje') setShowNewsPoduje(true);
         if (newsId === 'sentinel') setShowNewsSentinel(true);
         if (newsId === 'investigacion' || newsId === 'paradoja') setShowNewsInvestigacion(true);
         if (newsId === 'aguasvalle') setShowAguasValle(true);
       }, 1200);
     }
-  }, []);
+  }, [searchParams, location.pathname]);
 
   useEffect(() => {
     // Clima real y preciso de La Serena (Timezone Adjusted) - Actualización cada 5 min
@@ -1054,14 +1121,50 @@ function AppContent({ setShowCoquiSmartCRM }) {
     fetchWeather();
     const weatherInterval = setInterval(fetchWeather, 300000); // 5 min
 
-    // Custom Event Listeners
+    const handleOpenSismic = () => setShowSismicCenter(true);
+    const handleOpenTheater = () => setShowSmartTheater(true);
+    const handleOpenTwitter = () => setShowVerticalTV(true);
+    const handleOpenFacebook = () => setShowVerticalTV(true);
+    const handleOpenInstagram = () => setShowVerticalTV(true);
+    const handleOpenObservatory = () => setShowObservatory(true);
+    const handleOpenReelToReel = () => setShowReelToReel(true);
+    const handleOpenMuseum = () => setShowMuseum(true);
+    const handleOpenVecinojos = () => setShowVecinojos(true);
+    const handleOpenVLSFeed = () => setShowVLSFeed(true);
+    const handleOpenBroadcaster = () => setShowBroadcaster(true);
+    const handleOpenDeBonoHats = () => setShowDeBonoHats(true);
+    const handleOpenTribunales = () => setShowTribunales(true);
+    const handleOpenUnicorn = () => setShowMemoriasUnicornio(true);
+    const handleTriggerDonRadios = () => setShowDonRadios(true);
+    const handleOpenHub3D = () => setShowHub3D(true);
+    const handleOpenAuditoria = () => setShowAuditoria(true);
+    const handleOpenParlamento = () => setShowParlamento(true);
+    const handleOpenFaritoSocial = () => setShowFaritoSocial(true);
+    const handleOpenFaroCentinel = () => setShowFaroCentinel(true);
+    const handleOpenBotica = () => setShowBotica(true);
+    const handleOpenVeterinaria = () => setShowVeterinaria(true);
+    const handleOpenSuperSerenito = () => setShowSerenitoAntigravity(true);
+    const handleOpenSkyGuide = () => setShowSkyGuide(true);
+    const handleOpenMotorTiempo = () => setShowMotorTiempo(true);
+    const handleOpenRadioMaster = () => setShowRadioMaster(true);
+    const handleOpenCalendar = () => setShowCalendar(true);
+    const handleOpenEnfermeria = () => setShowEnfermeria(true);
+    const handleOpenSmartBusiness = () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowSmartBusiness(true); };
+    const handleOpenEmergency = () => setShowEmergencyDirectory(true);
+    const handleOpenSmartEvents = () => setShowSmartEvents(true);
+    const handleOpenAguasValle = () => setShowAguasValle(true);
+    const handleOpenPincha = () => setShowPincha(true);
+    const handleOpenPlazaVecinal = () => setShowPlazaVecinal(true);
+    const handleOpenEntreVecinas = () => setShowEntreVecinas(true);
+    const handleOpenSmartAdmin = () => setShowSmartAdmin(true);
+    const handleOpenGym = () => setShowGym3D(true);
+
     window.addEventListener('open-3d-walk', handleOpen3DWalk);
     window.addEventListener('open-time-bus', handleOpenTimeBus);
     window.addEventListener('open-distances', handleOpenDistances);
-    window.addEventListener('open-project-info', () => setShowVlsVision(true));
+    window.addEventListener('open-project-info', handleOpenProjectInfo);
     window.addEventListener('open-social-vision', () => setShowSocialVision(true));
-    window.addEventListener('open-radio-intercom', () => setShowIntercom(true));
-    window.addEventListener('open-vls-vision', () => setShowVlsVision(true));
+    window.addEventListener('open-vls-vision', handleOpenProjectInfo);
     window.addEventListener('open-embajadas', handleOpenEmbajadas);
     window.addEventListener('open-council', handleOpenCouncil);
     window.addEventListener('open-cdls', handleOpenCDLS);
@@ -1088,62 +1191,68 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-operacion-ls', handleOpenOperacionLS);
     window.addEventListener('open-identity-gate', handleOpenIdentityGate);
     window.addEventListener('open-memorial-hijos', handleOpenMemorial);
-    window.addEventListener('open-smart-admin', handleOpenSmartAdmin);
+    window.addEventListener('open-smart-admin-fixed', () => setShowVLSInduccion(true));
     window.addEventListener('open-retro-room', handleOpenRetroRoom);
     window.addEventListener('open-personal-stereo', handleOpenPersonalStereo);
     window.addEventListener('open-escuela-musica', handleNavMusica);
     window.addEventListener('open-escuela-artes', handleNavArtes);
-    window.addEventListener('open-sismic', () => setShowSismicCenter(true));
-    window.addEventListener('open-theater', () => setShowSmartTheater(true));
+    window.addEventListener('open-sismic', handleOpenSismic);
+    window.addEventListener('open-theater', handleOpenTheater);
     window.addEventListener('open-faro', handleOpenFaro);
     window.addEventListener('toggle-radio-visibility', handleToggleRadio);
-    window.addEventListener('open-twitter-vls', () => setShowVerticalTV(true));
-    window.addEventListener('open-facebook-vls', () => setShowVerticalTV(true));
-    window.addEventListener('open-instagram-vls', () => setShowVerticalTV(true));
-    window.addEventListener('open-observatory', () => setShowObservatory(true));
-    window.addEventListener('open-reeltoreel', () => setShowReelToReel(true));
-    window.addEventListener('open-museum', () => setShowMuseum(true));
-    window.addEventListener('open-vecinojos', () => setShowVecinojos(true));
-    window.addEventListener('open-vls-feed', () => setShowVLSFeed(true));
-    window.addEventListener('open-broadcaster', () => setShowBroadcaster(true));
-    window.addEventListener('open-production-hub', () => setShowBroadcaster(true));
-    window.addEventListener('open-debono-hats', () => setShowDeBonoHats(true));
-    window.addEventListener('open-tribunales', () => setShowTribunales(true));
-    window.addEventListener('open-unicorn', () => setShowMemoriasUnicornio(true));
-    window.addEventListener('trigger-don-radios', () => setShowDonRadios(true));
-    window.addEventListener('open-hub-3d', () => setShowHub3D(true));
-    window.addEventListener('open-auditoria', () => setShowAuditoria(true));
-    window.addEventListener('open-parlamento', () => setShowParlamento(true));
-    window.addEventListener('open-gym-3d', () => setShowGym3D(true));
-    window.addEventListener('open-farito-social', () => setShowFaritoSocial(true));
-    window.addEventListener('open-faro-centinel', () => setShowFaroCentinel(true));
-    window.addEventListener('open-botica', () => setShowBotica(true));
-    window.addEventListener('open-veterinaria', () => setShowVeterinaria(true));
-    window.addEventListener('open-super-serenito', () => setShowSerenitoAntigravity(true));
-    window.addEventListener('open-sky-guide', () => setShowSkyGuide(true));
-    window.addEventListener('open-motor-tiempo', () => setShowMotorTiempo(true));
-    window.addEventListener('open-radio-master', () => setShowRadioMaster(true));
-    window.addEventListener('open-calendar', () => setShowCalendar(true));
-    window.addEventListener('open-smart-calendar', () => setShowCalendar(true));
-    window.addEventListener('open-enfermeria-smart', () => setShowEnfermeria(true));
-    window.addEventListener('open-almanaque-mundial', () => setShowEmbajadas(true));
-    window.addEventListener('open-smart-business', () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowSmartBusiness(true); });
-    window.addEventListener('open-emergency-directory', () => setShowEmergencyDirectory(true));
-    window.addEventListener('open-smart-events', () => setShowSmartEvents(true));
+    window.addEventListener('open-twitter-vls', handleOpenTwitter);
+    window.addEventListener('open-facebook-vls', handleOpenFacebook);
+    window.addEventListener('open-instagram-vls', handleOpenInstagram);
+    window.addEventListener('open-observatory', handleOpenObservatory);
+    window.addEventListener('open-reeltoreel', handleOpenReelToReel);
+    window.addEventListener('open-museum', handleOpenMuseum);
+    window.addEventListener('open-vecinojos', handleOpenVecinojos);
+    window.addEventListener('open-vls-feed', handleOpenVLSFeed);
+    window.addEventListener('open-broadcaster', handleOpenBroadcaster);
+    window.addEventListener('open-debono-hats', handleOpenDeBonoHats);
+    window.addEventListener('open-tribunales', handleOpenTribunales);
+    window.addEventListener('open-unicorn', handleOpenUnicorn);
+    window.addEventListener('trigger-don-radios', handleTriggerDonRadios);
+    window.addEventListener('open-hub-3d', handleOpenHub3D);
+    window.addEventListener('open-auditoria', handleOpenAuditoria);
+    window.addEventListener('open-parlamento', handleOpenParlamento);
+    window.addEventListener('open-farito-social', handleOpenFaritoSocial);
+    window.addEventListener('open-faro-centinel', handleOpenFaroCentinel);
+    window.addEventListener('open-botica', handleOpenBotica);
+    window.addEventListener('open-veterinaria', handleOpenVeterinaria);
+    window.addEventListener('open-super-serenito', handleOpenSuperSerenito);
+    window.addEventListener('open-sky-guide', handleOpenSkyGuide);
+    window.addEventListener('open-motor-tiempo', handleOpenMotorTiempo);
+    window.addEventListener('open-radio-master', handleOpenRadioMaster);
+    window.addEventListener('open-calendar', handleOpenCalendar);
+    window.addEventListener('open-smart-calendar', handleOpenCalendar);
+    window.addEventListener('open-enfermeria-smart', handleOpenEnfermeria);
+    window.addEventListener('open-almanaque-mundial', handleOpenEmbajadas);
+    window.addEventListener('open-smart-business', handleOpenSmartBusiness);
+    window.addEventListener('open-emergency-directory', handleOpenEmergency);
+    window.addEventListener('open-smart-events', handleOpenSmartEvents);
     window.addEventListener('open-vls-game', () => navigate('/vlsabes'));
     window.addEventListener('open-vls-play', () => navigate('/vlsabes'));
-    window.addEventListener('open-vls-aguas', () => setShowAguasValle(true));
-    window.addEventListener('open-propuesta-estrategica', () => navigate('/propuesta'));
-    window.addEventListener('open-pincha', () => setShowPincha(true));
-    window.addEventListener('open-plaza-vecinal', () => setShowPlazaVecinal(true));
-
-
+    window.addEventListener('open-vls-bencinazo', handleOpenBencinazo);
+    window.addEventListener('open-vls-poduje', handleOpenPoduje);
+    window.addEventListener('open-vls-sentinel', handleOpenSentinelNews);
+    window.addEventListener('open-vls-investigacion', handleOpenInvestigacion);
+    window.addEventListener('open-vlspeak', () => setShowVLSpeak(true));
+    window.addEventListener('open-vls-aguas', handleOpenAguasValle);
+    window.addEventListener('open-pincha', handleOpenPincha);
+    window.addEventListener('open-plaza-vecinal', handleOpenPlazaVecinal);
+    window.addEventListener('open-safe-route', handleOpenSafeRoute);
+    window.addEventListener('open-smart-salud', handleOpenSmartSalud);
+    window.addEventListener('open-arquitectura', handleOpenArquitectura);
+    window.addEventListener('open-propiedades', handleOpenPropiedades);
     window.addEventListener('open-parlamento-regional', () => setShowParliamentary(true));
     window.addEventListener('open-alcaldes-history', () => setShowAlcaldes(true));
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
-    window.addEventListener('open-pegatinas', () => navigate('/pegatinas'));
-    window.addEventListener('open-glosario', () => navigate('/glosario'));
-    window.addEventListener('open-entrevecinas', () => setShowEntreVecinas(true));
+    window.addEventListener('open-entrevecinas', handleOpenEntreVecinas);
+    window.addEventListener('open-vecinity-pay', handleOpenVecnityPay);
+    window.addEventListener('open-tienda-poleras', handleOpenTienda);
+    window.addEventListener('open-roadmap-vls', handleOpenRoadmap);
+    window.addEventListener('open-decision-vecinal', handleOpenCouncil);
 
     // Escucha global para detener todos los audios
     window.addEventListener('stop-all-audio', () => {
@@ -1181,11 +1290,6 @@ function AppContent({ setShowCoquiSmartCRM }) {
     };
     window.addEventListener('message', handleMessage);
 
-    const openTienda = () => setShowTiendaPoleras(true);
-    const openRoadmap = () => setShowRoadmap(true);
-    window.addEventListener('open-tienda-poleras', openTienda);
-    window.addEventListener('open-roadmap-vls', openRoadmap);
-
     // Socket.io Push Listener
     const handlePush = (alertData) => {
       setNotifications(prev => {
@@ -1202,6 +1306,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-time-bus', handleOpenTimeBus);
       window.removeEventListener('open-distances', handleOpenDistances);
       window.removeEventListener('open-project-info', handleOpenProjectInfo);
+      window.removeEventListener('open-vls-vision', handleOpenProjectInfo);
+      window.removeEventListener('open-embajadas', handleOpenEmbajadas);
       window.removeEventListener('open-council', handleOpenCouncil);
       window.removeEventListener('open-cdls', handleOpenCDLS);
       window.removeEventListener('open-game', handleOpenGame);
@@ -1209,8 +1315,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-music-studio', handleOpenMusicStudio);
       window.removeEventListener('open-marketplace', handleOpenMarketplace);
       window.removeEventListener('open-sentinel-mini', handleOpenSentinelMini);
-      window.removeEventListener('open-sentinel-apex', handleOpenSentinelApex); // Added cleanup
-      window.removeEventListener('open-embajadas', handleOpenEmbajadas);
+      window.removeEventListener('open-sentinel-apex', handleOpenSentinelApex);
       window.removeEventListener('open-luz-foco', handleOpenFaroIA);
       window.removeEventListener('open-ecumenical', handleOpenEcumenical);
       window.removeEventListener('open-secular', handleOpenSecular);
@@ -1223,8 +1328,6 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-appendix', handleOpenAppendix);
       window.removeEventListener('open-farito-browser', handleOpenFaritoBrowser);
       window.removeEventListener('open-kiosko-diarios', handleOpenKiosko);
-      window.removeEventListener('open-smart-events', () => setShowSmartEvents(true));
-
       window.removeEventListener('open-airport', handleOpenAirport);
       window.removeEventListener('open-city-3d', handleOpenCity3D);
       window.removeEventListener('open-operacion-ls', handleOpenOperacionLS);
@@ -1235,25 +1338,60 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-personal-stereo', handleOpenPersonalStereo);
       window.removeEventListener('open-escuela-musica', handleNavMusica);
       window.removeEventListener('open-escuela-artes', handleNavArtes);
-      window.removeEventListener('open-parlamento-regional', () => setShowParliamentary(true));
-      window.removeEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
-      window.removeEventListener('open-pegatinas', () => navigate('/pegatinas'));
-      window.removeEventListener('open-glosario', () => navigate('/glosario'));
-      window.removeEventListener('open-sismic', () => setShowSismicCenter(true));
-      window.removeEventListener('open-theater', () => setShowSmartTheater(true));
-      window.removeEventListener('open-observatory', () => setShowObservatory(true));
-      window.removeEventListener('open-reeltoreel', () => setShowReelToReel(true));
-      window.removeEventListener('open-museum', () => setShowMuseum(true));
-      window.removeEventListener('open-vecinojos', () => setShowVecinojos(true));
-      window.removeEventListener('open-vls-feed', () => setShowVLSFeed(true));
-      window.removeEventListener('open-broadcaster', () => setShowBroadcaster(true));
-      window.removeEventListener('open-debono-hats', () => setShowDeBonoHats(true));
-      window.removeEventListener('open-tribunales', () => setShowTribunales(true));
-      window.removeEventListener('trigger-don-radios', () => setShowDonRadios(true));
-      window.removeEventListener('open-pincha', () => setShowPincha(true));
-      window.removeEventListener('open-plaza-vecinal', () => setShowPlazaVecinal(true));
-      window.removeEventListener('open-tienda-poleras', openTienda);
+      window.removeEventListener('open-sismic', handleOpenSismic);
+      window.removeEventListener('open-theater', handleOpenTheater);
+      window.removeEventListener('open-faro', handleOpenFaro);
+      window.removeEventListener('toggle-radio-visibility', handleToggleRadio);
+      window.removeEventListener('open-twitter-vls', handleOpenTwitter);
+      window.removeEventListener('open-facebook-vls', handleOpenFacebook);
+      window.removeEventListener('open-instagram-vls', handleOpenInstagram);
+      window.removeEventListener('open-observatory', handleOpenObservatory);
+      window.removeEventListener('open-reeltoreel', handleOpenReelToReel);
+      window.removeEventListener('open-museum', handleOpenMuseum);
+      window.removeEventListener('open-vecinojos', handleOpenVecinojos);
+      window.removeEventListener('open-vls-feed', handleOpenVLSFeed);
+      window.removeEventListener('open-broadcaster', handleOpenBroadcaster);
+      window.removeEventListener('open-debono-hats', handleOpenDeBonoHats);
+      window.removeEventListener('open-tribunales', handleOpenTribunales);
+      window.removeEventListener('open-unicorn', handleOpenUnicorn);
+      window.removeEventListener('trigger-don-radios', handleTriggerDonRadios);
+      window.removeEventListener('open-hub-3d', handleOpenHub3D);
+      window.removeEventListener('open-auditoria', handleOpenAuditoria);
+      window.removeEventListener('open-parlamento', handleOpenParlamento);
+      window.removeEventListener('open-gym-3d', handleOpenGym);
+      window.removeEventListener('open-farito-social', handleOpenFaritoSocial);
+      window.removeEventListener('open-faro-centinel', handleOpenFaroCentinel);
+      window.removeEventListener('open-botica', handleOpenBotica);
+      window.removeEventListener('open-veterinaria', handleOpenVeterinaria);
+      window.removeEventListener('open-super-serenito', handleOpenSuperSerenito);
+      window.removeEventListener('open-sky-guide', handleOpenSkyGuide);
+      window.removeEventListener('open-motor-tiempo', handleOpenMotorTiempo);
+      window.removeEventListener('open-radio-master', handleOpenRadioMaster);
+      window.removeEventListener('open-calendar', handleOpenCalendar);
+      window.removeEventListener('open-smart-calendar', handleOpenCalendar);
+      window.removeEventListener('open-enfermeria-smart', handleOpenEnfermeria);
+      window.removeEventListener('open-almanaque-mundial', handleOpenEmbajadas);
+      window.removeEventListener('open-smart-business', handleOpenSmartBusiness);
+      window.removeEventListener('open-emergency-directory', handleOpenEmergency);
+      window.removeEventListener('open-smart-events', handleOpenSmartEvents);
+      window.removeEventListener('open-vls-bencinazo', handleOpenBencinazo);
+      window.removeEventListener('open-vls-poduje', handleOpenPoduje);
+      window.removeEventListener('open-vls-sentinel', handleOpenSentinelNews);
+      window.removeEventListener('open-vls-investigacion', handleOpenInvestigacion);
+      window.removeEventListener('open-vls-aguas', handleOpenAguasValle);
+      window.removeEventListener('open-pincha', handleOpenPincha);
+      window.removeEventListener('open-plaza-vecinal', handleOpenPlazaVecinal);
+      window.removeEventListener('open-safe-route', handleOpenSafeRoute);
+      window.removeEventListener('open-smart-salud', handleOpenSmartSalud);
+      window.removeEventListener('open-arquitectura', handleOpenArquitectura);
+      window.removeEventListener('open-propiedades', handleOpenPropiedades);
+      window.removeEventListener('open-entrevecinas', handleOpenEntreVecinas);
+      window.removeEventListener('open-tienda-poleras', handleOpenTienda);
+      window.removeEventListener('open-vecinity-pay', handleOpenVecnityPay);
+      window.removeEventListener('open-roadmap-vls', handleOpenRoadmap);
+      window.removeEventListener('open-decision-vecinal', handleOpenCouncil);
       window.removeEventListener('message', handleMessage);
+      window.removeEventListener('stop-all-audio', () => {}); 
       comSocket.off('vls-receive-push', handlePush);
       if (typeof weatherInterval !== 'undefined') clearInterval(weatherInterval);
     };
@@ -1298,6 +1436,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
         )}
       </div>
     );
+  }
+
+  if (isAprendeMode) {
+    return <Aprende isRDMLS={isRDMLS} />;
   }
 
   return (
@@ -1361,12 +1503,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            boxSizing: 'border-box'
+            boxSizing: 'border-box',
+            pointerEvents: 'none'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', overflow: 'hidden', flexShrink: 1 }}>
-            <button onClick={() => navigate('/')} className="btn-glass" style={{ padding: '0.35rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', flexShrink: 0 }} title="Inicio">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', overflow: 'hidden', flexShrink: 1, pointerEvents: 'auto' }}>
+            <button onClick={() => navigate('/')} className="btn-glass" style={{ padding: '0.35rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.1)', flexShrink: 0, pointerEvents: 'auto' }} title="Inicio">
               <Home size={16} color="white" />
+            </button>
+            <button onClick={() => navigate('/sitemap')} className="btn-glass" style={{ padding: '0.35rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid rgba(56, 189, 248, 0.4)', flexShrink: 0, pointerEvents: 'auto' }} title="Mapa del Sitio">
+              <Network size={16} color="#38bdf8" />
             </button>
             {location.pathname !== '/' && (
               <button
@@ -1412,7 +1558,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
             </span>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, pointerEvents: 'auto' }}>
             {weather !== null && (
               <span className="glass-panel desktop-only" style={{ padding: '0.3rem 0.6rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#fcd34d', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {(() => {
@@ -1439,6 +1585,28 @@ function AppContent({ setShowCoquiSmartCRM }) {
                   {unreadCount}
                 </span>
               )}
+            </button>
+
+            {/* CTA REPORTE VECINAL (TOP) */}
+            <button 
+              onClick={() => navigate('/reportes')}
+              className="glass-panel animate-pulse desktop-only"
+              style={{
+                padding: '0.4rem 1rem',
+                borderRadius: '50px',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '2px solid #ef4444',
+                color: 'white',
+                fontWeight: '900',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              <ShieldAlert size={14} color="#ef4444" />
+              REPORTE CIUDADANO
             </button>
 
             {(isVLS || isRDMLS) && (
@@ -1681,6 +1849,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
 
+      {showMemorial && (
+        <Suspense fallback={null}>
+          <MemorialHijosRegion onClose={() => setShowMemorial(false)} currentUser={currentUser} />
+        </Suspense>
+      )}
+
       {/* Game KPI Impact screen */}
       {showGameKPI && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 10000, background: 'rgba(5, 10, 20, 0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
@@ -1758,7 +1932,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showMemoryPortal && <MemoryPortalModal onClose={() => setShowMemoryPortal(false)} />}
       {showKiosko && <KioskoDiarios onClose={() => setShowKiosko(false)} />}
       {showMemorial && <MemorialHijosRegion onClose={() => setShowMemorial(false)} />}
-      {showSmartAdmin && <SmartAdministration onClose={() => setShowSmartAdmin(false)} />}
+            {showSmartAdmin && (
+        <Suspense fallback={<div className="glass-panel" style={{ position: 'fixed', inset: '20%', zIndex: 300000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando Panel de Administración...</div>}>
+          <div style={{ position: 'fixed', inset: isMobile ? '0' : '10%', zIndex: 100075 }}>
+            <SmartAdministration onClose={() => setShowSmartAdmin(false)} currentUser={currentUser} />
+          </div>
+        </Suspense>
+      )}
       {showPersonalStereo && <PersonalStereo onClose={() => setShowPersonalStereo(false)} />}
       {showSismicCenter && <SismicCenter onClose={() => setShowSismicCenter(false)} />}
       {showSmartTheater && <SmartTheater onClose={() => setShowSmartTheater(false)} />}
@@ -1878,6 +2058,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
           <VLSNewsInvestigacion onClose={() => setShowNewsInvestigacion(false)} />
         </Suspense>
       )}
+      {showNewsSemanaSanta && (
+        <Suspense fallback={null}>
+          <VLSNewsSemanaSanta onClose={() => setShowNewsSemanaSanta(false)} />
+        </Suspense>
+      )}
       {/* Strategic Lock for Sentinel Apex (Intelligence Module) */}
       {showSentinelApex && (
         (currentUser && ALLOWED_ADMINS.includes(currentUser.email.toLowerCase())) || localStorage.getItem('master_bypass') === 'true' ? (
@@ -1896,12 +2081,39 @@ function AppContent({ setShowCoquiSmartCRM }) {
         )
       )}
 
+      {showPortMonitor && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(15,23,42,0.95)', backdropFilter: 'blur(10px)', overflowY: 'auto', padding: '2rem' }}>
+          <div style={{ maxWidth: '1250px', margin: '0 auto', position: 'relative' }}>
+            <button onClick={() => setShowPortMonitor(false)} className="btn-glass" style={{ position: 'absolute', top: 0, right: 0, zIndex: 1000, padding: '0.8rem', borderRadius: '50%' }}><CloseIcon color="white" /></button>
+            <Suspense fallback={null}><PortMonitor isMini={false} /></Suspense>
+          </div>
+        </div>
+      )}
+
+      {showAnalyticsApp && (
+        <Suspense fallback={null}><VecinosAnalyticsApp onClose={() => setShowAnalyticsApp(false)} /></Suspense>
+      )}
+
+      {showSafeRoute && (
+        <Suspense fallback={null}><SafeRouteAI onClose={() => setShowSafeRoute(false)} /></Suspense>
+      )}
+      {showVeterinaria && (
+        <Suspense fallback={null}><RedVeterinariaVLS onClose={() => setShowVeterinaria(false)} /></Suspense>
+      )}
+      {showPincha && (
+        <Suspense fallback={null}><PinchaDating onClose={() => setShowPincha(false)} /></Suspense>
+      )}
+
+      {showOrientacionLegal && (
+        <Suspense fallback={null}><OrientacionLegal onClose={() => setShowOrientacionLegal(false)} /></Suspense>
+      )}
+
       {/* Radio Backoffice Access is also strategically locked */}
       {/* The event is usually handled inside components, but if it was here we would lock it too */}
 
       {/* Background Music Player (Always Active if stream/file set) */}
       {showUserProfile && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: 'rgba(15, 23, 42, 0.98)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 3000000, background: 'rgba(15, 23, 42, 0.98)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div className="glass-panel scale-in" style={{ maxWidth: '500px', width: '100%', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.5)', background: 'linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,58,138,0.95))', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><UserCircle size={24} color="#38bdf8" /> Centro Vecinal</h2>
@@ -2030,9 +2242,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
           <EntreVecinasHub onClose={() => setShowEntreVecinas(false)} />
         </Suspense>
       )}
+      {showVLSpeak && (
+        <Suspense fallback={null}><VLSpeakTranslator onClose={() => setShowVLSpeak(false)} /></Suspense>
+      )}
       {showAlcaldes && (
         <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38bdf8' }}>Cargando Archivo Histórico...</div>}>
-          <AlcaldesHistory onClose={() => { setShowAlcaldes(false); navigate('/'); }} />
+          <AlcaldesHistory onClose={() => { setShowAlcaldes(false); navigate('/hub'); }} />
         </Suspense>
       )}
       {showChileHub && (
@@ -2041,154 +2256,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       {showVecnityPay && (
-        <VecnityPay onClose={() => setShowVecnityPay(false)} currentUser={currentUser} />
+        <VecnityPay 
+          onClose={() => { setShowVecnityPay(false); setPendingPayment(null); }} 
+          currentUser={currentUser} 
+          initialOrder={pendingPayment}
+        />
       )}
-    </div>
-  );
-}
-
-function AppLoginOverlay({ handleLogin, setIsGuest, setGuestTimeLeft, navigate }) {
-  const [loginMode, setLoginMode] = useState(null);
-
-  if (loginMode === 'external') {
-    return (
-      <div className="scale-in">
-        <h2 style={{ color: 'white', margin: '0 0 1rem 0', fontSize: '1.6rem' }}>Portal del Ciudadano</h2>
-        <p style={{ color: '#bae6fd', marginBottom: '2rem', lineHeight: '1.6', fontSize: '1rem' }}>
-          Identifíquese para asegurar la trazabilidad y la seguridad de nuestra red vecinal.
-        </p>
-
-        <button
-          onClick={handleLogin}
-          className="btn pulse"
-          style={{ width: '100%', background: 'linear-gradient(90deg, #ff0055, #38bdf8)', color: 'white', border: 'none', padding: '1.2rem', borderRadius: '12px', fontSize: '1.15rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.8rem', cursor: 'pointer', marginBottom: '1.5rem', boxShadow: '0 10px 20px rgba(255, 0, 85, 0.3)' }}
-        >
-          <Fingerprint size={24} color="white" />
-          Ingresar con VLS Passport
-        </button>
-
-        <button
-          onClick={() => {
-            setIsGuest(true);
-            setGuestTimeLeft(3600); // 1 hour for trial sessions
-            localStorage.setItem('smart_is_guest', 'true');
-            localStorage.removeItem('smart_logout');
-            window.dispatchEvent(new CustomEvent('vls-start-radio'));
-          }}
-          className="btn-glass hover-lift"
-          style={{ background: 'rgba(59, 130, 246, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8', padding: '1rem', borderRadius: '12px', cursor: 'pointer', fontSize: '1rem', width: '100%', fontWeight: 'bold' }}
-        >
-          <strong>Acceso de Prueba (Modo Vecino)</strong><br />
-          <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>Ingreso sin contraseña</span>
-        </button>
-
-        <div style={{ marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1rem' }}>
-          <p style={{ fontSize: '0.7rem', color: '#64748b', marginBottom: '0.5rem' }}>ENTRADA_PARA_OPERADORES_NIVEL_ALPHA</p>
-          <button
-            onClick={() => {
-              const pass = prompt("INTRODUZCA LLAVE MAESTRA NEURAL:");
-              if (pass === 'master_bypass_2026') {
-                localStorage.setItem('master_bypass', 'true');
-                alert("ACCESO_CONCEDIDO: Identidad Digital Confirmada.");
-                window.location.reload();
-              } else {
-                alert("ACCESO_DENEGADO: Protocolo Sentinel Activado.");
-                window.dispatchEvent(new CustomEvent('trigger-serenito-security'));
-              }
-            }}
-            style={{ background: 'rgba(56, 189, 248, 0.1)', color: '#38bdf8', border: '1px solid #38bdf8', padding: '0.8rem', borderRadius: '12px', cursor: 'pointer', fontSize: '0.85rem', width: '100%', fontWeight: 'bold' }}
-          >
-            Validar Credencial VLS_OS
-          </button>
-        </div>
-
-        <button onClick={() => setLoginMode(null)} className="btn-glass" style={{ marginTop: '1.5rem', fontSize: '0.85rem' }}>← Volver</button>
-      </div>
-    );
-  }
-
-  if (loginMode === 'internal') {
-    return (
-      <div className="scale-in">
-        <h2 style={{ color: '#10b981', margin: '0 0 0.5rem 0', fontSize: '1.6rem' }}>Directorio Institucional</h2>
-        <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>Seleccione su plataforma de destino operativo.</p>
-
-        <div style={{ display: 'grid', gap: '0.75rem', textAlign: 'left' }}>
-          <button onClick={() => navigate('/desk')} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #ef4444' }}>
-            🚨 C5 - Seguridad y Monitoreo Backoffice
-          </button>
-          <button onClick={() => navigate('/puerta-serena')} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #8b5cf6' }}>
-            🏢 Puerta Serena (SGAAC)
-          </button>
-          <button onClick={() => navigate('/hub-comunicaciones')} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #06b6d4' }}>
-            📡 Hub Estratégico de Comunicaciones
-          </button>
-          <button onClick={() => navigate('/honorarios')} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #eab308' }}>
-            📝 RRHH - Gestión Honorarios E-Sign
-          </button>
-          <button onClick={() => navigate('/protocolo')} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #f472b6' }}>
-            🎙️ Protocolo, RRPP y Producción
-          </button>
-          <button onClick={() => { setLoginMode(null); setShowPropuestaElDia(true); }} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #ef4444' }}>
-            🗞️ Alianza Estratégica Diario El Día
-          </button>
-          <button onClick={() => { setLoginMode(null); setShowLinkedInManager(true); }} className="btn btn-glass" style={{ justifyContent: 'flex-start', padding: '1rem', borderLeft: '4px solid #0077b5' }}>
-            💼 LinkedIn Manager (B2B Outreach)
-          </button>
-        </div>
-
-        <button onClick={() => setLoginMode(null)} className="btn-glass" style={{ marginTop: '1.5rem', width: '100%', padding: '0.75rem', borderRadius: '12px' }}>← Volver</button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="scale-in">
-      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <img src="/vls-logo-3d.png" alt="VLS 3D Logo" style={{ width: '120px', height: '120px', filter: 'drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))' }} className="animate-float" />
-      </div>
-      <h2 style={{ color: 'white', margin: '0 0 1rem 0', fontSize: '1.6rem' }}>Sistema de Autenticación</h2>
-
-      {!window.location.hostname.includes('vecinosmart.cl') && (
-        <div style={{ padding: '0.8rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444', borderRadius: '8px', color: '#fca5a5', fontSize: '0.85rem', marginBottom: '1.5rem', textAlign: 'left', display: 'flex', gap: '8px', alignItems: 'flex-start' }}>
-          <ShieldAlert size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
-          <span><strong>INNOVACIÓN ESTRATÉGICA:</strong> Esta plataforma integra el ecosistema digital avanzado de La Serena. Desarrollo por <strong>Vecino Smart</strong> para la modernización de la gestión regional y ciudadana.</span>
-        </div>
-      )}
-
-      <p style={{ color: '#bae6fd', marginBottom: '2rem', lineHeight: '1.5', fontSize: '0.95rem' }}>
-        Plataforma unificada Ilustre Municipalidad de La Serena. Seleccione su perfil de usuario:
-      </p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <button
-          onClick={() => setLoginMode('external')}
-          className="btn"
-          style={{ width: '100%', background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', color: 'white', padding: '1.25rem', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '1rem', border: 'none', boxShadow: '0 10px 20px rgba(59, 130, 246, 0.3)' }}
-        >
-          <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.75rem', borderRadius: '50%' }}>
-            <UserCircle size={32} color="white" />
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '0.1rem' }}>Portal Externo (Ciudadanía)</strong>
-            <span style={{ fontSize: '0.85rem', color: '#bae6fd' }}>Vecinos, Turistas, Visitas y Clientes</span>
-          </div>
-        </button>
-
-        <button
-          onClick={() => setLoginMode('internal')}
-          className="btn"
-          style={{ width: '100%', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)', color: 'white', padding: '1.25rem', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '1rem', border: 'none', boxShadow: '0 10px 20px rgba(16, 185, 129, 0.3)' }}
-        >
-          <div style={{ background: 'rgba(255,255,255,0.2)', padding: '0.75rem', borderRadius: '50%' }}>
-            <ShieldAlert size={32} color="white" />
-          </div>
-          <div style={{ textAlign: 'left' }}>
-            <strong style={{ display: 'block', fontSize: '1.1rem', marginBottom: '0.1rem' }}>Portal Interno Institucional</strong>
-            <span style={{ fontSize: '0.85rem', color: '#a7f3d0' }}>Funcionarios, Directivos, RRHH y C5</span>
-          </div>
-        </button>
-      </div>
     </div>
   );
 }

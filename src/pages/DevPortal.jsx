@@ -9,8 +9,19 @@ import {
 import { useNavigate } from 'react-router-dom';
 import CommentSection from '../components/CommentSection';
 import IdeaTerminal from '../components/IdeaTerminal';
+import MonarchReview from '../components/MonarchReview';
 
 const DEV_APPS = [
+    {
+        id: 'monarch',
+        title: 'MONARCH EXECUTIVE REVIEW',
+        subtitle: 'Módulo de Gestión Master CEO v2026',
+        component: <MonarchReview />,
+        status: 'READY / ALPHA',
+        tech: ['React', 'Tailwind', 'Lucide'],
+        description: 'Dashboard ejecutivo de alto nivel diseñado para autoridades municipales. Integra KPIs estratégicos y alertas del sistema Vigía en tiempo real.',
+        color: '#f8fafc'
+    },
     {
         id: 'playground',
         title: 'VLS IDEAS & INNOVATION TERMINAL',

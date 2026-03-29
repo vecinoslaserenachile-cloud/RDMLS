@@ -3,15 +3,23 @@ import { motion } from 'framer-motion';
 
 const LoadingScreen = ({ isSyncing = false }) => (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem' }}>
-        <div style={{ position: 'relative', width: '100px', height: '100px' }}>
-            <motion.div 
-                animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '4px solid rgba(251,191,36,0.1)', borderTopColor: '#fbbf24' }} 
-            />
-            <motion.div 
-                animate={{ rotate: -360 }} transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
-                style={{ position: 'absolute', inset: '10px', borderRadius: '50%', border: '4px solid rgba(56,189,248,0.1)', borderTopColor: '#38bdf8' }} 
-            />
+        <div style={{ position: 'relative', width: '120px', height: '140px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Faro en Líneas - Identidad Smart */}
+            <div style={{ padding: '20px', width: '100%', height: '100%', boxSizing: 'border-box', opacity: 0.8 }}>
+                <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
+                    <motion.path
+                        d="M 46 25 L 54 25 L 56 100 L 44 100 Z"
+                        stroke="#fbbf24" strokeWidth="2" strokeLinecap="round"
+                        initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, repeat: Infinity, repeatType: "reverse" }}
+                    />
+                    <motion.path
+                        d="M 43 25 L 57 25 M 44 20 L 56 20 L 56 25 L 44 25 Z"
+                        stroke="#fbbf24" strokeWidth="2"
+                    />
+                    <motion.circle cx="50" cy="18" r="8" fill="rgba(251,191,36,0.2)" animate={{ opacity: [0.2, 0.6, 0.2] }} transition={{ duration: 1.5, repeat: Infinity }} />
+                </svg>
+            </div>
         </div>
         <div style={{ textAlign: 'center' }}>
             <h2 style={{ color: 'white', margin: 0, fontSize: '1.2rem', fontWeight: '900', letterSpacing: '4px' }}>

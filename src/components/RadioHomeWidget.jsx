@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Radio, Play, Pause, Volume2, Activity, Zap, Mic, Headphones, ChevronUp, ChevronDown } from 'lucide-react';
+import { Radio, Play, Pause, Volume2, VolumeX, Activity, Zap, Mic, Headphones, ChevronUp, ChevronDown } from 'lucide-react';
 
 const AnalogVUMeter = ({ label, needleRef }) => (
     <div style={{
@@ -31,8 +31,10 @@ const AnalogVUMeter = ({ label, needleRef }) => (
 
 export default function RadioHomeWidget() {
     const [isPlaying, setIsPlaying] = useState(false);
-    const [eqLevels, setEqLevels] = useState([50, 50, 50, 50, 50]);
-    const [spectrumLevels, setSpectrumLevels] = useState([10, 20, 30, 20, 10]);
+    const [volume, setVolume] = useState(80);
+    const [isMuted, setIsMuted] = useState(false);
+    const [eqLevels, setEqLevels] = useState(Array(10).fill(50));
+    const [spectrumLevels, setSpectrumLevels] = useState(Array(10).fill(10));
     const audioRef = useRef(null);
     const vuLeftRef = useRef(null);
     const vuRightRef = useRef(null);
@@ -42,6 +44,7 @@ export default function RadioHomeWidget() {
     const isRDMLS = currentHost.includes('rdmls') || (currentHost.includes('laserena.cl') && !currentHost.includes('vecinos'));
     const isVLS = !isRDMLS;
     const [isMinimized, setIsMinimized] = useState(true);
+    const prevVolume = useRef(80);
     
     // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
     const stations = isRDMLS ? [
@@ -54,17 +57,24 @@ export default function RadioHomeWidget() {
     const [currentStation, setCurrentStation] = useState(initialStation);
 
     const broadcastSchedule = isRDMLS ? [
+        { start: '00:00', end: '08:00', name: 'RDMLS: Turno de Noche & Reportes' },
         { start: '08:00', end: '10:00', name: 'RDMLS: Actualidad Municipal' },
         { start: '10:00', end: '12:00', name: 'Sesión Clásica: Maestro Peña Hen' },
         { start: '12:00', end: '14:00', name: 'Entrevistas: Gestión La Serena' },
         { start: '14:00', end: '16:00', name: 'Música & Cultura Regional' },
-        { start: '16:00', end: '18:00', name: 'RDMLS: Resumen de Noticias' }
+        { start: '16:00', end: '18:00', name: 'RDMLS: Resumen de Noticias' },
+        { start: '18:00', end: '21:00', name: 'RDMLS: Crónicas de la Serena' },
+        { start: '21:00', end: '23:59', name: 'RDMLS: Cierre de Gestión & Música' }
     ] : [
+        { start: '00:00', end: '05:00', name: 'VLS Night: Chiquitita One Love' },
+        { start: '05:00', end: '08:00', name: 'VLS Relax: Elqui Instrumental' },
         { start: '08:00', end: '10:00', name: 'Mañanero con Rock Colapso' },
         { start: '10:00', end: '12:00', name: 'Tributos VLS: Maestro Peña Hen' },
-        { start: '12:00', end: '14:00', name: 'EntreVecinos: Especial Soni Cev' },
+        { start: '12:00', end: '14:00', name: 'EntreVecinas: Especial Soni Cev' },
         { start: '14:00', end: '16:00', name: 'Vallenato Vecinal & Mix Almuerzo' },
-        { start: '16:00', end: '18:00', name: 'Sereneres: Remasterizaciones 2026' }
+        { start: '16:00', end: '18:00', name: 'Sereneres: Remasterizaciones 2026' },
+        { start: '18:00', end: '21:00', name: 'Relatos de Iquique & Arturo Prat' },
+        { start: '21:00', end: '23:59', name: 'VLS: Sesión Continua' }
     ];
 
     const getCurrentShow = () => {
@@ -78,40 +88,56 @@ export default function RadioHomeWidget() {
         const handleRadioState = (e) => {
             if (e.detail) {
                 setIsPlaying(e.detail.playing);
+                if (e.detail.volume !== undefined && e.detail.volume !== volume) {
+                   setVolume(e.detail.volume);
+                   if (e.detail.volume === 0) setIsMuted(true);
+                   else setIsMuted(false);
+                }
                 if (e.detail.station) setCurrentStation(e.detail.station);
             }
         };
         window.addEventListener('vls-radio-state-sync', handleRadioState);
         return () => window.removeEventListener('vls-radio-state-sync', handleRadioState);
-    }, []);
+    }, [volume]);
+
+    const handleVolumeChange = (newVal) => {
+        const v = parseFloat(newVal);
+        setVolume(v);
+        setIsMuted(v === 0);
+        window.dispatchEvent(new CustomEvent('vls-set-volume', { detail: v }));
+    };
+
+    const toggleMute = () => {
+        if (isMuted) {
+            handleVolumeChange(prevVolume.current || 80);
+            setIsMuted(false);
+        } else {
+            prevVolume.current = volume;
+            handleVolumeChange(0);
+            setIsMuted(true);
+        }
+    };
 
     const togglePlay = () => {
         window.dispatchEvent(new CustomEvent('vls-toggle-radio-global'));
     };
 
-    // Animación de los VU Meters (Mock si no hay AudioContext global)
+    // Sincronización Real con el Motor de Audio (Soberanía de Datos VLS)
     useEffect(() => {
-        if (isPlaying) {
-            const animate = () => {
-                const talkLevel = Math.random() * 25; // Nivel variable
-                const baseLevel = isPlaying ? -15 : -45;
-                if (vuLeftRef.current) vuLeftRef.current.style.transform = `rotate(${baseLevel + talkLevel}deg)`;
-                if (vuRightRef.current) vuRightRef.current.style.transform = `rotate(${baseLevel + (talkLevel * 0.85)}deg)`;
-                
-                // Mock spectrum
-                setSpectrumLevels(prev => prev.map(() => 10 + Math.random() * 60));
-
-                animationRef.current = requestAnimationFrame(animate);
-            };
-            animate();
-        } else {
-            if (vuLeftRef.current) vuLeftRef.current.style.transform = `rotate(-45deg)`;
-            if (vuRightRef.current) vuRightRef.current.style.transform = `rotate(-45deg)`;
-            setSpectrumLevels([5, 5, 5, 5, 5]);
-            if (animationRef.current) cancelAnimationFrame(animationRef.current);
-        }
-        return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
-    }, [isPlaying]);
+        const handleSync = (e) => {
+            if (e.detail) {
+                if (e.detail.spectrum) setSpectrumLevels(e.detail.spectrum);
+                if (e.detail.left !== undefined && vuLeftRef.current) {
+                    vuLeftRef.current.style.transform = `rotate(${e.detail.left}deg)`;
+                }
+                if (e.detail.right !== undefined && vuRightRef.current) {
+                    vuRightRef.current.style.transform = `rotate(${e.detail.right}deg)`;
+                }
+            }
+        };
+        window.addEventListener('vls-audio-spectrum-sync', handleSync);
+        return () => window.removeEventListener('vls-audio-spectrum-sync', handleSync);
+    }, []);
 
     const handleEqChange = (index, val) => {
         const value = Math.max(0, Math.min(100, val));
@@ -203,33 +229,47 @@ export default function RadioHomeWidget() {
                             <AnalogVUMeter label="L" needleRef={vuLeftRef} />
                             <AnalogVUMeter label="R" needleRef={vuRightRef} />
                         </div>
-                        <div style={{ display: 'flex', gap: '4px', height: '30px', alignItems: 'flex-end', paddingBottom: '5px' }}>
+                        <div style={{ display: 'flex', gap: '3px', height: '30px', alignItems: 'flex-end', paddingBottom: '3px' }}>
                             {spectrumLevels.map((l, i) => (
-                                <div key={i} style={{ width: '4px', height: `${l/3}%`, background: '#ef4444', borderRadius: '1px' }} />
+                                <div key={i} style={{ width: '3px', height: `${l/3}%`, background: '#ef4444', borderRadius: '1px' }} />
                             ))}
                         </div>
                     </div>
                 )}
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    
+                    {/* Controles Rapidos Volumen / Mute */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.3)', padding: '4px 12px', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                        <button onClick={toggleMute} style={{ background: 'none', border: 'none', padding: 0, color: isMuted ? '#64748b' : '#38bdf8', cursor: 'pointer', display: 'flex' }}>
+                            {isMuted || volume === 0 ? <VolumeX size={18} /> : <Volume2 size={18} />}
+                        </button>
+                        <input 
+                            type="range" min="0" max="100" 
+                            value={volume} 
+                            onChange={(e) => handleVolumeChange(e.target.value)}
+                            style={{ width: '60px', height: '4px', cursor: 'pointer', accentColor: '#38bdf8' }}
+                        />
+                    </div>
+
                     <button 
                         onClick={togglePlay}
                         style={{ 
                             background: isPlaying ? 'rgba(239, 68, 68, 0.2)' : '#ef4444', 
                             color: isPlaying ? '#ef4444' : 'white', 
                             border: isPlaying ? '1px solid #ef4444' : 'none',
-                            padding: '0.6rem 1.2rem', borderRadius: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
-                            fontSize: '0.8rem'
+                            padding: '0.6rem 1.4rem', borderRadius: '14px', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer',
+                            fontSize: '0.85rem', letterSpacing: '1px', boxShadow: isPlaying ? 'none' : '0 4px 15px rgba(239,68,68,0.3)'
                         }}
                     >
-                        {isPlaying ? <Pause size={16} /> : <Play size={16} />}
-                        {isPlaying ? 'PAUSAR' : 'ESCUCHAR'}
+                        {isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+                        {isPlaying ? 'PAUSAR' : 'SINTONIZAR'}
                     </button>
                     <button 
                         onClick={() => setIsMinimized(!isMinimized)}
-                        style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', padding: '8px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'white', cursor: 'pointer', padding: '10px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s' }}
                     >
-                        {isMinimized ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
+                        {isMinimized ? <ChevronDown size={20} /> : <ChevronUp size={20} />}
                     </button>
                 </div>
             </div>
@@ -243,7 +283,7 @@ export default function RadioHomeWidget() {
                             {currentStation.name}
                         </div>
                         <div style={{ fontSize: '0.85rem', color: '#38bdf8', marginTop: '4px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Zap size={14} /> 128kbps Hi-Fi Digital Stream
+                            <Zap size={14} /> 192kbps HD Digital Stream (SSL Direct)
                         </div>
                     </div>
 
@@ -253,22 +293,23 @@ export default function RadioHomeWidget() {
                     </div>
                 </div>
 
-                {/* EQ SECTION */}
-                <div style={{ background: '#000', padding: '15px 10px', borderRadius: '16px', marginTop: '10px', boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', height: '110px', padding: '0 5px' }}>
-                        {spectrumLevels.map((l, i) => (
+                {/* EQ SECTION: BARRAS MÁS ANCHAS + LEDS */}
+                <div style={{ background: '#070b14', padding: '18px 12px', borderRadius: '20px', marginTop: '15px', boxShadow: 'inset 0 0 30px rgba(0,0,0,0.9), 0 10px 30px rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', height: '160px' }}>
+                        {['31', '62', '125', '250', '500', '1K', '2K', '4K', '8K', '16K'].map((freq, i) => (
                             <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
                                 <div 
                                     id={`eq-bar-${i}`}
                                     style={{ 
-                                        width: '18px', // Más ancho para fácil manipulación
-                                        height: '75px', 
-                                        background: '#222', 
+                                        width: '28px', // MÁS ANCHO como se solicitó
+                                        height: '130px', 
+                                        background: '#0a101f', 
                                         position: 'relative', 
-                                        borderRadius: '10px', 
+                                        borderRadius: '6px', 
                                         cursor: 'ns-resize', 
-                                        overflow: 'visible',
-                                        border: '1px solid #333',
+                                        overflow: 'hidden',
+                                        border: '1px solid #1e293b',
+                                        boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
                                         touchAction: 'none'
                                     }}
                                     onPointerDown={(e) => {
@@ -279,62 +320,113 @@ export default function RadioHomeWidget() {
                                         handleEqChange(i, val);
                                     }}
                                 >
-                                    {/* Track interactivo invisible más ancho */}
-                                    <div style={{ position: 'absolute', top: '-10px', bottom: '-10px', left: '-5px', right: '-5px', zIndex: 0 }} />
+                                    {/* LED BLOCKS animadas */}
+                                    <div style={{ position: 'absolute', bottom: 0, width: '100%', height: '100%', display: 'flex', flexDirection: 'column-reverse', gap: '2px', padding: '3px' }}>
+                                        {[...Array(15)].map((_, blockIdx) => {
+                                            const threshold = (blockIdx / 15) * 100;
+                                            const isActive = spectrumLevels[i] > threshold;
+                                            let color = '#111827'; // Off
+                                            if (isActive) {
+                                                if (blockIdx < 9) color = '#22c55e'; // Green
+                                                else if (blockIdx < 13) color = '#fbbf24'; // Yellow/Amber
+                                                else color = '#f43f5e'; // Red (Vibrant)
+                                            }
+                                            return <div key={blockIdx} style={{ flex: 1, width: '100%', background: color, borderRadius: '1.5px', transition: 'background 0.04s', boxShadow: isActive ? `0 0 6px ${color}33` : 'none' }} />;
+                                        })}
+                                    </div>
                                     
-                                    {/* Fondo de nivel EQ */}
-                                    <div style={{ position: 'absolute', bottom: 0, width: '100%', height: `${eqLevels[i]}%`, background: 'rgba(239, 68, 68, 0.1)', borderTop: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '0 0 10px 10px', zIndex: 1 }} />
-                                    
-                                    {/* Vumeter de espectro real */}
-                                    <div style={{ position: 'absolute', bottom: 0, left: '20%', width: '60%', height: `${l}%`, background: '#ef4444', borderRadius: '2px', transition: 'height 0.05s', zIndex: 2, pointerEvents: 'none', filter: 'drop-shadow(0 0 5px #ef444455)' }} />
-                                    
-                                    {/* Knob/Handle del EQ */}
+                                    {/* Knob/Handle del EQ Overlay (Sleek line) */}
                                     <motion.div 
-                                        animate={{ bottom: `calc(${eqLevels[i]}% - 6px)` }}
+                                        animate={{ bottom: `calc(${eqLevels[i]}% - 2px)` }}
                                         style={{ 
                                             position: 'absolute', 
-                                            left: '-2px', 
-                                            width: '22px', 
-                                            height: '12px', 
+                                            left: 0, 
+                                            width: '100%', 
+                                            height: '4px', 
                                             background: '#fff', 
-                                            border: '2px solid #ef4444', 
-                                            borderRadius: '4px', 
-                                            zIndex: 5,
-                                            boxShadow: '0 2px 5px rgba(0,0,0,0.5)',
+                                            zIndex: 20,
+                                            boxShadow: '0 0 15px #38bdf8',
                                             pointerEvents: 'none'
                                         }} 
                                     />
+                                    {/* Highlight de posición */}
+                                    <div style={{ position: 'absolute', bottom: 0, width: '100%', height: `${eqLevels[i]}%`, background: 'rgba(56,189,248,0.03)', borderTop: '1px solid rgba(56,189,248,0.15)', pointerEvents: 'none' }} />
                                 </div>
-                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: '900', letterSpacing: '0.5px' }}>{['60', '250', '1K', '4K', '12K'][i]}</span>
+                                <span style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold' }}>{freq}</span>
                             </div>
                         ))}
-                    </div>
-                    <div style={{ textAlign: 'center', marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '5px' }}>
-                        <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 'bold', letterSpacing: '2px', opacity: 0.8 }}>{isRDMLS ? 'R D M L S' : 'V L S'}  P R O F E S S I O N A L  E Q</span>
                     </div>
                 </div>
 
-                {/* GRILLA PROGRAMÁTICA */}
-                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px', marginTop: '5px' }}>
-                    <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: '900', letterSpacing: '1px', display: 'block', marginBottom: '10px' }}>GRILLA PROGRAMÁTICA</span>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', maxHeight: '80px', overflowY: 'auto' }}>
-                        {broadcastSchedule.map((s, idx) => (
-                            <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: getCurrentShow() === s.name ? '#ef4444' : '#94a3b8' }}>
-                                <span>{s.start} - {s.end}</span>
-                                <span style={{ fontWeight: getCurrentShow() === s.name ? 'bold' : 'normal' }}>{s.name}</span>
-                            </div>
-                        ))}
+                {/* GRILLA PROGRAMÁTICA: MÁS ATRACTIVA Y MODERNA */}
+                <div style={{ marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                        <h4 style={{ color: '#94a3b8', fontSize: '0.75rem', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', margin: 0 }}>Grilla Programática RDMLS/VLS</h4>
+                        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e', boxShadow: '0 0 10px #22c55e' }} />
+                            <span style={{ fontSize: '0.65rem', color: '#22c55e', fontWeight: 'bold' }}>EN VIVO</span>
+                        </div>
+                    </div>
+                    
+                    <div style={{ 
+                        maxHeight: '180px', 
+                        overflowY: 'auto', 
+                        paddingRight: '12px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '10px'
+                    }}>
+                        {broadcastSchedule.map((item, i) => {
+                            const now = new Date();
+                            const currentHour = now.getHours();
+                            const startHour = parseInt(item.start.split(':')[0]);
+                            const endHour = parseInt(item.end.split(':')[0]);
+                            const isCurrent = currentHour >= startHour && currentHour < endHour;
+
+                            let accentColor = '#38bdf8'; 
+                            if (startHour < 12) accentColor = '#f59e0b'; 
+                            else if (startHour < 18) accentColor = '#22c55e'; 
+                            else accentColor = '#818cf8'; 
+
+                            return (
+                                <div 
+                                    key={i}
+                                    style={{ 
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        background: isCurrent ? `${accentColor}11` : 'rgba(15, 23, 42, 0.2)', 
+                                        padding: '12px 16px', 
+                                        borderRadius: '14px', 
+                                        border: isCurrent ? `1px solid ${accentColor}33` : '1px solid rgba(255,255,255,0.03)',
+                                        position: 'relative',
+                                        transition: 'all 0.3s'
+                                    }}
+                                >
+                                    {isCurrent && (
+                                        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '4px', background: accentColor, borderRadius: '4px 0 0 4px' }} />
+                                    )}
+                                    <div style={{ width: '80px' }}>
+                                        <span style={{ fontSize: '0.75rem', fontWeight: '900', color: isCurrent ? accentColor : '#64748b' }}>{item.start}</span>
+                                        <div style={{ fontSize: '0.6rem', color: '#475569' }}>{item.end}</div>
+                                    </div>
+                                    <div style={{ flex: 1, paddingLeft: '15px' }}>
+                                        <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: isCurrent ? '#fff' : '#cbd5e1' }}>{item.name}</div>
+                                        <div style={{ fontSize: '0.6rem', color: '#64748b' }}>{isCurrent ? 'Escuchando ahora en HD' : 'Próximo bloque'}</div>
+                                    </div>
+                                    {isCurrent && (
+                                        <div style={{ background: accentColor, padding: '3px 8px', borderRadius: '5px', fontSize: '0.55rem', fontWeight: '900', color: '#000' }}>AHORA</div>
+                                    )}
+                                </div>
+                            );
+                        })}
                     </div>
                 </div>
             </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '15px' }}>
                 <div style={{ display: 'flex', gap: '15px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#64748b', fontSize: '0.75rem' }}>
-                        <Headphones size={14} /> 1420 Vecinos Escuchando
-                    </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontSize: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#10b981', fontSize: '0.75rem', fontWeight: 'bold' }}>
                         <Mic size={14} /> Locución IA Activa
                     </div>
                 </div>
@@ -350,8 +442,7 @@ export default function RadioHomeWidget() {
             </div>
             
             <style>{`
-                .pulse-red { animation: pulse-red 2s infinite; }
-                @keyframes pulse-red { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+                @keyframes pulse { 0% { opacity: 0.6; } 50% { opacity: 1; } 100% { opacity: 0.6; } }
             `}</style>
         </motion.div>
     );

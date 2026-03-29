@@ -97,7 +97,7 @@ export default function UserCRMModal({ onClose, currentUser }) {
                                     onChange={(e) => setHistoryInfo({...historyInfo, tipo_perfil: e.target.value})}
                                     style={{ width: '100%', background: '#111', border: '1px solid #333', borderRadius: '10px', padding: '0.6rem', color: 'white', fontSize: '0.8rem' }}
                                 >
-                                    <option value="VECINO">Vecino Residente</option>
+                                    <option value="VECINO">Vecino, Visitante o Turista</option>
                                     <option value="ESTUDIANTE">Estudiante (U. / IP / Colegio)</option>
                                     <option value="EMPRESA">Comercio / Institución</option>
                                 </select>

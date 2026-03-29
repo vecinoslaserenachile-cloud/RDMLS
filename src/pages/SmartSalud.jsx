@@ -1,5 +1,11 @@
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { 
+    HeartPulse, PlusCircle, Search, Stethoscope, Users, Syringe, FileCheck, 
+    CheckCircle2, Star, MapPin, Clock, MessageSquare, Upload, AlertCircle, 
+    UserCheck, Activity, Sparkles 
+} from 'lucide-react';
 
 export default function SmartSalud() {
     const navigate = useNavigate();

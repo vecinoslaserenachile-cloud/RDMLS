@@ -1,6 +1,6 @@
-import { GoogleGenAI, Modality } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
-let ai: GoogleGenAI | null = null;
+let ai: GoogleGenerativeAI | null = null;
 
 export const speakText = async (text: string) => {
   try {
@@ -11,23 +11,14 @@ export const speakText = async (text: string) => {
     }
     
     if (!ai) {
-      ai = new GoogleGenAI({ apiKey });
+      ai = new GoogleGenerativeAI(apiKey);
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-preview-tts",
-      contents: [{ parts: [{ text: `Lee esta pregunta de trivia de forma clara y emocionante: ${text}` }] }],
-      config: {
-        responseModalities: [Modality.AUDIO],
-        speechConfig: {
-          voiceConfig: {
-            prebuiltVoiceConfig: { voiceName: 'Kore' },
-          },
-        },
-      },
+    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent({
+      contents: [{ role: "user", parts: [{ text: `Lee esta pregunta de trivia de forma clara y emocionante: ${text}` }] }],
     });
 
-    const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+    const base64Audio = response.response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
     if (base64Audio) {
       const audioBlob = b64toBlob(base64Audio, 'audio/mpeg');
       const audioUrl = URL.createObjectURL(audioBlob);

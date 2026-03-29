@@ -12,7 +12,7 @@ export default function NewsDetailModal({ item, onClose }) {
       "https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?q=80&w=1000&auto=format&fit=crop"
   ];
   
-  const randomImg = images[Math.floor(Math.random() * images.length)];
+  const randomImg = React.useMemo(() => images[Math.floor(Math.random() * images.length)], []);
 
   return (
     <div style={{
@@ -43,7 +43,7 @@ export default function NewsDetailModal({ item, onClose }) {
           <img 
             src={item.imageUrl || randomImg} 
             alt={item.title} 
-            style={{ width: '100%', height: '100%', objectFit: 'crop' }} 
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(26,26,26,1) 100%)' }}></div>
           

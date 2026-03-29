@@ -49,7 +49,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     
     
     const [volume, setVolume] = useState(0.8);
-    const [eqLevels, setEqLevels] = useState([50, 50, 50, 50, 50]);
+    const [eqLevels, setEqLevels] = useState([50, 50, 50, 50, 50, 50, 50, 50, 50, 50]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [activeMediaType, setActiveMediaType] = useState('radio');
     const [isDjTalking, setIsDjTalking] = useState(false);
@@ -58,8 +58,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
 
     const vuLeftRef = useRef(null);
     const vuRightRef = useRef(null);
-    const [spectrumLevels, setSpectrumLevels] = useState([10, 20, 30, 20, 10]);
+    const [spectrumLevels, setSpectrumLevels] = useState(Array(10).fill(10));
     const meterLevelsRef = useRef({ left: -45, right: -45 });
+    const [hasProxyFallback, setHasProxyFallback] = useState(false);
     
     // Audio Engine Refs
     const audioContextRef = useRef(null);
@@ -154,6 +155,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
 
         const tryAutoplay = () => {
             if (hasAutoplayAttempted.current) return;
+            
+            // Requisitos React-Three/Web Audio: resume obligatoriamente en evento
+            initAudioContext();
             hasAutoplayAttempted.current = true;
             
             if (audioRef.current && audioRef.current.paused) {
@@ -164,7 +168,10 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                     p.then(() => {
                         setIsPlaying(true);
                         setCurrentStation(stations[0]);
-                    }).catch(() => {});
+                    }).catch(err => {
+                        console.warn("VLS Autplay blocked/failed:", err);
+                        // No mostramos alerta invasiva aún, ya que el usuario solo navegó/scrolleó
+                    });
                 }
             }
             // Limpiar listeners una vez ejecutado
@@ -201,9 +208,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     // Sincronizar estado con el Home Widget
     useEffect(() => {
         window.dispatchEvent(new CustomEvent('vls-radio-state-sync', { 
-            detail: { playing: isPlaying, station: currentStation } 
+            detail: { playing: isPlaying, station: currentStation, volume: volume * 100 } 
         }));
-    }, [isPlaying, currentStation]);
+    }, [isPlaying, currentStation, volume]);
 
     const [humanVoice, setHumanVoice] = useState(null);
 
@@ -230,6 +237,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     }, []);
 
     const broadcastSchedule = [
+        { start: '00:00', end: '04:00', name: 'Sinfonía Nocturna: VLS Relax' },
+        { start: '04:00', end: '08:00', name: 'Madrugada Regional: Noticias & Clima' },
         { start: '08:00', end: '10:00', name: 'Mañanero con Rock Colapso' },
         { start: '10:00', end: '12:00', name: 'Tributos VLS: Maestro Peña Hen' },
         { start: '12:00', end: '14:00', name: 'EntreVecinos: Especial Soni Cev' },
@@ -382,7 +391,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         if (audioRef.current && isPlaying) {
             setupStreamAndPlay();
         }
-    }, [currentStation]);
+    }, [currentStation, hasProxyFallback]);
 
     // ─── LÓGICA MEJORADA DE STREAM (admite Montecarlo directStreaming) ─────────
     const setupStreamAndPlay = () => {
@@ -400,7 +409,14 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         }
 
         audioRef.current.pause();
-        audioRef.current.crossOrigin = 'anonymous'; // Requisito estricto para Web Audio API AnalyserNode
+        audioRef.current.crossOrigin = 'anonymous'; 
+        
+        // Estrategia de recuperación: Si falló una vez, forzamos proxy para saltar bloqueos de red local/ISP
+        if (hasProxyFallback) {
+            console.log("VLS Audio: Using proxy fallback for", streamUrl);
+            streamUrl = `https://corsproxy.io/?url=${encodeURIComponent(streamUrl)}`;
+        }
+
         audioRef.current.src = streamUrl;
         audioRef.current.load();
         
@@ -411,9 +427,25 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                 audioRef.current.volume = volume;
                 if (audioContextRef.current) audioContextRef.current.resume();
                 startVULoop();
+                setHasProxyFallback(false); // Reset if success
             }).catch(e => {
-                console.warn("VLS Audio: Stream error.", e);
+                console.error("VLS Audio: Stream error.", e);
+                
+                // Si falla por 'no supported source' o red, y no hemos probado proxy, reintentamos una sola vez con proxy.
+                if (!hasProxyFallback) {
+                    setHasProxyFallback(true);
+                    return; // El useEffect de station o isPlaying gatillará de nuevo
+                }
+
                 setIsPlaying(false);
+                if (e.name === "NotAllowedError") {
+                    alert("⚠️ Radio Bloqueada por el Navegador: Haga clic en cualquier lugar para habilitar la señal RDMLS/VLS.");
+                } else if (e.name === "AbortError") {
+                    // Ignorable: El usuario pausó antes de que cargara
+                    console.log("VLS Audio: Playback aborted by user.");
+                } else {
+                    alert("⚠️ Fallo en Sintonía: La señal de la radio está fuera de rango o en mantenimiento.");
+                }
             });
         }
     };
@@ -426,7 +458,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         if (filtersRef.current.length > 0 && audioContextRef.current) {
             eqLevels.forEach((level, i) => {
                 if (filtersRef.current[i]) {
-                    const gain = (level - 50) * 0.6;
+                    const gain = (level - 50) * 0.8; // Increased from 0.6 to 0.8 for clearer EQ response
                     filtersRef.current[i].gain.setTargetAtTime(gain, audioContextRef.current.currentTime, 0.1);
                 }
             });
@@ -445,8 +477,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             }
 
             analyserRef.current = ctx.createAnalyser();
-            analyserRef.current.fftSize = 64;
-            const frequencies = [60, 250, 1000, 4000, 12000];
+            analyserRef.current.fftSize = 512; 
+            const frequencies = [31, 62, 125, 250, 500, 1000, 2000, 4000, 8000, 16000];
             const filters = frequencies.map(freq => {
                 const filter = ctx.createBiquadFilter();
                 filter.type = 'peaking';
@@ -517,7 +549,25 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                     for(let i = half; i < bufferLength; i++) rightSum += dataArray[i];
                     avgL = leftSum / half;
                     avgR = rightSum / half;
-                    setSpectrumLevels(Array.from(dataArray.slice(0, 5)).map(v => (v / 255) * 100));
+                    
+                    // Map spectrum to 10 bands
+                    const step = Math.floor(bufferLength / 10);
+                    const newSpectrum = [];
+                    for(let i = 0; i < 10; i++) {
+                        let bandSum = 0;
+                        for(let j = 0; j < step; j++) bandSum += dataArray[i * step + j];
+                        newSpectrum.push((bandSum / step / 255) * 100);
+                    }
+                    setSpectrumLevels(newSpectrum);
+                    // Broadcast real data for other components (Smart Home Widget, Mixer, etc.)
+                    window.dispatchEvent(new CustomEvent('vls-audio-spectrum-sync', { 
+                        detail: { 
+                            spectrum: newSpectrum, 
+                            left: rotL || -45, 
+                            right: rotR || -45,
+                            isPlaying: true
+                        } 
+                    }));
                 }
             }
             let rotL, rotR;
@@ -887,19 +937,26 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                         </span>
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: isMobile ? '120px' : '160px' }}>
-                        <Volume2 size={18} color={volume === 0 ? '#64748b' : '#ef4444'} />
-                        <input 
-                            type="range" min="0" max="1" step="0.005" value={volume} 
-                            onChange={(e) => setVolume(parseFloat(e.target.value))}
-                            style={{ 
-                                flex: 1, accentColor: '#ef4444', height: '8px', borderRadius: '10px',
-                                outline: 'none', cursor: 'pointer',
-                                background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${volume * 100}%, #1e293b ${volume * 100}%, #1e293b 100%)`,
-                                appearance: 'none', WebkitAppearance: 'none'
-                            }} 
-                            className="vls-volume-slider"
-                        />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, minWidth: isMobile ? '160px' : '220px' }}>
+                            <Volume2 size={18} color={volume === 0 ? '#64748b' : '#ef4444'} />
+                            <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <input 
+                                    type="range" min="0" max="1" step="0.001" value={volume} 
+                                    onChange={(e) => setVolume(parseFloat(e.target.value))}
+                                    style={{ 
+                                        width: '100%', accentColor: '#ef4444', height: '10px', borderRadius: '10px',
+                                        outline: 'none', cursor: 'pointer',
+                                        background: `linear-gradient(to right, #ef4444 0%, #ef4444 ${volume * 100}%, #1e293b ${volume * 100}%, #1e293b 100%)`,
+                                        appearance: 'none', WebkitAppearance: 'none',
+                                        marginRight: '10px'
+                                    }} 
+                                    className="vls-volume-slider"
+                                />
+                                <span style={{ fontSize: '0.7rem', color: '#ef4444', fontWeight: 'bold', minWidth: '35px', textAlign: 'right', fontFamily: 'monospace' }}>
+                                    {Math.round(volume * 100)}%
+                                </span>
+                            </div>
+                        </div>
                         {/* Botón ciclar modo: expanded → compact → mini */}
                         <button 
                             onClick={cycleMode} 
@@ -915,7 +972,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                         </button>
                     </div>
                 </div>
-            </div>
+
 
             <style>{`
                 .drag-handle:active { cursor: grabbing; }

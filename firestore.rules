@@ -1,0 +1,45 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    match /puerta_smart_leads/{lead} {
+      allow create: if true;
+      allow read, update, delete: if isAuthenticated();
+    }
+
+    match /induccion_certificados_2026/{doc} {
+      allow create: if true;
+      allow read: if isAuthenticated();
+    }
+
+    match /vls_reportes_ciudadanos/{report} {
+      allow create: if true;
+      allow read, update: if isAuthenticated();
+    }
+
+    match /vetcinos_alerts/{alert} {
+      allow read, create: if true;
+      allow update, delete: if isAuthenticated();
+    }
+
+    match /system_logs/{log} {
+      allow create, read: if isAuthenticated();
+    }
+    match /rdmls_opciones_log/{log} {
+      allow create, read: if isAuthenticated();
+    }
+
+    match /leaderboard/{score} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /{document=**} {
+      allow read, write: if isAuthenticated();
+    }
+  }
+}

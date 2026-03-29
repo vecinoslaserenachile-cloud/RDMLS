@@ -5,6 +5,7 @@ export default function CDLSPanel({ onClose }) {
     const [activeTab, setActiveTab] = useState('seguro');
     const [volumen, setVolumen] = useState(50);
     const [isPlaying, setIsPlaying] = useState(false);
+    const [jitter, setJitter] = useState(0.5);
     const audioRef = useRef(null);
 
     useEffect(() => {
@@ -20,6 +21,14 @@ export default function CDLSPanel({ onClose }) {
             audioRef.current?.pause();
         }
     }, [isPlaying, activeTab]);
+
+    useEffect(() => {
+        if (!isPlaying) return;
+        const interval = setInterval(() => {
+            setJitter(Math.random());
+        }, 100);
+        return () => clearInterval(interval);
+    }, [isPlaying]);
 
     return (
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, background: 'linear-gradient(135deg, rgba(8, 15, 30, 0.95) 0%, rgba(133, 20, 38, 0.9) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', backdropFilter: 'blur(20px)' }}>
@@ -214,7 +223,7 @@ export default function CDLSPanel({ onClose }) {
                                                     height: '75px',
                                                     background: 'linear-gradient(to top, #111, #ff3333)',
                                                     transformOrigin: 'bottom center',
-                                                    transform: isPlaying ? `rotate(${-30 + Math.random() * 60 * (volumen / 100)}deg)` : 'rotate(-40deg)',
+                                                    transform: isPlaying ? `rotate(${-30 + jitter * 60 * (volumen / 100)}deg)` : 'rotate(-40deg)',
                                                     transition: 'transform 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
                                                     boxShadow: '2px 0 3px rgba(0,0,0,0.3)',
                                                     zIndex: 2

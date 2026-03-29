@@ -31,7 +31,16 @@ export default function MusicRanking({ insideModal = false }) {
     const [votedTracks, setVotedTracks] = useState(new Set());
     const [voteFeedbackId, setVoteFeedbackId] = useState(null);
     const [liveAd, setLiveAd] = useState(null);
+    const [jitter, setJitter] = useState(0.5);
     const audioRef = useRef(null);
+
+    useEffect(() => {
+        if (!isPlaying) return;
+        const interval = setInterval(() => {
+            setJitter(Math.random());
+        }, 100);
+        return () => clearInterval(interval);
+    }, [isPlaying]);
 
     const [playlist, setPlaylist] = useState([
         { id: 1, title: "Serenito Rap", artist: "Campaña Serenito", cover: "/music/portada_serenito_rap.png", audio: "/music/serenito_rap.mp3", likes: 10 },
@@ -252,7 +261,7 @@ export default function MusicRanking({ insideModal = false }) {
                                             <div key={b} style={{ 
                                                 height: '3px', 
                                                 background: isPlaying ? (b > 6 ? '#ef4444' : b > 4 ? '#eab308' : '#10b981') : '#111', 
-                                                opacity: isPlaying && Math.random() > 0.3 ? 1 : 0.3,
+                                                opacity: isPlaying && jitter > 0.3 ? 1 : 0.3,
                                                 transition: 'opacity 0.1s'
                                             }} />
                                         ))}

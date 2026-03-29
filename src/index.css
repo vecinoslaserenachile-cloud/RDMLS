@@ -96,6 +96,12 @@ body {
     padding: 0 1rem !important;
   }
   
+  /* Simplify background for mobile to avoid expensive repaints */
+  .trencadis-guell {
+    background: var(--bg-primary);
+    background-image: none;
+  }
+  
   h1 { font-size: 1.8rem; }
   h2 { font-size: 1.5rem; }
 }
@@ -429,6 +435,13 @@ select:focus {
   background-color: var(--bg-secondary);
   background-size: 20px 20px;
   background-position: 0 0, 10px 10px;
+  will-change: transform;
+}
+
+@media (max-width: 1024px) {
+  .trencadis-guell {
+    background-image: none !important; /* Remove expensive pattern repaints on mobile */
+  }
 }
 
 /* Music Studio App fixes */

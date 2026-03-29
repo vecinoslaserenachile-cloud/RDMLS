@@ -7,10 +7,10 @@ export default function AmbientModeVLS({ onClose }) {
     const [currentImageIdx, setCurrentImageIdx] = useState(0);
 
     const images = [
-        "https://images.unsplash.com/photo-1542456565-5c1cf81c4c81?q=80&w=2000&auto=format&fit=crop", // Faro
-        "https://images.unsplash.com/photo-1514539079130-25950c84af65?q=80&w=2000&auto=format&fit=crop", // Playa
-        "https://images.unsplash.com/photo-1579621970588-a35d0e7ab9b6?q=80&w=2000&auto=format&fit=crop", // Valle
-        "https://images.unsplash.com/photo-1605281317010-fe5ffe798166?q=80&w=2000&auto=format&fit=crop"  // Ciudad colonial
+        "/la_serena_faro_premium_1774709521702.png", // Faro Sunset Premium
+        "https://images.unsplash.com/photo-1596464716127-f2a82984de30?q=80&w=2000&auto=format&fit=crop", // Borde Costero
+        "https://images.unsplash.com/photo-1599307730999-52e896489814?q=80&w=2000&auto=format&fit=crop", // Valle del Elqui
+        "https://images.unsplash.com/photo-1628155930542-3c7a64e2c833?q=80&w=2000&auto=format&fit=crop"  // Casco Histórico
     ];
 
     useEffect(() => {

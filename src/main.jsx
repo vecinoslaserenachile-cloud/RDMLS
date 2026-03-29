@@ -62,7 +62,10 @@ import CentroRadioDev from './pages/CentroRadioDev.jsx';
 import BellaDashboard from './pages/BellaDashboard.jsx';
 import EntrevecinasHub from './pages/EntrevecinasHub.jsx';
 import PirataSmart from './pages/PirataSmart.jsx';
+import MuralismoVecinal from './pages/MuralismoVecinal.jsx';
+import VLSRequestPortal from './components/VLSRequestPortal.jsx';
 import Aprende from './pages/Aprende.jsx';
+import Sitemap from './pages/Sitemap';
 import { Activity } from 'lucide-react';
 import './index.css';
 
@@ -211,6 +214,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="serenamet" element={<Serenamet />} />
                   <Route path="propiedades" element={<Propiedades />} />
                   <Route path="acceso" element={<PuertaSerena />} />
+                  <Route path="arquitectura" element={<ArquitecturaPage />} />
                   <Route path="dev" element={<DevPortal />} />
                   <Route path="motors" element={<VLSMotorsShowroom />} />
                   <Route path="induccion" element={<Aprende isRDMLS={true} />} />
@@ -223,8 +227,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="plaza" element={<PlazaVecinal />} />
                   <Route path="serenametplus" element={<SerenaMetPlus />} />
                   <Route path="entrevecinas" element={<EntrevecinasHub />} />
+                  <Route path="muralismo" element={<MuralismoVecinal />} />
+                  <Route path="reportes" element={<VLSRequestPortal onClose={() => window.history.back()} isPage={true} />} />
+                  <Route path="sitemap" element={<Sitemap />} />
+                  <Route path="fichas" element={<HubDashboard />} />
                 </Route>
-                <Route path="/welcome" element={<WelcomePortal />} />
                 <Route path="/welcome" element={<WelcomePortal />} />
                 <Route path="/smart-setup" element={<SuperAdminSetup />} />
                 <Route path="/bisabuelo" element={<GameVLS />} />

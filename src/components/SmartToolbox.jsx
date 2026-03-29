@@ -7,7 +7,7 @@ import {
     Search, Map, Bell, Wifi, Activity,
     Music, Share2, ShieldCheck,
     Twitter, Facebook, Instagram,
-    Calendar, Rocket, Shirt
+    Calendar, Rocket, Shirt, Award
 } from 'lucide-react';
 
 
@@ -29,6 +29,14 @@ export default function SmartToolbox() {
             event: 'toggle-radio-visibility',
             color: '#38bdf8',
             bgColor: 'rgba(56, 189, 248, 0.2)'
+        },
+        { 
+            id: 'vecinity-pay', 
+            icon: Award, 
+            label: 'Cargar Fichas VLS', 
+            event: 'open-vecinity-pay',
+            color: '#FFD700',
+            bgColor: 'rgba(255, 215, 0, 0.2)'
         },
         { 
             id: 'chat', 

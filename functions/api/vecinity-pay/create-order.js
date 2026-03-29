@@ -24,10 +24,10 @@ export async function onRequestPost(context) {
     const url = new URL(request.url);
     const path = url.pathname;
 
-    // Detectar motor basado en FLOW_MODE (prioritario) o prefijo de llave
-    const currentFlowUrl = (env.FLOW_MODE === 'live') 
-        ? FLOW_API_URL 
-        : FLOW_SANDBOX_URL;
+    // Detectar motor basado en FLOW_MODE (por defecto 'live' en producción beta)
+    const currentFlowUrl = (env.FLOW_MODE === 'sandbox') 
+        ? FLOW_SANDBOX_URL 
+        : FLOW_API_URL;
 
     const headers = {
         'Content-Type': 'application/json',
@@ -50,8 +50,11 @@ export async function onRequestPost(context) {
 
             // ── MOTOR NACIONAL: Flow.cl ──────────────────────────────────
             if (engine === 'national') {
+                const FLOW_KEY = env.FLOW_API_KEY || '1FACCCE9-C039-4686-A822-3D3LC150A3D6';
+                const FLOW_SECRET = env.FLOW_SECRET_KEY || 'd7827efbcf45982c6b7c72c8b1b330873d8727ac';
+
                 const flowParams = new URLSearchParams({
-                    apiKey: env.FLOW_API_KEY,
+                    apiKey: FLOW_KEY,
                     commerceOrder: orderId,
                     subject: `VLS: ${type === 'fichas' ? fichas + ' Fichas VLS' : 'Suscripción Pro ' + itemId}`,
                     amount: Math.round(amountCLP),
@@ -69,7 +72,7 @@ export async function onRequestPost(context) {
                     .join('');
 
                 const encoder = new TextEncoder();
-                const keyData = encoder.encode(env.FLOW_SECRET_KEY);
+                const keyData = encoder.encode(FLOW_SECRET);
                 const msgData = encoder.encode(signatureBase);
                 const cryptoKey = await crypto.subtle.importKey('raw', keyData, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
                 const signature = await crypto.subtle.sign('HMAC', cryptoKey, msgData);

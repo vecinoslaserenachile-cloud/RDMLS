@@ -1,16 +1,41 @@
-# React + Vite
+# 🏙️ VLS Smart City Ecosystem
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Plataforma unificada para la gestión comunal de La Serena, Chile. Este repositorio contiene el portal institucional "Absolute Presence" y la red de servicios "Smart Citizens".
 
-Currently, two official plugins are available:
+## 🚀 Inicio Rápido
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Requisitos
+- **Node.js**: v18+ 
+- **Firebase CLI** (para funciones)
+- **Wrangler** (Cloudflare Workers/D1)
 
-## React Compiler
+### Instalación
+```bash
+npm install
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Configuración
+1. Copia el archivo de ejemplo: `cp .env.example .env`
+2. Configura tu `VITE_GEMINI_API_KEY` para las funciones de IA.
 
-## Expanding the ESLint configuration
+### Ejecución Local
+```bash
+# Frontend (React + Vite)
+npm run dev
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Backend (Express)
+npm run start:server
+```
+
+## 🏗️ Arquitectura
+- **Frontend**: React 18, Framer Motion, D3.js (Visualización de datos).
+- **Backend (Serverless)**: Cloudflare Workers, Express.js middleware.
+- **Base de Datos**: Cloudflare D1 (SQL), Firestore (CRM).
+- **IA**: Gemini 3 Flash (Moderación, Chatbot Farito).
+
+## 🛠️ DevOps & CI/CD
+- **GitHub Actions**: Pipeline automatizado en `.github/workflows/ci-cd.yml` para validación de código.
+- **GitHub Sync**: Conectado con `vecinoslaserenachile-cloud`.
+
+## 📜 Licencia
+Uso exclusivo y restringido para Vecinos La Serena (Chile).

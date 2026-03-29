@@ -55,17 +55,17 @@ export default function RDMLSRadioDial({ onClose }) {
             name: 'RDMLS INSTITUCIONAL',
             dialLabel: 'RDMLS',
             slogan: 'LA SEÑAL SIEMPRE CONECTADA - IMLS 2026', 
-            url: "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3",
+            url: "https://az11.yesstreaming.net:8590/radio.mp3",
             color: '#FFD700',
             logo: '/logo_municipio.png',
-            badge: 'OFICIAL'
+            badge: 'HD 192K'
         },
         { 
             id: 'cultura', 
             name: 'RDMLS CULTURA',
             dialLabel: 'CULTURA',
             slogan: 'DIFUSIÓN CULTURAL MUNICIPAL - LA SERENA', 
-            url: "https://az11.yesstreaming.net/listen/radio-digital-municipal-la-serena/radio.mp3?rel=cultura", 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", 
             color: '#ef4444',
             logo: '/escudo.png',
             badge: 'MUNICIPAL'
@@ -85,7 +85,7 @@ export default function RDMLSRadioDial({ onClose }) {
             name: 'RDMLS EVENTOS',
             dialLabel: 'PROTOCOL',
             slogan: 'PROTOCOLOS Y ACTOS INSTITUCIONALES', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3", 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", 
             color: '#10b981',
             badge: 'VIVO'
         }

@@ -1,5 +1,10 @@
-import React, { useState } from 'react';
-import { X, Heart, Star, BookOpen, Music, Medal, MapPin, Search, ArrowRight, Share2, Calendar, Award } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+    X, Heart, Star, BookOpen, Music, Medal, MapPin, 
+    Search, ArrowRight, Share2, Calendar, Award, 
+    Castle, Shield, Sparkles, AlertTriangle, RefreshCw, Skull, Plus 
+} from 'lucide-react';
 import MasterDanielPalominos3D from './MasterDanielPalominos3D';
 import HolographicFigure from './HolographicFigure';
 
@@ -9,24 +14,25 @@ const ImageFallback = ({ src, alt, style, className }) => {
         <div style={{ position: 'relative', width: style.width || '100%', height: style.height || '100%', flexShrink: 0, borderRadius: style.borderRadius, overflow: 'hidden', background: '#020617' }}>
             {status === 'loading' && (
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '10px', background: 'rgba(0,0,0,0.8)' }}>
-                    <div className="pulse-fast" style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid transparent', borderTopColor: '#38bdf8', animation: 'spin 1s linear infinite' }}></div>
-                    <span style={{ color: '#38bdf8', fontSize: '0.55rem', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Sincronizando IA...</span>
+                    <div className="pulse-fast" style={{ width: '20px', height: '20px', borderRadius: '50%', border: '2px solid transparent', borderTopColor: '#ec4899', animation: 'spin 1s linear infinite' }}></div>
+                    <span style={{ color: '#ec4899', fontSize: '0.55rem', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase' }}>Sincronizando IA...</span>
                 </div>
             )}
             {status === 'error' && (
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
-                    <span style={{ color: '#ef4444', fontSize: '0.6rem', fontWeight: 'bold' }}>OFFLINE</span>
+                    <Skull size={20} color="#64748b" />
+                    <span style={{ color: '#64748b', fontSize: '0.6rem', fontWeight: 'bold', marginTop: '5px' }}>OFFLINE</span>
                 </div>
             )}
             <img 
                 src={src} 
                 alt={alt} 
                 className={className} 
-                style={{ ...style, opacity: status === 'success' ? 1 : 0, transition: 'opacity 0.6s ease-in-out' }} 
+                style={{ ...style, opacity: status === 'success' ? (style.opacity || 1) : 0, transition: 'opacity 0.6s ease-in-out' }} 
                 onLoad={() => setStatus('success')} 
                 onError={(e) => {
                     setStatus('error');
-                    e.target.src = 'https://picsum.photos/seed/vls_memorial/800/600?grayscale';
+                    e.target.src = '/vls-logo-3d.png';
                 }} 
             />
         </div>
@@ -36,100 +42,20 @@ const ImageFallback = ({ src, alt, style, className }) => {
 export default function MemorialHijosRegion({ onClose }) {
     const [selectedFigure, setSelectedFigure] = useState(null);
     const [filter, setFilter] = useState('Todos');
+    const [searchTerm, setSearchTerm] = useState('');
     const [is3DOpen, setIs3DOpen] = useState(false);
     const [flowers, setFlowers] = useState(() => {
         const saved = localStorage.getItem('vls_memorial_flowers');
         return saved ? JSON.parse(saved) : {};
     });
     const [animatedFlowers, setAnimatedFlowers] = useState([]);
-    const [comments, setComments] = useState(() => {
-        const saved = localStorage.getItem('vls_memorial_comments');
-        return saved ? JSON.parse(saved) : {};
-    });
-    const [tributeFlowers, setTributeFlowers] = useState(() => {
-        const saved = localStorage.getItem('vls_memorial_tributes');
-        return saved ? JSON.parse(saved) : {};
-    });
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
-    const handleLeaveComment = (id, text) => {
-        if (!text.trim()) return;
-        const newComments = { ...comments, [id]: [...(comments[id] || []), { text, date: new Date().toLocaleString() }] };
-        setComments(newComments);
-        localStorage.setItem('vls_memorial_comments', JSON.stringify(newComments));
-    };
-
-    const handleAddTributeFlower = (id, type) => {
-        const newTributes = { ...tributeFlowers };
-        if (!newTributes[id]) newTributes[id] = [];
-        newTributes[id].push({ type, left: Math.random() * 80 + 10, top: Math.random() * 60 + 20 });
-        setTributeFlowers(newTributes);
-        localStorage.setItem('vls_memorial_tributes', JSON.stringify(newTributes));
-        handleLeaveFlower(id);
-    };
-
-    const handleLeaveFlower = (id) => {
-        const newCount = (flowers[id] || 0) + 1;
-        const updated = { ...flowers, [id]: newCount };
-        setFlowers(updated);
-        localStorage.setItem('vls_memorial_flowers', JSON.stringify(updated));
-
-        // Trigger animation
-        const newAnim = {
-            idx: Date.now(),
-            left: Math.random() * 80 + 10 + '%',
-            delay: Math.random() * 0.5
-        };
-        setAnimatedFlowers(prev => [...prev, newAnim]);
-        setTimeout(() => {
-            setAnimatedFlowers(prev => prev.filter(f => f.idx !== newAnim.idx));
-        }, 3000);
-
-        // Feedback sonoro opcional o visual
-        if (window.speechSynthesis) {
-             const ut = new SpeechSynthesisUtterance("Has dejado una añañuca en memoria del hijo de la región.");
-             ut.lang = "es-CL";
-             ut.volume = 0.3;
-             ut.rate = 1.2;
-             window.speechSynthesis.speak(ut);
-        }
-    };
-
-    const handleShareFigure = (figura) => {
-        // Generamos un link profundo (Deep Link)
-        const baseUrl = window.location.origin + window.location.pathname;
-        const shareUrl = `${baseUrl}?m=${figura.id}`;
-        
-        const shareData = {
-            title: `Homenaje: ${figura.name} - ComunaSmart`,
-            text: `VLS rinde tributo a ${figura.name}. ${figura.legacy.substring(0, 120)}... Conoce su historia en:`,
-            url: shareUrl,
-            image: window.location.origin + figura.image 
-        };
-
-        window.dispatchEvent(new CustomEvent('open-smart-share', { detail: shareData }));
-    };
-
-    // Deep Link Listener
-    React.useEffect(() => {
-        const handleSelect = (e) => {
-            const figId = e.detail;
-            const fig = figuras.find(f => f.id === figId);
-            if (fig) {
-                setSelectedFigure(fig);
-                setFilter('Todos');
-            }
-        };
-        window.addEventListener('select-memorial-figure', handleSelect);
-        return () => window.removeEventListener('select-memorial-figure', handleSelect);
-    }, [figuras]);
-
-    // Rutas de imágenes generadas para Master Daniel Palominos
-    const PALOMINOS_MURAL_PATHS = [
-        '/homenaje/palominos_mural_humanity_1773806652665.png',
-        '/homenaje/palominos_mural_landscape_spirit_1773806746736.png',
-        '/homenaje/palominos_mural_science_art_1773806667425.png',
-        '/homenaje/palominos_mural_social_legacy_1773806794839.png'
-    ];
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     const figuras = [
         {
@@ -192,7 +118,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '12 de mayo de 1882, Tongoy',
             death: '20 de agosto de 1960',
             legacy: 'Poeta, diplomático y dramaturgo chileno. Premio Nacional de Literatura y de Teatro. Autor de "Al pie de la bandera".',
-            image: 'https://picsum.photos/seed/vls_silva/800/600?grayscale',
+            image: '/memorial_victor_domingo_silva_1774821509621.png',
             category: 'Letras',
             location: 'Tongoy / La Serena',
             icon: BookOpen,
@@ -205,7 +131,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: 'Siglo XVI, Países Bajos',
             death: '1548, Chile',
             legacy: 'Capitán español que fundó la ciudad de San Bartolomé de La Serena en 1544 por orden de Pedro de Valdivia.',
-            image: 'https://picsum.photos/seed/vls_bohon/800/600?grayscale',
+            image: '/memorial_juan_bohon_1774821523329.png',
             category: 'Historia',
             location: 'La Serena',
             icon: Castle,
@@ -218,7 +144,7 @@ export default function MemorialHijosRegion({ onClose }) {
             birth: '1828, La Serena',
             death: '1882, La Serena',
             legacy: 'Líder de la Revolución de 1851 y 1859. Defensor de la descentralización y la soberanía de las regiones del norte.',
-            image: 'https://picsum.photos/seed/vls_munoz/800/600?grayscale',
+            image: '/memorial_pedro_pablo_muñoz_1774821539283.png',
             category: 'Política',
             location: 'La Serena',
             icon: Shield,
@@ -237,465 +163,234 @@ export default function MemorialHijosRegion({ onClose }) {
             icon: Award,
             color: '#92400e',
             has3D: true
-        },
-        {
-            id: 'blanche',
-            name: 'Bartolomé Blanche',
-            title: 'Militar y Político (Presidente de la República)',
-            birth: '6 de junio de 1879, La Serena',
-            death: '10 de junio de 1970',
-            legacy: 'Destacado militar que llegó a la Presidencia de la República en 1932. Su carrera se inició en las aulas de nuestra ciudad.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/blanche_3d.png',
-            category: 'Política / Historia',
-            location: 'La Serena',
-            icon: Star,
-            color: '#2563eb'
-        },
-        {
-            id: 'bongard',
-            name: 'Isabel Bongard',
-            title: 'Pedagoga Educadora',
-            birth: '20 de enero de 1849',
-            death: '23 de mayo de 1928, La Serena',
-            legacy: 'Pionera en la educación femenina en Chile. Traída por el gobierno para reformar la enseñanza, su nombre es sinónimo de excelencia pedagógica en la región.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/bongard_3d.png',
-            category: 'Educación',
-            location: 'La Serena',
-            icon: BookOpen,
-            color: '#ec4899'
-        },
-        {
-            id: 'peni',
-            name: 'Juan de Dios Peni',
-            title: 'Héroe de la Independencia',
-            birth: '1770',
-            death: '1849',
-            legacy: 'Patriota serenense que luchó por la independencia de Chile. Su casa en calle Prat es un testimonio de la historia republicana de la ciudad.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/peni_3d.png',
-            category: 'Historia',
-            location: 'La Serena',
-            icon: Medal,
-            color: '#7f1d1d'
-        },
-        {
-            id: 'abalos',
-            name: 'Nicasio Ábalos',
-            title: 'Arquitecto Visionario',
-            birth: 'Siglo XIX',
-            death: '1945',
-            legacy: 'Arquitecto que dio forma a los edificios más emblemáticos del centro histórico. Su visión estética definió la elegancia serenense.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/abalos_3d.png',
-            category: 'Arte / Historia',
-            location: 'La Serena',
-            icon: Award,
-            color: '#0d9488'
-        },
-        {
-            id: 'formas',
-            name: 'Adolfo Formas',
-            title: 'Educador e Intelectual',
-            birth: '1860',
-            death: '1934',
-            legacy: 'Formador de generaciones de serenenses en el Liceo de Hombre. Su pasión por la historia local preservó la memoria de la ciudad.',
-            image: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/RDMLS/main/assets/memorial/formas_3d.png',
-            category: 'Educación',
-            location: 'La Serena',
-            icon: BookOpen,
-            color: '#9333ea'
         }
     ];
 
-    const filteredFiguras = filter === 'Todos' ? figuras : figuras.filter(f => f.category === filter);
+    const filteredFiguras = figuras.filter(f => {
+        const matchesFilter = filter === 'Todos' || f.category === filter;
+        const matchesSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                             f.legacy.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesFilter && matchesSearch;
+    });
+
+    const handleLeaveFlower = (id) => {
+        const newCount = (flowers[id] || 0) + 1;
+        const updated = { ...flowers, [id]: newCount };
+        setFlowers(updated);
+        localStorage.setItem('vls_memorial_flowers', JSON.stringify(updated));
+
+        const newAnim = {
+            idx: Date.now(),
+            left: Math.random() * 80 + 10 + '%',
+            delay: Math.random() * 0.5
+        };
+        setAnimatedFlowers(prev => [...prev, newAnim]);
+        setTimeout(() => {
+            setAnimatedFlowers(prev => prev.filter(f => f.idx !== newAnim.idx));
+        }, 3000);
+    };
+
+    const handleShareFigure = (figura) => {
+        const shareData = {
+            title: `Homenaje: ${figura.name} - ComunaSmart`,
+            text: `VLS rinde tributo a ${figura.name}. ${figura.legacy.substring(0, 120)}... Conoce su historia en:`,
+            url: window.location.href,
+            image: window.location.origin + figura.image 
+        };
+        window.dispatchEvent(new CustomEvent('open-smart-share', { detail: shareData }));
+    };
 
     return (
-        <div style={{
-            position: 'fixed',
-            inset: 0,
-            zIndex: 100000,
-            backgroundColor: '#020617',
-            color: 'white',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            fontFamily: "'Playfair Display', serif"
-        }}>
-            {/* Header Memorial */}
-            <header style={{
-                padding: '2rem',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
-                background: 'linear-gradient(to bottom, #0f172a, #020617)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                zIndex: 10
-            }}>
-                <div>
-                    <h1 style={{ fontSize: '2.5rem', margin: 0, fontWeight: '900', letterSpacing: '-1px' }}>
-                        ALTARES DE LA REGIÓN
-                    </h1>
-                    <p style={{ color: '#94a3b8', margin: '0.5rem 0 0', fontSize: '1.1rem' }}>
-                        Homenaje a los hijos ilustres de la Región de Coquimbo.
-                    </p>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 100000, background: '#020617', display: 'flex', flexDirection: 'column', fontFamily: "'Outfit', sans-serif" }}>
+            
+            {/* HEADER INSTITUCIONAL */}
+            <div style={{ padding: '1.5rem 2rem', background: '#0f172a', borderBottom: '2px solid #ec4899', display: 'flex', justifyContent: 'space-between', alignItems: 'center', zIndex: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                    <div style={{ background: '#ec4899', padding: '10px', borderRadius: '15px', boxShadow: '0 0 20px rgba(236, 72, 153, 0.3)' }}>
+                        <Heart size={28} color="white" fill="white" />
+                    </div>
+                    <div>
+                        <h1 style={{ color: 'white', margin: 0, fontSize: '1.5rem', fontWeight: 950, letterSpacing: '2px' }}>ALTARES DE LA REGIÓN</h1>
+                        <p style={{ color: '#ec4899', margin: 0, fontSize: '0.7rem', fontWeight: 'bold' }}>PORTAL DE LA MEMORIA COQUIMBO</p>
+                    </div>
                 </div>
-                <button onClick={onClose} style={{
-                    backgroundColor: 'rgba(255,255,255,0.05)',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    color: 'white',
-                    width: '50px',
-                    height: '50px',
-                    borderRadius: '50%',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                }}>
-                    <X size={24} />
-                </button>
-            </header>
 
-            {/* Content Area */}
-            <main style={{
-                flex: 1,
-                overflowY: 'auto',
-                padding: '3rem 2rem',
-                backgroundImage: 'radial-gradient(circle at 50% 50%, rgba(30, 58, 138, 0.1) 0%, transparent 80%)'
-            }}>
+                <div style={{ flex: 1, maxWidth: '500px', margin: '0 2rem', position: 'relative' }} className="hide-on-mobile">
+                    <Search size={18} color="#ec4899" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input 
+                        type="text" 
+                        placeholder="Buscar por nombre o biografía..." 
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        style={{ width: '100%', padding: '0.8rem 1rem 0.8rem 3rem', borderRadius: '30px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(236,72,153,0.3)', color: 'white', outline: 'none' }}
+                        aria-label="Buscar homenajeado"
+                    />
+                </div>
+
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <button onClick={onClose} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', color: '#ef4444', padding: '12px', borderRadius: '50%', cursor: 'pointer' }} aria-label="Cerrar portal">
+                        <X size={24} />
+                    </button>
+                </div>
+            </div>
+
+            {/* CONTENIDO PRINCIPAL */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '3rem 2rem', background: 'radial-gradient(circle at center, #1e1b4b 0%, #020617 100%)' }}>
+                
                 {/* Filters */}
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '4rem', flexWrap: 'wrap' }}>
-                    {['Todos', 'Letras', 'Política / Historia', 'Deportes', 'Música', 'Arte / Social', 'Educación', 'Historia'].map(cat => (
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '3rem', flexWrap: 'wrap' }}>
+                    {['Todos', 'Letras', 'Política / Historia', 'Deportes', 'Música', 'Arte / Social', 'Historia'].map(cat => (
                         <button
                             key={cat}
                             onClick={() => setFilter(cat)}
                             style={{
-                                padding: '0.8rem 1.5rem',
-                                borderRadius: '30px',
-                                border: filter === cat ? 'none' : '1px solid rgba(255,255,255,0.2)',
-                                backgroundColor: filter === cat ? '#3b82f6' : 'transparent',
-                                color: 'white',
-                                cursor: 'pointer',
-                                fontWeight: 'bold',
-                                transition: 'all 0.3s'
+                                padding: '0.6rem 1.2rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)',
+                                backgroundColor: filter === cat ? '#ec4899' : 'rgba(255,255,255,0.05)',
+                                color: 'white', cursor: 'pointer', fontWeight: '900', fontSize: '0.7rem', transition: '0.3s'
                             }}
                         >
-                            {cat}
+                            {cat.toUpperCase()}
                         </button>
                     ))}
                 </div>
 
-                {/* Grid Figuras */}
-                <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-                    gap: '3rem',
-                    maxWidth: '1200px',
-                    margin: '0 auto'
-                }}>
-                    {filteredFiguras.map(figura => (
-                        <div
-                            key={figura.id}
-                            onClick={() => setSelectedFigure(figura)}
-                            style={{
-                                background: 'rgba(15, 23, 42, 0.4)',
-                                borderRadius: '24px',
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                overflow: 'hidden',
-                                cursor: 'pointer',
-                                transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-                                position: 'relative'
-                            }}
-                            className="memorial-card"
-                        >
-                            <div style={{ height: '240px', position: 'relative', background: '#000' }}>
-                                <ImageFallback
-                                    src={figura.image}
-                                    alt={figura.name}
-                                    style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }}
-                                />
-                                <div style={{
-                                    position: 'absolute',
-                                    top: '1rem',
-                                    right: '1rem',
-                                    background: figura.color,
-                                    padding: '0.5rem',
-                                    borderRadius: '12px',
-                                    boxShadow: `0 0 20px ${figura.color}50`
-                                }}>
-                                    <figura.icon color="white" size={20} />
-                                </div>
-                                <div style={{
-                                    position: 'absolute',
-                                    bottom: 0,
-                                    left: 0,
-                                    right: 0,
-                                    padding: '2rem 1.5rem',
-                                    background: 'linear-gradient(to top, rgba(2, 6, 23, 1), transparent)'
-                                }}>
-                                    <h3 style={{ margin: 0, fontSize: '1.8rem', fontWeight: 'bold' }}>{figura.name}</h3>
-                                    <p style={{ color: '#94a3b8', margin: '0.2rem 0 0', fontWeight: 'bold', fontSize: '0.9rem' }}>{figura.title}</p>
-                                </div>
-                            </div>
-                            <div style={{ padding: '1.5rem' }}>
-                                <p style={{ color: '#cbd5e1', fontSize: '1rem', lineHeight: '1.6', height: '80px', overflow: 'hidden' }}>
-                                    {figura.legacy}
-                                </p>
-                                <div style={{ marginTop: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                                        <MapPin size={14} /> {figura.location}
-                                    </span>
-                                    <button 
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            if(figura.has3D) {
-                                                setIs3DOpen(true);
-                                            } else {
-                                                handleLeaveFlower(figura.id);
-                                            }
-                                        }}
-                                        style={{
-                                            background: (figura.has3D || (flowers[figura.id] > 0)) ? figura.color : 'rgba(255,255,255,0.05)', 
-                                            border: 'none', 
-                                            color: 'white', 
-                                            padding: '0.6rem 1.2rem',
-                                            borderRadius: '12px',
-                                            fontWeight: 'bold', 
-                                            display: 'flex', 
-                                            alignItems: 'center', 
-                                            gap: '0.5rem',
-                                            boxShadow: (figura.has3D || (flowers[figura.id] > 0)) ? `0 4px 15px ${figura.color}60` : 'none',
-                                            cursor: 'pointer',
-                                            transition: 'all 0.3s'
-                                        }}
-                                    >
-                                        {figura.has3D ? 'HOMENAJE 3D' : (flowers[figura.id] > 0 ? `FLORES: ${flowers[figura.id]}` : 'DEJAR FLOR')} <ArrowRight size={18} />
-                                    </button>
-                                    <button 
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleShareFigure(figura);
-                                        }}
-                                        style={{ backgroundColor: 'rgba(255,255,255,0.05)', color: 'white', border: 'none', padding: '0.6rem', borderRadius: '12px', cursor: 'pointer', transition: 'all 0.2s' }}
-                                        title="Difundir Altar Digital"
-                                    >
-                                        <Share2 size={18} />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Integration de la Exposición 3D */}
-                {is3DOpen && (
-                    <MasterDanielPalominos3D 
-                        onClose={() => setIs3DOpen(false)} 
-                        muralImages={PALOMINOS_MURAL_PATHS}
-                    />
-                )}
-            </main>
-
-            {/* Modal Detalle Homenaje */}
-            {selectedFigure && (
-                <div style={{
-                    position: 'fixed',
-                    inset: 0,
-                    zIndex: 100010,
-                    background: 'rgba(2, 6, 23, 0.98)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '2rem'
-                }}>
-                    <div style={{
-                        maxWidth: '900px',
-                        width: '100%',
-                        background: '#0f172a',
-                        borderRadius: '32px',
-                        border: '1px solid rgba(255,255,255,0.1)',
-                        overflow: 'hidden',
-                        display: 'flex',
-                        flexDirection: window.innerWidth < 768 ? 'column' : 'row',
-                        height: 'auto',
-                        maxHeight: '90vh'
-                    }}>
-                        <div style={{ flex: 1, background: '#000', height: window.innerWidth < 768 ? '400px' : 'auto', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.3 }}>
-                                <img src={selectedFigure.image} alt={selectedFigure.name} style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'blur(5px)' }} />
-                            </div>
-                            
-                            {/* Hologram Display */}
-                            <HolographicFigure image={selectedFigure.image} name={selectedFigure.name} color={selectedFigure.color} />
-
-                            {/* Sticky Tribute Flowers */}
-                            {(tributeFlowers[selectedFigure.id] || []).map((tf, i) => (
-                                <div key={i} style={{
-                                    position: 'absolute',
-                                    left: `${tf.left}%`,
-                                    top: `${tf.top}%`,
-                                    pointerEvents: 'none',
-                                    zIndex: 5
-                                }}>
-                                    <img 
-                                        src={tf.type === 'ananuca-white' ? '/ananuca_flower_3d_icon_1773625751027.png' : '/ananuca_flower_3d_icon_1773625751027.png'} 
-                                        style={{ height: '40px', filter: tf.type === 'ananuca-white' ? 'brightness(2) contrast(1.2)' : 'none' }} 
-                                        alt="tribute" 
+                {filteredFiguras.length === 0 ? (
+                    <div style={{ textAlign: 'center', marginTop: '5rem' }}>
+                        <Skull size={80} color="#64748b" style={{ opacity: 0.3 }} />
+                        <h3 style={{ color: '#64748b', marginTop: '1.5rem' }}>No se encontraron registros para "{searchTerm}"</h3>
+                    </div>
+                ) : (
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '2.5rem', maxWidth: '1400px', margin: '0 auto' }}>
+                        {filteredFiguras.map((figura) => (
+                            <motion.div 
+                                key={figura.id}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="memorial-card"
+                                style={{
+                                    background: 'linear-gradient(135deg, rgba(30,27,75,0.8) 0%, rgba(15,23,42,0.9) 100%)',
+                                    borderRadius: '30px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.4)', position: 'relative'
+                                }}
+                            >
+                                <div style={{ height: '300px', position: 'relative', overflow: 'hidden' }}>
+                                    <ImageFallback 
+                                        src={figura.image} 
+                                        alt={figura.name} 
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} 
                                     />
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ flex: 1.2, padding: '3rem', overflowY: 'auto' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                <span style={{ background: `${selectedFigure.color}20`, color: selectedFigure.color, padding: '0.4rem 1rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 'bold', border: `1px solid ${selectedFigure.color}40` }}>
-                                    {selectedFigure.category}
-                                </span>
-                                <button onClick={() => setSelectedFigure(null)} style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
-                                    <X size={24} />
-                                </button>
-                            </div>
-                            <h2 style={{ fontSize: '3rem', margin: '0 0 0.5rem 0', fontWeight: '900' }}>{selectedFigure.name}</h2>
-                            {selectedFigure.pseudonym && (
-                                <p style={{ color: selectedFigure.color, fontStyle: 'italic', fontSize: '1.2rem', marginBottom: '1.5rem' }}>"{selectedFigure.pseudonym}"</p>
-                            )}
-                            
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem', borderY: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem 0' }}>
-                                <div>
-                                    <div style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Nacimiento</div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
-                                        <Calendar size={16} /> {selectedFigure.birth}
+                                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0f172a 0%, transparent 100%)' }} />
+                                    
+                                    <div style={{ position: 'absolute', top: '20px', right: '20px', display: 'flex', gap: '10px' }}>
+                                        <button onClick={(e) => { e.stopPropagation(); handleShareFigure(figura); }} className="btn-tribute" title="Compartir Recuerdo"><Share2 size={18} /></button>
+                                    </div>
+
+                                    <div style={{ position: 'absolute', bottom: '20px', left: '25px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <div style={{ width: '8px', height: '8px', background: figura.color, borderRadius: '50%', boxShadow: `0 0 10px ${figura.color}` }} />
+                                        <span style={{ color: figura.color, fontSize: '0.7rem', fontWeight: 900, letterSpacing: '1px' }}>{figura.category.toUpperCase()}</span>
                                     </div>
                                 </div>
-                                <div>
-                                    <div style={{ color: '#64748b', fontSize: '0.7rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Fallecimiento</div>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
-                                        <Heart size={16} /> {selectedFigure.death}
-                                    </div>
-                                </div>
-                            </div>
 
-                            <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#cbd5e1', marginBottom: '2.5rem' }}>
-                                {selectedFigure.legacy}
-                            </p>
+                                <div style={{ padding: '2rem' }}>
+                                    <h3 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.6rem', fontWeight: 950 }}>{figura.name.toUpperCase()}</h3>
+                                    <p style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '1rem' }}>{figura.title}</p>
+                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 0 1.5rem 0', height: '80px', overflow: 'hidden' }}>
+                                        {figura.legacy}
+                                    </p>
 
-                             <div style={{ marginTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1.5rem' }}>
-                                <h4 style={{ color: '#fff', fontSize: '1rem', marginBottom: '1rem' }}>TRIBUTO VECINAL</h4>
-                                <div style={{ display: 'flex', gap: '10px', marginBottom: '1.5rem' }}>
-                                    <button onClick={() => handleAddTributeFlower(selectedFigure.id, 'ananuca-red')} style={{ padding: '0.6rem 1rem', background: '#7f1d1d', border: 'none', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', cursor: 'pointer' }}>+ Añañuca Roja</button>
-                                    <button onClick={() => handleAddTributeFlower(selectedFigure.id, 'ananuca-white')} style={{ padding: '0.6rem 1rem', background: '#f8fafc', border: 'none', borderRadius: '8px', color: '#000', fontSize: '0.75rem', cursor: 'pointer' }}>+ Añañuca Blanca</button>
-                                </div>
-
-                                <div style={{ background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                                    <div style={{ maxHeight: '150px', overflowY: 'auto', marginBottom: '1rem' }}>
-                                        {(comments[selectedFigure.id] || []).map((c, i) => (
-                                            <div key={i} style={{ padding: '8px 0', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '0.85rem' }}>
-                                                <p style={{ margin: 0, opacity: 0.9 }}>"{c.text}"</p>
-                                                <small style={{ opacity: 0.5 }}>{c.date}</small>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <input 
-                                            id="comment-input"
-                                            placeholder="Deja un mensaje póstumo..." 
-                                            style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '8px 12px', borderRadius: '8px', color: '#fff' }}
-                                            onKeyDown={(e) => {
-                                                if(e.key === 'Enter') {
-                                                    handleLeaveComment(selectedFigure.id, e.target.value);
-                                                    e.target.value = '';
-                                                }
-                                            }}
-                                        />
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <motion.button 
+                                                whileTap={{ scale: 0.8 }}
+                                                onClick={() => handleLeaveFlower(figura.id)}
+                                                style={{ background: 'rgba(236,72,153,0.15)', border: 'none', color: '#ec4899', padding: '10px 15px', borderRadius: '12px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                            >
+                                                <Heart size={16} fill={flowers[figura.id] > 0 ? '#ec4899' : 'none'} />
+                                                DEJAR FLOR
+                                            </motion.button>
+                                            <span style={{ color: 'white', fontWeight: 900, fontSize: '1rem' }}>{flowers[figura.id] || 0}</span>
+                                        </div>
                                         <button 
-                                            onClick={() => {
-                                                const el = document.getElementById('comment-input');
-                                                handleLeaveComment(selectedFigure.id, el.value);
-                                                el.value = '';
-                                            }}
-                                            style={{ background: '#3b82f6', border: 'none', borderRadius: '8px', color: '#fff', padding: '0 12px' }}
+                                            onClick={() => figura.has3D ? setIs3DOpen(true) : setSelectedFigure(figura)}
+                                            style={{ background: 'transparent', border: '1px solid rgba(56, 189, 248, 0.4)', color: '#38bdf8', padding: '10px 15px', borderRadius: '12px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer' }}
                                         >
-                                            Enviar
+                                            {figura.has3D ? 'HOMENAJE 3D' : 'VER DETALLE'}
                                         </button>
                                     </div>
                                 </div>
-                             </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                )}
+            </div>
 
-                             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                <button 
-                                    onClick={() => { 
-                                        if(selectedFigure.has3D) { 
-                                            setSelectedFigure(null); 
-                                            setIs3DOpen(true); 
-                                        } else {
-                                            handleAddTributeFlower(selectedFigure.id, 'ananuca-red');
-                                        }
-                                    }} 
-                                    style={{ 
-                                        flex: 1, 
-                                        backgroundColor: selectedFigure.color, 
-                                        color: 'white', 
-                                        border: 'none', 
-                                        padding: '1rem', 
-                                        borderRadius: '14px', 
-                                        fontWeight: 'bold', 
-                                        cursor: 'pointer', 
-                                        display: 'flex', 
-                                        alignItems: 'center', 
-                                        justifyContent: 'center', 
-                                        gap: '0.6rem',
-                                        boxShadow: `0 10px 20px ${selectedFigure.color}40`
-                                    }}
-                                >
-                                    {selectedFigure.has3D ? 'ENTRAR AL HOMENAJE 3D' : 'DEJAR UNA AÑAÑUCA'} <Star size={20} />
-                                </button>
-                                {flowers[selectedFigure.id] > 0 && (
-                                    <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 'bold' }}>
-                                        🌸 {flowers[selectedFigure.id]}
+            {/* BARRA INFERIOR */}
+            <div style={{ padding: '1rem 2rem', background: '#0f172a', borderTop: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>
+                    © 2026 ARCHIVO DE LA MEMORIA PROVINCIA DE ELQUI — VLS SOBERANO
+                </span>
+                <button className="btn-vls-action-light" style={{ background: '#ec4899', border: 'none', color: 'white', padding: '8px 15px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Plus size={16} /> SUBIR RECUERDO
+                </button>
+            </div>
+
+            {/* Modal Detalle (Holograma) */}
+            <AnimatePresence>
+                {selectedFigure && (
+                    <motion.div 
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        style={{ position: 'fixed', inset: 0, zIndex: 100010, background: 'rgba(2, 6, 23, 0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
+                    >
+                        <div style={{ maxWidth: '900px', width: '100%', background: '#0f172a', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', display: 'flex', height: '600px' }}>
+                            <div style={{ flex: 1, background: '#000', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <HolographicFigure image={selectedFigure.image} name={selectedFigure.name} color={selectedFigure.color} />
+                            </div>
+                            <div style={{ flex: 1.2, padding: '3rem', overflowY: 'auto', position: 'relative' }}>
+                                <button onClick={() => setSelectedFigure(null)} style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={24} /></button>
+                                <h4 style={{ color: selectedFigure.color, fontWeight: 900, fontSize: '0.7rem', letterSpacing: '2px', marginBottom: '1rem' }}>{selectedFigure.category.toUpperCase()}</h4>
+                                <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, marginBottom: '0.5rem' }}>{selectedFigure.name}</h2>
+                                <p style={{ color: '#94a3b8', fontStyle: 'italic', marginBottom: '2rem' }}>{selectedFigure.title}</p>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '2rem' }}>{selectedFigure.legacy}</p>
+                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div style={{ display: 'flex', gap: '20px' }}>
+                                        <div><p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0 }}>NACIMIENTO</p><p style={{ color: 'white', fontWeight: 'bold' }}>{selectedFigure.birth}</p></div>
+                                        <div><p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0 }}>FALLECIMIENTO</p><p style={{ color: 'white', fontWeight: 'bold' }}>{selectedFigure.death}</p></div>
                                     </div>
-                                )}
-                                <button
-                                    onClick={() => handleShareFigure(selectedFigure)}
-                                    style={{ backgroundColor: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '14px', cursor: 'pointer', transition: 'all 0.2s' }}
-                                    title="Dinfundir en Redes"
-                                >
-                                    <Share2 size={20} />
-                                </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* 3D Component */}
+            {is3DOpen && (
+                <MasterDanielPalominos3D 
+                    onClose={() => setIs3DOpen(false)} 
+                    muralImages={[
+                        '/homenaje/palominos_mural_humanity_1773806652665.png',
+                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_2.jpg',
+                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_3.jpg',
+                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_4.jpg'
+                    ]}
+                />
             )}
 
             {/* Flower Animations Layer */}
             {animatedFlowers.map(f => (
-                <div key={f.idx} style={{
-                    position: 'fixed',
-                    bottom: '-100px',
-                    left: f.left,
-                    zIndex: 200000,
-                    pointerEvents: 'none',
-                    animation: `floatFlower 3s ease-out forwards`,
-                    animationDelay: `${f.delay}s`
-                }}>
-                    <img src="/ananuca_flower_3d_icon_1773625751027.png" style={{ height: '80px', filter: 'drop-shadow(0 0 15px rgba(239, 68, 68, 0.6))' }} alt="Añañuca" />
+                <div key={f.idx} style={{ position: 'fixed', bottom: '-100px', left: f.left, zIndex: 200000, pointerEvents: 'none', animation: `floatFlower 3s ease-out forwards`, animationDelay: `${f.delay}s` }}>
+                    <ImageFallback src="/ananuca_flower_3d_icon_1773625751027.png" alt="Flower" style={{ height: '60px', width: '60px' }} />
                 </div>
             ))}
 
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&display=swap');
-                
-                @keyframes floatFlower {
-                    0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; }
-                    20% { opacity: 1; transform: translateY(-20vh) rotate(10deg) scale(1.2); }
-                    100% { transform: translateY(-110vh) rotate(-20deg) scale(1); opacity: 0; }
-                }
-
-                .memorial-card:hover {
-                    transform: translateY(-10px);
-                    box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-                    border-color: rgba(255,255,255,0.2) !important;
-                }
-                ::-webkit-scrollbar { width: 8px; }
-                ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
-                ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-                ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+                .memorial-card:hover { transform: translateY(-10px); transition: 0.4s; border-color: #ec4899; }
+                .btn-tribute { background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
+                .btn-tribute:hover { background: #ec4899; transform: scale(1.1); }
+                @keyframes floatFlower { 0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; } 20% { opacity: 1; transform: translateY(-20vh) rotate(10deg) scale(1.2); } 100% { transform: translateY(-110vh) rotate(-20deg) scale(1); opacity: 0; } }
+                @keyframes spin { to { transform: rotate(360deg); } }
+                @media (max-width: 768px) { .hide-on-mobile { display: none; } }
             `}</style>
         </div>
     );

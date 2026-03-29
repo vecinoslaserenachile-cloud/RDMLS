@@ -4,97 +4,111 @@ export const personajesSerena = [
     nombre: "Serenito",
     rol: "Protagonista",
     sector: "La Serena",
-    descripcion: "El joven tecnológico protagonista. Estudia informática en la universidad y es el nexo entre la ciudadanía y la innovación digital del proyecto ComunaSmart."
-  },
-  {
-    id: "serenito_abuelo",
-    nombre: "Serenito Tátara Abuelo ('El Sereno')",
-    rol: "Guardián Histórico",
-    sector: "Centro Antiguo",
-    descripcion: "Vivía en la ciudad de antaño y encendía los faroles coloniales. Es la conexión directa con el patrimonio y la historia cívica de La Serena."
+    descripcion: "\"El joven tecnológico protagonista. Estudia informática en la universidad y es el nexo entre la ciudadanía y la innovación digital del proyecto ComunaSmart.\""
   },
   {
     id: "compita",
     nombre: "El Compita",
     rol: "Poeta & Lutier",
-    sector: "Las Compañías (Sector Norte)",
-    descripcion: "Poeta, lutier y gran astrónomo aficionado. Representa la cultura popular, la música y el espíritu estelar del sector norte de la comuna."
+    sector: "Las Compañías",
+    descripcion: "\"Poeta, lutier y gran astrónomo aficionado. Representa la cultura popular, la música y el espíritu estelar del sector norte de la comuna.\""
+  },
+  {
+    id: "tio_pedro",
+    nombre: "Tio Pedro",
+    rol: "Pescador Artesanal",
+    sector: "Caleta San Pedro",
+    descripcion: "\"El guardián de la gastronomía costera. Representa el esfuerzo del mar y la tradición de la Caleta San Pedro.\""
   },
   {
     id: "farino",
     nombre: "Fariño",
     rol: "Surfista Local",
-    sector: "Faro Monumental / Avenida del Mar",
-    descripcion: "De estilo relajado y surfista. Vive en El Faro Monumental y recorre las olas desde Punta de Teatinos hasta Canto del Agua."
+    sector: "Avenida del Mar",
+    descripcion: "\"De estilo relajado y surfista. Vive en El Faro Monumental y recorre las olas desde Punta de Teatinos hasta Canto del Agua.\""
   },
   {
     id: "pampita",
     nombre: "Pampita",
     rol: "Guía Ambiental",
-    sector: "La Pampa / Quebrada de Peñuelas",
-    descripcion: "Chica muy ecológica y conectada con la tierra. Heredó una casa y huerta en la Pampa; se dedica al cuidado del medio ambiente y a las rutas turísticas."
-  },
-  {
-    id: "don_joaco",
-    nombre: "Don Joaco",
-    rol: "Caballero Jubilado",
-    sector: "San Joaquín (Sector Oriente)",
-    descripcion: "Hombre mayor de muy buen trato. Añora los tiempos pasados de la ciudad y se junta usualmente en Cuatro Esquinas a conversar y mirar hacia la costa."
+    sector: "La Pampa",
+    descripcion: "\"Conectada con la tierra y la ecología. Heredera de tradiciones de la Pampa, protege el medio ambiente y las rutas turísticas.\""
   },
   {
     id: "milagros",
     nombre: "Milagros",
-    rol: "Vecina Conversadora",
+    rol: "Vecina Empoderada",
     sector: "El Milagro",
-    descripcion: "Cálida vecina del sector El Milagro. Se junta con Don Joaco para repasar historias locales mientras observan la ciudad y el Cerro Grande."
+    descripcion: "\"Cálida vecina de las zonas altas. Representa la resiliencia y la unión vecinal en los nuevos barrios de la ciudad.\""
   },
   {
-    id: "sra_tena",
-    nombre: "Señora Tena",
-    rol: "Pobladora Tradicional",
-    sector: "La Antena",
-    descripcion: "Representa a una de las poblaciones más antiguas, arraigadas y con más tradición, ubicada al otro lado del Cerro Grande."
-  },
-  {
-    id: "flopi",
-    nombre: "Flopi",
-    rol: "Vecina Nueva",
-    sector: "La Florida",
-    descripcion: "Vecina joven y de una zona en reciente crecimiento, muy cerca del Aeropuerto La Florida de La Serena."
+    id: "serenito_i",
+    nombre: "Serenito I",
+    rol: "Guardián de la Antorcha",
+    sector: "Casco Histórico",
+    descripcion: "\"El Sereno original de 1948. Nos conecta con el patrimonio colonial y la historia que forjó nuestra identidad.\""
   },
   {
     id: "tata_rojas",
     nombre: "Tata Rojas",
     rol: "Campesino Sabio",
     sector: "Las Rojas",
-    descripcion: "Habitante de la localidad rural de Las Rojas (camino al Valle de Elqui). Representa las tradiciones agrícolas, la calma y el cielo despejado."
-  },
-  {
-    id: "coral",
-    nombre: "Coral",
-    rol: "Costera y Resiliente",
-    sector: "Arrayán Costero (Costa Norte)",
-    descripcion: "Sufre la mala conectividad del sector norte, pero su amor por la geografía es inmenso: vive entre rocas, camanchaca, el campo y el océano Pacífico, bajo noches estrelladas."
-  },
-  {
-    id: "egocentrico",
-    nombre: "Egocéntrico",
-    rol: "El 'City Boy'",
-    sector: "Centro Histórico",
-    descripcion: "Un tipo que lo tiene todo a mano en el casco histórico: los bancos, la Municipalidad, gobierno, comercio, Plaza de Armas, Catedral y museos. Está acostumbrado al ritmo acelerado y a tener los servicios a la puerta."
+    descripcion: "\"Sabiduría del Valle de Elqui. Representa la calma, la agricultura y el cielo más limpio de Chile.\""
   },
   {
     id: "alpino",
     nombre: "Alpino",
-    rol: "Estudiante TIC",
+    rol: "Programador Urbano",
     sector: "Colina El Pino",
-    descripcion: "Joven que, al igual que Serenito, estudia informática en la universidad. Desde la altura de Colina El Pino analiza la ciudad y programa soluciones tecnológicas."
+    descripcion: "\"Desde la altura de El Pino, analiza la red. Amigo de Serenito, experto en arquitectura de sistemas para la ciudad.\""
   },
   {
-    id: "tio_pedro",
-    nombre: "Tío Pedro",
-    rol: "Pescador y Gastronómico",
-    sector: "Caleta San Pedro",
-    descripcion: "Pescador artesanal, atiende su propio restaurante de productos del mar junto a su familia en la Caleta San Pedro, al norte de la ciudad."
+    id: "flopi",
+    nombre: "Flopi",
+    rol: "Emprendedora Digital",
+    sector: "La Florida",
+    descripcion: "\"Energía joven cerca del aeropuerto. Representa el crecimiento moderno y la conectividad de los nuevos sectores.\""
+  },
+  {
+    id: "señora_tena",
+    nombre: "Señora Tena",
+    rol: "Pobladora Histórica",
+    sector: "La Antena",
+    descripcion: "\"La memoria viva de las poblaciones más antiguas. Su fuerza es el pilar de la comunidad tradicional.\""
+  },
+  {
+    id: "don_joaco",
+    nombre: "Don Joaco",
+    rol: "Patriarca Vecinal",
+    sector: "San Joaquín",
+    descripcion: "\"Conversador incansable de Cuatro Esquinas. Representa el valor de la pausa y el respeto por nuestros mayores.\""
+  },
+  {
+    id: "coral",
+    nombre: "Coral del Arrayán",
+    rol: "Vigía Costera",
+    sector: "Arrayán Costero",
+    descripcion: "\"Viviendo entre la camanchaca y las rocas. Representa la resistencia de la costa norte de nuestra comuna.\""
+  },
+  {
+    id: "egocentrico",
+    nombre: "Egocéntrico",
+    rol: "El City Boy",
+    sector: "Plaza de Armas",
+    descripcion: "\"Ritmo acelerado en el centro. El usuario experto de servicios públicos que vive a pasos de todo lo importante.\""
+  },
+  {
+    id: "boleta_playcenter",
+    nombre: "Boleta Play Center",
+    rol: "Icono de Entretención",
+    sector: "Centro Histórico",
+    descripcion: "\"El ticket a la felicidad. Símbolo de una época dorada de juegos y nostalgia en el corazón de La Serena.\""
+  },
+  {
+    id: "kiosko_periodicos",
+    nombre: "Kiosko 3D",
+    rol: "Portal de Noticias",
+    sector: "Casco Antiguo",
+    descripcion: "\"El guardián de la prensa y las historias diarias. Un punto de encuentro digital para la hemeroteca comunal.\""
   }
 ];

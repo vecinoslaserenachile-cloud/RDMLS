@@ -59,9 +59,6 @@ export default function CentroRadio({ isDevMode = false }) {
     const queryParams = new URLSearchParams(location.search);
     const mode = queryParams.get('mode');
     
-    if (mode === 'aprende' || mode === 'induccion') {
-        return <Aprende isRDMLS={isRDMLS} />;
-    }
 
     const [weather, setWeather] = useState(null);
     const [time, setTime] = useState(new Date());
@@ -772,6 +769,11 @@ export default function CentroRadio({ isDevMode = false }) {
             window.removeEventListener('open-admin', handleOpenAdmin);
         };
     }, []);
+
+    // --- BYPASS RENDER AFTER ALL HOOKS ---
+    if (mode === 'aprende' || mode === 'induccion') {
+        return <Aprende isRDMLS={isRDMLS} />;
+    }
 
     return (
         <div style={{

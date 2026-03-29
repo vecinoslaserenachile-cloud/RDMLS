@@ -13,6 +13,7 @@ export default function VecinosClipClub({ onClose }) {
     });
 
     const catalog = [
+        { id: 'monarch-special', title: 'Especial: Monarch La Serena', type: 'vhs', cost: 0, img: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/a1b1244260308b31d6fcf4fe2654a4548587531a/Monarch_LaSerena.jpeg' },
         { id: 'vhs-1', title: 'Sereneres 2026', type: 'vhs', cost: 1, img: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=400&auto=format&fit=crop' },
         { id: 'vhs-2', title: 'Documental: El Olivar', type: 'vhs', cost: 2, img: 'https://images.unsplash.com/photo-1588693892556-3c0fde9d21dd?q=80&w=400&auto=format&fit=crop' },
         { id: 'game-1', title: 'Serenito Antigravity', type: 'game', cost: 1, img: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=400&auto=format&fit=crop' },

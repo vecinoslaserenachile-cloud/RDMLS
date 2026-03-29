@@ -101,7 +101,7 @@ export default function PegatinasVecinales() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
                     {personajesSerena.filter(p => [
                         'serenito', 'farino', 'tio_pedro', 'compita', 'milagros', 
-                        'alpino', 'tata_rojas', 'flopi', 'egocentrico'
+                        'alpino', 'tata_rojas', 'flopi', 'egocentrico', 'boleta_playcenter', 'kiosko_periodicos'
                     ].includes(p.id)).map(personaje => (
                         <div key={personaje.id} className="glass-panel hover-lift" style={{ 
                             background: 'rgba(15, 23, 42, 0.4)', 

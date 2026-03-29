@@ -52,25 +52,25 @@ function Road() {
         </group>
     );
 }
-
 function CityScenery() {
     const buildingsRef = useRef();
+    const buildings = React.useMemo(() => Array.from({ length: 40 }).map((_, i) => ({
+        pos: [(i % 2 === 0 ? 12 : -12) + (Math.random() - 0.5) * 5, 5, -i * 10],
+        height: 10 + Math.random() * 20
+    })), []);
+
     useFrame((state, delta) => {
         if (buildingsRef.current) {
             buildingsRef.current.position.z += delta * 20;
             if (buildingsRef.current.position.z > 50) buildingsRef.current.position.z = 0;
         }
     });
- 
+
      return (
          <group ref={buildingsRef}>
-             {Array.from({ length: 40 }).map((_, i) => (
-                 <mesh key={i} position={[
-                     (i % 2 === 0 ? 12 : -12) + (Math.random() - 0.5) * 5, 
-                     5, 
-                     -i * 10
-                 ]}>
-                     <boxGeometry args={[4, 10 + Math.random() * 20, 4]} />
+             {buildings.map((b, i) => (
+                 <mesh key={i} position={b.pos}>
+                     <boxGeometry args={[4, b.height, 4]} />
                      <meshStandardMaterial color="#0a0a20" emissive="#38bdf8" emissiveIntensity={0.1} />
                      {/* Ventanas */}
                      <mesh position={[0, 0, 2.01]}>
@@ -82,6 +82,7 @@ function CityScenery() {
          </group>
      );
  }
+
  
  function OilSlick({ active }) {
      const ref = useRef();
@@ -127,7 +128,7 @@ function CityScenery() {
      );
  }
 
-function KittCockpit({ turboActive, scannerActive, voiceLevel }) {
+function KittCockpit({ turboActive, scannerActive, voiceLevel, speed }) {
     return (
         <group position={[0, -0.5, 3]}>
             {/* Volante tipo avión */}
@@ -171,7 +172,7 @@ function KittCockpit({ turboActive, scannerActive, voiceLevel }) {
             <Html position={[-1.5, -0.1, 1.05]} transform occlude>
                 <div style={{ color: '#ff0000', fontFamily: 'monospace', textAlign: 'center', width: '100px', textShadow: '0 0 10px #ff0000' }}>
                     <div style={{ fontSize: '10px' }}>SPEED</div>
-                    <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{Math.floor(88 + Math.random() * 5)}</div>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold' }}>{speed}</div>
                     <div style={{ fontSize: '8px' }}>MPH</div>
                 </div>
             </Html>
@@ -210,10 +211,24 @@ export default function OperacionLaSerena({ onClose }) {
     const [kittResponse, setKittResponse] = useState('Bienvenido, Michael. Esperando instrucciones.');
     const [showMailing, setShowMailing] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [speed, setSpeed] = useState(0);
 
     const recognitionRef = useRef(null);
     const audioRef = useRef(null);
     const musicRef = useRef(null);
+
+    // Speed fluctuation
+    useEffect(() => {
+        if (status !== 'playing') {
+            setSpeed(0);
+            return;
+        }
+        const interval = setInterval(() => {
+            const base = turboActive ? 155 : 88;
+            setSpeed(Math.floor(base + Math.random() * 8));
+        }, 150);
+        return () => clearInterval(interval);
+    }, [status, turboActive]);
 
     // GTA Style Stations
     const radioStations = [
@@ -440,7 +455,7 @@ export default function OperacionLaSerena({ onClose }) {
                     <Suspense fallback={<Html center><div style={{color: 'red'}}>Cargando Sistemas de KITT...</div></Html>}>
                         <Road />
                         <CityScenery />
-                        <KittCockpit turboActive={turboActive} scannerActive={scannerActive} voiceLevel={voiceLevel} />
+                        <KittCockpit turboActive={turboActive} scannerActive={scannerActive} voiceLevel={voiceLevel} speed={speed} />
                         <OilSlick active={oilSlickActive} />
                         <SmokeScreen active={smokeActive} />
                         {turboActive && (

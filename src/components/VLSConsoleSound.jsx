@@ -286,19 +286,49 @@ export default function VLSConsoleSound({ onClose, onOpenRadio, onOpenTV }) {
                                 </div>
                             )}
 
-                            {activeTab === 'radio' && (
-                                <div className="animate-fade-in" style={{ textAlign: 'center', paddingTop: '40px' }}>
-                                    <div className="pulse-slow" style={{ background: 'rgba(239, 68, 68, 0.1)', width: '100px', height: '100px', borderRadius: '50%', margin: '0 auto 20px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #ef4444' }}>
-                                        <Radio size={50} color="#ef4444" />
+                            {activeTab === 'tv' && (
+                                <div className="animate-fade-in" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                        <h4 style={{ color: '#f97316', margin: 0, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <Tv size={18} /> TV VECINAL - MONITORIO CENTRAL
+                                        </h4>
+                                        <div style={{ padding: '4px 12px', background: 'rgba(25, 185, 129, 0.1)', borderRadius: '20px', fontSize: '0.65rem', color: '#10b981', fontWeight: 'bold', border: '1px solid #10b981' }}>
+                                            RED VLS ACTIVA (5/32 EN VIVO)
+                                        </div>
                                     </div>
-                                    <h3 style={{ color: 'white' }}>{isRDMLS ? 'RDMLS RADIO NETWORK' : 'VLS RADIO NETWORK'}</h3>
-                                    <p style={{ color: '#94a3b8', fontSize: '0.8rem', maxWidth: '300px', margin: '0 auto 20px' }}>Sintonice la voz oficial de los vecinos de La Serena. Información, música y contingencia.</p>
-                                    <button 
-                                        onClick={() => { window.dispatchEvent(new CustomEvent('toggle-radio-visibility')); }}
-                                        style={{ background: '#ef4444', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer' }}
-                                    >
-                                        ABRIR REPRODUCTOR
-                                    </button>
+                                    
+                                    <div style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(8, 1fr)', gap: '10px', overflowY: 'auto', padding: '5px' }}>
+                                        {[...Array(32)].map((_, i) => {
+                                            const channelNum = (i + 1).toString().padStart(2, '0');
+                                            const isActive = ['01', '12', '18', '24', '32'].includes(channelNum);
+                                            return (
+                                                <button 
+                                                    key={i}
+                                                    style={{ 
+                                                        aspectRatio: '1', 
+                                                        background: isActive ? '#10b981' : 'rgba(255,255,255,0.05)', 
+                                                        border: isActive ? 'none' : '1px solid rgba(255,255,255,0.1)', 
+                                                        borderRadius: '8px', 
+                                                        color: isActive ? 'black' : '#64748b', 
+                                                        fontSize: '0.7rem', 
+                                                        fontWeight: 'bold',
+                                                        cursor: isActive ? 'pointer' : 'default',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        transition: '0.3s',
+                                                        boxShadow: isActive ? '0 0 15px #10b98155' : 'none'
+                                                    }}
+                                                    onClick={isActive ? onOpenTV : null}
+                                                >
+                                                    {channelNum}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    <div style={{ marginTop: '15px', padding: '10px', background: 'rgba(249, 115, 22, 0.05)', borderRadius: '12px', border: '1px solid rgba(249, 115, 22, 0.2)', fontSize: '0.7rem', color: '#94a3b8' }}>
+                                        Seleccione un canal activo (Verde) para sintonizar la señal comunal HD.
+                                    </div>
                                 </div>
                             )}
 

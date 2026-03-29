@@ -1,5 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { X, Gamepad2, Ticket, ArrowLeft, Camera, History } from 'lucide-react';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls, useGLTF, Environment, Float, Loader } from '@react-three/drei';
+
+function Boleta3D() {
+    const { scene } = useGLTF('/models/boleta_PLAYCENTER_3d.glb');
+    return (
+        <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
+            <primitive object={scene} scale={[2.5, 2.5, 2.5]} position={[0, -1, 0]} />
+        </Float>
+    );
+}
+
+useGLTF.preload('/models/boleta_PLAYCENTER_3d.glb');
 
 export default function PlayCenterNostalgia({ onClose }) {
     const [view, setView] = useState('entrance'); // 'entrance', 'pinball', 'ticket'
@@ -67,11 +80,26 @@ export default function PlayCenterNostalgia({ onClose }) {
                     border: '5px solid #333',
                     boxShadow: '0 0 50px rgba(249, 115, 22, 0.3)'
                 }}>
-                    <img 
-                        src={images[view]} 
-                        alt="Play Center Nostalgia" 
-                        style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }} 
-                    />
+                    {view === 'ticket' ? (
+                        <div style={{ width: '100%', height: '100%', background: 'radial-gradient(circle at center, #222, #000)' }}>
+                            <Suspense fallback={<div style={{ color: '#f97316', padding: '2rem', textAlign: 'center' }}>Iniciando Scanner 3D...</div>}>
+                                <Canvas camera={{ position: [0, 0, 7], fov: 45 }}>
+                                    <ambientLight intensity={0.7} />
+                                    <pointLight position={[10, 10, 10]} intensity={1.5} />
+                                    <Environment preset="city" />
+                                    <Boleta3D />
+                                    <OrbitControls autoRotate enableZoom={true} autoRotateSpeed={1.5} />
+                                </Canvas>
+                            </Suspense>
+                            <Loader containerStyles={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }} />
+                        </div>
+                    ) : (
+                        <img 
+                            src={images[view]} 
+                            alt="Play Center Nostalgia" 
+                            style={{ width: '100%', height: '100%', objectFit: 'contain', background: '#000' }} 
+                        />
+                    )}
                     
                     {/* Caption Overlay */}
                     <div style={{ 

@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Terminal, ShieldAlert, Construction, AlertCircle, CheckCircle2, Zap, Clock, ChevronRight } from 'lucide-react';
 
 const INITIAL_INCIDENTS = [
-    { id: 1, time: '10:45', type: 'VÍAS', color: '#3b82f6', desc: 'Cierre de calle Prat por reparaciones viales. Desvío señalizado para transporte público.', tag: 'T-410', status: 'En Proceso' },
-    { id: 2, time: '10:42', type: 'SEGURIDAD', color: '#10b981', desc: 'Patrullaje preventivo asignado a sector Puerta del Mar. Vigilancia constante en parques.', tag: 'S-102', status: 'Operativo' },
-    { id: 3, time: '10:38', type: 'TRÁNSITO', color: '#f59e0b', desc: 'Congestión moderada en Rotonda Cisternas post-semáforo. Inspectores en ruta.', tag: 'T-204', status: 'Monitoreo' },
-    { id: 4, time: '10:30', type: 'ALERTA', color: '#ef4444', desc: 'Se reporta corte de luz parcial en Las Compañías. CGE notificado y trabajando.', tag: 'E-511', status: 'Pendiente' },
-    { id: 5, time: '10:15', type: 'MONITOREO', color: '#10b981', desc: 'Flujo normal en Ruta 5 Norte a la altura de 4 Esquinas. Visibilidad óptima con neblina leve.', tag: 'M-009', status: 'OK' },
-    { id: 6, time: '10:05', type: 'RED VECINAL', color: '#8b5cf6', desc: 'Alerta de luminaria caída en Av. Estadio resuelta por equipo de Operaciones.', tag: 'R-449', status: 'Cerrado' }
+    { id: 1, time: '10:45', type: 'VÍAS', color: '#3b82f6', desc: 'Cierre de calle Prat por reparaciones viales. Desvío señalizado para transporte público.', tag: 'T-410', status: 'En Proceso', activeTime: 12 },
+    { id: 2, time: '10:42', type: 'SEGURIDAD', color: '#10b981', desc: 'Patrullaje preventivo asignado a sector Puerta del Mar. Vigilancia constante en parques.', tag: 'S-102', status: 'Operativo', activeTime: 8 },
+    { id: 3, time: '10:38', type: 'TRÁNSITO', color: '#f59e0b', desc: 'Congestión moderada en Rotonda Cisternas post-semáforo. Inspectores en ruta.', tag: 'T-204', status: 'Monitoreo', activeTime: 5 },
+    { id: 4, time: '10:30', type: 'ALERTA', color: '#ef4444', desc: 'Se reporta corte de luz parcial en Las Compañías. CGE notificado y trabajando.', tag: 'E-511', status: 'Pendiente', activeTime: 20 },
+    { id: 5, time: '10:15', type: 'MONITOREO', color: '#10b981', desc: 'Flujo normal en Ruta 5 Norte a la altura de 4 Esquinas. Visibilidad óptima con neblina leve.', tag: 'M-009', status: 'OK', activeTime: 45 },
+    { id: 6, time: '10:05', type: 'RED VECINAL', color: '#8b5cf6', desc: 'Alerta de luminaria caída en Av. Estadio resuelta por equipo de Operaciones.', tag: 'R-449', status: 'Cerrado', activeTime: 60 }
 ];
 
 export default function BitacoraC5() {
@@ -36,7 +36,7 @@ export default function BitacoraC5() {
                 <Terminal size={24} color="#10b981" />
                 <div style={{ flex: 1 }}>
                     <span style={{ color: '#10b981', fontWeight: 'bold', letterSpacing: '2px', fontFamily: 'monospace', fontSize: '1.2rem', display: 'block' }}>BITÁCORA PÚBLICA C5</span>
-                    <span style={{ color: 'rgba(16, 185, 129, 0.6)', fontSize: '0.75rem', fontFamily: 'monospace' }}>{isRDMLS ? 'INFRAESTRUCTURA DE SEGURIDAD RDMLS' : 'INFRAESTRUCTURA DE SEGURIDAD VLS'}</span>
+                    <span style={{ color: 'rgba(16,185,129,0.6)', fontSize: '0.75rem', fontFamily: 'monospace' }}>{isRDMLS ? 'INFRAESTRUCTURA DE SEGURIDAD RDMLS' : 'INFRAESTRUCTURA DE SEGURIDAD VLS'}</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <span style={{ width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', animation: 'pulse 1.5s infinite', boxShadow: '0 0 10px #10b981' }}></span>
@@ -86,7 +86,7 @@ export default function BitacoraC5() {
                             </div>
                             <ChevronRight size={20} color={inc.color} style={{ transform: selectedId === inc.id ? 'rotate(90deg)' : 'none', transition: 'transform 0.3s', flexShrink: 0, marginTop: '5px' }} />
                         </div>
- 
+
                         {/* Detailed View */}
                         {selectedId === inc.id && (
                             <div className="animate-fade-in" style={{ marginTop: '1rem', borderTop: '1px dashed rgba(255,255,255,0.1)', paddingTop: '1rem' }}>
@@ -95,7 +95,7 @@ export default function BitacoraC5() {
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: inc.color }}>
                                             <Clock size={14} /> 
-                                            <span>Activo hace {Math.floor(Math.random() * 15) + 1}m</span>
+                                            <span>Activo hace {inc.activeTime}m</span>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.8rem', color: '#10b981' }}>
                                             <CheckCircle2 size={14} />

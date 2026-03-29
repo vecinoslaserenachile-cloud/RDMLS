@@ -1,0 +1,19 @@
+name = "vecinos-la-serena"
+pages_build_output_dir = "dist"
+compatibility_date = "2026-03-29"
+
+# 1. BASE DE DATOS D1 (SQL) - COMENTADO POR SEGURIDAD
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "vls-db"
+# database_id = "8f1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
+
+# 2. ALMACENAMIENTO R2 (DIPLOMAS Y ACTIVOS) - COMENTADO
+# [[r2_buckets]]
+# binding = "VLS_BUCKET"
+# bucket_name = "vls-assets-production"
+
+# 3. KV (SESIONES Y CONFIG) ELIMINADO POR IDs TEMPORALES
+# [[kv_namespaces]]
+# binding = "SESSIONS"
+# id = "a1b2c3d4e5f6g7h8i9j0"

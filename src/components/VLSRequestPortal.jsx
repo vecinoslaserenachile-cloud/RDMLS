@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
     X as CloseIcon, Send, Share2, Radio, SendHorizontal, 
     CheckCircle2, AlertCircle, MessageSquare, 
-    Upload, Globe, Smartphone, Music, Mail, ShieldAlert, Zap, Waves, Bird, Phone, Shield, Search
+    Upload, Globe, Smartphone, Music, Mail, ShieldAlert, Zap, Waves, Bird, Phone, Shield, Search,
+    Flame, Droplets, Trash2, MapPin, Eye, Filter
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { db } from '../utils/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-export default function VLSRequestPortal({ onClose }) {
+export default function VLSRequestPortal({ onClose, isPage = false }) {
+    const [view, setView] = useState('report'); // 'report' or 'feed'
     const [step, setStep] = useState(1);
+    const [incidents, setIncidents] = useState(() => {
+        const saved = localStorage.getItem('vls_public_incidents');
+        return saved ? JSON.parse(saved) : [
+            { id: 101, type: 'community', title: 'Bache Extremo', desc: 'Hoyo de 1 metro de profundidad en calle Balmaceda con Prat.', status: 'pending', time: 'hace 2 horas', user: 'Vecino Vigilante', color: '#f59e0b', icon: AlertCircle },
+            { id: 102, type: 'emergency_env', title: 'Mascotas en Humedal', desc: 'Perros sueltos persiguiendo taguas en El Culebrón de noche.', status: 'pending', time: 'hace 45 mins', user: 'Fary0', color: '#ef4444', icon: ShieldAlert },
+            { id: 103, type: 'lighting', title: 'Luminaria Apagada', desc: 'Todo el sector de Cuatro Esquinas sin luz desde las 20:00.', status: 'solved', time: 'hace 5 horas', user: 'Tata Rojas', color: '#10b981', icon: Zap }
+        ];
+    });
+
     const [formData, setFormData] = useState({
         type: '',
         name: '',
@@ -18,10 +32,18 @@ export default function VLSRequestPortal({ onClose }) {
         reason: 'copyright',
         declaration: false
     });
+
     const [captchaValue, setCaptchaValue] = useState(0);
     const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+
+    const currentUser = JSON.parse(localStorage.getItem('vls_user_data') || '{}');
+    const isAdmin = ['directorio@vecinosmart.cl', 'vecinossmart@gmail.com', 'admin@vecinosmart.cl'].includes(currentUser.email || '');
+
+    useEffect(() => {
+        localStorage.setItem('vls_public_incidents', JSON.stringify(incidents));
+    }, [incidents]);
 
     const EMERGENCY_NUMBERS = [
         { name: 'Seguridad Ciudadana LS', phone: '1457', color: '#38bdf8', icon: Shield },
@@ -33,264 +55,264 @@ export default function VLSRequestPortal({ onClose }) {
     ];
 
     const REQUEST_TYPES = [
-        { id: 'emergency_env', title: '🚨 ALERTA AMBIENTAL URGENTE', icon: ShieldAlert, color: '#ef4444', desc: 'Vehículos en la arena, zona de nidificación o daño en humedales. Activación inmediata 1457.', urgent: true },
-        { id: 'social', title: 'Compartir en Redes VLS', icon: Share2, color: '#3b82f6', desc: 'Sube tu noticia, foto o evento para publicarlo en Facebook, IG o X de Vecinos La Serena.' },
-        { id: 'radio', title: 'Subir a Radio Digital', icon: Radio, color: '#10b981', desc: 'Envía tu audio, podcast o saludo para que suene en nuestra Radio VLS 2026.' },
-        { id: 'community', title: 'Requerimiento Vecinal', icon: MessageSquare, color: '#f59e0b', desc: 'Informar sobre baches, luminarias o seguridad directamente al C5.' },
-        { id: 'dmca', title: 'Baja de Contenido (DMCA)', icon: AlertCircle, color: '#6366f1', desc: 'Si sientes que un video o contenido te pertenece y debemos bajarlo.' },
-        { id: 'other', title: 'Otros Servicios', icon: Globe, color: '#8b5cf6', desc: 'Consultas generales, propuestas de innovación o convenios.' }
+        { id: 'water', title: 'Agua y Alcantarillado', icon: Droplets, color: '#3b82f6', desc: 'Cortes de suministro, roturas o alcantarillado colapsado.', urgent: true },
+        { id: 'lighting', title: 'Cortes de Luz', icon: Zap, color: '#fbbf24', desc: 'Apagones masivos, focos quemados o cables caídos.', urgent: true },
+        { id: 'telecom', title: 'Falla Señal Móvil', icon: Radio, color: '#ef4444', desc: 'Caída de antenas celulares o falla de fibra óptica.', urgent: true },
+        { id: 'security', title: 'Seguridad Ciudadana', icon: ShieldAlert, color: '#6366f1', desc: 'Actividades sospechosas, incivilidades o contingencias.' },
+        { id: 'paving', title: 'Baches y Pavimento', icon: AlertCircle, color: '#f59e0b', desc: 'Calles en mal estado u hoyos peligrosos.' },
+        { id: 'cleaning', title: 'Aseo y Ornato', icon: Trash2, color: '#10b981', desc: 'Microbasurales, retiro de escombros o mantención.' }
     ];
+
+    const handleResolve = (id) => {
+        if (!isAdmin) return alert("Solo administradores autorizados pueden gestionar incidentes.");
+        setIncidents(prev => prev.map(incident => 
+            incident.id === id ? { ...incident, status: 'solved', resolver: currentUser.email } : incident
+        ));
+        window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+            detail: { title: 'INCIDENTE RESUELTO', message: `El reporte #${id} ha sido marcado como solucionado.`, type: 'success' } 
+        }));
+    };
+
+    const handleDelete = (id) => {
+        if (!isAdmin) return;
+        if (window.confirm("¿Eliminar este reporte permanentemente?")) {
+            setIncidents(prev => prev.filter(i => i.id !== id));
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!isCaptchaSolved && (formData.type === 'dmca' || formData.type === 'emergency_env')) return alert("Por favor, resuelve el desafío de seguridad (Captcha).");
+        if (!isCaptchaSolved) return alert("Por favor, resuelve el desafío de seguridad.");
         setIsSubmitting(true);
         
         try {
-            const RESEND_KEY = localStorage.getItem('vls_resend_key') || "re_BxWBivzx_3CpokEvr9UbCKFzFXyfT3VYn";
-            const subject = formData.type === 'emergency_env' ? `🚨 ALERTA AMBIENTAL CRÍTICA - ${formData.name}` : `📩 REQUERIMIENTO VLS: ${formData.type.toUpperCase()}`;
-            
-            const response = await fetch('https://api.resend.com/emails', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json', 
-                    'Authorization': `Bearer ${RESEND_KEY}` 
-                },
-                body: JSON.stringify({
-                    from: 'Portal VLS <onboarding@resend.dev>',
-                    to: 'vecinoslaserenachile@gmail.com',
-                    subject: subject,
-                    html: `
-                        <div style="font-family: sans-serif; background: #0f172a; padding: 30px; color: white;">
-                            <div style="max-width: 700px; margin: auto; background: #1e293b; padding: 40px; border-radius: 24px; border: 2px solid ${formData.type === 'emergency_env' ? '#ef4444' : '#38bdf8'};">
-                                <h1 style="color: ${formData.type === 'emergency_env' ? '#ef4444' : '#38bdf8'}; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-top: 0; font-size: 24px;">REPORTE OFICIAL SMART CIUDADANO 2026</h1>
-                                
-                                ${formData.type === 'emergency_env' ? `
-                                <div style="background: rgba(239, 68, 68, 0.2); border: 2px solid #ef4444; padding: 20px; border-radius: 12px; margin-bottom: 25px;">
-                                    <h2 style="color: #ef4444; margin: 0; font-size: 18px;">⚠️ ALERTA AMBIENTAL EN CURSO</h2>
-                                    <p style="margin: 10px 0 0 0; font-weight: bold;">Notificación prioritaria enviada a Seguridad Ciudadana (1457), Carabineros (133) y Armada (137).</p>
-                                </div>
-                                ` : ''}
+            const typeInfo = REQUEST_TYPES.find(t => t.id === formData.type) || REQUEST_TYPES[0];
+            const newIncident = {
+                id: Date.now(),
+                type: formData.type,
+                title: typeInfo.title,
+                desc: formData.message,
+                status: 'pending',
+                time: 'Justo ahora',
+                user: formData.name,
+                phone: formData.phone,
+                color: typeInfo.color,
+                iconName: typeInfo.icon.name || 'ShieldAlert', // Store internal icon name/id for db consistency
+                isUrgent: !!typeInfo.urgent
+            };
 
-                                <div style="background: rgba(255,255,255,0.02); padding: 15px; border-radius: 12px; margin-bottom: 25px;">
-                                    <h3 style="color: #94a3b8; margin-top: 0; font-size: 14px; text-transform: uppercase;">DETALLES DEL SOLICITANTE</h3>
-                                    <p><strong>Nombre:</strong> ${formData.name}</p>
-                                    <p><strong>RUT/ID:</strong> ${formData.rut}</p>
-                                    <p><strong>Correo:</strong> ${formData.email}</p>
-                                    <p><strong>Teléfono:</strong> ${formData.phone}</p>
-                                </div>
-
-                                <div style="margin-bottom: 25px;">
-                                    <h3 style="color: #38bdf8; font-size: 14px; text-transform: uppercase;">INFORMACIÓN DEL REQUERIMIENTO</h3>
-                                    <p><strong>Tipo:</strong> ${formData.type.toUpperCase()}</p>
-                                    <p><strong>Contenido:</strong><br/> ${formData.message}</p>
-                                    ${formData.link ? `<p><strong>Evidencia:</strong> <a href="${formData.link}" style="color: #38bdf8;">${formData.link}</a></p>` : ''}
-                                </div>
-
-                                <div style="font-size: 11px; color: #64748b; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; text-align: center;">
-                                    <p>ID VLS: ${Date.now()}</p>
-                                    <p>Smart City La Serena - Chile 2026.</p>
-                                </div>
-                            </div>
-                        </div>
-                    `
-                })
+            await addDoc(collection(db, 'vls_reportes_ciudadanos'), {
+                ...newIncident,
+                userId: currentUser?.uid || 'guest',
+                userEmail: currentUser?.email || formData.email || 'N/A',
+                createdAt: serverTimestamp()
             });
 
-            if (formData.type === 'emergency_env') {
-                window.dispatchEvent(new CustomEvent('c5-new-incident', { 
-                    detail: { 
-                        id: Date.now(), 
-                        lat: -29.9100, 
-                        lng: -71.2700, 
-                        type: 'ALERTA AMBIENTAL', 
-                        desc: `URGENTE 1457: ${formData.message}` 
-                    } 
-                }));
-            }
+            // Update purely visual state with actual Component Object reference
+            const visualIncident = { ...newIncident, icon: typeInfo.icon };
+            setIncidents(prev => [visualIncident, ...prev]);
 
-            if (response.ok) {
-                // TOKEN REWARD LOGIC: 5 Fichas for contributing a report (adjusted for economy balance)
-                const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
-                const newTokens = currentTokens + 5;
-                localStorage.setItem('vls_tokens', newTokens.toString());
-                
-                // Dispatch event to update App and other components
-                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
-                
-                // Show a mini notification/alert
-                window.dispatchEvent(new CustomEvent('vls-show-alert', { 
-                    detail: { 
-                        title: '¡RECOMPENSA VLS!', 
-                        message: 'Has ganado 5 Fichas VLS por tu contribución ciudadana.',
-                        type: 'success',
-                        icon: 'Award'
-                    } 
-                }));
-
-                setIsSuccess(true);
-            } else {
-                alert("Hubo un error al enviar el reporte.");
-            }
+            const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
+            const newTokens = currentTokens + 10;
+            localStorage.setItem('vls_tokens', newTokens.toString());
+            window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
+            
+            window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+                detail: { title: '¡Misión Cumplida!', message: 'Tus prioridades fueron reportadas al C5. Ganaste 10 Fichas VLS.', type: 'success' } 
+            }));
+            
+            setIsSuccess(true);
         } catch (error) {
-            console.error("Error submitting request:", error);
-            setIsSuccess(true); 
+            console.error("Error submitting request to Firebase:", error);
+            alert("Hubo un error al enviar el reporte, por favor intente nuevamente.");
         } finally {
             setIsSubmitting(false);
         }
     };
 
     return (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 100090, background: 'rgba(2, 6, 23, 0.9)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-            <div className="glass-panel scale-in" style={{ width: '100%', maxWidth: '750px', background: '#0f172a', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.1)', overflowY: 'auto', maxHeight: '95vh', position: 'relative', display: 'flex', flexDirection: isMobile ? 'column' : 'row' }}>
+        <div style={{ position: isPage ? 'relative' : 'fixed', inset: 0, zIndex: 100090, background: isPage ? 'transparent' : 'rgba(2, 6, 23, 0.95)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: isPage ? '0' : '1rem', height: isPage ? '100%' : '100vh', overflowY: isPage ? 'visible' : 'auto' }}>
+            <div className="glass-panel scale-in" style={{ width: '100%', maxWidth: '1000px', background: '#0f172a', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', height: isPage ? 'auto' : '90vh', display: 'flex', flexDirection: 'column' }}>
                 
-                {/* Sidebar con Teléfonos de Emergencia (Desktop) */}
-                {!isMobile && (
-                    <div style={{ width: '250px', background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <h4 style={{ color: 'white', margin: 0, fontSize: '0.9rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px' }}><Phone size={16} /> EMERGENCIAS 24/7</h4>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                            {EMERGENCY_NUMBERS.map(num => (
-                                <div key={num.phone} style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '15px', border: `1px solid ${num.color}30` }}>
-                                    <div style={{ fontSize: '0.65rem', color: '#94a3b8', marginBottom: '4px', fontWeight: 'bold' }}>{num.name.toUpperCase()}</div>
-                                    <div style={{ fontSize: '1.5rem', fontWeight: '900', color: num.color, fontFamily: 'monospace' }}>{num.phone}</div>
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ marginTop: 'auto', padding: '1rem', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '15px', border: '1px dashed #38bdf8' }}>
-                            <div style={{ fontSize: '0.6rem', color: '#38bdf8', fontWeight: 'bold' }}>COQUIMBO ADICIONAL</div>
-                            <div style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>2da Comisaría Principal</div>
+                {/* Header Superior con Tabs */}
+                <div style={{ padding: '1.5rem 2.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+                        <h3 style={{ margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.2rem', fontWeight: '900' }}>
+                            <Shield size={24} color="#ef4444" className="animate-pulse" /> REPORTE CIUDADANO
+                        </h3>
+                        
+                        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', borderRadius: '15px', padding: '0.4rem' }}>
+                            <button 
+                                onClick={() => setView('report')}
+                                style={{ padding: '0.6rem 1.5rem', borderRadius: '10px', border: 'none', background: view === 'report' ? '#ef4444' : 'transparent', color: 'white', fontWeight: 'bold', cursor: 'pointer', transition: '0.3s' }}
+                            >
+                                NUEVO REPORTE
+                            </button>
+                            <button 
+                                onClick={() => setView('feed')}
+                                style={{ padding: '0.6rem 1.5rem', borderRadius: '10px', border: 'none', background: view === 'feed' ? '#ef4444' : 'transparent', color: 'white', fontWeight: 'bold', cursor: 'pointer', transition: '0.3s' }}
+                            >
+                                TABLERO VIVO
+                            </button>
                         </div>
                     </div>
-                )}
+                    {!isPage && (
+                        <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', borderRadius: '50%', padding: '0.6rem', cursor: 'pointer', color: 'white' }}><CloseIcon size={20} /></button>
+                    )}
+                </div>
 
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                    {/* Header */}
-                    <div style={{ padding: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', position: 'sticky', top: 0, zIndex: 10, backdropFilter: 'blur(10px)' }}>
-                        <div>
-                            <h3 style={{ margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.2rem' }}>
-                                <Shield size={24} color="#38bdf8" /> PORTAL VECINAL SMART
-                            </h3>
-                        </div>
-                        <button onClick={onClose} style={{ background: 'rgba(239, 68, 68, 0.2)', border: 'none', borderRadius: '50%', padding: '0.6rem', cursor: 'pointer', color: '#ef4444' }}><CloseIcon size={20} /></button>
-                    </div>
-
-                    <div style={{ padding: '2rem' }}>
-                        {isSuccess ? (
-                            <div style={{ textAlign: 'center', padding: '2rem 0' }} className="animate-slide-up">
-                                <div className="pulse" style={{ width: '100px', height: '100px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto' }}>
-                                    <CheckCircle2 size={50} color="#10b981" />
+                <div style={{ flex: 1, overflowY: 'auto', display: 'flex' }}>
+                    
+                    {view === 'report' ? (
+                        <div style={{ flex: 1, display: 'flex' }}>
+                            {/* Sidebar Info */}
+                            <div style={{ width: '300px', padding: '2.5rem', background: 'rgba(0,0,0,0.2)', borderRight: '1px solid rgba(255,255,255,0.05)', display: isMobile ? 'none' : 'flex', flexDirection: 'column', gap: '2rem' }}>
+                                <div>
+                                    <h4 style={{ color: '#ef4444', margin: '0 0 1rem 0', fontSize: '0.9rem', fontWeight: 'bold' }}>PROTOCOLO DE EMERGENCIA</h4>
+                                    <p style={{ color: '#94a3b8', fontSize: '0.8rem', lineHeight: '1.5' }}>
+                                        Cada reporte ciudadano es geolocalizado y enviado automáticamente al C5 de la ComunaSmart. Las alertas ambientales tienen prioridad RED.
+                                    </p>
                                 </div>
-                                <h2 style={{ color: 'white', marginBottom: '1rem', fontSize: '1.8rem' }}>¡Protocolo Activado!</h2>
-                                <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1rem' }}>
-                                    {formData.type === 'emergency_env' 
-                                        ? "Alerta ambiental despachada a Seguridad Ciudadana (1457), Armada (137) y Carabineros. Nuestra IA monitorea la zona." 
-                                        : "Tu requerimiento ha sido registrado en el Hub de Vecinos La Serena."
-                                    }
-                                </p>
-                                <button onClick={onClose} className="btn-primary-vls" style={{ marginTop: '2.5rem', padding: '1.2rem 3rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '50px', fontWeight: 'bold', fontSize: '1.1rem' }}>Finalizar</button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    {EMERGENCY_NUMBERS.slice(0, 3).map(num => (
+                                        <div key={num.phone} style={{ borderLeft: `3px solid ${num.color}`, padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.02)' }}>
+                                            <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{num.name}</div>
+                                            <div style={{ fontSize: '1.2rem', fontWeight: '900', color: num.color }}>{num.phone}</div>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
-                        ) : (
-                            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                                
-                                {step === 1 && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                                        <h4 style={{ color: '#38bdf8', margin: 0, fontSize: '1.1rem' }}>Gestión Ciudadana Integral:</h4>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem' }}>
-                                            {REQUEST_TYPES.map(type => (
-                                                <button 
-                                                    key={type.id} 
-                                                    type="button"
-                                                    onClick={() => { setFormData({...formData, type: type.id}); setStep(2); }}
-                                                    className="request-type-btn"
-                                                    style={{ 
-                                                        display: 'flex', alignItems: 'center', gap: '1.2rem', padding: '1rem 1.5rem', 
-                                                        background: type.urgent ? 'rgba(239, 68, 68, 0.05)' : 'rgba(255,255,255,0.03)', 
-                                                        border: type.urgent ? '1.5px solid #ef4444' : '1px solid rgba(255,255,255,0.08)',
-                                                        borderRadius: '20px', cursor: 'pointer', textAlign: 'left', transition: '0.3s'
-                                                    }}
-                                                >
-                                                    <div style={{ background: type.color, padding: '0.8rem', borderRadius: '15px', color: 'white' }}>
-                                                        <type.icon size={24} />
-                                                    </div>
-                                                    <div style={{ flex: 1 }}>
-                                                        <strong style={{ display: 'block', color: 'white', fontSize: '0.95rem' }}>{type.title}</strong>
-                                                        <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{type.desc}</span>
-                                                    </div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
 
-                                {step === 2 && (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }} className="fade-in">
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                            <button type="button" onClick={() => setStep(1)} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer', padding: '10px 15px', borderRadius: '12px', fontSize: '0.8rem' }}>← Atrás</button>
-                                            <h4 style={{ color: formData.type === 'emergency_env' ? '#ef4444' : '#38bdf8', margin: 0 }}>DETALLES DEL REPORTE</h4>
+                            {/* Formulario */}
+                            <div style={{ flex: 1, padding: '2.5rem' }}>
+                                {isSuccess ? (
+                                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+                                        <div style={{ width: '100px', height: '100px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
+                                            <CheckCircle2 size={60} color="#10b981" />
                                         </div>
-
-                                        {formData.type === 'emergency_env' && (
-                                            <div style={{ background: 'rgba(239, 68, 68, 0.15)', padding: '1.2rem', borderRadius: '15px', border: '1px solid #ef4444' }}>
-                                                <p style={{ margin: 0, color: 'white', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                                    URGENTE: Seguridad Ciudadana (1457) y Armada (137) han sido notificados por protocolo automático.
-                                                </p>
+                                        <h2 style={{ color: 'white', marginBottom: '1rem' }}>REPORTE REGISTRADO</h2>
+                                        <p style={{ color: '#94a3b8', marginBottom: '2.5rem' }}>Tu incidencia ya está en el sistema. Los gestores vecinales la revisarán pronto.</p>
+                                        <button onClick={() => { setView('feed'); setIsSuccess(false); setStep(1); }} className="btn-primary-vls" style={{ padding: '1rem 3rem', background: '#ef4444', color: 'white', border: 'none', borderRadius: '15px', fontWeight: 'bold' }}>IR AL TABLERO</button>
+                                    </motion.div>
+                                ) : (
+                                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                        {step === 1 && (
+                                            <div className="fade-in" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                                                {REQUEST_TYPES.map(type => (
+                                                    <button 
+                                                        key={type.id} 
+                                                        type="button"
+                                                        onClick={() => { setFormData({...formData, type: type.id}); setStep(2); }}
+                                                        style={{ 
+                                                            padding: '1.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', 
+                                                            borderRadius: '24px', cursor: 'pointer', textAlign: 'center', transition: '0.3s',
+                                                            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem'
+                                                        }}
+                                                        onMouseEnter={e => e.currentTarget.style.borderColor = type.color}
+                                                        onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)'}
+                                                    >
+                                                        <div style={{ padding: '1rem', background: `${type.color}20`, borderRadius: '18px', color: type.color }}>
+                                                            <type.icon size={28} />
+                                                        </div>
+                                                        <strong style={{ color: 'white', fontSize: '0.9rem' }}>{type.title}</strong>
+                                                    </button>
+                                                ))}
                                             </div>
                                         )}
-                                        
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                            <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} placeholder="Nombre Completo" className="input-vls" />
-                                            <input required type="text" value={formData.rut} onChange={e => setFormData({...formData, rut: e.target.value})} placeholder="RUT / ID" className="input-vls" />
-                                        </div>
 
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                            <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} placeholder="Correo" className="input-vls" />
-                                            <input required type="tel" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} placeholder="WhatsApp (+569...)" className="input-vls" />
-                                        </div>
+                                        {step === 2 && (
+                                            <div className="scale-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <button type="button" onClick={() => setStep(1)} style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}>← Volver</button>
+                                                    <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold' }}>REPORTE: {REQUEST_TYPES.find(t => t.id === formData.type)?.title}</span>
+                                                </div>
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                    <input required placeholder="Tu Nombre" className="vls-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                                                    <input required placeholder="Teléfono" className="vls-input" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
+                                                </div>
+                                                <textarea required placeholder="Describe la situación (Lugar, detalles, urgencia)..." className="vls-input" style={{ minHeight: '120px' }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} />
+                                                
+                                                <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                                                    <div style={{ fontSize: '0.7rem', color: '#ef4444', marginBottom: '10px', fontWeight: 'bold' }}>DESLIZA PARA ACTIVAR PROTOCOLO</div>
+                                                    <input type="range" min="0" max="100" value={captchaValue} onChange={e => { setCaptchaValue(e.target.value); if(e.target.value > 95) setIsCaptchaSolved(true); }} disabled={isCaptchaSolved} style={{ width: '100%' }} />
+                                                </div>
 
-                                        <textarea required value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} placeholder="Descripción detallada de la situación..." className="input-vls" style={{ minHeight: '100px' }} />
-
-                                        <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.2rem', borderRadius: '20px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
-                                            <span style={{ fontSize: '0.75rem', color: isCaptchaSolved ? '#10b981' : '#38bdf8', fontWeight: 'bold' }}>
-                                                {isCaptchaSolved ? 'VERIFICACIÓN OK' : 'DESLIZA PARA VALIDAR ENVÍO'}
-                                            </span>
-                                            <input 
-                                                type="range" min="0" max="100" value={captchaValue} 
-                                                onChange={(e) => {
-                                                    const val = parseInt(e.target.value);
-                                                    setCaptchaValue(val);
-                                                    if (val > 95) setIsCaptchaSolved(true);
-                                                }}
-                                                disabled={isCaptchaSolved}
-                                                style={{ width: '100%', marginTop: '8px' }}
-                                            />
-                                        </div>
-
-                                        <button 
-                                            disabled={isSubmitting || !isCaptchaSolved}
-                                            className="btn-primary-vls" 
-                                            style={{ 
-                                                width: '100%', padding: '1.2rem', borderRadius: '20px', 
-                                                background: isCaptchaSolved ? (formData.type === 'emergency_env' ? '#ef4444' : '#38bdf8') : '#1e293b', 
-                                                color: 'white', fontWeight: '900', border: 'none', cursor: isCaptchaSolved ? 'pointer' : 'not-allowed'
-                                            }}
-                                        >
-                                            {isSubmitting ? 'ENVIANDO...' : 'CONFIRMAR Y ENVIAR'}
-                                        </button>
-                                    </div>
+                                                <button disabled={!isCaptchaSolved || isSubmitting} className="vls-btn-main" style={{ width: '100%', padding: '1.2rem', borderRadius: '18px', background: isCaptchaSolved ? '#ef4444' : 'rgba(255,255,255,0.05)', color: 'white', fontWeight: '900', border: 'none', cursor: 'pointer' }}>
+                                                    {isSubmitting ? 'ENVIANDO A C5...' : 'CONFIRMAR REPORTE CIUDADANO'}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </form>
                                 )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div style={{ flex: 1, padding: '2.5rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <h4 style={{ margin: 0, color: 'white', display: 'flex', alignItems: 'center', gap: '8px' }}><MapPin size={18} color="#ef4444" /> INCIDENCIAS ACTIVAS EN LA RM</h4>
+                                <div style={{ display: 'flex', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#f59e0b', fontSize: '0.8rem' }}><AlertCircle size={14} /> {incidents.filter(i => i.status === 'pending').length} Pendientes</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#10b981', fontSize: '0.8rem' }}><CheckCircle2 size={14} /> {incidents.filter(i => i.status === 'solved').length} Solucionadas</div>
+                                </div>
+                            </div>
 
-                            </form>
-                        )}
-                    </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                                {incidents.map(incident => (
+                                    <motion.div 
+                                        key={incident.id} layout
+                                        style={{ 
+                                            background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: `1px solid ${incident.status === 'solved' ? '#10b98130' : incident.color + '50'}`,
+                                            padding: '1.5rem', position: 'relative', overflow: 'hidden'
+                                        }}
+                                    >
+                                        {incident.status === 'solved' && (
+                                            <div style={{ position: 'absolute', top: '10px', right: '10px', background: '#10b981', color: '#0f172a', padding: '0.2rem 0.6rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 'bold' }}>SOLUCIONADO</div>
+                                        )}
+                                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                                            <div style={{ padding: '0.7rem', background: `${incident.color}15`, borderRadius: '15px', color: incident.color, height: 'fit-content' }}>
+                                                <incident.icon size={20} />
+                                            </div>
+                                            <div>
+                                                <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{incident.time} · {incident.user}</div>
+                                                <strong style={{ color: 'white', fontSize: '1rem' }}>{incident.title}</strong>
+                                            </div>
+                                        </div>
+                                        <p style={{ color: '#cbd5e1', fontSize: '0.85rem', margin: '0 0 1.5rem 0', lineHeight: '1.4' }}>{incident.desc}</p>
+                                        
+                                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                            {incident.status === 'pending' && isAdmin && (
+                                                <button 
+                                                    onClick={() => handleResolve(incident.id)}
+                                                    style={{ flex: 1, padding: '0.6rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer' }}
+                                                >
+                                                    MARCAR COMO SOLUCIONADO
+                                                </button>
+                                            )}
+                                            {isAdmin && (
+                                                <button 
+                                                    onClick={() => handleDelete(incident.id)}
+                                                    style={{ padding: '0.6rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: 'none', borderRadius: '12px', cursor: 'pointer' }}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
 
             <style>{`
-                .request-type-btn:hover { background: rgba(255,255,255,0.08) !important; border-color: #38bdf8 !important; transform: translateX(5px); }
-                .input-vls { width: 100%; background: rgba(15, 23, 42, 0.8); border: 1px solid rgba(255,255,255,0.1); padding: 0.8rem; borderRadius: 12px; color: white; outline: none; }
-                .input-vls:focus { border-color: #38bdf8; }
-                @keyframes pulsef { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-                .pulse { animation: pulsef 2s infinite; }
+                .vls-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.08); padding: 1rem; border-radius: 15px; color: white; outline: none; transition: 0.3s; }
+                .vls-input:focus { border-color: #ef4444; background: rgba(0,0,0,0.6); }
+                .scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+                @keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+                .fade-in { animation: fadeIn 0.5s ease-out; }
+                @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
             `}</style>
         </div>
     );
