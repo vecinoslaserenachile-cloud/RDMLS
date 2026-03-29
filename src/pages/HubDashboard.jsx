@@ -38,7 +38,9 @@ import MarketplaceVecinal from '../components/MarketplaceVecinal';
 import BitacoraC5 from '../components/BitacoraC5';
 import PolideportivoVecinal from '../components/PolideportivoVecinal';
 import SportsDataStrip from '../components/SportsDataStrip';
+import VecnityPay from '../components/VecnityPay';
 import TuercaVecinos from '../components/TuercaVecinos';
+import VeciCat from '../components/VeciCat';
 import AzuraCastSync from '../components/AzuraCastSync';
 import VLSRequestPortal from '../components/VLSRequestPortal';
 import PremiumClub from '../components/PremiumClub';
@@ -60,9 +62,9 @@ import VLSGuide from '../components/VLSGuide';
 import VecinosAnalyticsApp from '../components/VecinosAnalyticsApp/VecinosAnalyticsApp';
 import VLSMotorsSpot from '../components/VLSMotorsSpot';
 import HechoEnChile from '../components/HechoEnChile';
-import VecnityPay from '../components/VecnityPay';
 import LaFloridaAirport from '../components/LaFloridaAirport';
 import BackofficeMovilVLS from '../components/BackofficeMovilVLS';
+import TiendaPoleras3D from '../components/TiendaPoleras3D';
 
 import OrientacionLegal from '../components/OrientacionLegal';
 import SerenaMetAdmin from '../components/SerenaMetAdmin';
@@ -295,6 +297,7 @@ export default function HubDashboard() {
     const [showPortMonitor, setShowPortMonitor] = useState(false);
     const [showMemorialHijos, setShowMemorialHijos] = useState(false);
     const [showTuerca, setShowTuerca] = useState(false);
+    const [showVeciCat, setShowVeciCat] = useState(false);
     const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
 
     const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
@@ -378,46 +381,61 @@ export default function HubDashboard() {
 
     const [officialNews, setOfficialNews] = useState([]);
 
+    const closeAllPopups = () => {
+        setShowPoll(false); setShowGalaxia(false); setShowRoadmap(false); setShowManifesto(false);
+        setShowPrecolombino(false); setShowAmbientMode(false); setShowCentralDifusion(false);
+        setShowVirtualAssistant(false); setShowVLSMotors(false); setShowOrientacionLegal(false);
+        setShowSerenaMetAdmin(false); setShowVLSpeak(false); setShowSafeRoute(false);
+        setShowSocialVision(false); setShowAnalyticsApp(false); setShowSmartAdminPortal(false);
+        setShowInvestigacion(false); setShowSemanaSanta(false); setShowBencinazo(false);
+        setShowSentinelNote(false); setShowAirportMonitor(false); setShowPortMonitor(false);
+        setShowParliamentary(false); setShowAlcaldes(false); setShowMemorialHijos(false);
+        setShowTuerca(false); setShowVeciCat(false); setShowTiendaPoleras(false); setShowVecnityPay(false);
+        setShowRequestPortal(false); setShowBackofficeMovil(false);
+    };
+
     useEffect(() => {
         const handleStorage = () => { };
         handleStorage();
         window.addEventListener('storage', handleStorage);
 
-        const handleDecision = () => setShowPoll(true);
-        const handleGalaxia = () => setShowGalaxia(true);
-        const handleRoadmap = () => setShowRoadmap(true);
-        const handleManifesto = () => setShowManifesto(true);
-        const handlePrecolombino = () => setShowPrecolombino(true);
-        const handleAmbient = () => setShowAmbientMode(true);
-        const handleDifusion = () => setShowCentralDifusion(true);
-        const handleFaroIA = () => setShowVirtualAssistant(true);
+        const handleDecision = () => { closeAllPopups(); setShowPoll(true); };
+        const handleGalaxia = () => { closeAllPopups(); setShowGalaxia(true); };
+        const handleRoadmap = () => { closeAllPopups(); setShowRoadmap(true); };
+        const handleManifesto = () => { closeAllPopups(); setShowManifesto(true); };
+        const handlePrecolombino = () => { closeAllPopups(); setShowPrecolombino(true); };
+        const handleAmbient = () => { closeAllPopups(); setShowAmbientMode(true); };
+        const handleDifusion = () => { closeAllPopups(); setShowCentralDifusion(true); };
+        const handleFaroIA = () => { closeAllPopups(); setShowVirtualAssistant(true); };
 
-        const handleMotors = () => setShowVLSMotors(true);
-        const handleLegal = () => setShowOrientacionLegal(true);
-        const handleMetAdmin = () => setShowSerenaMetAdmin(true);
-        const handleVLSpeak = () => { setShowVLSpeak(true); setActiveTutorial('vlspeak'); };
-        const handleSafeRoute = () => { setShowSafeRoute(true); setActiveTutorial('safe-route'); };
-        const handleSocialVision = () => { setShowSocialVision(true); setActiveTutorial('radar'); };
-        const handleAnalytics = () => setShowAnalyticsApp(true);
-        const handleSmartAdmin = () => setShowSmartAdminPortal(true);
-        const handleInvestigacion = () => setShowInvestigacion(true);
-        const handleSemanaSanta = () => setShowSemanaSanta(true);
-        const handleBencinazo = () => setShowBencinazo(true);
-        const handleSentinelNote = () => setShowSentinelNote(true);
-        const handleAirport = () => setShowAirportMonitor(true);
-        const handlePort = () => setShowPortMonitor(true);
-        const handleParliamentary = () => setShowParliamentary(true);
-        const handleAlcaldes = () => setShowAlcaldes(true);
-        const handleMemorial = () => setShowMemorialHijos(true);
-        const handleTuerca = () => setShowTuerca(true);
-        const handleTienda = () => setShowTiendaPoleras(true);
+        const handleMotors = () => { closeAllPopups(); setShowVLSMotors(true); };
+        const handleLegal = () => { closeAllPopups(); setShowOrientacionLegal(true); };
+        const handleMetAdmin = () => { closeAllPopups(); setShowSerenaMetAdmin(true); };
+        const handleVLSpeak = () => { closeAllPopups(); setShowVLSpeak(true); setActiveTutorial('vlspeak'); };
+        const handleSafeRoute = () => { closeAllPopups(); setShowSafeRoute(true); setActiveTutorial('safe-route'); };
+        const handleSocialVision = () => { closeAllPopups(); setShowSocialVision(true); setActiveTutorial('radar'); };
+        const handleAnalytics = () => { closeAllPopups(); setShowAnalyticsApp(true); };
+        const handleSmartAdmin = () => { closeAllPopups(); setShowSmartAdminPortal(true); };
+        const handleInvestigacion = () => { closeAllPopups(); setShowInvestigacion(true); };
+        const handleSemanaSanta = () => { closeAllPopups(); setShowSemanaSanta(true); };
+        const handleBencinazo = () => { closeAllPopups(); setShowBencinazo(true); };
+        const handleSentinelNote = () => { closeAllPopups(); setShowSentinelNote(true); };
+        const handleAirport = () => { closeAllPopups(); setShowAirportMonitor(true); };
+        const handlePort = () => { closeAllPopups(); setShowPortMonitor(true); };
+        const handleParliamentary = () => { closeAllPopups(); setShowParliamentary(true); };
+        const handleAlcaldes = () => { closeAllPopups(); setShowAlcaldes(true); };
+        const handleMemorial = () => { closeAllPopups(); setShowMemorialHijos(true); };
+        const handleTuerca = () => { closeAllPopups(); setShowTuerca(true); };
+        const handleVeciCat = () => { closeAllPopups(); setShowVeciCat(true); };
+        const handleTienda = () => { closeAllPopups(); setShowTiendaPoleras(true); };
         const handleVecnityPay = (e) => {
+            closeAllPopups();
             if (e && e.detail) setInitialOrder(e.detail);
             else setInitialOrder(null);
             setShowVecnityPay(true);
         };
-        const handleRequestPortal = () => setShowRequestPortal(true);
-        const handleBackofficeMovil = () => setShowBackofficeMovil(true);
+        const handleRequestPortal = () => { closeAllPopups(); setShowRequestPortal(true); };
+        const handleBackofficeMovil = () => { closeAllPopups(); setShowBackofficeMovil(true); };
 
 
         window.addEventListener('open-decision-vecinal', handleDecision);
@@ -440,6 +458,7 @@ export default function HubDashboard() {
         window.addEventListener('open-plaza-vecinal', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
         window.addEventListener('open-distances', () => {
+            closeAllPopups();
             setShowDistancias(true);
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
@@ -447,13 +466,14 @@ export default function HubDashboard() {
         window.addEventListener('open-vls-semanasanta', handleSemanaSanta);
         window.addEventListener('open-vls-bencinazo', handleBencinazo);
         window.addEventListener('open-vls-sentinel', handleSentinelNote);
-        window.addEventListener('open-vls-aguasvalle', () => setShowAguasValle(true));
+        window.addEventListener('open-vls-aguasvalle', () => { closeAllPopups(); setShowAguasValle(true); });
         window.addEventListener('open-airport-monitor', handleAirport);
         window.addEventListener('open-port-monitor', handlePort);
         window.addEventListener('open-parlamento-regional', handleParliamentary);
         window.addEventListener('open-alcaldes-history', handleAlcaldes);
         window.addEventListener('open-memorial-hijos', handleMemorial);
         window.addEventListener('open-tuerca-vecinos', handleTuerca);
+        window.addEventListener('open-vecicat', handleVeciCat);
         window.addEventListener('open-tienda-poleras', handleTienda);
         window.addEventListener('open-vecinity-pay', handleVecnityPay);
         window.addEventListener('open-smart-business', handleRequestPortal);
@@ -506,6 +526,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-alcaldes-history', handleAlcaldes);
             window.removeEventListener('open-memorial-hijos', handleMemorial);
             window.removeEventListener('open-tuerca-vecinos', handleTuerca);
+            window.removeEventListener('open-vecicat', handleVeciCat);
             window.removeEventListener('open-tienda-poleras', handleTienda);
             window.removeEventListener('open-vecinity-pay', handleVecnityPay);
             window.removeEventListener('open-smart-business', handleRequestPortal);
@@ -713,6 +734,10 @@ export default function HubDashboard() {
         {
             id: 'vecinity-pay', title: 'Recargar Fichas VLS', subtitle: 'Billetera Digital y Canje de Recompensas',
             icon: Award, color: '#FFD700', isEvent: 'open-vecinity-pay', active: true, badge: 'SISTEMA'
+        },
+        {
+            id: 'vecicat', title: 'VeciCat: Adopción', subtitle: 'Red de Rescate y Adopción Felina',
+            icon: Heart, color: '#ec4899', isEvent: 'open-vecicat', active: true, badge: 'NUEVO'
         },
         {
             id: 'plaza-vecinal', title: 'Plaza Vecinal AI', subtitle: 'Espacio de encuentro ciudadano moderado por IA.', icon: Users, color: '#ec4899', path: 'https://ais-dev-m2dndpdv73k2izyiea7mef-41245370989.us-east5.run.app', isExternal: true, active: true },
@@ -1020,7 +1045,7 @@ export default function HubDashboard() {
             description: isRDMLS ? 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.' : 'Registro digital de accesos, reportes para vecinos/visitantes y Radio Digital VLS.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'vls-manifesto', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history']
+            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'vls-manifesto', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat']
         },
         {
             id: 'admin',
@@ -2546,8 +2571,6 @@ export default function HubDashboard() {
 
                             <BitacoraC5 />
 
-                            {/* Reproductores de TV flotantes eliminados (SmartFloatingTV) para evitar distracciones y errores de carga */}
-                            {/* End of TV Section */}
                             <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                                 <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
                             </div>
