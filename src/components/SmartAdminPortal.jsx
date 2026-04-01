@@ -129,7 +129,22 @@ export default function SmartAdminPortal({ onClose, currentUser }) {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                     <h3 style={{ margin: 0, color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '10px' }}><Camera /> Registro Fotográfico (Cámara Móvil)</h3>
                                     {!isCameraOpen ? (
-                                        <button onClick={openCamera} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Smartphone size={18} /> Abrir Cámara</button>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <input 
+                                                type="file" accept="image/*" multiple id="backoffice-upload" 
+                                                style={{ display: 'none' }} 
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files);
+                                                    files.forEach(file => {
+                                                        const reader = new FileReader();
+                                                        reader.onload = (ev) => setCapturedPhotos(prev => [...prev, ev.target.result]);
+                                                        reader.readAsDataURL(file);
+                                                    });
+                                                }}
+                                            />
+                                            <button onClick={() => document.getElementById('backoffice-upload').click()} style={{ background: 'rgba(56, 189, 248, 0.2)', color: '#38bdf8', border: '1px solid #38bdf8', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>📁 Subir Archivos</button>
+                                            <button onClick={openCamera} style={{ background: '#3b82f6', color: 'white', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}><Smartphone size={18} /> Abrir Cámara</button>
+                                        </div>
                                     ) : (
                                         <button onClick={closeCamera} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Finalizar Captura</button>
                                     )}

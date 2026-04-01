@@ -122,8 +122,14 @@ export default function HubDashboard() {
     const [searchTerm, setSearchTerm] = useState("");
     const [viewMode, setViewMode] = useState('full');
     const [pinnedApps, setPinnedApps] = useState(() => {
-        const saved = localStorage.getItem('vls_pinned_apps');
-        return saved ? JSON.parse(saved) : [];
+        try {
+            const saved = localStorage.getItem('vls_pinned_apps');
+            const parsed = saved ? JSON.parse(saved) : [];
+            return Array.isArray(parsed) ? parsed.filter(id => id && typeof id === 'string') : [];
+        } catch (e) {
+            console.warn("VLS_HUB: Error restaurando pines, reseteando...", e);
+            return [];
+        }
     });
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [deviceType, setDeviceType] = useState('Escritorio');
@@ -941,7 +947,7 @@ export default function HubDashboard() {
         },
         {
             id: 'decision-vecinal', title: 'Decisión Vecinal', subtitle: 'Consultas Ciudadanas con Voto Digital',
-            icon: Vote, color: '#d4af37', isEvent: 'open-decision-vecinal', active: true
+            icon: Vote, color: '#d4af37', isEvent: 'open-decision-vecinal', active: false
         },
         {
             id: 'difundir-app', title: 'Difundir App Vecinal', subtitle: 'Haz crecer nuestra red comunitaria',
@@ -1050,11 +1056,11 @@ export default function HubDashboard() {
         },
         {
             id: 'parlamento-regional', title: 'Observatorio Parlamentario', subtitle: 'Transparencia y Auditoría de Representantes Regionales',
-            icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: true, badge: 'NUEVO'
+            icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: false, badge: 'NUEVO'
         },
         {
             id: 'alcaldes-history', title: 'Archivo Alcaldes Regionales', subtitle: 'Hemeroteca y Cronología de Liderazgo Comunal',
-            icon: HistoryIcon, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: true, badge: 'HISTORIAL'
+            icon: HistoryIcon, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: false, badge: 'HISTORIAL'
         }
     ];
 
@@ -1062,7 +1068,7 @@ export default function HubDashboard() {
     const allApps = [...servicios, ...participacionCiudadana, ...internalTools]
         .filter(a => a && a.active)
         .filter(a => {
-            if (!a || !a.id) return false;
+            if (!a || !a?.id) return false;
             if (!isRDMLS) return true;
             // Purge ludic/citizen-only apps from RDMLS
             const vlsOnly = [
@@ -1073,14 +1079,14 @@ export default function HubDashboard() {
                 'stickers-portal', 'glosario-vls', 'legacy-game', 'serenito-1945'
             ];
             // VLSabes (vls-trivia) is EXPLICITLY ALLOWED as it's part of the educational pillar
-            return !vlsOnly.includes(a.id);
+            return a?.id && !vlsOnly.includes(a?.id);
         })
         .map(app => {
             if (!app) return null;
             if (isRDMLS) {
                 // Renombrar apps para el portal institucional
-                if (app.id === 'vls-trivia') return { ...app, title: 'Saberes Regionales', badge: 'INSTITUCIONAL' };
-                if (app.id === 'smart-learning') return { ...app, title: 'Inducción Municipal', badge: 'RRHH' };
+                if (app?.id === 'vls-trivia') return { ...app, title: 'Saberes Regionales', badge: 'INSTITUCIONAL' };
+                if (app?.id === 'smart-learning') return { ...app, title: 'Inducción Municipal', badge: 'RRHH' };
             }
             return app;
         })
@@ -1142,14 +1148,14 @@ export default function HubDashboard() {
 
 
     const displayApps = (viewMode === 'personalized'
-        ? allApps.filter(a => a && pinnedApps.includes(a.id))
+        ? allApps.filter(a => a?.id && pinnedApps.includes(a?.id))
         : filteredApps
     ).filter(Boolean); // ← Blindaje: elimina cualquier undefined residual
 
     const AppCard = ({ app }) => {
-        if (!app || !app.id) return null; // ← Guardia crítica contra undefined
-        const locked = isRestrictedModule(app.id);
-        const isPinned = pinnedApps.includes(app.id);
+        if (!app || !app?.id) return null; // ← Guardia crítica contra undefined
+        const locked = isRestrictedModule(app?.id);
+        const isPinned = pinnedApps.includes(app?.id);
 
         return (
             <motion.div
@@ -1157,13 +1163,13 @@ export default function HubDashboard() {
                 dragMomentum={false}
                 dragElastic={0.1}
                 dragConstraints={{ left: -100, right: 100, top: -100, bottom: 100 }}
-                whileDrag={{ scale: 1.05, zIndex: 100, boxShadow: `0 20px 50px ${app.color}50` }}
-                key={app.id}
+                whileDrag={{ scale: 1.05, zIndex: 100, boxShadow: `0 20px 50px ${app?.color}50` }}
+                key={app?.id}
                 className={`glass-panel gaudi-curves scale-in ${locked ? 'locked-module' : ''}`}
                 style={{
                     display: 'flex', flexDirection: 'column', padding: '1.5rem',
-                    border: locked ? '1px solid rgba(255,50,50,0.2)' : `1px solid ${app.color}40`,
-                    background: locked ? 'rgba(0,0,0,0.6)' : `linear-gradient(135deg, ${app.color}15 0%, rgba(0,0,0,0.6) 100%)`,
+                    border: locked ? '1px solid rgba(255,50,50,0.2)' : `1px solid ${app?.color}40`,
+                    background: locked ? 'rgba(0,0,0,0.6)' : `linear-gradient(135deg, ${app?.color}15 0%, rgba(0,0,0,0.6) 100%)`,
                     borderRadius: '20px', position: 'relative', overflow: 'hidden', textAlign: 'left',
                     transition: 'border 0.3s, background 0.3s, transform 0.1s', // Smoother feel
                     filter: locked ? 'grayscale(1) opacity(0.6)' : 'none',
@@ -1174,7 +1180,7 @@ export default function HubDashboard() {
             >
                 <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '5px', zIndex: 10 }}>
                     <button
-                        onClick={(e) => { e.stopPropagation(); togglePin(app.id); }}
+                        onClick={(e) => { e.stopPropagation(); togglePin(app?.id); }}
                         style={{ background: isPinned ? '#fbbf24' : 'rgba(255,255,255,0.05)', border: 'none', padding: '4px', borderRadius: '50%', color: isPinned ? '#000' : '#fff', cursor: 'pointer' }}
                     >
                         <Pin size={14} fill={isPinned ? "currentColor" : "none"} />
@@ -1186,8 +1192,8 @@ export default function HubDashboard() {
                     onClick={(e) => {
                         if (e.defaultPrevented) return; // Si es drag, no navegar
                         if (locked) return alert('Acceso Reservado a Estamento Directivo.');
-                        if (app.id === 'premium') { setShowPremiumClub(true); return; }
-                        if (app.id === 'galaxia-disco') { setShowGalaxia(true); return; }
+                        if (app?.id === 'premium') { setShowPremiumClub(true); return; }
+                        if (app?.id === 'galaxia-disco') { setShowGalaxia(true); return; }
                         if (app.isEvent) window.dispatchEvent(new CustomEvent(app.isEvent));
                         else if (app.isExternal) window.open(app.path, '_blank');
                         else navigate(app.path);
@@ -1429,14 +1435,14 @@ export default function HubDashboard() {
                         padding: '0.2rem 0',
                         overflow: 'hidden'
                     }}>
-                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.4rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage.color}50`, boxShadow: `0 0 10px ${CurrentMessage.color}30` }}>
-                            {CurrentIcon ? <CurrentIcon size={18} color={CurrentMessage.color} /> : <Sparkles size={18} color={CurrentMessage.color} />}
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.4rem', borderRadius: '50%', flexShrink: 0, border: `1px solid ${CurrentMessage?.color || 'white'}50`, boxShadow: `0 0 10px ${CurrentMessage?.color || 'white'}30` }}>
+                            {CurrentIcon ? <CurrentIcon size={18} color={CurrentMessage?.color || 'white'} /> : <Sparkles size={18} color={CurrentMessage?.color || 'white'} />}
                         </div>
                         <span style={{ lineHeight: '1.4', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '0.9rem', flex: 1, overflow: 'hidden' }}>
                             <span style={{ width: '10px', height: '10px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', flexShrink: 0, animation: 'pulse 2s infinite' }}></span>
                             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1, letterSpacing: '0.3px' }}>
-                                <strong style={{ color: CurrentMessage.color, marginRight: '5px' }}>[{CurrentMessage.category || 'VLS'}]</strong>
-                                {CurrentMessage.text}
+                                <strong style={{ color: CurrentMessage?.color || 'white', marginRight: '5px' }}>[{CurrentMessage?.category || 'VLS'}]</strong>
+                                {CurrentMessage?.text || 'Soberanía Digital: La Serena Smart'}
                             </span>
                         </span>
                     </div>
@@ -1894,25 +1900,24 @@ export default function HubDashboard() {
 
                             {/* GALERÍA DE LOS 4 PILARES */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '1200px', marginTop: '0.5rem' }}>
-                                {categories.map(pillar => {
-                                    if (!pillar || !pillar.id) return null;
+                                {categories.map((pillar, idx) => {
+                                    const PillarIcon = pillar?.icon;
                                     return (
                                         <div
-                                            key={pillar.id}
+                                            key={pillar?.id || idx}
                                             onClick={() => {
                                                 setSearchTerm("");
-                                                const element = document.getElementById(`cat-section-${pillar.id}`);
+                                                const element = document.getElementById(`cat-section-${pillar?.id}`);
                                                 if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                                             }}
                                             className="glass-panel gaudi-curves hover-lift"
-                                            style={{ padding: '2rem', borderRadius: '32px', border: `1.5px solid ${pillar.color}50`, background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', boxShadow: `0 20px 40px rgba(0,0,0,0.4)` }}
                                         >
-                                            <div style={{ background: pillar.color, padding: '1.2rem', borderRadius: '24px', color: pillar.id === 'citizens' ? 'black' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                {pillar.icon && <pillar.icon size={36} />}
+                                            <div style={{ background: pillar?.color || '#333', padding: '1.2rem', borderRadius: '24px', color: pillar?.id === 'citizens' ? 'black' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {pillar?.icon && <pillar.icon size={36} />}
                                             </div>
                                             <div>
-                                                <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{tHub[`${pillar.id}Title`] || pillar.name}</h4>
-                                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{tHub[`${pillar.id}Sub`] || pillar.description}</p>
+                                                <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{tHub[`${pillar?.id}Title`] || pillar?.name}</h4>
+                                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{tHub[`${pillar?.id}Sub`] || pillar?.description}</p>
                                             </div>
                                         </div>
                                     );
@@ -1977,14 +1982,14 @@ export default function HubDashboard() {
                                 gap: '12px'
                             }}>
                                 {pinnedApps.map(id => {
-                                    const app = allApps.find(a => a.id === id);
+                                    const app = allApps.find(a => a?.id === id);
                                     if (!app) return null;
                                     return (
                                         <div
                                             key={id}
                                             onClick={() => {
-                                                if (app.id === 'premium') { setShowPremiumClub(true); return; }
-                                                if (app.id === 'galaxia-disco') { setShowGalaxia(true); return; }
+                                                if (app?.id === 'premium') { setShowPremiumClub(true); return; }
+                                                if (app?.id === 'galaxia-disco') { setShowGalaxia(true); return; }
                                                 if (app.isEvent) window.dispatchEvent(new CustomEvent(app.isEvent));
                                                 else if (app.isExternal) window.open(app.path, '_blank');
                                                 else navigate(app.path);
@@ -2370,7 +2375,7 @@ export default function HubDashboard() {
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                                    {displayApps.filter(Boolean).map(app => <AppCard key={app.id} app={app} />)}
+                                    {displayApps.filter(app => app && app?.id).map(app => <AppCard key={app?.id || Math.random()} app={app} />)}
                                 </div>
                             </div>
                         )}
@@ -2379,7 +2384,7 @@ export default function HubDashboard() {
                         {viewMode === 'full' && searchTerm === "" && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5rem' }}>
                                 {categories.map(cat => (
-                                    <div key={cat?.id || Math.random()} id={cat?.id ? `cat-section-${cat.id}` : undefined} style={{ scrollMarginTop: '100px' }}>
+                                    <div key={cat?.id || Math.random()} id={cat?.id ? `cat-section-${cat?.id}` : undefined} style={{ scrollMarginTop: '100px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
                                             <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: '900', fontFamily: '"Outfit", sans-serif' }}>
                                                 {cat?.name || 'SECCIÓN'}
@@ -2388,7 +2393,7 @@ export default function HubDashboard() {
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                                             {allApps
-                                                .filter(app => app?.id && cat?.modules?.includes(app.id))
+                                                .filter(app => app?.id && cat?.modules?.includes(app?.id))
                                                 .map(app => <AppCard key={app?.id || Math.random()} app={app} />)
                                             }
                                         </div>
@@ -2417,26 +2422,27 @@ export default function HubDashboard() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                             {officialNews.map((news, idx) => {
+                                if (!news) return null;
                                 const IconCmp = getIconComponent(news.iconStr);
                                 return (
                                     <div 
-                                    key={idx} 
+                                    key={news?.id || idx} 
                                     className="glass-panel gaudi-curves hover-lift" 
                                     onClick={() => {
-                                        if (news.eventId) window.dispatchEvent(new CustomEvent(news.eventId));
-                                        else if (news.url) window.open(news.url, '_blank');
+                                        if (news?.eventId) window.dispatchEvent(new CustomEvent(news.eventId));
+                                        else if (news?.url) window.open(news.url, '_blank');
                                     }}
-                                    style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', border: `1px solid ${news.color}30`, background: `linear-gradient(135deg, ${news.color}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer' }}
+                                    style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', border: `1px solid ${news?.color || '#333'}30`, background: `linear-gradient(135deg, ${news?.color || '#333'}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer' }}
                                 >
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news.color, padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
-                                                {news.category}
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news?.color || '#333', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                                {news?.category || 'INFO'}
                                             </span>
-                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news.date}</span>
+                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news?.date || ''}</span>
                                         </div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news.title}</h4>
-                                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news.desc}</p>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news.color, fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news?.title || ''}</h4>
+                                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news?.desc || ''}</p>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news?.color || '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
                                             {IconCmp ? <IconCmp size={16} /> : <BookOpen size={16} />}
                                             Leer Nota Completa <SkipForward size={14} style={{ marginLeft: 'auto' }} />
                                         </div>
@@ -2469,8 +2475,8 @@ export default function HubDashboard() {
                             </div>
                             {/* Main Content Grid */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
-                                {internalTools.filter(app => app && app.id).map(app => (
-                                    <AppCard key={app.id} app={app} />
+                                {internalTools.filter(app => app && app?.id).map(app => (
+                                    <AppCard key={app?.id || Math.random()} app={app} />
                                 ))}
                             </div>
                         </div>
@@ -2525,9 +2531,9 @@ export default function HubDashboard() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
                             {guardianes.map((char) => {
-                                if (!char || !char.id) return null;
+                                if (!char || !char?.id) return null;
                                 return (
-                                    <div key={char.id} className="glass-panel gaudi-curves hover-lift" style={{ 
+                                    <div key={char?.id} className="glass-panel gaudi-curves hover-lift" style={{ 
                                         padding: '2rem', 
                                         textAlign: 'center', 
                                         border: '1.5px solid rgba(255,255,255,0.15)', 

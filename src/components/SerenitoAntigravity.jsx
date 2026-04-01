@@ -29,6 +29,7 @@ function PlanetCore() {
 function PlayerAntigravity() {
     const playerRef = useRef();
     const { camera } = useThree();
+    const { scene } = useGLTF('/models/Serenito_polera_blancacuerpo_entero.glb');
     
     // Antigravity & Spherical logic placeholder
     useFrame((state, delta) => {
@@ -45,18 +46,15 @@ function PlayerAntigravity() {
         playerRef.current.quaternion.copy(q);
 
         // Simple Camera Follow
-        const camPos = playerRef.current.position.clone().add(upDir.multiplyScalar(5)).add(new THREE.Vector3(0, 0, 8));
+        const camPos = playerRef.current.position.clone().add(upDir.multiplyScalar(4)).add(new THREE.Vector3(0, 0, 7));
         camera.position.lerp(camPos, 0.1);
         camera.lookAt(playerRef.current.position);
     });
 
     return (
         <group ref={playerRef} position={[0, 10.5, 0]}> {/* Inicia en el Polo Norte */}
-           {/* Placeholder Serenito */}
-           <mesh castShadow>
-               <capsuleGeometry args={[0.4, 1, 4, 8]} />
-               <meshStandardMaterial color="#38bdf8" />
-           </mesh>
+           {/* Serenito Humanizado – Regla #3 */}
+           <primitive object={scene} scale={0.6} />
            <pointLight distance={15} intensity={2} color="#fca5a5" /> {/* Antorcha del Abuelo conceptual */}
         </group>
     );
