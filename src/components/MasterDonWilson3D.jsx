@@ -23,7 +23,7 @@ function DonWilsonModel({ url }) {
   }, [actions]);
 
   return (
-    <group scale={2.5} position={[-2, -2, 0]}>
+    <group scale={2.5} position={[-2, 0, 0]}>
       <primitive object={scene} castShadow />
       <Sparkles count={50} scale={4} size={2} speed={0.4} color="#fbbf24" />
     </group>
@@ -42,7 +42,7 @@ function CristianModel({ url }) {
   }, [actions]);
 
   return (
-    <group scale={2.5} position={[2, -2, 0]}>
+    <group scale={2.5} position={[2, 0, 0]}>
       <primitive object={scene} castShadow />
       <Sparkles count={50} scale={4} size={2} speed={0.4} color="#38bdf8" />
     </group>
@@ -174,7 +174,7 @@ const MultimediaPanel = ({ assets, onClose }) => {
 
             {/* PPTX Legado */}
             <button 
-              onClick={() => window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + '/DonWilson/cuturrufo_legado.pptx')}`, '_blank')}
+              onClick={() => window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + '/DonWilson/clean_Dinastía_Musical_Cuturrufo_legado.pptx')}`, '_blank')}
               style={{ background: 'rgba(251, 191, 36, 0.1)', border: '1px solid rgba(251, 191, 36, 0.3)', padding: '1.2rem', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', width: '100%', textAlign: 'left' }}
             >
               <div style={{ background: '#fbbf24', padding: '8px', borderRadius: '12px' }}>
@@ -232,12 +232,17 @@ export default function MasterDonWilson3D({ onClose }) {
 
       <button 
         onClick={onClose} 
-        style={{ position: 'absolute', top: '2rem', right: '2rem', background: '#ef4444', border: 'none', color: 'white', width: '50px', height: '50px', borderRadius: '50%', zIndex: 100, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        style={{ position: 'absolute', top: '2rem', right: '2rem', background: '#ef4444', border: 'none', color: 'white', padding: '0.8rem 1.5rem', borderRadius: '50px', zIndex: 500, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: '900', fontSize: '0.8rem', boxShadow: '0 10px 20px rgba(239, 68, 68, 0.4)' }}
       >
-        <X size={24} />
+        SALIR AL PORTAL <X size={20} />
       </button>
 
       <MultimediaPanel onClose={onClose} />
+
+      {/* Música de Fondo Especial */}
+      <audio autoPlay loop>
+        <source src="/DonWilson/Cacharrito.mp3" type="audio/mpeg" />
+      </audio>
 
       <Canvas shadows camera={{ position: [0, 5, 12], fov: 45 }}>
         <Suspense fallback={null}>

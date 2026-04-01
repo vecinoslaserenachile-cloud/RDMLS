@@ -121,9 +121,9 @@ export const FIGURAS_MEMORIAL = [
         location: 'Tongoy / La Serena',
         icon: BookOpen,
         color: '#10b981',
-        audio: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_entre_letras_y_pol%C3%ADtica.mp3',
-        pptx: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_Poet_of_Activity.pptx',
-        pdf: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_Poet_of_Activity.pdf'
+        audio: '/DonWilson/wilson_bio_acordeon.mp3',
+        pptx: '/DonWilson/clean_Víctor_Domingo_Silva_Poet_of_Activity.pptx',
+        pdf: '/DonWilson/clean_Víctor_Domingo_Silva_Poet_of_Activity.pdf'
     },
     {
         id: 'bohon',
@@ -204,6 +204,7 @@ export const FIGURAS_MEMORIAL = [
         icon: Music,
         color: '#fbbf24',
         audio: '/DonWilson/Wilson_Cuturrufo_y_la_biologa_del_acorden.m4a',
+        pptx: '/DonWilson/clean_Dinastía_Musical_Cuturrufo_legado.pptx',
         has3D: true
     },
 ];
@@ -447,7 +448,7 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
                                 }} />
                             </div>
                             <div style={{ flex: 1.2, padding: '3rem', overflowY: 'auto', position: 'relative' }}>
-                                <button onClick={() => setSelectedFigure(null)} style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={24} /></button>
+                                <button onClick={() => setSelectedFigure(null)} style={{ position: 'absolute', top: '2rem', right: '2rem', background: '#ef4444', border: 'none', color: 'white', padding: '0.6rem 1.2rem', borderRadius: '50px', fontWeight: '900', fontSize: '0.75rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', zIndex: 10 }}>CERRAR <X size={18} /></button>
                                 <h4 style={{ color: selectedFigure.color, fontWeight: 900, fontSize: '0.7rem', letterSpacing: '2px', marginBottom: '1rem' }}>{selectedFigure.category.toUpperCase()}</h4>
                                 <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, marginBottom: '0.5rem' }}>{selectedFigure.name}</h2>
                                 <p style={{ color: '#94a3b8', fontStyle: 'italic', marginBottom: '2rem' }}>{selectedFigure.title}</p>
@@ -477,7 +478,7 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
 
                                     {selectedFigure.pptx && (
                                         <button 
-                                            onClick={() => window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(selectedFigure.pptx)}`, '_blank')}
+                                            onClick={() => window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(window.location.origin + selectedFigure.pptx)}`, '_blank')}
                                             style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '15px', borderRadius: '15px', border: '1px solid rgba(245,158,11,0.3)', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', width: '100%', textAlign: 'left' }}
                                         >
                                             <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>

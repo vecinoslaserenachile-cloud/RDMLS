@@ -61,52 +61,6 @@
     }
   </script>
   <script>
-    function logErrorToConsole(msg, isPromise) {
-      let consoleDiv = document.getElementById('vls-mini-error-console');
-      if (!consoleDiv) {
-        consoleDiv = document.createElement('div');
-        consoleDiv.id = 'vls-mini-error-console';
-        consoleDiv.style.cssText = 'position:fixed; bottom:10px; left:10px; z-index:999999; max-width:300px; max-height:150px; overflow-y:auto; background:rgba(0,0,0,0.8); color:#ef4444; border:1px solid #ef4444; border-radius:8px; padding:10px; font-family:monospace; font-size:10px; opacity:0.9; box-shadow:0 0 10px rgba(0,0,0,0.5); pointer-events:auto;';
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.innerHTML = 'x';
-        closeBtn.style.cssText = 'float:right; background:transparent; border:none; color:white; cursor:pointer; font-weight:bold; height:20px; width:20px;';
-        closeBtn.onclick = () => consoleDiv.style.display = 'none';
-        
-        const title = document.createElement('strong');
-        title.style.color = '#facc15';
-        title.innerHTML = 'LOG DE ERRORES<br/>';
-        
-        const contentDiv = document.createElement('div');
-        contentDiv.id = 'vls-error-content';
-        
-        consoleDiv.appendChild(closeBtn);
-        consoleDiv.appendChild(title);
-        consoleDiv.appendChild(contentDiv);
-        document.body.appendChild(consoleDiv);
-      }
-      
-      consoleDiv.style.display = 'block';
-      const content = document.getElementById('vls-error-content');
-      const errEl = document.createElement('div');
-      errEl.style.borderBottom = '1px solid rgba(239, 68, 68, 0.3)';
-      errEl.style.paddingBottom = '4px';
-      errEl.style.marginBottom = '4px';
-      errEl.innerText = (isPromise ? '[PROMISE] ' : '[ERROR] ') + msg;
-      content.appendChild(errEl);
-      content.scrollTop = content.scrollHeight;
-    }
-
-    window.addEventListener('error', function (e) {
-      logErrorToConsole(e.error ? e.error.message : e.message, false);
-      // No detener la propagación, esto evita 'matar' la app
-    });
-    window.addEventListener('unhandledrejection', function (e) {
-      let msg = e.reason;
-      if (e.reason && e.reason.message) msg = e.reason.message;
-      logErrorToConsole(msg, true);
-    });
-
     // AGGRESSIVE PURGE FOR RDMLS (Institutional Mode)
     if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
       if ('serviceWorker' in navigator) {

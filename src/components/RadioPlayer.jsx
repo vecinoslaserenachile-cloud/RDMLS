@@ -429,6 +429,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         if (!audioRef.current) return;
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
         
+        if (!currentStation) return;
         const streamUrl = currentStation.stream;
 
         audioRef.current.pause();
@@ -759,7 +760,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
 
             <audio 
                 ref={audioRef} 
-                loop={!currentStation.isLive} 
+                loop={!currentStation?.isLive} 
                 crossOrigin="anonymous"
                 onPlay={() => { initAudioContext(); setIsPlaying(true); }}
                 onPause={() => setIsPlaying(false)}
@@ -872,15 +873,15 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
                                             <button onClick={() => window.dispatchEvent(new CustomEvent('open-vecinity-pay'))} style={{ background: '#ef4444', border: 'none', color: 'white', padding: '8px 15px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}>Desbloquear con Fichas</button>
                                         </div>
                                     ) : (
-                                        <iframe width="100%" height="100%" src={currentStation.stream} title={currentStation.name} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                                        <iframe width="100%" height="100%" src={currentStation?.stream || ''} title={currentStation?.name || 'VLS TV'} frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
                                     )}
                                 </div>
                             )}
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '20px' }}>
                                 <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: '900', letterSpacing: '1px', textTransform: 'uppercase' }}>{isRDMLS ? 'RDMLS' : 'VECINOS LA SERENA'} {activeMediaType}</span>
-                                {stations.filter(s => s.type === activeMediaType || (activeMediaType === 'tv-premium' && s.type === 'tv-fast')).map(st => (
-                                    <div key={st.id} onClick={() => { setCurrentStation(st); if (st.type === 'radio') setupStreamAndPlay(); }} style={{ padding: '10px 12px', borderRadius: '10px', cursor: 'pointer', background: currentStation.id === st.id ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255,255,255,0.03)', fontSize: '0.75rem', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: currentStation.id === st.id ? '1px solid #ef4444' : '1px solid transparent', transition: '0.2s' }}>
+                                    {stations.filter(s => s && s.type === activeMediaType || (activeMediaType === 'tv-premium' && s && s.type === 'tv-fast')).map(st => (
+                                        <div key={st?.id || Math.random()} onClick={() => { setCurrentStation(st); if (st?.type === 'radio') setupStreamAndPlay(); }} style={{ padding: '10px 12px', borderRadius: '10px', cursor: 'pointer', background: currentStation?.id === st?.id ? 'rgba(239, 68, 68, 0.15)' : 'rgba(255,255,255,0.03)', fontSize: '0.75rem', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: currentStation?.id === st?.id ? '1px solid #ef4444' : '1px solid transparent', transition: '0.2s' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                                 <span style={{ fontWeight: 'bold' }}>{st.name}</span>

@@ -425,7 +425,7 @@ export default function VLSRequestPortal({ onClose, isPage = false, initialCateg
                                         )}
                                         <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
                                             <div style={{ padding: '0.7rem', background: `${incident.color}15`, borderRadius: '15px', color: incident.color, height: 'fit-content' }}>
-                                                <incident.icon size={20} />
+                                                {incident.icon && typeof incident.icon !== 'string' ? <incident.icon size={20} /> : <AlertCircle size={20} />}
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{incident.time} · {incident.user}</div>

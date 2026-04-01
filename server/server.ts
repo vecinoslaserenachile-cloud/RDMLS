@@ -123,7 +123,7 @@ async function startServer() {
   }
 
   // 📄 RENDER PRINCIPAL (SPA)
-  app.use('*', async (req, res, next) => {
+  app.use('/{*splat}', async (req, res, next) => {
     const url = req.originalUrl;
     try {
       let template: string;

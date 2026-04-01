@@ -45,6 +45,27 @@ const LoadingScreen = ({ isSyncing = false }) => {
                   initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
               />
+              
+              {/* Ventanas de la Torre (Las 4 ventanas icónicas del Faro) */}
+              {[40, 55, 70, 85].map((y, i) => (
+                <motion.path 
+                    key={y}
+                    d={`M 47 ${y} L 53 ${y} L 53 ${y+6} L 47 ${y+6} Z`}
+                    stroke="white" strokeWidth="1.5" fill="rgba(255,255,255,0.1)"
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 + (i * 0.1), duration: 0.3 }}
+                />
+              ))}
+
+              {/* Puerta Principal en la Base */}
+              <motion.path 
+                  d="M 46 100 L 46 112 Q 50 115 54 112 L 54 100 Z"
+                  stroke="white" strokeWidth="2" fill="rgba(255,255,255,0.2)"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  transition={{ delay: 1, duration: 0.5 }}
+              />
+
               <motion.path
                   d="M 37 25 L 63 25 M 38 20 L 62 20 L 62 25 L 38 25 Z M 44 20 L 56 20 L 56 15 L 44 15 Z M 50 15 L 50 10"
                   stroke="white" strokeWidth="3"

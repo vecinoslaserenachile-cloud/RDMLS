@@ -1733,13 +1733,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
                 <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>No tienes notificaciones recientes.</div>
               ) : (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {notifications.map(n => (
-                    <div key={n.id} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: n.read ? 'transparent' : 'rgba(16, 185, 129, 0.05)' }}>
-                      <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{n.timestamp}</div>
-                      <strong style={{ color: 'white', display: 'block', margin: '4px 0' }}>{n.title}</strong>
-                      {n.body && <p style={{ margin: 0, fontSize: '0.8rem', color: '#cbd5e1', lineHeight: '1.4' }}>{n.body}</p>}
-                    </div>
-                  ))}
+                  {notifications.map((n, idx) => {
+                    if (!n) return null;
+                    return (
+                      <div key={n?.id || idx} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: n?.read ? 'transparent' : 'rgba(16, 185, 129, 0.05)' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{n?.timestamp}</div>
+                        <strong style={{ color: 'white', display: 'block', margin: '4px 0' }}>{n?.title}</strong>
+                        {n?.body && <p style={{ margin: 0, fontSize: '0.8rem', color: '#cbd5e1', lineHeight: '1.4' }}>{n.body}</p>}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>

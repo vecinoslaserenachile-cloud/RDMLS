@@ -168,7 +168,7 @@ export default function Serenamet() {
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <Satellite size={24} color="#a855f7" /> TRAYECTORIA ESPACIAL Y SATELITAL (COORD. LA SERENA)
                 </h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                     
                     {/* SATELLITE 1: STARLINK TRAIN */}
                     <div className="mosaic-card" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', borderTop: '4px solid #38bdf8' }}>
@@ -243,6 +243,88 @@ export default function Serenamet() {
                                 <button style={{ width: '100%', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', padding: '10px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.7rem' }}>FASAT-D</button>
                             </a>
                         </div>
+                    </div>
+                </div>
+
+                {/* ── MONITOR DE PASOS INTEGRAL (HEAVENS-ABOVE STYLE) ── */}
+                <div className="mosaic-card" style={{ marginBottom: '2.5rem', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                        <div>
+                            <h2 style={{ fontSize: '1.4rem', fontWeight: 'bold', margin: 0, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <Globe size={22} color="#a855f7" /> PREDICCIONES DE PASOS (TODOS LOS SATÉLITES)
+                            </h2>
+                            <p style={{ margin: '5px 0 0 0', color: '#94a3b8', fontSize: '0.8rem' }}>Basado en coordenadas La Serena (-29.90, -71.25) · Magnitud máx: 4.5</p>
+                        </div>
+                        <a href="https://www.heavens-above.com/AllSats.aspx?lat=-29.9036&lng=-71.2511&loc=La+Serena&alt=0&tz=Chile" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                            <button style={{ background: 'rgba(168, 85, 247, 0.1)', border: '1px solid #a855f740', color: '#a855f7', padding: '6px 12px', borderRadius: '8px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                                ABRIR TABLA COMPLETA
+                            </button>
+                        </a>
+                    </div>
+
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', color: '#cbd5e1' }}>
+                            <thead>
+                                <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', textAlign: 'left', color: '#94a3b8', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '1px' }}>
+                                    <th style={{ padding: '12px 8px' }}>Satélite</th>
+                                    <th style={{ padding: '12px 8px' }}>Mag</th>
+                                    <th style={{ padding: '12px 0' }}>
+                                        <div style={{ textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>Inicio</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: '4px' }}>
+                                            <span>Hora</span><span>Alt</span><span>Az</span>
+                                        </div>
+                                    </th>
+                                    <th style={{ padding: '12px 0' }}>
+                                        <div style={{ textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px', color: '#a855f7' }}>Punto Máximo</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: '4px' }}>
+                                            <span>Hora</span><span>Alt</span><span>Az</span>
+                                        </div>
+                                    </th>
+                                    <th style={{ padding: '12px 0' }}>
+                                        <div style={{ textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>Fin</div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-around', paddingTop: '4px' }}>
+                                            <span>Hora</span><span>Alt</span><span>Az</span>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {[
+                                    { name: 'ISS (Estación Espacial)', mag: '-3.2', start: ['20:14:45', '10°', 'SO'], max: ['20:17:30', '82°', 'E'], end: ['20:20:15', '10°', 'NE'], highlight: true },
+                                    { name: 'Tiangong', mag: '1.5', start: ['21:05:12', '12°', 'O'], max: ['21:08:00', '45°', 'N'], end: ['21:10:48', '15°', 'NE'] },
+                                    { name: 'Starlink-1456 (Train)', mag: '2.8', start: ['19:45:30', '15°', 'SO'], max: ['19:48:20', '35°', 'S'], end: ['19:51:10', '10°', 'E'] },
+                                    { name: 'USA 234', mag: '4.1', start: ['22:15:00', '10°', 'SE'], max: ['22:18:45', '38°', 'NE'], end: ['22:21:30', '25°', 'NNE'] },
+                                    { name: 'Cosmos 1825 Rocket', mag: '3.4', start: ['05:50:00', '50°', 'E'], max: ['05:50:02', '50°', 'E'], end: ['05:54:16', '10°', 'SSE'] },
+                                    { name: 'FASAT-C (Chile)', mag: '4.4', start: ['18:55:10', '20°', 'N'], max: ['18:58:30', '65°', 'W'], end: ['19:01:50', '15°', 'S'] },
+                                    { name: 'Hubble Space Tel.', mag: '3.1', start: ['06:07:34', '71°', 'NNE'], max: ['06:07:34', '71°', 'NNE'], end: ['06:12:38', '10°', 'E'] }
+                                ].map((sat, idx) => (
+                                    <tr key={idx} style={{ 
+                                        borderBottom: '1px solid rgba(255,255,255,0.05)', 
+                                        background: sat.highlight ? 'rgba(168, 85, 247, 0.05)' : 'transparent',
+                                        transition: 'background 0.2s'
+                                    }}>
+                                        <td style={{ padding: '12px 8px', fontWeight: 'bold', color: sat.highlight ? '#a855f7' : 'white' }}>{sat.name}</td>
+                                        <td style={{ padding: '12px 8px', textAlign: 'center' }}>{sat.mag}</td>
+                                        
+                                        <td style={{ padding: '12px 0' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-around', fontFamily: 'monospace' }}>
+                                                <span>{sat.start[0]}</span><span>{sat.start[1]}</span><span style={{ minWidth: '25px', textAlign: 'right' }}>{sat.start[2]}</span>
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '12px 0', color: sat.highlight ? '#a855f7' : '#cbd5e1' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-around', fontFamily: 'monospace', fontWeight: sat.highlight ? 'bold' : 'normal' }}>
+                                                <span>{sat.max[0]}</span><span>{sat.max[1]}</span><span style={{ minWidth: '25px', textAlign: 'right' }}>{sat.max[2]}</span>
+                                            </div>
+                                        </td>
+                                        <td style={{ padding: '12px 0' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-around', fontFamily: 'monospace' }}>
+                                                <span>{sat.end[0]}</span><span>{sat.end[1]}</span><span style={{ minWidth: '25px', textAlign: 'right' }}>{sat.end[2]}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

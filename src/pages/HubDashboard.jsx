@@ -14,7 +14,7 @@ const PLAYLIST_INSTITUTIONAL = [
 ];
 
 const PLAYLIST_LUDIC = [
-    { url: 'https://vimeo.com/712520/embed', title: 'DOC: CALETA SAN PEDRO', platform: 'VLS TV' },
+    { url: 'https://vimeo.com/712520/embed', title: 'DOC: CALETA SAN PEDRO', platform: 'TVLS' },
     { url: '/serenito_security_guard_close_up_1773392164475.png', title: 'PROMO: Seguridad Ciudadana VLS', isPoster: true },
     { url: '/portada_vls_trivia.jpg', title: 'PROMO: VLSabes - ¡Juega & Gana!', isPoster: true },
     { url: '/kiosko_3d_la_serena.png', title: 'PROMO: Kiosko Inteligente VLS', isPoster: true },
@@ -74,6 +74,8 @@ import SerenaMetAdmin from '../components/SerenaMetAdmin';
 import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
+import SeguridadVecinal from './SeguridadVecinal';
+import VLSNewsIan from '../components/VLSNewsIan';
 const VLSNewsInvestigacion = lazy(() => import('../components/VLSNewsInvestigacion'));
 const VLSNewsSemanaSanta = lazy(() => import('../components/VLSNewsSemanaSanta'));
 const VLSNewsBencinazo = lazy(() => import('../components/VLSNewsBencinazo'));
@@ -171,10 +173,8 @@ export default function HubDashboard() {
     const [showBencinazo, setShowBencinazo] = useState(false);
     const [showSentinelNote, setShowSentinelNote] = useState(false);
     const [showPoduje, setShowPoduje] = useState(false);
-    const [showAguasValle, setShowAguasValle] = useState(false);
-    const [showParliamentary, setShowParliamentary] = useState(false);
-    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
-    const [showGalaxia, setShowGalaxia] = useState(false);
+    const [showVLSNewsIan, setShowVLSNewsIan] = useState(false);
+    const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null);
     const [selectedNews, setSelectedNews] = useState(null);
@@ -442,7 +442,7 @@ export default function HubDashboard() {
         setShowSentinelNote(false); setShowAirportMonitor(false); setShowPortMonitor(false);
         setShowParliamentary(false); setShowAlcaldes(false); setShowMemorialHijos(false);
         setShowTuerca(false); setShowVeciCat(false); setShowTiendaPoleras(false); setShowVecnityPay(false);
-        setShowDirectory(false);
+        setShowDirectory(false); setShowVLSNewsIan(false); setShowSeguridadVecinal(false);
         setShowRequestPortal(false); setShowBackofficeMovil(false); setShowAjedrez(false);
         setShowEstudio(false); setReportInitialCategory(null);
     };
@@ -541,6 +541,11 @@ export default function HubDashboard() {
         window.addEventListener('open-vecinity-pay', handleVecnityPay);
         window.addEventListener('open-smart-business', handleRequestPortal);
         window.addEventListener('open-backoffice-movil', handleBackofficeMovil);
+        const handleIan = () => { closeAllPopups(); setShowVLSNewsIan(true); };
+        const handleSeguridad = () => { closeAllPopups(); setShowSeguridadVecinal(true); };
+
+        window.addEventListener('open-vls-ian', handleIan);
+        window.addEventListener('open-vls-seguridad', handleSeguridad);
         window.addEventListener('open-ajedrez-patrimonial', handleAjedrez);
 
         // URL Parameter Routing (Deep Linking)
@@ -556,9 +561,15 @@ export default function HubDashboard() {
                 case 'sentinel': handleSentinelNote(); break;
                 case 'aguasvalle': setShowAguasValle(true); break;
                 case 'poduje': setShowPoduje(true); break;
+                case 'ian': handleIan(); break;
+                case 'seguridad': handleSeguridad(); break;
                 default: break;
             }
         }
+
+        const pageParam = urlParams.get('page');
+        if (pageParam === 'seguridad') handleSeguridad();
+        if (pageParam === 'ian') handleIan();
 
 
         return () => {
@@ -613,9 +624,9 @@ export default function HubDashboard() {
                 } catch (e) { }
             } else if (window.innerWidth > 1024) {
                 setOfficialNews([
+                    { title: "El Punto Ciego del Retail: Caso Ian", date: "01 de Abril, 2026", category: "VLS INVESTIGA", desc: "El impactante caso de negligencia que cambió la seguridad en supermercados.", iconStr: "ShieldAlert", color: "#ef4444", eventId: "open-vls-ian" },
                     { title: "Semana Santa 2026: Historia y Tradición", date: "26 de Marzo, 2026", category: "INVESTIGACIÓN ESPECIAL", desc: "Más allá de la fe: Un viaje por las tradiciones globales y chilenas.", iconStr: "Church", color: "#7c3aed", eventId: "open-vls-semanasanta" },
-                    { title: "Centinel Faro: El Ojo Social Predictivo", date: "24 de Marzo, 2026", category: "INTELIGENCIA", desc: "Cómo la IA de VLS detecta crisis antes de que ocurran.", iconStr: "Brain", color: "#38bdf8", eventId: "open-vls-sentinel" },
-                    { title: "La Serena en Alerta: El Bencinazo de Quiroz", date: "24 de Marzo, 2026", category: "ALERTA VLS", desc: "Análisis profundo sobre el alza de combustibles y su impacto local.", iconStr: "Fuel", color: "#fbbf24", eventId: "open-vls-bencinazo" }
+                    { title: "Centinel Faro: El Ojo Social Predictivo", date: "24 de Marzo, 2026", category: "INTELIGENCIA", desc: "Cómo la IA de VLS detecta crisis antes de que ocurran.", iconStr: "Brain", color: "#38bdf8", eventId: "open-vls-sentinel" }
                 ]);
             }
         };
@@ -942,7 +953,7 @@ export default function HubDashboard() {
             icon: Music, color: '#a855f7', isEvent: 'open-music-studio', active: true
         },
         {
-            id: 'vhs-tv', title: 'Videoclub VHS 90s', subtitle: 'Cine Nostálgico en Formato Clásico',
+            id: 'vhs-tv', title: 'Videoclub TVLS 90s', subtitle: 'Cine Nostálgico en Formato Clásico',
             icon: Tv, color: '#ef4444', isEvent: 'open-vhs-tv', active: true
         },
         {
@@ -1552,6 +1563,26 @@ export default function HubDashboard() {
                                 }}
                             >
                                 <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
+                            </button>
+                            <button
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
+                                className="btn-glass animate-pulse-slow"
+                                style={{
+                                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                    border: '1px solid rgba(255,255,255,0.4)',
+                                    borderRadius: '50px',
+                                    padding: '0.4rem 1rem',
+                                    color: 'white',
+                                    fontWeight: '950',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
+                                    whiteSpace: 'nowrap'
+                                }}
+                            >
+                                <ShieldAlert size={14} /> SEGURIDAD VECINAL
                             </button>
                         </div>
                     )}
@@ -2747,12 +2778,20 @@ export default function HubDashboard() {
                 <VLSRequestPortal onClose={() => { setShowRequestPortal(false); setReportInitialCategory(null); }} initialCategory={reportInitialCategory} />
             )}
 
-            {showBackofficeMovil && (
-                <BackofficeMovilVLS onClose={() => setShowBackofficeMovil(false)} />
-            )}
-
             {showAjedrez && (
                 <AjedrezPatrimonialVLS onClose={() => setShowAjedrez(false)} />
+            )}
+            
+            {showVLSNewsIan && (
+                <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+            )}
+            
+            {showSeguridadVecinal && (
+                <SeguridadVecinal onClose={() => setShowSeguridadVecinal(false)} />
+            )}
+            
+            {showBackofficeMovil && (
+                <BackofficeMovilVLS onClose={() => setShowBackofficeMovil(false)} />
             )}
             
             {showDirectory && (

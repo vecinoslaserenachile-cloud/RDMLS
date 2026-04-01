@@ -69,6 +69,12 @@ const Aprende = React.lazy(() => import('./pages/Aprende.jsx'));
 const Sitemap = React.lazy(() => import('./pages/Sitemap'));
 const TributePage = React.lazy(() => import('./pages/TributePage.jsx'));
 const MasterMiguelMelendez3D = React.lazy(() => import('./components/MasterMiguelMelendez3D.jsx'));
+// Importaciones directas para estabilidad de despliegue
+import SeguridadVecinal from './pages/SeguridadVecinal.jsx';
+import VLSNewsIan from './components/VLSNewsIan.jsx';
+// const SeguridadVecinal = React.lazy(() => import('./pages/SeguridadVecinal.jsx'));
+// const VLSNewsIan = React.lazy(() => import('./components/VLSNewsIan.jsx'));
+const ErrorCollector = React.lazy(() => import('./components/ErrorCollector.jsx'));
 import { Activity } from 'lucide-react';
 import './index.css';
 
@@ -149,11 +155,6 @@ class ErrorBoundary extends React.Component {
             <div style={{ width: '60px', height: '3px', background: '#38bdf8', margin: '0 auto 2rem' }}></div>
             <h2 style={{ color: '#38bdf8', fontSize: '2rem', fontWeight: '900', marginBottom: '1rem' }}>SISTEMA EN <span style={{ color: 'white' }}>MANTENIMIENTO</span></h2>
             <p style={{ color: '#94a3b8', marginBottom: '2rem' }}>Estamos resolviendo un conflicto en la señal. Vuelve en un momento.</p>
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid #ef4444', borderRadius: '15px', padding: '1.5rem', marginBottom: '2rem', textAlign: 'left' }}>
-              <p style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>REPORTE C5 — ERROR:</p>
-              <code style={{ fontSize: '0.7rem', color: '#fca5a5', display: 'block', wordBreak: 'break-all', whiteSpace: 'pre-wrap' }}>{errMsg}</code>
-              {errStack && <code style={{ fontSize: '0.6rem', color: '#94a3b8', display: 'block', wordBreak: 'break-all', whiteSpace: 'pre-wrap', marginTop: '0.5rem' }}>{errStack.split('\n').slice(0, 5).join('\n')}</code>}
-            </div>
             <button onClick={() => {
               const sep = window.location.href.includes('?') ? '&' : '?';
               window.location.href = window.location.pathname + sep + 'vls_sync=' + Date.now();
@@ -181,6 +182,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <LanguageProvider>
         <BrowserRouter>
           <GlobalOmniSyncOverlay />
+          <Suspense fallback={null}>
+            <ErrorCollector />
+          </Suspense>
           <Suspense fallback={null}>
             <Routes>
               {/* Rutas para Dominios Específicos */}
@@ -265,11 +269,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="entrevecinas" element={<EntrevecinasHub />} />
                     <Route path="muralismo" element={<MuralismoVecinal />} />
                     <Route path="reportes" element={<VLSRequestPortal onClose={() => window.history.back()} isPage={true} />} />
+                    <Route path="seguridad" element={<SeguridadVecinal />} />
                     <Route path="agua" element={<MasterMiguelMelendez3D onClose={() => window.location.href = '/'} />} />
                     <Route path="sitemap" element={<Sitemap />} />
                     <Route path="altar" element={<TributePage />} />
                     <Route path="altar/:id" element={<TributePage />} />
                     <Route path="fichas" element={<HubDashboard />} />
+                    <Route path="media/ian" element={<VLSNewsIan onClose={() => window.history.back()} />} />
                     <Route path="media/:id" element={<HubDashboard />} />
                     <Route path="paradoja" element={<HubDashboard />} />
                     <Route path="bencinazo" element={<HubDashboard />} />
