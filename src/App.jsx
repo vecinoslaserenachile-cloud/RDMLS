@@ -126,7 +126,7 @@ const WhatsAppEliteHub = lazy(() => import('./components/WhatsAppEliteHub'));
 const PremiumNeighborHub = lazy(() => import('./components/PremiumNeighborHub'));
 const RightsGovernanceVLS = lazy(() => import('./components/RightsGovernanceVLS'));
 const MusicSchoolVLS = lazy(() => import('./components/MusicSchoolVLS'));
-const DeBonoThinkingHatsVLS = lazy(() => import('./components/DeBonoThinkingHatsVLS'));
+// DeBonoThinkingHatsVLS removido por conflicto de build
 const FiestaFAVLS = lazy(() => import('./components/FiestaFAVLS'));
 const VlsSmartBillionaire = lazy(() => import('./components/VlsSmartBillionaire'));
 const PinchaDating = lazy(() => import('./components/PinchaDating'));
@@ -511,7 +511,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showPremiumHub, setShowPremiumHub] = useState(false);
   const [showRightsGovernance, setShowRightsGovernance] = useState(false);
   const [showMusicSchool, setShowMusicSchool] = useState(false);
-  const [showDeBonoHats, setShowDeBonoHats] = useState(false);
+// const [showDeBonoHats, setShowDeBonoHats] = useState(false);
   const [showFiestaFA, setShowFiestaFA] = useState(false);
   const [sovereignName, setSovereignName] = useState(SOVEREIGN_NAMES[0]);
 
