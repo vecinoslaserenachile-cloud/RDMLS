@@ -154,13 +154,30 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
         try {
             const key = "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs";
             const prompt = `Analiza esta propuesta vecinal usando la técnica de los 6 Sombreros de De Bono: "${idea}". Responde con un objeto JSON con las llaves: white, red, black, yellow, green, blue.`;
-            const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { response_mime_type: "application/json" } })
-            });
-            const data = await res.json();
-            const rawText = data.candidates[0].content.parts[0].text;
-            setCustomScripts(JSON.parse(rawText));
+            try {
+                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+                    method: "POST", headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { response_mime_type: "application/json" } })
+                });
+                const data = await res.json();
+                if (data.candidates && data.candidates[0]) {
+                    const rawText = data.candidates[0].content.parts[0].text;
+                    setCustomScripts(JSON.parse(rawText));
+                } else {
+                    console.warn("VLS AI Fallback: API response invalid.", data);
+                    throw new Error("API Fallback");
+                }
+            } catch (err) {
+                console.error("AI Error:", err);
+                setCustomScripts({
+                    white: "Datos preliminares sugieren que la propuesta requiere estructuración (API Error).",
+                    red: "Siento gran optimismo por la iniciativa, aunque falten detalles técnicos.",
+                    black: "El principal riesgo es la viabilidad financiera sin conexión validada.",
+                    yellow: "Si superamos este bloqueo técnico, los beneficios para La Serena serán enormes.",
+                    green: "Podríamos buscar alianzas creativas locales para prototipar rápidamente.",
+                    blue: "Plan contingente: evaluar viabilidad, definir presupuesto y consultar a la comunidad."
+                });
+            }
             setActiveIdx(0);
         } catch (e) {
             console.error(e);

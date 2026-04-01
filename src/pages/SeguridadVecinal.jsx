@@ -162,7 +162,7 @@ function ProtocolCard({ protocol, isActive, onClick }) {
 }
 
 /* ─────────────── COMPONENTE PRINCIPAL ─────────────── */
-export default function SeguridadVecinal() {
+export default function SeguridadVecinal({ onClose }) {
     const [activeProtocol, setActiveProtocol] = useState(null);
     const [callTarget, setCallTarget] = useState(null);
     const [reportFormOpen, setReportFormOpen] = useState(false);
@@ -207,6 +207,10 @@ export default function SeguridadVecinal() {
 
     return (
         <div style={{
+            position: onClose ? 'fixed' : 'relative',
+            inset: onClose ? 0 : undefined,
+            zIndex: onClose ? 3000000 : undefined,
+            overflowY: onClose ? 'auto' : undefined,
             minHeight: '100vh',
             background: 'linear-gradient(135deg, #020617 0%, #0f172a 40%, #1e0a2e 100%)',
             fontFamily: '"Inter", -apple-system, sans-serif',
@@ -222,6 +226,23 @@ export default function SeguridadVecinal() {
                 overflow: 'hidden'
             }}>
                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(239,68,68,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
+
+                {/* CLOSE BUTTON */}
+                {onClose && (
+                    <button
+                        onClick={onClose}
+                        style={{
+                            position: 'absolute', top: '1.5rem', right: '1.5rem', zIndex: 10,
+                            background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.4)',
+                            borderRadius: '50%', width: '44px', height: '44px',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer', color: '#ef4444', transition: 'all 0.2s'
+                        }}
+                        aria-label="Cerrar portal de seguridad"
+                    >
+                        <X size={20} />
+                    </button>
+                )}
 
                 <motion.div
                     initial={{ scale: 0.8, opacity: 0 }}
@@ -521,6 +542,45 @@ export default function SeguridadVecinal() {
                                                 placeholder="Ej: Av. Francisco de Aguirre 100, La Serena"
                                                 style={{ width: '100%', padding: '0.9rem 1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '12px', color: 'white', fontSize: '0.95rem', outline: 'none', boxSizing: 'border-box' }}
                                             />
+                                        </div>
+
+                                        {/* PHOTO UPLOAD (Rule 4) */}
+                                        <div>
+                                            <label style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', fontWeight: 'bold', display: 'block', marginBottom: '0.5rem' }}>EVIDENCIA FOTOGRÁFICA (CÁMARA / GALERÍA)</label>
+                                            <div style={{ display: 'flex', gap: '1rem' }}>
+                                                <div 
+                                                    onClick={() => document.getElementById('report-photo-input').click()}
+                                                    style={{ 
+                                                        flex: 1, height: '100px', background: 'rgba(255,255,255,0.05)', border: '2px dashed rgba(255,255,255,0.2)', 
+                                                        borderRadius: '15px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                                                        cursor: 'pointer', transition: 'all 0.3s', color: '#94a3b8'
+                                                    }}
+                                                >
+                                                    {reportData.photo ? (
+                                                        <img src={reportData.photo} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '13px' }} alt="Preview" />
+                                                    ) : (
+                                                        <>
+                                                            <Camera size={24} style={{ marginBottom: '5px' }} />
+                                                            <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>TOMAR FOTO</span>
+                                                        </>
+                                                    )}
+                                                </div>
+                                                <input 
+                                                    id="report-photo-input" 
+                                                    type="file" 
+                                                    accept="image/*" 
+                                                    capture="environment" 
+                                                    style={{ display: 'none' }} 
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        if (file) {
+                                                            const reader = new FileReader();
+                                                            reader.onloadend = () => setReportData(p => ({ ...p, photo: reader.result }));
+                                                            reader.readAsDataURL(file);
+                                                        }
+                                                    }}
+                                                />
+                                            </div>
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>

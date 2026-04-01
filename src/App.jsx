@@ -145,6 +145,9 @@ const SafestRouteAI = lazy(() => import('./components/SafeRouteAI'));
 const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
 const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
 const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
+const VLSNewsIan = lazy(() => import('./components/VLSNewsIan'));
+const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
+const BackofficeMovilVLS = lazy(() => import('./components/BackofficeMovilVLS'));
 const StickyNoteWidget = lazy(() => import('./components/StickyNoteWidget'));
 
 const SOVEREIGN_NAMES = [
@@ -584,6 +587,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showNewsSentinel, setShowNewsSentinel] = useState(false);
   const [showNewsInvestigacion, setShowNewsInvestigacion] = useState(false);
   const [showNewsSemanaSanta, setShowNewsSemanaSanta] = useState(false);
+  const [showVLSNewsIan, setShowVLSNewsIan] = useState(false);
+  const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
+  const [showBackofficeMovil, setShowBackofficeMovil] = useState(false);
   const [showSoveranix, setShowSoveranix] = useState(false);
   const [showAlcaldes, setShowAlcaldes] = useState(false);
   const [showVLSpeak, setShowVLSpeak] = useState(false);
@@ -771,6 +777,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const handleReportes = () => navigate('/reportes');
     const handleParliamentary = () => setShowParliamentary(true);
     const handleInduccionFixed = () => setShowVLSInduccion(true);
+    const handleSeguridad = () => setShowSeguridadVecinal(true);
+    const handleVlsIan = () => setShowVLSNewsIan(true);
 
     window.addEventListener('open-vlspeak', handleSpeak);
     window.addEventListener('open-alcaldes-history', handleAlcaldes);
@@ -778,6 +786,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-smart-business', handleReportes);
     window.addEventListener('open-parlamento-regional', handleParliamentary);
     window.addEventListener('open-smart-admin-fixed', handleInduccionFixed);
+    window.addEventListener('open-vls-seguridad', handleSeguridad);
+    window.addEventListener('open-vls-ian', handleVlsIan);
 
     return () => {
       comSocket.off('receive_push_notification');
@@ -788,6 +798,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-smart-business', handleReportes);
       window.removeEventListener('open-parlamento-regional', handleParliamentary);
       window.removeEventListener('open-smart-admin-fixed', handleInduccionFixed);
+      window.removeEventListener('open-vls-seguridad', handleSeguridad);
+      window.removeEventListener('open-vls-ian', handleVlsIan);
     };
   }, []);
 
@@ -1018,6 +1030,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (appId === 'port') setShowPortMonitor(true);
         if (appId === 'sentinel') setShowSentinelApex(true);
         if (appId === 'analytics') setShowAnalyticsApp(true);
+        if (appId === 'seguridad') setShowSeguridadVecinal(true);
+        if (appId === 'ian') setShowVLSNewsIan(true);
+        if (appId === 'backoffice') setShowBackofficeMovil(true);
+        if (appId === 'radio') setShowRadioMaster(true);
       }, 1000);
     }
 
@@ -1029,6 +1045,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (newsId === 'sentinel') setShowNewsSentinel(true);
         if (newsId === 'investigacion' || newsId === 'paradoja') setShowNewsInvestigacion(true);
         if (newsId === 'aguasvalle') setShowAguasValle(true);
+        if (newsId === 'ian') setShowVLSNewsIan(true);
       }, 1200);
     }
   }, [searchParams, location.pathname]);
@@ -1198,6 +1215,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-pincha', handleOpenPincha);
     window.addEventListener('open-plaza-vecinal', handleOpenPlazaVecinal);
     window.addEventListener('open-safe-route', handleOpenSafeRoute);
+    window.addEventListener('open-vls-ian', () => setShowVLSNewsIan(true));
+    window.addEventListener('open-vls-seguridad', () => setShowSeguridadVecinal(true));
+    window.addEventListener('open-backoffice-movil', () => setShowBackofficeMovil(true));
     window.addEventListener('open-smart-salud', handleOpenSmartSalud);
     window.addEventListener('open-arquitectura', handleOpenArquitectura);
     window.addEventListener('open-propiedades', handleOpenPropiedades);
@@ -1373,16 +1393,22 @@ function AppContent({ setShowCoquiSmartCRM }) {
         <main className="page-content container" style={{ flex: 1, padding: 0 }}>
           <Outlet context={{ weather, lang, setLang, t, currentUser, isRDMLS }} />
         </main>
-        {/* Radio Player can remain as a hidden service if needed, but not the UI */}
-        <Suspense fallback={null}>
-          <RadioMasterEngine host="rdmls.cl" />
-        </Suspense>
-        <footer style={{ padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', color: '#94a3b8', fontSize: '1rem' }}>
-          <p>© 2026 ILUSTRE MUNICIPALIDAD DE LA SERENA · GESTIÓN INSTITUCIONAL</p>
-          <p>www.rdmls.cl · IMLS COMUNICACIONES</p>
-        </footer>
-
         {/* Global Modals for RDMLS branch */}
+        {showRadioMaster && (
+          <Suspense fallback={null}>
+            <RadioMasterEngine host="rdmls.cl" onClose={() => setShowRadioMaster(false)} />
+          </Suspense>
+        )}
+        {showVLSNewsIan && (
+          <Suspense fallback={<LoadingScreen />}>
+            <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+          </Suspense>
+        )}
+        {showSeguridadVecinal && (
+          <Suspense fallback={<LoadingScreen />}>
+            <SeguridadVecinal onClose={() => setShowSeguridadVecinal(false)} />
+          </Suspense>
+        )}
         {showTiendaPoleras && (
           <Suspense fallback={null}>
             <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} currentUser={currentUser} />
@@ -2026,6 +2052,21 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showAguasValle && (
         <Suspense fallback={<div className="loading-vls">Cargando Hemeroteca...</div>}>
           <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />
+        </Suspense>
+      )}
+      {showVLSNewsIan && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+        </Suspense>
+      )}
+      {showSeguridadVecinal && (
+        <Suspense fallback={<LoadingScreen />}>
+          <SeguridadVecinal onClose={() => setShowSeguridadVecinal(false)} />
+        </Suspense>
+      )}
+      {showBackofficeMovil && (
+        <Suspense fallback={<LoadingScreen />}>
+          <BackofficeMovilVLS onClose={() => setShowBackofficeMovil(false)} />
         </Suspense>
       )}
       {showTiendaPoleras && (

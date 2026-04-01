@@ -401,6 +401,16 @@ function HistoricScene({ setTargetPos, setSelectedPOI }) {
             <planeGeometry args={[1.5, 2.1]} />
             <meshBasicMaterial map={textures[p.texIndex]} />
           </mesh>
+          {/* Accesorio: Añañuca de Oro (Rule 4) */}
+          <group position={[0, 0.6, 0.6]} scale={0.35}>
+             <mesh position={[0, 0, 0]}>
+               <sphereGeometry args={[0.25, 12, 12]} />
+               <meshStandardMaterial color="#fbbf24" metalness={0.8} roughness={0.2} emissive="#fbbf24" emissiveIntensity={0.5} />
+             </mesh>
+             <Html position={[0, 0.5, 0]} center>
+                <div style={{ color: '#fbbf24', fontSize: '8px', fontWeight: '900', whiteSpace: 'nowrap' }}>AÑAÑUCA DE ORO</div>
+             </Html>
+          </group>
           {/* Linterna de columna */}
           <mesh position={[0, 4.7, 0]}>
             <sphereGeometry args={[0.2, 10, 8]} />

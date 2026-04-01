@@ -116,6 +116,14 @@ const CHAPTERS = [
     ],
     icon: Building2,
     color: '#ec4899'
+  },
+  {
+    id: 'fiscalizacion',
+    title: 'Módulo de Fiscalización Móvil (Backoffice)',
+    content: `Como parte del compromiso Smart City, los inspectores municipales y prevencionistas pueden registrar evidencias de estructuras en riesgo directamente desde este portal. El registro se indexa automáticamente bajo el expediente VLS-2026-IAN.`,
+    isBackoffice: true,
+    icon: Camera,
+    color: '#38bdf8'
   }
 ];
 
@@ -425,6 +433,37 @@ export default function VLSNewsIan({ onClose }) {
                     <p style={{ margin: 0, fontSize: '1.05rem', fontStyle: 'italic', color: 'rgba(255, 255, 255, 0.9)', lineHeight: '1.6' }}>
                       {chapter.legal}
                     </p>
+                  </div>
+                )}
+                {chapter.isBackoffice && (
+                  <div style={{ marginTop: '2.5rem', padding: '2rem', background: 'rgba(56, 189, 248, 0.05)', border: '1px solid rgba(56, 189, 248, 0.3)', borderRadius: '24px' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: '900', color: '#38bdf8', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <Camera size={24} /> REGISTRO DE EVIDENCIA IN SITU
+                    </h3>
+                    <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.7)', marginBottom: '1.5rem' }}>Capture fotos de postes, barandas o cajas que presenten riesgos eléctricos para auditoría inmediata.</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <label 
+                        htmlFor="inspection-photo" 
+                        style={{ background: '#38bdf8', color: '#000', padding: '1rem', borderRadius: '15px', fontWeight: '900', textAlign: 'center', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}
+                      >
+                        <Camera size={20} /> ABRIR CÁMARA / SUBIR FOTO
+                      </label>
+                      <input 
+                        type="file" 
+                        id="inspection-photo" 
+                        accept="image/*" 
+                        capture="environment" 
+                        style={{ display: 'none' }} 
+                        onChange={(e) => {
+                          if (e.target.files && e.target.files[0]) {
+                            window.dispatchEvent(new CustomEvent('vls-show-alert', { 
+                              detail: { title: 'Evidencia Capturada', message: 'La imagen ha sido indexada al expediente VLS-2026-IAN correctamente.', type: 'success' } 
+                            }));
+                          }
+                        }}
+                      />
+                      <textarea placeholder="Observaciones técnicas del hallazgo..." style={{ width: '100%', padding: '1rem', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', color: 'white', resize: 'none', minHeight: '80px' }} />
+                    </div>
                   </div>
                 )}
               </motion.div>

@@ -1626,6 +1626,61 @@ export default function HubDashboard() {
                 <QuickEmergencyBar />
 
                 {/* ══════════════════════════════════════════════════════════ */}
+                {/* HEADLINE: INVESTIGACIÓN ESPECIAL VLS (IAN) - HIGH VISIBILITY   */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                {!isRDMLS && (
+                    <div style={{ padding: '2rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                        <div 
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-ian'))}
+                            className="glass-panel animate-pulse-slow" 
+                            style={{ 
+                                background: 'linear-gradient(135deg, #450a0a 0%, #1e1b4b 100%)',
+                                padding: '1.5rem 2rem',
+                                borderRadius: '24px',
+                                border: '2px solid #ef4444',
+                                display: 'flex',
+                                flexDirection: window.innerWidth < 768 ? 'column' : 'row',
+                                alignItems: 'center',
+                                gap: '1.5rem',
+                                cursor: 'pointer',
+                                boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                                transition: 'all 0.3s',
+                                borderLeft: '8px solid #ef4444'
+                            }}
+                        >
+                            <div style={{ background: '#ef4444', padding: '15px', borderRadius: '18px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                                <ShieldAlert size={32} />
+                                {/* Serenito Badge */}
+                                <img 
+                                    src="/serenito_v3.png" 
+                                    alt="Serenito Investigador" 
+                                    style={{ 
+                                        position: 'absolute', 
+                                        bottom: '-10px', 
+                                        right: '-10px', 
+                                        width: '45px', 
+                                        height: '45px', 
+                                        filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))',
+                                        zIndex: 2
+                                    }} 
+                                />
+                            </div>
+                            <div style={{ flex: 1, textAlign: window.innerWidth < 768 ? 'center' : 'left' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start', marginBottom: '0.4rem' }}>
+                                    <span style={{ background: '#ef4444', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '0.65rem', fontWeight: '900', letterSpacing: '1px' }}>BREAKING NEWS</span>
+                                    <span style={{ color: '#ef4444', fontWeight: '900', fontSize: '0.75rem', letterSpacing: '2px' }}>VLS SALA DE INTELIGENCIA</span>
+                                </div>
+                                <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '950', lineHeight: 1.2 }}>EL PUNTO CIEGO DEL RETAIL: INVESTIGACIÓN CASO IAN</h2>
+                                <p style={{ color: '#94a3b8', margin: '4px 0 0 0', fontSize: '0.85rem', fontWeight: 'bold' }}>Un análisis profundo sobre seguridad, vulnerabilidad y soberanía vecinal.</p>
+                            </div>
+                            <button className="btn btn-primary" style={{ padding: '0.8rem 2rem', background: '#ef4444', border: 'none', borderRadius: '12px', fontWeight: '900' }}>
+                                LEER INVESTIGACIÓN →
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                {/* ══════════════════════════════════════════════════════════ */}
                 {/* NODO MAESTRO: RED REGIONAL UNIFICADA - EL NUEVO CEREBRO     */}
                 {/* ══════════════════════════════════════════════════════════ */}
                 {isVLS && (
@@ -2070,6 +2125,53 @@ export default function HubDashboard() {
                          </div>
                          
                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem', width: '100%', boxSizing: 'border-box' }}>
+                            {/* VLS NEWS IAN - BREAKING INVESTIGACIÓN - FULL WIDTH ARRIBA DE SEMANA SANTA */}
+                            <div
+                                onClick={() => window.location.href = '/media/ian'}
+                                className="glass-panel hover-lift animate-fade-in"
+                                style={{
+                                    gridColumn: '1 / -1',
+                                    background: 'linear-gradient(135deg, #1a0000 0%, #3b0000 40%, #1e0a0a 100%)',
+                                    padding: isMobile ? '1.2rem 1.5rem' : '1.8rem 2.5rem',
+                                    borderRadius: '20px',
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(239,68,68,0.5)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    boxShadow: '0 10px 40px rgba(239,68,68,0.15)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: isMobile ? '1rem' : '2rem',
+                                    flexWrap: isMobile ? 'wrap' : 'nowrap',
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 15px 50px rgba(239,68,68,0.3)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 10px 40px rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)'; }}
+                            >
+                                <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 0% 50%, rgba(239,68,68,0.12) 0%, transparent 60%)', pointerEvents: 'none' }} />
+                                <div style={{ flexShrink: 0, background: 'linear-gradient(135deg, #ef4444, #7f1d1d)', padding: isMobile ? '0.8rem' : '1.2rem', borderRadius: '16px', boxShadow: '0 8px 20px rgba(239,68,68,0.4)' }}>
+                                    <ShieldAlert size={isMobile ? 28 : 36} color="white" />
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0, position: 'relative', zIndex: 1 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
+                                        <span style={{ background: '#ef4444', color: 'white', padding: '0.2rem 0.9rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '2px' }}>VLS INVESTIGA</span>
+                                        <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem' }}>01 de Abril, 2026</span>
+                                        <span style={{ background: 'rgba(239,68,68,0.15)', color: '#fca5a5', padding: '0.15rem 0.6rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, border: '1px solid rgba(239,68,68,0.3)' }}>EXCLUSIVO</span>
+                                    </div>
+                                    <h3 style={{ color: 'white', margin: '0 0 0.4rem', fontSize: isMobile ? '1.2rem' : '1.6rem', fontWeight: 900, lineHeight: 1.2, fontFamily: '"Outfit", sans-serif' }}>
+                                        El Punto Ciego del Retail: <span style={{ color: '#fca5a5' }}>Caso Ian</span>
+                                    </h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.65)', margin: 0, fontSize: isMobile ? '0.82rem' : '0.95rem', lineHeight: 1.5 }}>
+                                        La trampa de los $100 y el abismo de la negligencia. Una investigación exclusiva que cambió la seguridad en los supermercados de Chile.
+                                    </p>
+                                </div>
+                                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+                                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', color: 'white', padding: '0.7rem 1.5rem', borderRadius: '50px', fontWeight: 900, fontSize: '0.85rem', whiteSpace: 'nowrap', boxShadow: '0 6px 15px rgba(239,68,68,0.4)' }}>
+                                        LEER AHORA →
+                                    </div>
+                                    <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem' }}>vecinoslaserena.cl/media/ian</span>
+                                </div>
+                            </div>
+
                             {/* SEMANA SANTA SPECIAL - FULL WIDTH PRIORITY */}
                             <div 
                                 onClick={() => setShowSemanaSanta(true)}
