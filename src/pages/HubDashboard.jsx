@@ -786,6 +786,14 @@ export default function HubDashboard() {
 
     const servicios = [
         {
+            id: 'vls-ian', title: 'EL PUNTO CIEGO: Caso Ian', subtitle: 'Reportaje: La trampa de los 100 y el abismo del retail',
+            icon: ShieldAlert, color: '#ef4444', isEvent: 'open-vls-ian', active: true, badge: 'VLS INVESTIGA'
+        },
+        {
+            id: 'vls-seguridad', title: 'PORTAL SEGURIDAD VECINAL', subtitle: 'Consejos, Contactos de Emergencia y Red de Protección',
+            icon: ShieldCheck, color: '#10b981', isEvent: 'open-vls-seguridad', active: true, badge: 'PRO VLS'
+        },
+        {
             id: 'vecinity-pay', title: 'Recargar Fichas VLS', subtitle: 'Billetera Digital y Canje de Recompensas',
             icon: Award, color: '#FFD700', isEvent: 'open-vecinity-pay', active: true, badge: 'SISTEMA'
         },
