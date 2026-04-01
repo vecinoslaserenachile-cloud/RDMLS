@@ -126,13 +126,17 @@ export default function HubDashboard() {
     const [pinnedApps, setPinnedApps] = useState(() => {
         try {
             const saved = localStorage.getItem('vls_pinned_apps');
-            const parsed = saved ? JSON.parse(saved) : [];
+            if (!saved) return [];
+            const parsed = JSON.parse(saved);
             return Array.isArray(parsed) ? parsed.filter(id => id && typeof id === 'string') : [];
         } catch (e) {
-            console.warn("VLS_HUB: Error restaurando pines, reseteando...", e);
+            console.warn("VLS_HUB_C5: Corrupted Pinned Apps data. Resetting...", e);
+            localStorage.removeItem('vls_pinned_apps');
             return [];
         }
     });
+
+
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [deviceType, setDeviceType] = useState('Escritorio');
     const [DeviceIcon, setDeviceIcon] = useState(() => Monitor);
@@ -1034,7 +1038,10 @@ export default function HubDashboard() {
         // Si es VLS, filtramos lo que explícitamente diga municipal/institucional si se desea ocultar, 
         // pero el usuario pidió lo opuesto antes.
         // Mantenemos la lógica original para VLS por ahora para no romper su vista.
-        return !s.title.toLowerCase().includes('municipal') && !s.subtitle.toLowerCase().includes('institucional') && !s.badge?.includes('GOBIERNO');
+        // VLS_C5: Blindaje contra objetos malformados en listas de servicios
+        if (!s || !s.title) return false;
+        
+        return !s.title.toLowerCase().includes('municipal') && !s.subtitle?.toLowerCase().includes('institucional') && !s.badge?.includes('GOBIERNO');
     });
 
     const internalTools = [
@@ -1292,8 +1299,8 @@ export default function HubDashboard() {
         return () => clearInterval(interval);
     }, [impactMessages.length]);
 
-    const CurrentMessage = impactMessages[msgIndex] || impactMessages[0];
-    const CurrentIcon = CurrentMessage.icon;
+    const CurrentMessage = impactMessages[msgIndex] || impactMessages[0] || { text: 'Soberanía Digital: La Serena Smart', color: '#38bdf8' };
+    const CurrentIcon = CurrentMessage?.icon || Sparkles;
 
     const handleSearchSubmit = (term) => {
         const lowerTerm = term.toLowerCase();
@@ -1372,12 +1379,12 @@ export default function HubDashboard() {
                     minHeight: '60px'
                 }}>
                     <div key={msgIndex} className="animate-slide-up" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', border: `1px solid ${CurrentMessage.color}50` }}>
-                            {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage.color} /> : <Sparkles size={16} color={CurrentMessage.color} />}
+                        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '0.3rem', borderRadius: '50%', border: `1px solid ${CurrentMessage?.color || '#38bdf8'}50` }}>
+                            {CurrentIcon ? <CurrentIcon size={16} color={CurrentMessage?.color || '#38bdf8'} /> : <Sparkles size={16} color="#38bdf8" />}
                         </div>
                         <span style={{ fontWeight: '500', display: 'flex', alignItems: 'center', gap: '8px' }}>
                             <span style={{ width: '8px', height: '8px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 10px #10b981', animation: 'pulse 2s infinite' }}></span>
-                            {CurrentMessage.text}
+                            {CurrentMessage?.text || 'Portal Institucional RDMLS'}
                         </span>
                     </div>
                 </div>
@@ -2534,7 +2541,7 @@ export default function HubDashboard() {
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                                             {allApps
-                                                .filter(app => app?.id && cat?.modules?.includes(app?.id))
+                                                .filter(app => app?.id && Array.isArray(cat?.modules) && cat.modules.includes(app.id))
                                                 .map(app => <AppCard key={app?.id || Math.random()} app={app} />)
                                             }
                                         </div>

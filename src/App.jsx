@@ -309,6 +309,42 @@ const MaintenanceNotice = () => {
 
 // GlobalOmniSyncOverlay is now imported from shared components
 
+// ─── ERROR BOUNDARY (C5-CRITICAL-WATCHDOG) ───────────────────────────────────
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) { return { hasError: true, error }; }
+  componentDidCatch(error, errorInfo) {
+    console.error("VLS_CRITICAL_CRASH:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '40px', background: '#020617', color: '#ef4444', minHeight: '100vh', fontFamily: 'monospace' }}>
+          <h2 style={{ borderBottom: '2px solid #ef4444', paddingBottom: '10px' }}>⚠️ VLS_NUCLEUS_FAILURE (Signal Lost)</h2>
+          <pre style={{ background: '#7f1d1d', padding: '20px', borderRadius: '10px', overflow: 'auto', color: 'white' }}>
+            {this.state.error && this.state.error.toString()}
+          </pre>
+          <div style={{ marginTop: '20px', opacity: 0.8 }}>
+             Por favor, intenta limpiar la caché y reiniciar el portal. 
+             Si el error persiste, contacta al equipo técnico de soporte C5.
+          </div>
+          <button 
+            onClick={() => { localStorage.clear(); window.location.reload(); }}
+            style={{ marginTop: '30px', padding: '15px 30px', background: 'white', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '10px', cursor: 'pointer' }}
+          >
+            HARD RESET (CLEAN ALL)
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 function App() {
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showCoquiSmartCRM, setShowCoquiSmartCRM] = useState(false);
@@ -321,8 +357,10 @@ function App() {
   }, []);
 
   return (
-    <>
-      <AppContent setShowCoquiSmartCRM={setShowCoquiSmartCRM} />
+    <Suspense fallback={<div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingScreen /></div>}>
+      <ErrorBoundary>
+        <AppContent setShowCoquiSmartCRM={setShowCoquiSmartCRM} />
+      </ErrorBoundary>
       {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !isRDMLS) && <VLSQuantumWatch isRDMLS={isRDMLS} />}
       <MaintenanceNotice />
       {showCoquiSmartCRM && (
@@ -339,10 +377,8 @@ function App() {
           </Suspense>
         </div>
       )}
-      <Suspense fallback={null}>
-         <StickyNoteWidget />
-      </Suspense>
-    </>
+      <StickyNoteWidget />
+    </Suspense>
   );
 }
 
@@ -378,6 +414,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
+  // VLS_C5: authInitialized is now true by default in RDMLS, or after safety timer in VLS
   const [authInitialized, setAuthInitialized] = useState(isRDMLS);
   const [notifications, setNotifications] = useState([]);
   const [showSafeRoute, setShowSafeRoute] = useState(false);
@@ -511,7 +548,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showPremiumHub, setShowPremiumHub] = useState(false);
   const [showRightsGovernance, setShowRightsGovernance] = useState(false);
   const [showMusicSchool, setShowMusicSchool] = useState(false);
-// const [showDeBonoHats, setShowDeBonoHats] = useState(false);
+  const [showDeBonoHats, setShowDeBonoHats] = useState(false);
   const [showFiestaFA, setShowFiestaFA] = useState(false);
   const [sovereignName, setSovereignName] = useState(SOVEREIGN_NAMES[0]);
 
@@ -676,10 +713,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
       setAuthInitialized(true);
       return;
     }
-    // Timeout de seguridad: si Firebase tarda más de 5s, renderizamos de todas formas
+    // VLS_C5: Aggressive safety timer. Never let the app stay black.
     const safetyTimer = setTimeout(() => {
+      console.warn("VLS_RECOVERY: Auth taking too long, forcing hydration...");
       setAuthInitialized(true);
-    }, 5000);
+    }, 3500); // Reduced to 3.5s for better UX
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       clearTimeout(safetyTimer);
       setCurrentUser(u);
@@ -1383,8 +1421,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
   // ELIMINADO: Bloqueo Maestro Passport que impedía acceso a pagos
   const showMasterLock = false;
 
+  // VLS_C5: NEVER return null. Return LoadingScreen to avoid "black screen" confusion.
   if (!authInitialized && !isRDMLS) {
-    return null;
+    return (
+      <div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <LoadingScreen />
+      </div>
+    );
   }
 
   if (isRDMLS) {
@@ -1424,7 +1467,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
   }
 
   if (isAprendeMode) {
-    return <Aprende isRDMLS={isRDMLS} />;
+    return (
+      <Suspense fallback={<div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingScreen /></div>}>
+        <Aprende isRDMLS={isRDMLS} />
+      </Suspense>
+    );
   }
 
   return (
@@ -1662,7 +1709,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
                     }}
                   >
                     <UserCircle size={14} />
-                    {currentUser.displayName?.split(' ')[0]}
+                    {currentUser?.displayName ? currentUser.displayName.split(' ')[0] : (currentUser?.email ? currentUser.email.split('@')[0] : 'Vecino')}
                   </button>
                 )}
 
@@ -2303,11 +2350,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       {showVecnityPay && (
-        <VecnityPay 
-          onClose={() => { setShowVecnityPay(false); setPendingPayment(null); }} 
-          currentUser={currentUser} 
-          initialOrder={pendingPayment}
-        />
+        <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 1000000, background: 'rgba(0,0,0,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingScreen /></div>}>
+          <VecnityPay 
+            onClose={() => { setShowVecnityPay(false); setPendingPayment(null); }} 
+            currentUser={currentUser} 
+            initialOrder={pendingPayment}
+          />
+        </Suspense>
       )}
     </div>
   );

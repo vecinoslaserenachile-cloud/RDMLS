@@ -27,7 +27,7 @@
   <meta property="og:image" content="/img_trivia/50serenitoBisabueloVLSABES.png" />
   <meta property="og:type" content="website" />
 
-  <meta name="rdmls-version" content="2026-03-27-IMLS-v42">
+  <meta name="rdmls-version" content="RECOVERY-V46-FINAL">
   <title>vecinoslaserena.cl</title>
   <script>
     // DEEP SIGNAL SYNC v42: Recuperación Global ante Conflictos de Activos
@@ -61,18 +61,16 @@
     }
   </script>
   <script>
-    // AGGRESSIVE PURGE FOR RDMLS (Institutional Mode)
-    if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-          for (let registration of registrations) { registration.unregister(); }
-        });
-      }
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          for (let name of names) caches.delete(name);
-        });
-      }
+    // VLS_DEEP_TISSUE_RECOVERY v43
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) { registration.unregister(); console.log("VLS: SW Killed"); }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        for (let name of names) caches.delete(name);
+      });
     }
   </script>
 </head>
@@ -80,20 +78,38 @@
 <body>
   <!-- C5-HYPER-SYNC: Purga Automática de Caché v36 -->
   <script>
-    window.addEventListener('error', function(e) {
-      if (e.target && e.target.tagName === 'SCRIPT' && e.target.src && (e.target.src.includes('main') || e.target.src.includes('index'))) {
-        console.warn("VLS_RECOVERY: Signal Conflict Detected. Purging Cache Storage...");
-        if ('caches' in window) {
-          caches.keys().then(names => {
-            for (let name of names) caches.delete(name);
-          }).finally(() => {
-            window.location.reload(true);
-          });
+    // VLS_BOOT_MONITOR_v46
+    window.addEventListener('load', function() {
+      console.log("VLS_RECOVERY: Signal check...");
+      
+      // Native JS Confirmation
+      const test = document.createElement('div');
+      test.style.cssText = "position:fixed;top:0;left:0;width:50px;height:20px;background:#22c55e;z-index:10000000;color:white;font-size:8px;display:flex;align-items:center;justify-content:center";
+      test.innerHTML = "JVM_OK";
+      test.id = "vls-boot-health";
+      document.body.appendChild(test);
+
+      // React Hydration Watchdog
+      setTimeout(() => {
+        if (!window.VLS_BOOT_SUCCESS) {
+          console.error("VLS_RECOVERY: REACT BOOT TIMEOUT.");
+          document.body.style.background = "#7f1d1d";
+          const fail = document.createElement('div');
+          fail.style.cssText = "position:fixed;inset:0;background:rgba(127,29,29,0.98);z-index:99999999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;text-align:center;padding:2rem";
+          fail.innerHTML = `
+            <h2 style="font-size:2rem;margin-bottom:1rem">VLS_BOOT_TERMINATED</h2>
+            <p>El núcleo React no logró estabilizar la señal.</p>
+            <p style="opacity:0.6;font-size:0.8rem;margin-top:1rem">Error: Hydration Crash or Module Access Denied.</p>
+            <button onclick="window.location.reload()" style="margin-top:2rem;padding:1rem 2rem;background:white;color:black;border:none;border-radius:10px;font-weight:bold;cursor:pointer">RESET PORTAL</button>
+          `;
+          document.body.appendChild(fail);
         } else {
-          window.location.reload(true);
+          console.log("VLS_RECOVERY: REACT STABILIZED.");
+          const health = document.getElementById('vls-boot-health');
+          if (health) health.remove();
         }
-      }
-    }, true);
+      }, 4000);
+    });
   </script>
 
   <div id="root"></div>

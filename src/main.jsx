@@ -81,6 +81,7 @@ import './index.css';
 // ── CAPTURA GLOBAL DE ERRORES PRE-REACT ──────────────────────────────────────
 // Captura errores que ocurren antes de que React monte (TDZ, imports fallidos, etc.)
 if (typeof window !== 'undefined') {
+  window.VLS_BOOT_SUCCESS = true;
   localStorage.removeItem('vls_maintenance_active');
   window.__VLS_BOOT_ERRORS = [];
   const _origOnerror = window.onerror;
