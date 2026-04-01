@@ -66,8 +66,8 @@ function GroupNode({ group, index, total, onSelectItem, activeGroupId, setActive
     // Pulse animation
     useFrame(({ clock }) => {
         if (groupRef.current) {
-            const t = clock.getElapsedTime();
-            const scale = isActive ? 1.2 : 1 + Math.sin(t * 2 + index) * 0.05;
+            const elapsedTime = clock.getElapsedTime();
+            const scale = isActive ? 1.2 : 1 + Math.sin(elapsedTime * 2 + index) * 0.05;
             groupRef.current.scale.set(scale, scale, scale);
         }
     });

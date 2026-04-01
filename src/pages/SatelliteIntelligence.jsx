@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 
 /* --- THEME --- */
-const T = {
+const THEME = {
     bg: '#050505',
     card: 'rgba(20, 20, 25, 0.7)',
     border: 'rgba(255, 255, 255, 0.1)',
@@ -47,20 +47,20 @@ export default function SatelliteIntelligence() {
     }, []);
 
     const getBranchColor = (branch) => {
-        if (branch.includes("Clima")) return T.blue;
-        if (branch.includes("Territorio")) return T.green;
-        return T.purple;
+        if (branch.includes("Clima")) return THEME.blue;
+        if (branch.includes("Territorio")) return THEME.green;
+        return THEME.purple;
     };
 
     return (
-        <div style={{ minHeight: '100vh', background: T.bg, color: 'white', fontFamily: 'system-ui', padding: '2rem' }}>
+        <div style={{ minHeight: '100vh', background: THEME.bg, color: 'white', fontFamily: 'system-ui', padding: '2rem' }}>
             <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                     <button onClick={() => navigate('/')} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'white', padding: '0.8rem', borderRadius: '50%', cursor: 'pointer' }}>
                         <ArrowLeft size={20} />
                     </button>
                     <div>
-                        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-1px', margin: 0 }}>Antigravity <span style={{ color: T.blue }}>Satellite Core</span></h1>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-1px', margin: 0 }}>Antigravity <span style={{ color: THEME.blue }}>Satellite Core</span></h1>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#64748b', fontSize: '0.8rem', marginTop: '5px' }}>
                             <MapPin size={14} /> LA SERENA, CHILE • {lastSync || 'Sincronizando...'}
                         </div>
@@ -80,7 +80,7 @@ export default function SatelliteIntelligence() {
             <main style={{ maxWidth: '1400px', margin: '0 auto' }}>
                 {loading && !data ? (
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '40vh' }}>
-                        <div className="spin" style={{ width: '50px', height: '50px', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: T.blue, borderRadius: '50%' }}></div>
+                        <div className="spin" style={{ width: '50px', height: '50px', border: '4px solid rgba(255,255,255,0.1)', borderTopColor: THEME.blue, borderRadius: '50%' }}></div>
                         <p style={{ marginTop: '1rem', color: '#64748b' }}>Recolectando telemetría orbital...</p>
                     </div>
                 ) : (
@@ -91,13 +91,13 @@ export default function SatelliteIntelligence() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
-                                style={{ background: T.card, border: `1px solid ${T.border}`, borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+                                style={{ background: THEME.card, border: `1px solid ${THEME.border}`, borderRadius: '24px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
                             >
                                 <div style={{ position: 'relative', height: '180px', background: '#000' }}>
                                     <img src={sat.visual_url} alt="Waterfall" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />
                                     <div style={{ position: 'absolute', top: 0, right: 0, padding: '15px' }}>
                                         <div style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', padding: '5px 12px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                                            <Signal size={12} color={T.blue} />
+                                            <Signal size={12} color={THEME.blue} />
                                             <span style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>LTE: {sat.satelite}</span>
                                         </div>
                                     </div>
@@ -125,10 +125,10 @@ export default function SatelliteIntelligence() {
                                     </div>
 
                                     <div style={{ display: 'flex', gap: '1rem', marginTop: 'auto' }}>
-                                        <a href={sat.mapa_referencia} target="_blank" rel="noreferrer" style={{ flex: 1, textDecoration: 'none', background: 'rgba(255,255,255,0.05)', border: `1px solid ${T.border}`, padding: '0.8rem', borderRadius: '15px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
+                                        <a href={sat.mapa_referencia} target="_blank" rel="noreferrer" style={{ flex: 1, textDecoration: 'none', background: 'rgba(255,255,255,0.05)', border: `1px solid ${THEME.border}`, padding: '0.8rem', borderRadius: '15px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>
                                             <Globe size={16} /> Mapa Pase
                                         </a>
-                                        <button style={{ flex: 1, background: T.blue, border: 'none', padding: '0.8rem', borderRadius: '15px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer' }}>
+                                        <button style={{ flex: 1, background: THEME.blue, border: 'none', padding: '0.8rem', borderRadius: '15px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontSize: '0.9rem', fontWeight: 'bold', cursor: 'pointer' }}>
                                             <Database size={16} /> Telemetría
                                         </button>
                                     </div>

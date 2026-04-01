@@ -166,7 +166,7 @@ export default function DevPortal() {
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
                                             <span style={{ fontSize: '0.65rem', background: app.status.includes('RESTRECHTED') ? '#ef4444' : '#10b981', color: '#020617', padding: '4px 12px', borderRadius: '8px', fontWeight: 900 }}>{app.status}</span>
                                             <div style={{ display: 'flex', gap: '8px' }}>
-                                                {app.tech.map(t => <span key={t} style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>{t}</span>)}
+                                                {app.tech.map(tech => <span key={tech} style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>{tech}</span>)}
                                             </div>
                                         </div>
                                         <h4 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 900, color: selectedApp.id === app.id ? 'white' : '#94a3b8' }}>{app.title}</h4>

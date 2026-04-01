@@ -189,6 +189,9 @@ export default function FaritoInversores() {
                     </p>
 
                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <button onClick={() => window.dispatchEvent(new CustomEvent('open-project-info'))} style={{ background: 'linear-gradient(90deg, #a78bfa, #8b5cf6)', color: 'white', padding: '1.1rem 2.5rem', borderRadius: '50px', fontWeight: '900', border: 'none', cursor: 'pointer', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 40px rgba(167,139,250,0.4)', textTransform: 'uppercase' }}>
+                            <Star size={18} /> Ver Pitch Deck 2030 (Slide)
+                        </button>
                         <a href="#inversion" style={{ background: 'linear-gradient(90deg, #38bdf8, #0ea5e9)', color: '#0f172a', padding: '1.1rem 2.5rem', borderRadius: '50px', fontWeight: '900', textDecoration: 'none', fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 10px 40px rgba(56,189,248,0.4)' }}>
                             <Lock size={18} /> Solicitar Data Room
                         </a>

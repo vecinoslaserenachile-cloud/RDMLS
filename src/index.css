@@ -359,6 +359,16 @@ select:focus {
   .desktop-only {
     display: none !important;
   }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  @media (max-width: 480px) {
+    .hide-on-small-mobile {
+      display: none !important;
+    }
+  }
 }
 
 /* Herencia Neocolonial y Diaguita */

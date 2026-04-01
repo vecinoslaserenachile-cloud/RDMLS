@@ -22,6 +22,19 @@ const ImageFallback = ({ src, alt, style, className }) => {
     );
 };
 
+const INITIAL_PLAYLIST = [
+    { id: 1, title: "Serenito Rap", artist: "Campaña Serenito", cover: "/music/portada_serenito_rap.png", audio: "/music/serenito_rap.mp3", likes: 10 },
+    { id: 2, title: "Linda Provinciana", artist: "Radio VLS Originals", cover: "/music/portada_linda_provinciana.png", audio: "/music/linda_provinciana.mp3", likes: 8 },
+    { id: 3, title: "Eres Serena", artist: "Radio VLS Originals", cover: "/music/portada_eres_Serena.png", audio: "/music/eres_serena.mp3", likes: 7 },
+    { id: 4, title: "Vals Mis Recuerdos", artist: "Patrimonio Serenense", cover: "/music/portada_vals_mis_recuerdos.png", audio: "/music/vals_mis_recuerdos.mp3", likes: 5 },
+    { id: 11, title: "Mujer", artist: "Radio VLS Originals", cover: "/music/portada_mujer.png", audio: "/music/mujer.mp3", likes: 9 },
+    { id: 6, title: "Es Amor por La Serena", artist: "Radio VLS Exclusivo", cover: "/music/portada_es_amor_por_la_serena.png", audio: "/music/es_amor_por_la_serena.mp3", likes: 4 },
+    { id: 7, title: "Himno La Serena en Jazz Blues", artist: "Ensambles Locales", cover: "/music/portada_himno_la_serena_jazz.png", audio: "/music/himno_la_serena_jazz.mp3", likes: 3 },
+    { id: 8, title: "Serenito - Lose I Know", artist: "Campaña Serenito", cover: "/music/serenitolose.png", audio: "/music/loseiknow.mp3", likes: 2 },
+    { id: 9, title: "Es Tiempo de La Serena", artist: "Campaña Serenito", cover: "/music/portada_tiempo_serena.jpg", audio: "/music/estiempodelaserena.mp3", likes: 1 },
+    { id: 10, title: "Serenito Invita", artist: "Campaña Serenito", cover: "/music/portada_serenitoinvita.png", audio: "/music/serenitoinvita.MP3", likes: 1 }
+].sort((a, b) => b.likes - a.likes);
+
 export default function MusicRanking({ insideModal = false }) {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -32,6 +45,7 @@ export default function MusicRanking({ insideModal = false }) {
     const [voteFeedbackId, setVoteFeedbackId] = useState(null);
     const [liveAd, setLiveAd] = useState(null);
     const [jitter, setJitter] = useState(0.5);
+    const [playlist, setPlaylist] = useState(INITIAL_PLAYLIST);
     const audioRef = useRef(null);
 
     useEffect(() => {
@@ -41,19 +55,6 @@ export default function MusicRanking({ insideModal = false }) {
         }, 100);
         return () => clearInterval(interval);
     }, [isPlaying]);
-
-    const [playlist, setPlaylist] = useState([
-        { id: 1, title: "Serenito Rap", artist: "Campaña Serenito", cover: "/music/portada_serenito_rap.png", audio: "/music/serenito_rap.mp3", likes: 10 },
-        { id: 2, title: "Linda Provinciana", artist: "Radio VLS Originals", cover: "/music/portada_linda_provinciana.png", audio: "/music/linda_provinciana.mp3", likes: 8 },
-        { id: 3, title: "Eres Serena", artist: "Radio VLS Originals", cover: "/music/portada_eres_Serena.png", audio: "/music/eres_serena.mp3", likes: 7 },
-        { id: 4, title: "Vals Mis Recuerdos", artist: "Patrimonio Serenense", cover: "/music/portada_vals_mis_recuerdos.png", audio: "/music/vals_mis_recuerdos.mp3", likes: 5 },
-        { id: 11, title: "Mujer", artist: "Radio VLS Originals", cover: "/music/portada_mujer.png", audio: "/music/mujer.mp3", likes: 9 },
-        { id: 6, title: "Es Amor por La Serena", artist: "Radio VLS Exclusivo", cover: "/music/portada_es_amor_por_la_serena.png", audio: "/music/es_amor_por_la_serena.mp3", likes: 4 },
-        { id: 7, title: "Himno La Serena en Jazz Blues", artist: "Ensambles Locales", cover: "/music/portada_himno_la_serena_jazz.png", audio: "/music/himno_la_serena_jazz.mp3", likes: 3 },
-        { id: 8, title: "Serenito - Lose I Know", artist: "Campaña Serenito", cover: "/music/serenitolose.png", audio: "/music/loseiknow.mp3", likes: 2 },
-        { id: 9, title: "Es Tiempo de La Serena", artist: "Campaña Serenito", cover: "/music/portada_tiempo_serena.jpg", audio: "/music/estiempodelaserena.mp3", likes: 1 },
-        { id: 10, title: "Serenito Invita", artist: "Campaña Serenito", cover: "/music/portada_serenitoinvita.png", audio: "/music/serenitoinvita.MP3", likes: 1 }
-    ].sort((a, b) => b.likes - a.likes));
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -69,7 +70,7 @@ export default function MusicRanking({ insideModal = false }) {
         setVotedTracks(prev => new Set(prev).add(id));
         setVoteFeedbackId(id);
         setTimeout(() => setVoteFeedbackId(null), 2000);
-        setPlaylist(prev => prev.map(t => t.id === id ? { ...t, likes: t.likes + 1 } : t).sort((a, b) => b.likes - a.likes));
+        setPlaylist(prev => prev.map(trackItem => trackItem.id === id ? { ...trackItem, likes: trackItem.likes + 1 } : trackItem).sort((a, b) => b.likes - a.likes));
     };
 
     const updateProgress = () => {
@@ -122,7 +123,7 @@ export default function MusicRanking({ insideModal = false }) {
     return (
         <div style={{ maxWidth: '1200px', margin: insideModal ? '0 auto' : '4rem auto 0 auto', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <audio ref={audioRef} src={currentTrack ? currentTrack.audio : null} onTimeUpdate={updateProgress} onEnded={() => {
-                const currentIndex = playlist.findIndex(t => t.id === currentTrack.id);
+                const currentIndex = playlist.findIndex(trackItem => trackItem.id === currentTrack.id);
                 handlePlayTrack(playlist[(currentIndex + 1) % playlist.length]);
             }} style={{ display: 'none' }} />
 
@@ -273,18 +274,18 @@ export default function MusicRanking({ insideModal = false }) {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
                                 <label style={{ fontSize: '0.6rem', color: '#1e293b', fontWeight: '900', textAlign: 'center' }}>SPEED RPM</label>
                                 <div style={{ display: 'flex', gap: '5px', background: '#94a3b8', padding: '4px', borderRadius: '4px', border: '1px solid #475569' }}>
-                                    {[33, 45, 78].map(s => (
+                                    {[33, 45, 78].map(speedValue => (
                                         <button 
-                                            key={s} 
-                                            onClick={() => setRpmSpeed(s)}
+                                            key={speedValue} 
+                                            onClick={() => setRpmSpeed(speedValue)}
                                             style={{ 
                                                 fontSize: '0.7rem', fontWeight: 'bold', padding: '4px 8px', borderRadius: '2px', border: 'none', 
-                                                background: rpmSpeed === s ? '#1e293b' : 'transparent',
-                                                color: rpmSpeed === s ? 'white' : '#1e293b',
+                                                background: rpmSpeed === speedValue ? '#1e293b' : 'transparent',
+                                                color: rpmSpeed === speedValue ? 'white' : '#1e293b',
                                                 cursor: 'pointer'
                                             }}
                                         >
-                                            {s}
+                                            {speedValue}
                                         </button>
                                     ))}
                                 </div>

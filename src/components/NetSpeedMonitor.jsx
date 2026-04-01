@@ -71,7 +71,8 @@ export default function NetSpeedMonitor() {
             className="net-speed-monitor"
             style={{
                 position: 'fixed',
-                bottom: window.innerWidth < 768 ? '110px' : '20px',
+                top: window.innerWidth < 768 ? '10px' : 'auto',
+                bottom: window.innerWidth < 768 ? 'auto' : '20px',
                 left: window.innerWidth < 768 ? '10px' : '230px',
                 zIndex: 200000,
                 cursor: 'pointer',

@@ -352,6 +352,7 @@ export default function PuertaSmart() {
                         update={updateStatus} 
                         complete={completeSession}
                         primaryColor={primaryColor} 
+                        leads={leads}
                     />
                 )}
             </main>
@@ -1037,7 +1038,7 @@ function MonitorNode({ current, primaryColor }) {
 }
 
 // --- NODO III-VII: PANEL DE GESTIÓN (TÁCTICO, SECRETARÍAS, ANALÍTICA, CRM, LOGS) ---
-function AdminNode({ tab, setTab, current, history, logs, update, complete, primaryColor }) {
+function AdminNode({ tab, setTab, current, history, logs, update, complete, primaryColor, leads }) {
     
     // KPIs Cálculos
     const stats = useMemo(() => {
@@ -1069,16 +1070,16 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
                         <StatCardWhite title="Leads Capturados" value={stats.totalLeads} icon={<TrendingUp />} color="#0ea5e9" />
                         <StatCardWhite title="Promedio NPS" value={`${stats.avgNps} / 5`} icon={<Star />} color="#f59e0b" />
                         <StatCardWhite title="Permanencia Media" value={`${stats.avgDuration} min`} icon={<Clock />} color="#8b5cf6" />
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
-                        <div className="glass-panel-white">
+                     </div>
+ 
+                     <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
+                         <div className="glass-panel-white">
                             <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}><TrendingUp size={20} color={primaryColor} /> Tendencia de Atención (Últimos 30 días)</h3>
                             <div style={{ height: '300px' }}>
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={history.slice(0, 50).reverse()}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                        <XAxis dataKey="fecha" tickFormatter={(t) => new Date(t).toLocaleDateString()} stroke="#94a3b8" />
+                                        <XAxis dataKey="fecha" tickFormatter={(dateStr) => new Date(dateStr).toLocaleDateString()} stroke="#94a3b8" />
                                         <YAxis stroke="#94a3b8" />
                                         <Tooltip />
                                         <Area type="monotone" dataKey="permanencia" stroke={primaryColor} fill={primaryColor} fillOpacity={0.1} />
@@ -1204,7 +1205,7 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
                                         return acc;
                                     }, {})).map(([name, total]) => ({ name, total })).sort((a,b) => b.total - a.total).slice(0, 8)}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                                        <XAxis dataKey="name" tickFormatter={(t) => t.substring(0, 6)} />
+                                        <XAxis dataKey="name" tickFormatter={(nameStr) => nameStr.substring(0, 6)} />
                                         <YAxis />
                                         <Tooltip />
                                         <Bar dataKey="total" fill={primaryColor} radius={[8, 8, 0, 0]} />

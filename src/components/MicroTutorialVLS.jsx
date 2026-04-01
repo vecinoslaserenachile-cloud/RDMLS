@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, X, ChevronRight, CheckCircle, Sparkles, HelpCircle, ArrowRight } from 'lucide-react';
+import { Play, X, ChevronRight, CheckCircle, Sparkles, HelpCircle, ArrowRight, Bot } from 'lucide-react';
 
 /**
  * MicroTutorialVLS: Sistema de guías rápidas interactivas.
@@ -23,6 +23,11 @@ export default function MicroTutorialVLS({ section, onFinish, isOpen }) {
         'farito': [
             { id: 1, title: 'ASISTENTE NEURAL FARITO', text: 'Pregúntale lo que sea sobre trámites municipales o historia local.', icon: <Sparkles color="#38bdf8" /> },
             { id: 2, title: 'CONTROL POR VOZ', text: 'Puedes hablar con Farito usando el icono del micrófono en la barra superior.', icon: <CheckCircle color="#10b981" /> }
+        ],
+        'induccion': [
+            { id: 1, title: 'ACADEMIA SMART IMLS', text: 'Completa tu inducción 2026 de forma interactiva y obtén tu certificación digital.', icon: <Sparkles color="#fbbf24" /> },
+            { id: 2, title: 'SERENITO 3D TE GUÍA', text: 'Usa el Asistente Virtual para resolver dudas en tiempo real sobre reglamentos y beneficios.', icon: <Bot color="#fbbf24" /> },
+            { id: 3, title: 'CERTIFICADO AL INSTANTE', text: 'Al superar la trivia final, obtendrás tu diploma oficial con firma digital del sistema.', icon: <CheckCircle color="#10b981" /> }
         ]
     };
 

@@ -58,6 +58,78 @@ const CATALOGO_LIBROS = [
     }
 ];
 
+const EInkReader = ({ book, onBack, onClose }) => (
+    <div className="animate-fade-in" style={{ 
+        position: 'fixed', 
+        inset: 0, 
+        zIndex: 100002, 
+        background: '#f4f4f4', // Papel e-ink
+        display: 'flex', 
+        flexDirection: 'column' 
+    }}>
+        <header style={{ 
+            padding: '1rem 2rem', 
+            background: 'white', 
+            borderBottom: '2px solid #ddd', 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
+        }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <button onClick={onBack} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666' }}>
+                    <ArrowLeft size={20} /> Salir del Lector
+                </button>
+                <div style={{ height: '24px', width: '1px', background: '#ddd' }}></div>
+                <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#111', fontWeight: '900' }}>{book.titulo} / <small style={{color: '#666'}}>{book.autor}</small></h3>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+                <button className="btn-ink" title="Marcar página"><Bookmark size={20} /></button>
+                <button className="btn-ink" title="Descargar Offline"><Download size={20} /></button>
+                <button onClick={onClose} style={{ padding: '0.5rem', borderRadius: '50%', border: 'none', background: '#eee', cursor: 'pointer' }}><X size={24} /></button>
+            </div>
+        </header>
+
+        <div style={{ flex: 1, background: '#e5e5e5', display: 'flex', justifyContent: 'center', overflowY: 'hidden', padding: '1rem' }}>
+            <div style={{ 
+                width: '100%', 
+                maxWidth: '850px', 
+                height: '100%', 
+                background: 'white', 
+                borderRadius: '4px', 
+                boxShadow: '0 10px 30px rgba(0,0,0,0.1)', 
+                position: 'relative',
+                border: '1px solid #ccc'
+            }}>
+                <iframe 
+                    src={book.url} 
+                    style={{ width: '100%', height: '100%', border: 'none' }} 
+                    title={book.titulo}
+                />
+            </div>
+        </div>
+
+        <footer style={{ padding: '0.8rem', textAlign: 'center', fontSize: '0.8rem', color: '#888', background: 'white', borderTop: '1px solid #eee' }}>
+            Simulación E-Ink VLS • Fuente: Biblioteca Nacional Digital / Project Gutenberg
+        </footer>
+
+        <style>{`
+            .btn-ink {
+                background: white;
+                border: 1px solid #ccc;
+                padding: 0.5rem 1rem;
+                border-radius: 8px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                transition: all 0.2s;
+            }
+            .btn-ink:hover { background: #f0f0f0; border-color: #999; }
+        `}</style>
+    </div>
+);
+
 export default function BibliotecaDigital({ onClose }) {
     const [selectedBook, setSelectedBook] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -66,78 +138,6 @@ export default function BibliotecaDigital({ onClose }) {
     const filteredBooks = CATALOGO_LIBROS.filter(b => 
         b.titulo.toLowerCase().includes(searchTerm.toLowerCase()) || 
         b.autor.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const EInkReader = ({ book }) => (
-        <div className="animate-fade-in" style={{ 
-            position: 'fixed', 
-            inset: 0, 
-            zIndex: 100002, 
-            background: '#f4f4f4', // Papel e-ink
-            display: 'flex', 
-            flexDirection: 'column' 
-        }}>
-            <header style={{ 
-                padding: '1rem 2rem', 
-                background: 'white', 
-                borderBottom: '2px solid #ddd', 
-                display: 'flex', 
-                justifyContent: 'space-between', 
-                alignItems: 'center',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <button onClick={() => setViewMode('grid')} style={{ background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#666' }}>
-                        <ArrowLeft size={20} /> Salir del Lector
-                    </button>
-                    <div style={{ height: '24px', width: '1px', background: '#ddd' }}></div>
-                    <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#111', fontWeight: '900' }}>{book.titulo} / <small style={{color: '#666'}}>{book.autor}</small></h3>
-                </div>
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                    <button className="btn-ink" title="Marcar página"><Bookmark size={20} /></button>
-                    <button className="btn-ink" title="Descargar Offline"><Download size={20} /></button>
-                    <button onClick={() => setViewMode('grid')} style={{ padding: '0.5rem', borderRadius: '50%', border: 'none', background: '#eee', cursor: 'pointer' }}><X size={24} /></button>
-                </div>
-            </header>
-
-            <div style={{ flex: 1, background: '#e5e5e5', display: 'flex', justifyContent: 'center', overflowY: 'hidden', padding: '1rem' }}>
-                <div style={{ 
-                    width: '100%', 
-                    maxWidth: '850px', 
-                    height: '100%', 
-                    background: 'white', 
-                    borderRadius: '4px', 
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.1)', 
-                    position: 'relative',
-                    border: '1px solid #ccc'
-                }}>
-                    <iframe 
-                        src={book.url} 
-                        style={{ width: '100%', height: '100%', border: 'none' }} 
-                        title={book.titulo}
-                    />
-                </div>
-            </div>
-
-            <footer style={{ padding: '0.8rem', textAlign: 'center', fontSize: '0.8rem', color: '#888', background: 'white', borderTop: '1px solid #eee' }}>
-                Simulación E-Ink VLS • Fuente: Biblioteca Nacional Digital / Project Gutenberg
-            </footer>
-
-            <style>{`
-                .btn-ink {
-                    background: white;
-                    border: 1px solid #ccc;
-                    padding: 0.5rem 1rem;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    display: flex;
-                    align-items: center;
-                    gap: 0.5rem;
-                    transition: all 0.2s;
-                }
-                .btn-ink:hover { background: #f0f0f0; border-color: #999; }
-            `}</style>
-        </div>
     );
 
     return (
@@ -151,7 +151,7 @@ export default function BibliotecaDigital({ onClose }) {
             overflow: 'hidden'
         }}>
             {viewMode === 'reader' && selectedBook ? (
-                <EInkReader book={selectedBook} />
+                <EInkReader book={selectedBook} onBack={() => setViewMode('grid')} onClose={onClose} />
             ) : (
                 <>
                     <header style={{ 
@@ -226,7 +226,7 @@ export default function BibliotecaDigital({ onClose }) {
                                         gap: '1rem',
                                         cursor: 'pointer'
                                     }}
-                                    onClick={() => setSelectedBook(book)}
+                                    onClick={() => { setSelectedBook(book); setViewMode('reader'); }}
                                 >
                                     <div style={{ 
                                         height: '240px', 

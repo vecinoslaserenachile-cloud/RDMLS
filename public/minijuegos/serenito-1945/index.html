@@ -84,9 +84,9 @@
             transition: transform 0.15s; box-shadow: 0 6px 20px rgba(244,63,94,0.4);
         }
         .arcade-btn:hover { transform: scale(1.04); }
-        .arcade-btn.share-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            box-shadow: 0 6px 20px rgba(16,185,129,0.4);
+        .arcade-btn.home-btn {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            box-shadow: 0 6px 20px rgba(14,165,233,0.4);
         }
         #levelIndicator {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
@@ -184,6 +184,7 @@
                 <p>Puntuación: <strong id="finalScore" style="color:#FFD700;font-family:'Press Start 2P';font-size:18px">0</strong></p>
                 <button class="arcade-btn" onclick="reiniciarJuego()">🔄 REINTENTAR</button>
                 <button class="arcade-btn share-btn" onclick="compartirJuego()">📤 COMPARTIR</button>
+                <button class="arcade-btn home-btn" onclick="window.location.href='https://www.vecinoslaserena.cl/'">🏠 VOLVER AL INICIO</button>
             </div>
 
             <div id="winScreen">
@@ -191,6 +192,7 @@
                 <p>¡Serenito salvó La Serena!<br><strong id="winScore" style="color:#fbbf24;font-family:'Press Start 2P';font-size:18px">0</strong></p>
                 <button class="arcade-btn" onclick="reiniciarJuego()">🔄 JUGAR DE NUEVO</button>
                 <button class="arcade-btn share-btn" onclick="compartirJuego()">📤 COMPARTIR VICTORIA</button>
+                <button class="arcade-btn home-btn" onclick="window.location.href='https://www.vecinoslaserena.cl/'">🏠 VOLVER AL INICIO</button>
             </div>
 
             <div class="controls-hint">TÁCTIL: TOCA/ARRASTRA • TECLADO: FLECHAS + ESPACIO (fuego) + B (bomba)</div>
@@ -232,6 +234,12 @@
     IMG.player.src  = 'assets/player.png';
     IMG.enemy.src   = 'assets/enemy.png';
     IMG.terrain.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/6e1d59e662c94867237851aacb4e5a412bcfe7c1/laserena_1945.jpeg';
+    // Nivel 2: Conurbáción Coquimbo-La Serena 1945
+    const IMG2 = new Image();
+    IMG2.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/7da4eba693f8ea74c14307d5dc06df823b6b5c4e/conurbacion_coquimbo_laserena_1945.jpg';
+    // Nivel 3: La Serena 1945 — Sector Norte
+    const IMG3 = new Image();
+    IMG3.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/8a9eb007fba5f2d3c19a64b4daebd8ae55b0e9eb/1945_LASERENA_nivel_3.jpeg';
     IMG.ficha.src   = 'assets/ficha.png';
     IMG.vitamin.src = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/assets/vitamin.png';
     // Halcón de Serenito desde repo GitHub
@@ -749,14 +757,60 @@
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Terrain scroll (Historical La Serena 1945)
-        if (IMG.terrain.complete) {
-            const tw = canvas.width;
-            const th = (tw / IMG.terrain.width) * IMG.terrain.height;
-            const offset = (frames * 2) % th;
-            for (let y = -th; y < canvas.height; y += th) {
-                ctx.drawImage(IMG.terrain, 0, y + offset, tw, th);
+        // Terrain scroll — Infinite Optimized Loop
+        // Nivel 1: La Serena 1945 | Nivel 2: Conurbación | Nivel 3+: La Serena Norte
+        let activeTerrain;
+        if (level >= 3 && IMG3.complete && IMG3.naturalWidth > 0) {
+            activeTerrain = IMG3;
+        } else if (level >= 2 && IMG2.complete && IMG2.naturalWidth > 0) {
+            activeTerrain = IMG2;
+        } else {
+            activeTerrain = IMG.terrain;
+        }
+        if (activeTerrain.complete && activeTerrain.naturalWidth > 0) {
+            ctx.save();
+            
+            const scale = 2.4;
+            // Velocidad progresiva por nivel: 2.5 → 3.0 → 3.5
+            const scrollSpeed = level >= 3 ? 3.5 : level >= 2 ? 3.0 : 2.5;
+            
+            const stripWidth = activeTerrain.height * scale; 
+            const stripHeight = activeTerrain.width * scale; 
+            
+            const offset = (frames * scrollSpeed) % stripHeight;
+            
+            // Filtro anti-watermark: vintage 1945 + elimina marcas de agua por contraste
+            // sepia: unifica tonos (neutraliza texto blanco/negro)
+            // brightness: oscurece la imagen (watermarks blancos se mezclan)
+            // contrast: reduce diferencia entre marca de agua y fondo
+            ctx.filter = 'sepia(0.45) brightness(0.72) contrast(0.88) saturate(0.7)';
+            
+            ctx.translate(canvas.width / 2, 0);
+            
+            for (let y = -stripHeight; y < canvas.height + stripHeight; y += stripHeight) {
+                ctx.save();
+                ctx.translate(0, y + offset);
+                ctx.rotate(Math.PI / 2);
+                ctx.drawImage(
+                    activeTerrain, 
+                    -activeTerrain.width / 2 * scale, 
+                    -activeTerrain.height / 2 * scale, 
+                    activeTerrain.width * scale, 
+                    activeTerrain.height * scale
+                );
+                ctx.restore();
             }
+            
+            // Reset filter antes del overlay
+            ctx.filter = 'none';
+            
+            // Overlay multiply oscuro — elimina residuos de texto/watermarks
+            ctx.globalCompositeOperation = 'multiply';
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            ctx.fillRect(-canvas.width, 0, canvas.width * 3, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+            
+            ctx.restore();
         }
 
         // Clouds layer 1-2

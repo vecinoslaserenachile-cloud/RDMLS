@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Camera, History, Phone, Mail, Printer, Monitor, Smartphone, MessageSquare, Save, Download, RefreshCw, Zap, Disc, Type, Box } from 'lucide-react';
+import { X, Camera, History, Phone, Mail, Printer, Monitor, Smartphone, MessageSquare, Save, Download, RefreshCw, Zap, Disc, Type, Box, ShieldAlert } from 'lucide-react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Stage, Float, PerspectiveCamera, useGLTF, Environment } from '@react-three/drei';
 
@@ -162,6 +162,7 @@ function InteractiveSerenito({ character }) {
 export default function CommunicationsMuseum({ onClose }) {
     const [activeEra, setActiveEra] = useState('electronic');
     const [showPhotoBooth, setShowPhotoBooth] = useState(false);
+    const [cameraError, setCameraError] = useState(null);
     const [selectedChar, setSelectedChar] = useState(CHARACTERS[0]);
     const [capturedImage, setCapturedImage] = useState(null);
     const [arLoading, setArLoading] = useState(false);
@@ -172,6 +173,7 @@ export default function CommunicationsMuseum({ onClose }) {
 
     useEffect(() => {
         if (showPhotoBooth) {
+            setCameraError(null);
             startCamera();
             setArLoading(true);
             setTimeout(() => setArLoading(false), 2000);
@@ -182,16 +184,22 @@ export default function CommunicationsMuseum({ onClose }) {
 
     const startCamera = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { facingMode: 'user' } 
+            });
             if (videoRef.current) videoRef.current.srcObject = stream;
+            setCameraError(null);
         } catch (err) {
             console.error("Camera error:", err);
+            setCameraError(err.name === 'NotAllowedError' || err.name === 'PermissionDismissedError' 
+                ? 'Permiso denegado por el usuario.' 
+                : 'No se pudo acceder a la cámara.');
         }
     };
 
     const stopCamera = () => {
         if (videoRef.current?.srcObject) {
-            videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+            videoRef.current.srcObject.getTracks().forEach(track => track.stop());
         }
     };
 
@@ -241,21 +249,21 @@ export default function CommunicationsMuseum({ onClose }) {
                         <>
                             {/* Navigation Slider */}
                             <div style={{ width: '300px', background: 'rgba(0,0,0,0.2)', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.8rem', borderRight: '1px solid rgba(255,255,255,0.05)' }}>
-                                {ERAS.map(era => (
+                                {ERAS.map(eraItem => (
                                     <button 
-                                        key={era.id}
-                                        onClick={() => setActiveEra(era.id)}
+                                        key={eraItem.id}
+                                        onClick={() => setActiveEra(eraItem.id)}
                                         style={{ 
-                                            padding: '1rem', background: activeEra === era.id ? `${era.color}20` : 'transparent', 
-                                            border: 'none', borderLeft: `6px solid ${activeEra === era.id ? era.color : 'transparent'}`,
+                                            padding: '1rem', background: activeEra === eraItem.id ? `${eraItem.color}20` : 'transparent', 
+                                            border: 'none', borderLeft: `6px solid ${activeEra === eraItem.id ? eraItem.color : 'transparent'}`,
                                             display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer', textAlign: 'left',
                                             transition: 'all 0.3s', borderRadius: '0 12px 12px 0'
                                         }}
                                     >
-                                        <era.icon color={activeEra === era.id ? era.color : '#475569'} size={24} />
+                                        <eraItem.icon color={activeEra === eraItem.id ? eraItem.color : '#475569'} size={24} />
                                         <div>
-                                            <div style={{ fontSize: '0.65rem', color: era.color, fontWeight: '900' }}>{era.year}</div>
-                                            <div style={{ fontSize: '0.85rem', color: activeEra === era.id ? 'white' : '#94a3b8', fontWeight: 'bold' }}>{era.title}</div>
+                                            <div style={{ fontSize: '0.65rem', color: eraItem.color, fontWeight: '900' }}>{eraItem.year}</div>
+                                            <div style={{ fontSize: '0.85rem', color: activeEra === eraItem.id ? 'white' : '#94a3b8', fontWeight: 'bold' }}>{eraItem.title}</div>
                                         </div>
                                     </button>
                                 ))}
@@ -294,7 +302,20 @@ export default function CommunicationsMuseum({ onClose }) {
                                 </Canvas>
                             </div>
 
-                            {arLoading && (
+                            {cameraError && (
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(2, 6, 23, 0.9)', zIndex: 20, padding: '2rem', textAlign: 'center' }}>
+                                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '2rem', borderRadius: '24px', border: '1px solid #ef4444' }}>
+                                        <ShieldAlert size={60} color="#ef4444" style={{ marginBottom: '1rem' }} />
+                                        <h3 style={{ color: 'white', fontWeight: '900', marginBottom: '0.5rem' }}>PERMISO REQUERIDO</h3>
+                                        <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.5rem' }}>{cameraError}</p>
+                                        <button onClick={startCamera} className="btn-primary" style={{ padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold' }}>
+                                            REINTENTAR ACCESO
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {arLoading && !cameraError && (
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', zIndex: 10 }}>
                                     <div className="pulse" style={{ width: '80px', height: '80px', border: '4px solid #3b82f6', borderRadius: '50%', borderTopColor: 'transparent', animation: 'spin 1s linear infinite' }} />
                                     <p style={{ color: '#3b82f6', marginTop: '1.5rem', fontWeight: 'bold', letterSpacing: '2px' }}>INICIALIZANDO LENTES AR RDMLS...</p>

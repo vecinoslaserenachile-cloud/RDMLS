@@ -3,6 +3,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { useGLTF, useAnimations, Sky, Stars, Html, useTexture, Clone, Environment, Text } from '@react-three/drei';
 import * as THREE from 'three';
 import { X, Navigation, Info, Award, RefreshCw, ZoomIn, MessageSquare, User, Heart, Star } from 'lucide-react';
+import HolographicFigure from './HolographicFigure';
 
 // ============================================================
 // SERENITO 3D – El Guía Humanizado
@@ -178,9 +179,9 @@ function PalominosExhibition({ setTargetPos, muralImages = [] }) {
     console.warn("VLS Master: muralImages incomplete or missing, using fallbacks.");
     muralImages = [
       muralImages[0] || '/homenaje/palominos_mural_humanity_1773806652665.png',
-      muralImages[1] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_2.jpg',
-      muralImages[2] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_3.jpg',
-      muralImages[3] || 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_4.jpg'
+      muralImages[1] || '/homenaje/palominos_mural_humanity_1773806652665.png',
+      muralImages[2] || '/homenaje/palominos_mural_humanity_1773806652665.png',
+      muralImages[3] || '/homenaje/palominos_mural_humanity_1773806652665.png'
     ];
   }
 
@@ -230,19 +231,26 @@ function PalominosExhibition({ setTargetPos, muralImages = [] }) {
         />
       </group>
 
-      {/* Monumento Central - Tributo al Maestro */}
+      {/* Monumento Central - Tributo al Maestro (Holograma Oleográfico) */}
       <group position={[0, 0, 0]}>
-        <mesh position={[0, 0.5, 0]} castShadow>
-          <cylinderGeometry args={[2, 2.2, 1, 32]} />
-          <meshStandardMaterial color="#92400e" metalness={0.5} roughness={0.2} />
+        <mesh position={[0, 0, 0]} castShadow>
+          <cylinderGeometry args={[2.5, 2.8, 0.5, 32]} />
+          <meshStandardMaterial color="#92400e" metalness={0.8} roughness={0.1} />
         </mesh>
-        <Html position={[0, 1.2, 0]} center>
-          <div style={{ textAlign: 'center', color: '#fbbf24', textShadow: '0 0 10px rgba(0,0,0,0.5)' }}>
+        
+        <Html position={[0, 3.2, 0]} center transform scale={1.5}>
+          <div style={{ pointerEvents: 'none' }}>
+            <HolographicFigure image={muralImages[0]} name="MAESTRO PALOMINOS" color="#fbbf24" />
+          </div>
+        </Html>
+        
+        <Html position={[0, 0.5, 3.5]} center>
+          <div style={{ textAlign: 'center', color: '#fbbf24', textShadow: '0 0 10px rgba(0,0,0,0.5)', background: 'rgba(0,0,0,0.8)', padding: '10px 20px', borderRadius: '15px', border: '1px solid #92400e' }}>
             <h2 style={{ margin: 0, fontWeight: '900', fontSize: '24px' }}>MAESTRO DANIEL PALOMINOS</h2>
             <div style={{ fontWeight: 'bold', fontSize: '12px' }}>1953 - 2024</div>
           </div>
         </Html>
-        <pointLight position={[0, 2, 0]} intensity={2} color="#fbbf24" distance={10} />
+        <pointLight position={[0, 2, 0]} intensity={3} color="#fbbf24" distance={15} />
       </group>
 
       {/* Iluminación de Ambiente */}
@@ -259,8 +267,8 @@ export default function MasterDanielPalominos3D({ onClose, muralImages }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 1500);
-    return () => clearTimeout(t);
+    const loadingTimer = setTimeout(() => setIsLoading(false), 1500);
+    return () => clearTimeout(loadingTimer);
   }, []);
 
   // Voz de Serenito al iniciar

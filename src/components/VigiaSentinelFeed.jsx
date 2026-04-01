@@ -53,8 +53,8 @@ export default function VigiaSentinelFeed() {
                 >
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                         <div style={{ display: 'flex', gap: '5px' }}>
-                            {evt.data.etiquetas.map(t => (
-                                <span key={t} style={{ fontSize: '0.65rem', color: evt.data.color_referencia, fontWeight: 900, padding: '2px 8px', background: `${evt.data.color_referencia}15`, borderRadius: '6px' }}>{t}</span>
+                            {evt.data.etiquetas.map(tag => (
+                                <span key={tag} style={{ fontSize: '0.65rem', color: evt.data.color_referencia, fontWeight: 900, padding: '2px 8px', background: `${evt.data.color_referencia}15`, borderRadius: '6px' }}>{tag}</span>
                             ))}
                         </div>
                         <div style={{ fontSize: '0.6rem', color: '#64748b', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>

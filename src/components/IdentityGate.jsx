@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, User, Building2, CheckCircle, Camera, FileText, ArrowRight, X, AlertCircle, Landmark, Activity } from 'lucide-react';
+import { ShieldCheck, User, Building2, CheckCircle, Camera, FileText, ArrowRight, X, AlertCircle, Landmark, Activity, Award, Smartphone, Star } from 'lucide-react';
 
 export default function IdentityGate({ onClose, onVerified }) {
     const [mode, setMode] = useState(null); // 'citizen' or 'institution'
@@ -105,6 +105,35 @@ export default function IdentityGate({ onClose, onVerified }) {
                                 </div>
                                 <h3 style={{ fontSize: '1.8rem', color: 'white', marginBottom: '0.5rem' }}>Identidad Validada</h3>
                                 <p style={{ color: '#94a3b8', marginBottom: '1.5rem' }}>Bienvenido, vecino. Tu invitación oficial ha sido generada y encriptada en el padrón VLS 2026.</p>
+                                
+                                {/* CREDENCIAL DE DELEGADO VIRTUAL */}
+                                <div className="scale-in" style={{ 
+                                    background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(15, 23, 42, 0.9) 100%)', 
+                                    border: '2px solid #d4af37', 
+                                    borderRadius: '24px', 
+                                    padding: '1.5rem', 
+                                    marginBottom: '2rem',
+                                    textAlign: 'left',
+                                    position: 'relative',
+                                    overflow: 'hidden'
+                                }}>
+                                    <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }}>
+                                        <Award size={100} color="#d4af37" />
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                        <div style={{ background: '#d4af37', padding: '8px', borderRadius: '10px' }}>
+                                            <ShieldCheck size={24} color="black" />
+                                        </div>
+                                        <div>
+                                            <div style={{ fontSize: '0.65rem', color: '#d4af37', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>Credencial Digital VLS</div>
+                                            <div style={{ fontSize: '1.1rem', color: 'white', fontWeight: '900' }}>DELEGADO VIRTUAL</div>
+                                        </div>
+                                    </div>
+                                    <div style={{ borderTop: '1px solid rgba(212, 175, 55, 0.2)', paddingTop: '1rem' }}>
+                                        <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Especialidad:</div>
+                                        <div style={{ fontSize: '1rem', color: 'white', fontWeight: 'bold' }}>Delegado de la Comuna</div>
+                                    </div>
+                                </div>
                                 
                                 {/* Final Security Check for Invitation Delivery */}
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)', marginBottom: '1.5rem' }}>

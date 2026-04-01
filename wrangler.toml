@@ -2,16 +2,16 @@ name = "vecinos-la-serena"
 pages_build_output_dir = "dist"
 compatibility_date = "2026-03-29"
 
-# 1. BASE DE DATOS D1 (VECICAT LOGS)
-[[d1_databases]]
-binding = "DB"
-database_name = "vls-db"
-database_id = "8f1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
+# 1. BASE DE DATOS D1 (VECICAT LOGS) - COMENTADO POR UUID INVÁLIDO
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "vls-db"
+# database_id = "8f1a2b3c-4d5e-6f7g-8h9i-0j1k2l3m4n5o"
 
-# 2. ALMACENAMIENTO R2 (VECICAT MAULLIDOS)
-[[r2_buckets]]
-binding = "VECICAT_BUCKET"
-bucket_name = "vecicat-storage"
+# 2. ALMACENAMIENTO R2 (VECICAT MAULLIDOS) - COMENTADO POR BUCKET NO ENCONTRADO
+# [[r2_buckets]]
+# binding = "VECICAT_BUCKET"
+# bucket_name = "vecicat-storage"
 
 # 3. WORKERS AI (TRADUCTOR)
 [ai]

@@ -1,9 +1,40 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid } from 'lucide-react';
+import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
+
+// ─── LIMPIEZA DE FLAGS Y RECUPERACIÓN DE SEÑAL (C5-RECOVERY) ──────────────────
+if (typeof window !== 'undefined') {
+  localStorage.removeItem('vls_maintenance_active');
+
+  // Auto-recuperación ante errores de carga de Chunks (Stale assets post-deploy)
+  window.addEventListener('error', (e) => {
+    if (e.message && (e.message.includes('Failed to fetch dynamically imported module') || e.message.includes('chunk'))) {
+      console.warn('VLS_C5: Error de señal detectado (Asset Stale). Re-sincronizando...');
+      window.location.reload();
+    }
+  }, true);
+
+  window.addEventListener('unhandledrejection', (e) => {
+    if (e.reason && e.reason.message && (e.reason.message.includes('Failed to fetch dynamically imported module') || e.reason.message.includes('chunk'))) {
+      console.warn('VLS_C5: Promesa de módulo fallida. Re-sincronizando portal...');
+      window.location.reload();
+    }
+  });
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
+import { LanguageProvider, useTranslation } from './context/LanguageContext';
+import { auth } from './utils/firebase';
+import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithRedirect } from 'firebase/auth';
+import { db } from './utils/firebase';
+import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import GlobalAnnouncer from './components/GlobalAnnouncer';
+
+import LoadingScreen from './components/LoadingScreen';
+import GlobalOmniSyncOverlay from './components/GlobalOmniSyncOverlay';
 
 // Lazy Loaded Components (Bandwidth Optimization)
 const ChatAssistant = lazy(() => import('./components/ChatAssistant'));
@@ -34,13 +65,14 @@ const OperacionLaSerena = lazy(() => import('./components/OperacionLaSerena.jsx'
 const IdentityGate = lazy(() => import('./components/IdentityGate.jsx'));
 const MasterLock = lazy(() => import('./components/MasterLock.jsx'));
 const VLSVisionModal = lazy(() => import('./components/VLSVisionModal.jsx'));
+const ProjectInfoModal = lazy(() => import('./components/ProjectInfoModal.jsx'));
 const SmartCalendar = lazy(() => import('./components/SmartCalendar.jsx'));
 const LeanStartupMaster = lazy(() => import('./components/LeanStartupMaster.jsx'));
 const TiendaPoleras3D = lazy(() => import('./components/TiendaPoleras3D'));
 const CoquiSmartKanban = lazy(() => import('./components/CoquiSmartKanban'));
 const Aprende = lazy(() => import('./pages/Aprende'));
 const VLSInduccion = lazy(() => import('./pages/VLSInduccion'));
-import Induccion26 from './pages/Induccion26';
+const Induccion26 = lazy(() => import('./pages/Induccion26'));
 
 const MemorialHijosRegion = lazy(() => import('./components/MemorialHijosRegion.jsx'));
 const PersonalStereo = lazy(() => import('./components/PersonalStereo.jsx'));
@@ -53,10 +85,10 @@ const SmartVLSFeed = lazy(() => import('./components/SmartVLSFeed.jsx'));
 const SmartBroadcasterStudio = lazy(() => import('./components/SmartBroadcasterStudio.jsx'));
 const PrecolombinoPortal = lazy(() => import('./components/PrecolombinoPortal.jsx'));
 const ParlamentoVecinal = lazy(() => import('./components/Parlamento/ParlamentoVecinal.jsx'));
-import DeBonoThinkingHats from './components/DeBonoThinkingHats.jsx';
-import VLSConsoleSound from './components/VLSConsoleSound.jsx';
-import DronDrigo from './components/DronDrigo.jsx';
-import VLSQuantumWatch from './components/VLSQuantumWatch.jsx';
+const DeBonoThinkingHats = lazy(() => import('./components/DeBonoThinkingHats.jsx'));
+const VLSConsoleSound = lazy(() => import('./components/VLSConsoleSound.jsx'));
+const DronDrigo = lazy(() => import('./components/DronDrigo.jsx'));
+const VLSQuantumWatch = lazy(() => import('./components/VLSQuantumWatch.jsx'));
 const TribunalesVecinales = lazy(() => import('./components/TribunalesVecinales.jsx'));
 const DonRadios = lazy(() => import('./components/DonRadios.jsx'));
 const SmartAdministration = lazy(() => import('./components/SmartAdministration.jsx'));
@@ -78,7 +110,7 @@ const PropuestaEstrategica = lazy(() => import('./pages/PropuestaElDia'));
 const HomeLiviano = lazy(() => import('./pages/HomeLiviano'));
 const RadioPlayer = lazy(() => import('./components/RadioPlayer'));
 const TokenEconomyMaster = lazy(() => import('./components/TokenEconomyMaster'));
-import VecnityPay from './components/VecnityPay';
+const VecnityPay = lazy(() => import('./components/VecnityPay'));
 const FaritoSocialNetwork = lazy(() => import('./components/FaritoSocialNetwork'));
 const FaroCentinel = lazy(() => import('./components/FaroCentinel'));
 const BoticaVecinal = lazy(() => import('./components/BoticaVecinal'));
@@ -109,10 +141,11 @@ const VLSNewsSentinel = lazy(() => import('./components/VLSNewsSentinel'));
 const VLSNewsInvestigacion = lazy(() => import('./components/VLSNewsInvestigacion'));
 const VLSNewsSemanaSanta = lazy(() => import('./components/VLSNewsSemanaSanta'));
 const VLSMotorsSpot = lazy(() => import('./components/VLSMotorsSpot'));
-const SafeRouteAI = lazy(() => import('./components/SafeRouteAI'));
+const SafestRouteAI = lazy(() => import('./components/SafeRouteAI'));
 const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
 const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
 const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
+const StickyNoteWidget = lazy(() => import('./components/StickyNoteWidget'));
 
 const SOVEREIGN_NAMES = [
   "vecinoslaserena.cl",
@@ -137,16 +170,16 @@ const SOVEREIGN_NAMES = [
 
 
 
-import MartinSecurityShield from './components/MartinSecurityShield';
-import LegacyVLSAppendix from './components/LegacyVLSAppendix';
-import NetSpeedMonitor from './components/NetSpeedMonitor';
-import SerenitoSecurityGuard from './components/SerenitoSecurityGuard';
-import KioskoDiarios from './components/KioskoDiarios';
-import FloatingActionPanel from './components/FloatingActionPanel';
-import SmartToolbox from './components/SmartToolbox';
-import SmartEnfermeria from './components/SmartEnfermeria';
-import PianoCompita from './components/PianoCompita';
-import ErrorCollector from './components/ErrorCollector';
+const MartinSecurityShield = lazy(() => import('./components/MartinSecurityShield'));
+const LegacyVLSAppendix = lazy(() => import('./components/LegacyVLSAppendix'));
+const NetSpeedMonitor = lazy(() => import('./components/NetSpeedMonitor'));
+const SerenitoSecurityGuard = lazy(() => import('./components/SerenitoSecurityGuard'));
+const KioskoDiarios = lazy(() => import('./components/KioskoDiarios'));
+const FloatingActionPanel = lazy(() => import('./components/FloatingActionPanel'));
+const SmartToolbox = lazy(() => import('./components/SmartToolbox'));
+const SmartEnfermeria = lazy(() => import('./components/SmartEnfermeria'));
+const PianoCompita = lazy(() => import('./components/PianoCompita'));
+const ErrorCollector = lazy(() => import('./components/ErrorCollector'));
 
 /**
  * AI HONEYPOT SECURITY LAYER
@@ -183,85 +216,7 @@ const SecurityHoneypot = () => {
   );
 };
 
-
-import { LanguageProvider, useTranslation } from './context/LanguageContext';
-import { auth } from './utils/firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, signInWithRedirect } from 'firebase/auth';
-import { db } from './utils/firebase';
-import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
-import GlobalAnnouncer from './components/GlobalAnnouncer';
-
-const LoadingScreen = ({ isSyncing = false }) => {
-  const host = (window.location.hostname || window.location.host || '').toLowerCase();
-  const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
-  const isEntrevecinas = host.includes('entrevecinas.cl');
-
-  return (
-    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#020617', color: isEntrevecinas ? '#f472b6' : (isRDMLS ? '#dc2626' : '#38bdf8'), fontFamily: 'Inter, sans-serif' }}>
-      
-      {/* Animación de Faro en Líneas Vectoriales */}
-      <div style={{ position: 'relative', zIndex: 1, width: '120px', height: '150px', marginBottom: '1.5rem' }}>
-          <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-              <motion.path
-                  d="M 46 25 L 54 25 L 56 100 L 44 100 Z"
-                  stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                  transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-              />
-              <motion.path
-                  d="M 43 25 L 57 25 M 44 20 L 56 20 L 56 25 L 44 25 Z M 47 20 L 53 20 L 53 15 L 47 15 Z M 50 15 L 50 10"
-                  stroke="currentColor" strokeWidth="1.5"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                  transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
-              />
-              <motion.path
-                  d="M 20 100 L 80 100 L 85 115 L 15 115 Z M 25 100 L 25 95 L 30 95 L 30 100 M 70 100 L 70 95 L 75 95 L 75 100"
-                  stroke="currentColor" strokeWidth="1.5"
-                  initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                  transition={{ duration: 4, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-              />
-              <motion.circle cx="15" cy="115" r="4" stroke="currentColor" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity }} />
-              <motion.circle cx="85" cy="115" r="4" stroke="currentColor" strokeWidth="1.5" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, delay: 0.2 }} />
-              
-              <motion.path
-                  d="M 15 115 L 15 90 M 15 90 L 22 93 L 15 96"
-                  stroke="currentColor" strokeWidth="1"
-                  animate={{ x: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}
-              />
-              <motion.path
-                  d="M 85 115 L 85 85 M 85 85 L 92 88 L 85 91"
-                  stroke="currentColor" strokeWidth="1"
-                  animate={{ x: [0, -2, 0] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-              />
-
-              {[35, 50, 65, 80].map((y, i) => (
-                  <motion.rect key={i} x="48.5" y={y} width="3" height="5" stroke="currentColor" strokeWidth="1" 
-                      initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }} />
-              ))}
-              
-              <motion.circle 
-                  cx="50" cy="18" r="8" fill="currentColor"
-                  animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
-                  transition={{ duration: 2.5, repeat: Infinity }}
-              />
-          </svg>
-      </div>
-
-      <div style={{ textAlign: 'center' }}>
-        <span style={{ fontSize: '0.7rem', fontWeight: 'black', letterSpacing: '0.3em', opacity: 0.5, display: 'block', marginBottom: '0.5rem' }}>OMNIDIRECTIONAL_SYNC_ACTIVE</span>
-        <h2 style={{ fontSize: '1.2rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-          {isEntrevecinas ? 'Entrevecinas: Sintonizando Voz Femenina...' :
-            (isRDMLS ? 'RDMLS: Estableciendo señal municipal...' : 'VLS OS: Sincronizando con la Red Ciudadana...')}
-        </h2>
-      </div>
-      {isSyncing && (
-        <div style={{ position: 'fixed', bottom: '4rem', opacity: 0.3, fontSize: '0.6rem', fontWeight: 'bold' }}>
-          DEPLOING_VLS_OS_GLOBAL_ENGINE_v4.2.1
-        </div>
-      )}
-    </div>
-  );
-};
+// LoadingScreen is now imported from shared components
 
 const ALLOWED_ADMINS = [
   'directorio@vecinosmart.cl',
@@ -285,6 +240,11 @@ const MaintenanceNotice = () => {
     window.addEventListener('vls-show-maint', () => setVisible(true));
     return () => { clearInterval(interval); window.removeEventListener('vls-show-maint', () => setVisible(true)); };
   }, []);
+
+  const handleClose = () => {
+    localStorage.removeItem('vls_maintenance_active');
+    setVisible(false);
+  };
 
   if (!visible) return null;
 
@@ -315,7 +275,7 @@ const MaintenanceNotice = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => { handleClose(); window.location.reload(); }}
             style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', color: 'white', borderRadius: '15px', border: 'none', fontWeight: 'bold', cursor: 'pointer' }}
           >
             REINTENTAR AHORA
@@ -325,47 +285,40 @@ const MaintenanceNotice = () => {
               if (msg) {
                 alert("REPORTE_C5: Tu mensaje ha sido enviado al equipo de vecinoslaserenachile.cl");
                 setMsg("");
-                setVisible(false);
-                localStorage.removeItem('vls_maintenance_active');
               }
+              handleClose();
             }}
             style={{ padding: '1rem', background: '#38bdf8', color: '#020617', borderRadius: '15px', border: 'none', fontWeight: '900', cursor: 'pointer' }}
           >
             ENVIAR Y CERRAR
           </button>
         </div>
+        <button
+          onClick={handleClose}
+          style={{ marginTop: '1rem', padding: '0.75rem 2rem', background: 'transparent', color: '#94a3b8', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', cursor: 'pointer', width: '100%', fontSize: '0.85rem' }}
+        >
+          ✕ Cerrar y continuar al portal
+        </button>
       </motion.div>
     </div>
   );
 };
 
-const GlobalOmniSyncOverlay = () => {
-  const [active, setActive] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setActive(false), 2500);
-    return () => clearTimeout(timer);
-  }, []);
-  if (!active) return null;
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 1000000, pointerEvents: 'none' }}>
-      <motion.div
-        initial={{ opacity: 1 }} animate={{ opacity: 0 }} transition={{ duration: 1, delay: 1.5 }}
-        style={{ width: '100%', height: '100%', background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-      >
-        <LoadingScreen isSyncing={true} />
-      </motion.div>
-    </div>
-  );
-};
+// GlobalOmniSyncOverlay is now imported from shared components
 
 function App() {
+  const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showCoquiSmartCRM, setShowCoquiSmartCRM] = useState(false);
   const host = window.location.host.toLowerCase();
-  const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+  const isRDMLS = host.includes('rdmls') || host.includes('imls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+
+  // Limpiar flag de mantenimiento al montar — evita bloqueo post-deploy
+  useEffect(() => {
+    localStorage.removeItem('vls_maintenance_active');
+  }, []);
 
   return (
     <>
-      <GlobalOmniSyncOverlay />
       <AppContent setShowCoquiSmartCRM={setShowCoquiSmartCRM} />
       {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !isRDMLS) && <VLSQuantumWatch isRDMLS={isRDMLS} />}
       <MaintenanceNotice />
@@ -383,6 +336,9 @@ function App() {
           </Suspense>
         </div>
       )}
+      <Suspense fallback={null}>
+         <StickyNoteWidget />
+      </Suspense>
     </>
   );
 }
@@ -391,7 +347,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const navigate = useNavigate();
   const location = useLocation();
   const host = window.location.host.toLowerCase();
-  const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+  const isRDMLS = host.includes('rdmls') || host.includes('imls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
   const isAcademy = host.includes('vecinosmart.cl'); // Entorno Comercial de Venta de Know-how
   const isVLS = !isRDMLS && !isAcademy && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
   const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl');
@@ -400,7 +356,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const isNational = isChile;
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
   const isVLSabes = location.pathname.includes('/vlsabes');
-  const isZeroDistraction = isInduccion || isVLSabes || isRDMLS;
+  const isTribute = location.pathname.includes('/agua');
+  const isZeroDistraction = isInduccion || isVLSabes || isRDMLS || isTribute;
   const isCommercial = isAcademy;
 
   const { t, lang, setLang } = useTranslation();
@@ -410,7 +367,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const stratParam = searchParams.get('strategy');
   const mKey = searchParams.get('vls_master');
   const appId = searchParams.get('app');
-  const newsId = searchParams.get('news');
+  
+  // VLS Media Extractor v5.0: Direct Vanity URLs support (e.g., /paradoja, /bencinazo)
+  const mediaMatch = location.pathname.match(/^\/(paradoja|bencinazo|colapso|batik|semanasanta|semana-santa|aguasvalle|poduje|sentinel|investigacion)$/i) || location.pathname.match(/^\/media\/([^/]+)/);
+  const newsId = searchParams.get('news') || (mediaMatch ? mediaMatch[1] : null);
+  
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
@@ -437,25 +398,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showRoadmap, setShowRoadmap] = useState(false);
 
   // SUPREME OVERRIDE: If mode=aprende is in URL, LOCK the screen to the induction portal - NO EARLY RETURN HERE TO PRESERVE HOOK COUNT
+  const isAprendeMode = mode === 'aprende' || mode === 'induccion' || location.pathname.toLowerCase().includes('/imls/induccion');
+  
   useEffect(() => {
-    if (mode === 'aprende' || mode === 'induccion') {
+    if (isAprendeMode) {
         console.log("IMLS_OS: Locking to Induction/Aprende Mode...");
     }
-  }, [mode]);
+  }, [isAprendeMode]);
 
-  const isAprendeMode = mode === 'aprende' || mode === 'induccion';
-
-  // Sentinel Health Monitoring
+  // Sentinel Health Monitoring — checkIntegrity DESHABILITADO: el flag ya es borrado en App()
   useEffect(() => {
-    // Simulamos un check de integridad de red o de componentes críticos
-    const checkIntegrity = () => {
-      const maintenanceFlag = localStorage.getItem('vls_maintenance_active');
-      if (maintenanceFlag === 'true') {
-        setSystemHealth('polishing');
-        setShowMaintenanceNotice(true);
-      }
-    };
-    checkIntegrity();
     window.addEventListener('trigger-vls-maintenance', () => {
       setSystemHealth('polishing');
       setShowMaintenanceNotice(true);
@@ -641,6 +593,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
   const [showVLSMotors, setShowVLSMotors] = useState(false);
   const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
+  const [requestedMemorialId, setRequestedMemorialId] = useState(null);
 
   useEffect(() => {
     // Título y Favicon Dinámico
@@ -979,7 +932,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const handleOpenAirport = () => setShowAirport(true);
   const handleOpenCity3D = () => setShowCity3D(true);
   const handleOpenOperacionLS = () => setShowOperacionLS(true);
-  const handleOpenMemorial = () => setShowMemorial(true);
+  const handleOpenMemorial = (e) => {
+    if (e?.detail?.id) setRequestedMemorialId(e.detail.id);
+    setShowMemorial(true);
+  };
   const handleOpenSmartAdmin = () => setShowSmartAdmin(true);
   const handleOpenPersonalStereo = () => setShowPersonalStereo(true);
   const handleOpenRetroRoom = () => setShowRetroRoom(true);
@@ -1253,6 +1209,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-tienda-poleras', handleOpenTienda);
     window.addEventListener('open-roadmap-vls', handleOpenRoadmap);
     window.addEventListener('open-decision-vecinal', handleOpenCouncil);
+    window.addEventListener('open-project-info', () => setShowProjectInfo(true));
 
     // Escucha global para detener todos los audios
     window.addEventListener('stop-all-audio', () => {
@@ -1276,6 +1233,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       setShowMotorTiempo(false);
       setShowCalendar(false);
       setShowLeanMaster(false);
+      setShowProjectInfo(false);
     });
 
     const handleMessage = (e) => {
@@ -1390,6 +1348,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-vecinity-pay', handleOpenVecnityPay);
       window.removeEventListener('open-roadmap-vls', handleOpenRoadmap);
       window.removeEventListener('open-decision-vecinal', handleOpenCouncil);
+      window.removeEventListener('open-project-info', () => setShowProjectInfo(true));
       window.removeEventListener('message', handleMessage);
       window.removeEventListener('stop-all-audio', () => {}); 
       comSocket.off('vls-receive-push', handlePush);
@@ -1405,7 +1364,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const showMasterLock = false;
 
   if (!authInitialized && !isRDMLS) {
-    return <LoadingScreen />;
+    return null;
   }
 
   if (isRDMLS) {
@@ -1546,7 +1505,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
               ) : (
                 <>
                   <img src="/vls-logo-premium.png" style={{ height: '24px', marginRight: '6px', filter: 'drop-shadow(0 0 5px rgba(255,255,255,0.3))' }} alt="VLS Logo" />
-                  www.vecinoslaserena.cl
+                  <span className="hide-on-mobile">www.vecinoslaserena.cl</span>
                   {(currentUser || isGuest) && (
                     <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(56, 189, 248, 0.15)', padding: '2px 10px', borderRadius: '50px', border: '1px solid rgba(56, 189, 248, 0.4)' }}>
                       <div className="pulse-dot" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#38bdf8' }} />
@@ -1556,6 +1515,45 @@ function AppContent({ setShowCoquiSmartCRM }) {
                 </>
               )}
             </span>
+          </div>
+
+          {/* OMNI PABELLON - ACCESOS RAPIDOS (4 PILARES) */}
+          <div className="desktop-only" style={{ flex: 1, display: 'flex', justifyContent: 'center', pointerEvents: 'auto', padding: '0 1rem' }}>
+            <div 
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: 'rgba(255, 255, 255, 0.05)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                padding: '0.2rem 0.4rem',
+                borderRadius: '30px',
+                backdropFilter: 'blur(10px)',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                gap: '8px'
+              }}
+            >
+               {/* Search Bar Falso (Ctrl+K effect) */}
+               <div onClick={() => window.dispatchEvent(new CustomEvent('open-smart-search'))} style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#94a3b8', fontSize: '0.7rem', cursor: 'pointer', padding: '0.2rem 0.8rem', borderRight: '1px solid rgba(255,255,255,0.1)' }} className="hover:text-white transition-colors rounded-full h-full">
+                 <Search size={12} />
+                 <span>Buscador Maestro...</span>
+               </div>
+               
+               {/* 4 PILARES SMART CITY */}
+               <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                 <button onClick={() => navigate('/reportes')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#38bdf8', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-sky-900/40 transition-colors">
+                    CIUDADANOS
+                 </button>
+                 <button onClick={() => navigate('/induccion')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#10b981', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-emerald-900/40 transition-colors">
+                    GESTIÓN
+                 </button>
+                 <button onClick={() => setShowSmartEvents(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#f59e0b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-amber-900/40 transition-colors">
+                    PROTOCOLOS
+                 </button>
+                 <button onClick={() => setShowFaroCentinel(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px', letterSpacing: '0.5px' }} className="hover:bg-red-900/40 transition-colors">
+                    <div className="pulse-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} /> INTELIGENCIA
+                 </button>
+               </div>
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, pointerEvents: 'auto' }}>
@@ -1615,9 +1613,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
                   <button
                     onClick={handleLogin}
                     className="glass-panel animate-pulse"
-                    style={{ padding: '0.35rem 0.8rem', borderRadius: '20px', fontWeight: '900', fontSize: '0.75rem', background: 'rgba(59, 130, 246, 0.2)', border: '1px solid #3b82f6', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                    style={{ padding: '0.35rem 0.8rem', borderRadius: '20px', fontWeight: '900', fontSize: '0.75rem', background: '#3b82f6', border: '2px solid rgba(255,255,255,0.3)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 15px rgba(59,130,246,0.5)' }}
                   >
-                    <LogIn size={14} /> CONECTAR IDENTIDAD
+                    <LogIn size={14} /> <span className="hide-on-small-mobile">CONECTAR</span>
                   </button>
                 ) : (
                   <button
@@ -1931,7 +1929,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showVlsMasterCharts && <VlsMasterChartsPortal onClose={() => setShowVlsMasterCharts(false)} />}
       {showMemoryPortal && <MemoryPortalModal onClose={() => setShowMemoryPortal(false)} />}
       {showKiosko && <KioskoDiarios onClose={() => setShowKiosko(false)} />}
-      {showMemorial && <MemorialHijosRegion onClose={() => setShowMemorial(false)} />}
+      {showMemorial && <MemorialHijosRegion onClose={() => { setShowMemorial(false); setRequestedMemorialId(null); }} tributeId={requestedMemorialId} />}
             {showSmartAdmin && (
         <Suspense fallback={<div className="glass-panel" style={{ position: 'fixed', inset: '20%', zIndex: 300000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Cargando Panel de Administración...</div>}>
           <div style={{ position: 'fixed', inset: isMobile ? '0' : '10%', zIndex: 100075 }}>
@@ -2030,6 +2028,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showTiendaPoleras && (
         <Suspense fallback={null}>
           <TiendaPoleras3D onClose={() => setShowTiendaPoleras(false)} currentUser={currentUser} />
+        </Suspense>
+      )}
+      {showProjectInfo && (
+        <Suspense fallback={null}>
+          <ProjectInfoModal onClose={() => setShowProjectInfo(false)} />
         </Suspense>
       )}
 

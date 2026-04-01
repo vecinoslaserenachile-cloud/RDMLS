@@ -53,8 +53,8 @@ function SerenitoModel({ avatarRef, headRef, bodyRef, walkPhase, isMoving }) {
 
   return (
     <group ref={avatarRef}>
-      {/* Ajuste de altura: Serenito ya no está hundido. Originamos pies en Y=0 */}
-      <primitive object={scene} scale={1.8} position={[0, 0, 0]} castShadow />
+      {/* Ajuste de altura: Serenito ya no está hundido (Y=1.5 para modelo con pivot central) */}
+      <primitive object={scene} scale={1.8} position={[0, 1.5, 0]} castShadow />
     </group>
   );
 }
@@ -549,8 +549,8 @@ export default function HistoricWalk3D({ onClose, era }) {
   const isMobileModal = window.innerWidth < 768;
 
   useEffect(() => {
-    const t = setTimeout(() => setIsLoading(false), 1000);
-    return () => clearTimeout(t);
+    const loadingTimer = setTimeout(() => setIsLoading(false), 1000);
+    return () => clearTimeout(loadingTimer);
   }, []);
 
   const handlePlayAudio = (poi) => {

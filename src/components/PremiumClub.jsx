@@ -55,25 +55,25 @@ export default function PremiumClub({ onClose }) {
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2.5rem' }}>
-                    {tiers.map(t => (
-                        <div key={t.id} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '30px', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                    {tiers.map(tier => (
+                        <div key={tier.id} style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '30px', padding: '2rem', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
-                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '18px' }}>{t.icon}</div>
-                                <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 'bold' }}>{t.name}</h3>
+                                <div style={{ background: 'rgba(255,255,255,0.05)', padding: '12px', borderRadius: '18px' }}>{tier.icon}</div>
+                                <h3 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 'bold' }}>{tier.name}</h3>
                             </div>
-                            <div style={{ fontSize: '2.2rem', fontWeight: '900', color: '#38bdf8', marginBottom: '1rem' }}>{t.price}</div>
-                            <p style={{ fontSize: '0.95rem', opacity: 0.6, marginBottom: '2rem', flex: 1 }}>{t.description}</p>
+                            <div style={{ fontSize: '2.2rem', fontWeight: '900', color: '#38bdf8', marginBottom: '1rem' }}>{tier.price}</div>
+                            <p style={{ fontSize: '0.95rem', opacity: 0.6, marginBottom: '2rem', flex: 1 }}>{tier.description}</p>
                             
                             <ul style={{ padding: 0, listStyle: 'none', marginBottom: '2rem' }}>
-                                {t.benefits.map((b, i) => (
+                                {tier.benefits.map((b, i) => (
                                     <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', fontSize: '0.85rem' }}>
                                         <CheckCircle size={16} color="#38bdf8" /> {b}
                                     </li>
                                 ))}
                             </ul>
 
-                            <button onClick={() => handleAction(t.id)} style={{ width: '100%', padding: '15px', borderRadius: '18px', border: 'none', background: t.color, color: 'white', fontWeight: '900', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 5px 20px rgba(0,0,0,0.3)', transition: 'transform 0.2s' }}>
-                                {t.id === 'utility' ? 'PUBLICAR AHORA' : 'COMPRAR AUSPICIO'}
+                            <button onClick={() => handleAction(tier.id)} style={{ width: '100%', padding: '15px', borderRadius: '18px', border: 'none', background: tier.color, color: 'white', fontWeight: '900', cursor: 'pointer', fontSize: '1rem', boxShadow: '0 5px 20px rgba(0,0,0,0.3)', transition: 'transform 0.2s' }}>
+                                {tier.id === 'utility' ? 'PUBLICAR AHORA' : 'COMPRAR AUSPICIO'}
                             </button>
                         </div>
                     ))}

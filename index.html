@@ -27,8 +27,31 @@
   <meta property="og:image" content="/img_trivia/50serenitoBisabueloVLSABES.png" />
   <meta property="og:type" content="website" />
 
-  <meta name="rdmls-version" content="2026-03-27-IMLS-v11">
+  <meta name="rdmls-version" content="2026-03-27-IMLS-v42">
   <title>vecinoslaserena.cl</title>
+  <script>
+    // DEEP SIGNAL SYNC v42: Recuperación Global ante Conflictos de Activos
+    window.addEventListener('unhandledrejection', function(e) {
+      const msg = (e.reason?.message || String(e.reason || "")).toLowerCase();
+      if (msg.includes('failed to fetch dynamically imported module') || 
+          msg.includes('chunkloaderror') || 
+          msg.includes('importing a module script failed')) {
+        
+        console.warn("VLS_DEEP_SYNC: Chunk Load Conflict. Purging and Hard Reloading...");
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            for (let name of names) caches.delete(name);
+          }).finally(() => {
+            const sep = window.location.href.includes('?') ? '&' : '?';
+            window.location.href = window.location.pathname + sep + 'vls_sync=' + Date.now();
+          });
+        } else {
+          const sep = window.location.href.includes('?') ? '&' : '?';
+          window.location.href = window.location.pathname + sep + 'vls_sync=' + Date.now();
+        }
+      }
+    });
+  </script>
   <script>
     // PRE-HYDRATION BRANDING (Avoid flashing VLS on RDMLS Domains)
     if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
@@ -101,8 +124,26 @@
 </head>
 
 <body>
+  <!-- C5-HYPER-SYNC: Purga Automática de Caché v36 -->
+  <script>
+    window.addEventListener('error', function(e) {
+      if (e.target && e.target.tagName === 'SCRIPT' && e.target.src && (e.target.src.includes('main') || e.target.src.includes('index'))) {
+        console.warn("VLS_RECOVERY: Signal Conflict Detected. Purging Cache Storage...");
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            for (let name of names) caches.delete(name);
+          }).finally(() => {
+            window.location.reload(true);
+          });
+        } else {
+          window.location.reload(true);
+        }
+      }
+    }, true);
+  </script>
+
   <div id="root"></div>
-  <script type="module" src="/src/main.jsx?v=11"></script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 
 </html>

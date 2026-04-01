@@ -1,7 +1,9 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
     const canvasRef = useRef(null);
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -12,11 +14,20 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
         canvas.width = W;
         canvas.height = H;
 
+        let isUnmounted = false;
         const img = new Image();
+        img.onload = () => {
+            if (!isUnmounted) setIsLoaded(true);
+        };
+        img.onerror = () => {
+            if (!isUnmounted) setHasError(true);
+        };
         img.src = image;
+
         let frame = 0;
         let animId;
         const draw = () => {
+            if (isUnmounted) return;
             frame++;
             ctx.clearRect(0, 0, W, H);
             
@@ -28,7 +39,8 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            if (img.complete) {
+            // Solo dibujar si la imagen est cargada y es vlida
+            if (img.complete && img.naturalWidth > 0 && isLoaded) {
                 ctx.save();
                 
                 // Hologram transformation (floating & slight rotation)
@@ -75,6 +87,12 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                     ctx.lineTo(W, y);
                     ctx.stroke();
                 }
+            } else if (hasError) {
+                // Fallback icon or text if image fails
+                ctx.font = 'bold 12px "Outfit"';
+                ctx.fillStyle = color;
+                ctx.textAlign = 'center';
+                ctx.fillText('NODO OFFLINE', W/2, H/2);
             }
 
             // Pedestal (Advanced Cyber Style)
@@ -119,8 +137,11 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
         };
 
         animId = requestAnimationFrame(draw);
-        return () => cancelAnimationFrame(animId);
-    }, [image, color]);
+        return () => {
+            isUnmounted = true;
+            cancelAnimationFrame(animId);
+        };
+    }, [image, color, isLoaded, hasError]);
 
     return (
         <div style={{ position: 'relative', width: '300px', height: '450px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

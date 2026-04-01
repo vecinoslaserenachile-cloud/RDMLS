@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Heart, BookOpen, Users, Calendar, MapPin, HandHeart, Sun, Star, Info, Volume2, VolumeX, Eye } from 'lucide-react';
+import { X, Heart, BookOpen, Users, Calendar, MapPin, HandHeart, Sun, Star, Info, Volume2, VolumeX, Eye, Send } from 'lucide-react';
+import { pushToBigBrain } from '../utils/BigBrainHelper';
 
 export default function EcumenicalPortalModal({ onClose }) {
     const [activeTab, setActiveTab] = useState('catolica');
@@ -184,7 +185,26 @@ export default function EcumenicalPortalModal({ onClose }) {
                             <p style={{ color: highContrast ? '#ccc' : 'var(--text-secondary)', fontSize: highContrast ? '1.2rem' : '0.95rem', lineHeight: '1.6', flex: 1 }}>
                                 {activeData.join}
                             </p>
-                            <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', background: highContrast ? '#fff' : 'var(--brand-primary)', color: highContrast ? '#000' : 'white', fontWeight: 'bold' }}>Contactar Comunidad</button>
+                            <button 
+                                onClick={async () => {
+                                    const announcement = prompt("Describe la actividad o anuncio para la comunidad:");
+                                    if (announcement) {
+                                        await pushToBigBrain({
+                                            type: 'religious',
+                                            title: `Anuncio: ${activeData.title}`,
+                                            description: announcement,
+                                            location: { lat: -29.9027, lng: -71.2519 }, // Default Center
+                                            metadata: { religion: activeTab },
+                                            user: { id: 'guest', name: 'Vecino de Fe' }
+                                        });
+                                        alert("Anuncio enviado al Gran Cerebro VLS.");
+                                    }
+                                }}
+                                className="btn btn-primary" 
+                                style={{ width: '100%', marginTop: '1rem', background: highContrast ? '#fff' : 'var(--brand-primary)', color: highContrast ? '#000' : 'white', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                            >
+                                <Send size={18} /> Anunciar Actividad
+                            </button>
                         </div>
                     </div>
                 </div>

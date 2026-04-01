@@ -253,8 +253,8 @@ export default function OperacionLaSerena({ onClose }) {
     // Timer logic
     useEffect(() => {
         if (status === 'playing' && timeLeft > 0) {
-            const t = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
-            return () => clearInterval(t);
+            const missionTimer = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+            return () => clearInterval(missionTimer);
         } else if (timeLeft === 0 && status === 'playing') {
             setStatus('finished');
             handleMissionEnd();

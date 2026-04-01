@@ -238,7 +238,7 @@ export default function VlsSmartBillionaire({ onClose }) {
         if (isCameraActive && videoRef.current) {
             navigator.mediaDevices.getUserMedia({ video: true }).then(s => { videoRef.current.srcObject = s; }).catch(() => setIsCameraActive(false));
         } else if (!isCameraActive && videoRef.current && videoRef.current.srcObject) {
-            videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+            videoRef.current.srcObject.getTracks().forEach(track => track.stop());
         }
     }, [isCameraActive]);
 

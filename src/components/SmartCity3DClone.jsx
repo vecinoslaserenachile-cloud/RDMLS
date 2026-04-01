@@ -1,6 +1,6 @@
 import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Environment, Float, Html, Stars, PresentationControls, Stage, ContactShadows, PerspectiveCamera } from '@react-three/drei';
+import { OrbitControls, Environment, Float, Html, Stars, PresentationControls, Stage, ContactShadows, PerspectiveCamera, useGLTF } from '@react-three/drei';
 import { X, Map, Navigation, Users, Zap, Train, ShieldAlert } from 'lucide-react';
 import * as THREE from 'three';
 
@@ -82,6 +82,24 @@ function MetroSystem({ points }) {
                     </mesh>
                 </group>
             ))}
+        </group>
+    );
+}
+
+function SerenitoSupervisor() {
+    const { scene } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
+    return (
+        <group position={[0, 0, 0]} rotation={[0, -Math.PI / 4, 0]}>
+            <primitive object={scene} scale={0.8} position={[0, 0, 0]} castShadow />
+            <Html position={[0, 1.8, 0]} center>
+                <div style={{ 
+                    background: 'rgba(56, 189, 248, 0.9)', color: 'black', padding: '4px 10px', 
+                    borderRadius: '20px', fontSize: '10px', fontWeight: '900', border: '2px solid white',
+                    boxShadow: '0 0 15px rgba(56,189,248,0.5)', whiteSpace: 'nowrap'
+                }}>
+                    SUPERVISOR VLS
+                </div>
+            </Html>
         </group>
     );
 }
@@ -217,6 +235,7 @@ export default function SmartCity3DClone({ onClose }) {
                             <pointLight position={[-10, 5, -5]} intensity={0.5} color="#38bdf8" />
                             
                             <CityBase />
+                            <SerenitoSupervisor />
 
                                 {/* Agua (Mar) */}
                                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[-4, -0.05, 0]} receiveShadow>

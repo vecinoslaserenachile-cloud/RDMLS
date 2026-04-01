@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Globe, Users, Book, Leaf, MapPin, Calendar, Lightbulb, Coffee, Settings, Info, Volume2, VolumeX, Eye } from 'lucide-react';
+import { X, Globe, Users, Book, Leaf, MapPin, Calendar, Lightbulb, Coffee, Settings, Info, Volume2, VolumeX, Eye, Send } from 'lucide-react';
+import { pushToBigBrain } from '../utils/BigBrainHelper';
 
 export default function SecularPortalModal({ onClose }) {
     const [activeTab, setActiveTab] = useState('libre');
@@ -185,9 +186,28 @@ export default function SecularPortalModal({ onClose }) {
                                 <p style={{ color: highContrast ? '#ccc' : 'var(--text-secondary)', fontSize: highContrast ? '1.2rem' : '0.95rem', lineHeight: '1.6', flex: 1 }}>
                                     {activeData.join}
                                 </p>
-                                <button className="btn btn-primary" style={{ width: '100%', marginTop: '1rem', background: highContrast ? '#fff' : '#3b82f6', color: highContrast ? '#000' : 'white', fontWeight: 'bold' }}>Contactar Agrupación</button>
-                            </div>
+                            <button 
+                                onClick={async () => {
+                                    const action = prompt("Describe la acción o reporte cívico (Ej: Limpieza de playa realizada, Reunión vecinal terminada):");
+                                    if (action) {
+                                        await pushToBigBrain({
+                                            type: 'secular',
+                                            title: `Acción: ${activeData.title}`,
+                                            description: action,
+                                            location: { lat: -29.9027, lng: -71.2519 },
+                                            metadata: { group: activeTab },
+                                            user: { id: 'guest', name: 'Vecino Cívico' }
+                                        });
+                                        alert("Acción registrada en el Gran Cerebro VLS.");
+                                    }
+                                }}
+                                className="btn btn-primary" 
+                                style={{ width: '100%', marginTop: '1rem', background: highContrast ? '#fff' : '#3b82f6', color: highContrast ? '#000' : 'white', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                            >
+                                <Send size={18} /> Reportar Acción Cívica
+                            </button>
                         </div>
+                    </div>
                     </div>
                 </div>
             </div>

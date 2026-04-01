@@ -4,11 +4,14 @@ import {
   Play, Pause, Award, CheckCircle, Shield, Globe, Radio,
   Volume2, VolumeX, ArrowRight, QrCode, AlertTriangle,
   Landmark, Cpu, ShieldAlert, Activity, Castle, Compass,
-  FileText, FilePlus, Images, Languages, ChevronLeft, ChevronRight, X
+  FileText, FilePlus, Images, Languages, ChevronLeft, ChevronRight, X,
+  ShieldCheck, Camera, User, Database, Bot, Sparkles, Send, Loader2, X as XIcon
 } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import IdentityGate from '../components/IdentityGate';
+import MicroTutorialVLS from '../components/MicroTutorialVLS';
 import { db } from '../utils/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { Sparkles, X as XIcon, Send, Loader2, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
@@ -180,11 +183,9 @@ const playSound = (type) => {
   }
 };
 
-// Enlaces RAW directos a GitHub (Versiones degradadas para Office Viewer)
-// El PPTX Oficial usa el commit reciente que funciona perfecto
-const RAW_PPTX_A = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/d102b292d60a753886905cc038bd118fa8634545/IMLS_Induccion_Institucional9Enero2026.pptx';
-// El PPTX Beta 26 usa el commit histórico "94c24c..." que aloja la versión optimizada más liviana
-const RAW_PPTX_B = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx';
+// Enlaces RAW directos a GitHub (Versiones optimizadas para Office Viewer — Rama Main)
+const RAW_PPTX_A = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/portal-induccion-imls/main/cosas/La_Serena_Municipal_2026.pptx';
+const RAW_PPTX_B = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/portal-induccion-imls/main/cosas/La%20Serena%20entorno%20municipal.pptx';
 const VIEWER_A = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX_A)}`;
 const VIEWER_B = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX_B)}`;
 
@@ -221,7 +222,7 @@ const QUESTIONS = [
 // ── MÓDULOS DE LA MALLA ───────────────────────────────────────────────
 const MODULOS = [
   { id:'adn', icon:'🏛️', label:'ADN Municipal 2026', desc:'Misión, Visión y 5 Valores',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Edificio_I._Municipalidad_de_La_Serena.JPG/800px-Edificio_I._Municipalidad_de_La_Serena.JPG',
+    img: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/memorial/cuturrufo/municipalidad_serena_frontis.png',
     content:[
       { k:'Misión',  v:'Servicios municipales cercanos, amables y de calidad para mejorar la vida de los vecinos.' },
       { k:'Visión',  v:'Municipio moderno, creíble, transparente e informado. Líder en gestión Smart Comuna.' },
@@ -230,7 +231,7 @@ const MODULOS = [
     quiz:{ q:'¿Cuál es la misión central de la IMLS?', opts:['Maximizar ingresos tributarios','Servicios cercanos y de calidad para los vecinos','Gestionar concesiones privadas'], ans:1, exp:'La misión es clara: servicio cercano, amable y de calidad a cada vecino de La Serena.' }},
 
   { id:'gestion', icon:'⚙️', label:'Cerebro DAF/SECPLAN', desc:'Decreto 1730 · Gestión y Planificación',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Avenida_Francisco_de_Aguirre.jpg/960px-Avenida_Francisco_de_Aguirre.jpg',
+    img: '/smart_city_serena_2026_png_1774894743323.png',
     content:[
       { k:'Decreto 1730', v:'Regula la estructura orgánica de la Ilustre Municipalidad de La Serena.' },
       { k:'SECPLAN',      v:'Planificación Comunal, Presupuesto e Inversión Pública.' },
@@ -239,7 +240,7 @@ const MODULOS = [
     quiz:{ q:'¿Qué unidad gestiona la Planificación Comunal y el Presupuesto?', opts:['DAF','SECPLAN','Alcaldía'], ans:1, exp:'SECPLAN (Secretaría Comunal de Planificación) articula el presupuesto y la inversión pública.' }},
 
   { id:'karin', icon:'🛡️', label:'Ley Karin 21.643', desc:'Protocolo de Prevención y Denuncia',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Plaza_de_Armas_La_Serena.JPG/960px-Plaza_de_Armas_La_Serena.JPG',
+    img: '/smart_city_serena_2026_png_1774894743323.png',
     content:[
       { k:'Objetivo',  v:'Prevenir, investigar y sancionar el acoso laboral, sexual y la violencia en el trabajo.' },
       { k:'Protocolo', v:'Mecanismo interno confidencial de investigación. Tolerancia cero. Un acto basta.' },
@@ -248,7 +249,7 @@ const MODULOS = [
     quiz:{ q:'¿Cuántos actos de acoso se necesitan para activar la Ley Karin?', opts:['Tres o más','Dos comprobados','Un solo acto grave es suficiente'], ans:2, exp:'La Ley Karin establece tolerancia cero: un único acto grave ya activa el protocolo de investigación.' }},
 
   { id:'riesgos', icon:'🚨', label:'Prevención Ley 16.744', desc:'Seguridad y Plan de Emergencias',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Portada_2015_5.jpg/960px-Portada_2015_5.jpg',
+    img: '/smart_city_serena_2026_png_1774894743323.png',
     content:[
       { k:'Seguro',  v:'Seguro social obligatorio contra accidentes del trabajo y enfermedades profesionales.' },
       { k:'Acción',  v:'Ante accidente: informar a jefatura directa y acudir al centro de salud en convenio.' },
@@ -257,7 +258,7 @@ const MODULOS = [
     quiz:{ q:'Ante un sismo fuerte en La Serena, ¿cuál es la zona de evacuación correcta?', opts:['Permanecer en el edificio','Cota 30, Av. Cisternas','Plaza de Armas'], ans:1, exp:'La Cota 30 (Av. Cisternas) es la zona segura ante tsunami. Es la ruta oficial del Plan de Evacuación Municipal.' }},
 
   { id:'patrimonio', icon:'⚜️', label:'Historia Local', desc:'Patrimonio de La Serena',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Faro_Monumental_de_La_Serena._09.12.2022.jpg/960px-Faro_Monumental_de_La_Serena._09.12.2022.jpg',
+    img: '/faro_monumental_premium_png_1774894700995.png',
     content:[
       { k:'Faro',     v:'Ícono nacional y monumental de la bahía serenense.' },
       { k:'Iglesias', v:'Ciudad de los campanarios. Riqueza arquitectónica y religiosa única.' },
@@ -266,13 +267,13 @@ const MODULOS = [
     quiz:{ q:'¿Qué monumento es el ícono absoluto del patrimonio arquitectónico de La Serena a nivel nacional?', opts:['El Reloj Monumental','El Faro Monumental','La Recova Norte'], ans:1, exp:'El Faro Monumental de La Serena, declarado Monumento Nacional, es el emblema que nos proyecta hacia el turismo nacional e internacional.' }},
 
   { id:'turismo', icon:'🤝', label:'Atención Pública', desc:'Empatía y Resolución Ciudadana',
-    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Av._del_Mar%2C_La_Serena-Chile.JPG/960px-Av._del_Mar%2C_La_Serena-Chile.JPG',
+    img: '/smart_city_serena_2026_png_1774894743323.png',
     content:[
       { k:'Empatía',   v:'Escucha activa ante vecinos exaltados o frustrados.' },
       { k:'Rapidez',   v:'Resolución ágil usando tecnologías como "Smart Comuna".' },
       { k:'Lenguaje',  v:'Uso de un lenguaje sencillo, claro y cálido.' },
     ],
-    quiz:{ q:'Frente a un ciudadano exaltado buscando solucionar un trámite en la IMLS, la mejor respuesta es:', opts:['Derivarlo de inmediato a otro piso','Aplicar escucha activa, empatizar y guiarlo de manera paciente al canal oficial','Pedirle que vuelva mañana cuando esté calmado'], ans:1, exp:'La Vocación de Servicio Público exige calidez y empatía. Derivarlo correctamente o usar las plataformas (como RDMLS) disminuye su frustración.' }},
+    quiz:{ q:'Frente a un ciudadano exaltado buscando solucionar un trámite en la IMLS, la mejor respuesta es:', opts:['Derivarlo de inmediato a otro piso','Aplicar escucha activa, empathizar y guiarlo de manera paciente al canal oficial','Pedirle que vuelva mañana cuando esté calmado'], ans:1, exp:'La Vocación de Servicio Público exige calidez y empatía. Derivarlo correctamente o usar las plataformas (como RDMLS) disminuye su frustración.' }},
 
   { id:'l_en', icon:'🌎', label:'English Bridge', desc:'Atención a Turistas Global', isLang:true,
     img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Recova_La_Serena.JPG/960px-Recova_La_Serena.JPG',
@@ -290,8 +291,8 @@ const MODULOS = [
     img: GALERIA[4],
     quiz:{ q:'¿Cómo se dice "Municipalidad" en chino mandarín (pinyin)?', opts:['Shìzhèngfǔ (市政府)','Xuéxiào (学校)','Yīyuàn (医院)'], ans:0, exp:'Shìzhèngfǔ (市政府) es "gobierno municipal" en mandarín. Clave para recibir delegaciones de ciudades hermanas.' }},
 
-  { id:'pptx_a', icon:'📄', label:'Inducción Oficial 2026', desc:'Presentación 9 Enero 2026', isPPTX:true, src:VIEWER_A, rawRef:RAW_PPTX_A },
-  { id:'pptx_b', icon:'📋', label:'Inducción Beta 26',      desc:'Versión Beta de Revisión',   isPPTX:true, src:VIEWER_B, rawRef:RAW_PPTX_B },
+  { id:'pptx_a', icon:'📄', label:'La Serena Municipal 2026', desc:'Inducción Institucional V.V.', isPPTX:true, src:VIEWER_A, rawRef:RAW_PPTX_A },
+  { id:'pptx_b', icon:'📋', label:'Entorno Municipal',       desc:'Resumen Ejecutivo de Gestión', isPPTX:true, src:VIEWER_B, rawRef:RAW_PPTX_B },
   { id:'galeria', icon:'🖼️', label:'Galería IMLS',           desc:'Registro Visual Oficial',    isGallery:true },
 ];
 
@@ -310,7 +311,7 @@ const glassCard = {
   `,
   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
   position: 'relative',
-  overflow: 'hidden'
+  overflow: 'visible' // Permitir que el texto respire
 };
 
 const goldBtn = {
@@ -356,9 +357,12 @@ const AIGenerativeImage = ({ src, alt, style, wrapperStyle, onClick, onMouseEnte
         </div>
       )}
       {error && (
-        <div style={{ position: 'absolute', inset: 0, background: '#1c1c1e', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-          <span style={{ fontSize: '1rem' }}>🤖</span>
-          <span style={{ color: '#ef4444', fontSize: '0.5rem', fontWeight: 'bold', textTransform:'uppercase' }}>Grok Offline</span>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, #020617 0%, #000 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', zIndex: 10 }}>
+          <img src="/serenito_3d_fixing_error_png_1774895062783.png" alt="Error" style={{ height: '60px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }} />
+          <div style={{ textAlign: 'center' }}>
+            <span style={{ color: '#ef4444', fontSize: '0.6rem', fontWeight: '900', letterSpacing: '2px', textTransform: 'uppercase', display: 'block' }}>SISTEMA EN REESTABLECIMIENTO</span>
+            <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.5rem', fontWeight: '600' }}>Buscando señal de IMLS_CLOUD_BACKUP...</span>
+          </div>
         </div>
       )}
       <img
@@ -391,6 +395,7 @@ export default function Aprende({ isRDMLS = false }) {
   });
 
   const [step, setStep]               = useState('registro');
+  const [showTutorial, setShowTutorial] = useState(true);
   
   // LOGICA PARA FORZAR REGISTRO SI SE SALTA
   useEffect(() => {
@@ -410,6 +415,8 @@ export default function Aprende({ isRDMLS = false }) {
   const [lastCorrect, setLastCorrect] = useState(false);
   const [score, setScore]             = useState(0);
   const [modQuiz, setModQuiz]         = useState({ answer: null, showFeedback: false }); // Quiz dentro del modal
+  const [showFullGate, setShowFullGate] = useState(false); // Para el IdentityGate biométrico
+  const [showAdminMode, setShowAdminMode] = useState(false); // VLS 2026: Vista Administrativa TICs
 
   useEffect(() => {
     document.title = 'IMLS · Academia Smart 2026';
@@ -504,7 +511,7 @@ export default function Aprende({ isRDMLS = false }) {
   const nextTrivia = () => {
     if (triviaStep < QUESTIONS.length - 1) {
       playSound('pop');
-      setTriviaStep(t => t + 1);
+      setTriviaStep(prev => prev + 1);
       setAnswered(false);
     } else {
       playSound('success');
@@ -516,77 +523,210 @@ export default function Aprende({ isRDMLS = false }) {
 
   // ── PANTALLA: REGISTRO ────────────────────────────────────────────
   if (step === 'registro') return (
-    <div style={{ ...pageBase, padding: isMobile ? '10px' : '1.2rem', position:'relative' }}>
-      <div style={{ position:'absolute', top:'10px', left:'10px', fontSize:'0.4rem', opacity:0.1 }}>V2.1_STABLE</div>
-      <motion.div initial={{ opacity:0, y:30 }} animate={{ opacity:1, y:0 }}
+    <div style={{ ...pageBase, padding: isMobile ? '10px' : '0', position:'relative', justifyContent:'center' }}>
+      <div style={{ position:'absolute', top:'20px', left:'20px', display:'flex', alignItems:'center', gap:'10px', opacity:0.6 }}>
+        <img src="/escudo.png" alt="IMLS" style={{ height:'30px' }}/>
+        <div style={{ fontSize:'0.5rem', fontWeight:'900', letterSpacing:'2px' }}>RDMLS · V2.6_PREMIUM</div>
+      </div>
+      
+      <motion.div 
+        initial={{ opacity:0, scale:0.95 }} 
+        animate={{ opacity:1, scale:1 }}
         style={{ 
           width:'100%', 
-          maxWidth:'1000px', 
+          maxWidth:'1100px', 
           display:'flex', 
           flexDirection: isMobile ? 'column' : 'row',
-          gap: isMobile ? '1.5rem' : '4rem', 
-          alignItems:'center', 
+          gap: '0', 
+          alignItems:'stretch', 
           justifyContent:'center',
-          margin: isMobile ? '1rem auto' : 'auto',
-          padding: isMobile ? '1rem' : '0'
+          minHeight: isMobile ? 'auto' : '650px',
+          background:'#000',
+          borderRadius: '40px',
+          overflow: 'hidden',
+          boxShadow: '0 50px 100px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.05)'
         }}>
         
-        <div style={{ display:'flex', flexDirection:'column', gap: isMobile ? '0.8rem' : '1.5rem', textAlign: isMobile ? 'center' : 'left', alignItems: isMobile ? 'center' : 'flex-start', flex: 1 }}>
-          <img src="/escudo.png" alt="IMLS" style={{ height: isMobile ? '50px' : '80px', filter:'drop-shadow(0 0 20px rgba(197,160,101,0.4))' }}/>
-          <h1 style={{ fontSize: isMobile ? '2rem' : 'clamp(2.5rem,5vw,4rem)', fontWeight:'900', fontStyle:'italic', textTransform:'uppercase', lineHeight:1, margin:0 }}>
-            Smart<br/><span style={{ color:C.gold }}>Academy</span>
-          </h1>
-          <p style={{ color:C.gold, fontWeight:'700', textTransform:'uppercase', fontSize: isMobile ? '0.55rem' : '0.75rem', letterSpacing:'4px', borderLeft: isMobile ? 'none' : `4px solid ${C.gold}`, borderBottom: isMobile ? `2px solid ${C.gold}` : 'none', padding: isMobile ? '0 0 8px 0' : '0 0 0 12px', margin:0 }}>
-            Capacitación Institucional IMLS · 2026
-          </p>
-          <div style={{ display:'flex', flexDirection:'column', gap:'8px', width: '100%' }}>
-            {[
-              { icon:'📚', t:'12 módulos de formación' },
-              { icon:'🎙️', t:'Audio Radio RDMLS en vivo' },
-            ].map(({ icon, t }) => (
-              <div key={t} style={{ display:'flex', alignItems:'center', gap:'12px', ...glassCard, padding: isMobile ? '8px 12px' : '10px 16px', background: isMobile ? 'rgba(255,255,255,0.02)' : C.glass }}>
-                <span style={{ fontSize: isMobile ? '1rem' : '1.2rem' }}>{icon}</span>
-                <span style={{ fontSize: isMobile ? '0.75rem' : '0.85rem', color:'#94a3b8' }}>{t}</span>
+        {/* LADO IZQUIERDO: VISUAL HERO */}
+        <div style={{ 
+          flex: 1.2, 
+          position:'relative', 
+          background:'linear-gradient(135deg, #2D0604 0%, #000 100%)',
+          display:'flex',
+          flexDirection:'column',
+          justifyContent:'flex-end',
+          padding: isMobile ? '3rem 2rem' : '4rem',
+          overflow:'hidden'
+        }}>
+          {/* Fondo de red neuronal / Smart City */}
+          <div style={{ position:'absolute', inset:0, opacity:0.15, background:'url("https://www.transparenttextures.com/patterns/carbon-fibre.png")' }}></div>
+          <div style={{ position:'absolute', top:'-10%', right:'-10%', width:'300px', height:'300px', background:'radial-gradient(circle, #CD1C18 0%, transparent 70%)', opacity:0.2, filter:'blur(60px)' }}></div>
+          
+          <div style={{ position:'relative', zIndex:10 }}>
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <img src="/escudo.png" alt="IMLS" style={{ height:'60px', marginBottom:'2rem', filter:'drop-shadow(0 0 20px rgba(197,160,101,0.5))' }}/>
+              <h1 style={{ fontSize: isMobile ? '2.5rem' : '4.5rem', fontWeight:'900', fontStyle:'italic', textTransform:'uppercase', lineHeight:0.9, margin:0, letterSpacing:'-2px' }}>
+                Academia<br/><span style={{ color:C.gold }}>Smart 2026</span>
+              </h1>
+              <p style={{ color:'#94a3b8', fontSize: '0.9rem', letterSpacing:'1px', marginTop:'1.5rem', maxWidth:'300px', lineHeight:1.6 }}>
+                Portal unificado de inducción y formación continua para funcionarios de excelencia.
+              </p>
+            </motion.div>
+
+            <div style={{ marginTop:'3rem', display:'flex', gap:'1rem' }}>
+              <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)', borderRadius:'15px', padding:'15px', flex:1 }}>
+                <ShieldCheck size={20} color={C.gold} style={{ marginBottom:'8px' }}/>
+                <div style={{ fontSize:'0.6rem', color:'#64748b', fontWeight:'900', letterSpacing:'1px' }}>ACCESO SEGURO</div>
+                <div style={{ fontSize:'0.75rem', color:'white', fontWeight:'700' }}>Auth AES-256</div>
               </div>
-            ))}
+              <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.05)', borderRadius:'15px', padding:'15px', flex:1 }}>
+                <Award size={20} color={C.gold} style={{ marginBottom:'8px' }}/>
+                <div style={{ fontSize:'0.6rem', color:'#64748b', fontWeight:'900', letterSpacing:'1px' }}>CERTIFICACIÓN</div>
+                <div style={{ fontSize:'0.75rem', color:'white', fontWeight:'700' }}>Validez IMLS</div>
+              </div>
+            </div>
           </div>
+
+          {/* SERENITO 3D HUMANIZED - Regla #3 */}
+          <motion.img 
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ type:'spring', damping:20, delay:0.4 }}
+            src="/serenito_3d_humanized_2026_1774875415876.png" 
+            alt="Serenito 3D" 
+            style={{ 
+              position:'absolute', 
+              bottom: isMobile ? '-20px' : '-50px', 
+              right: isMobile ? '-20px' : '-40px', 
+              height: isMobile ? '200px' : '450px',
+              objectFit:'contain',
+              filter: 'drop-shadow(0 20px 50px rgba(0,0,0,0.9))'
+            }} 
+          />
         </div>
 
-        <div style={{ ...glassCard, padding: isMobile ? '1.5rem' : '2.5rem', width: '100%', boxSizing: 'border-box' }}>
-          <h2 style={{ fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight:'900', textTransform:'uppercase', fontStyle:'italic', marginBottom:'1.2rem', color:'white', textAlign: isMobile ? 'center' : 'left' }}>
-            Registro
-          </h2>
-          <div style={{ display:'flex', flexDirection:'column', gap:'1.2rem' }}>
-            {[
-              { label:'NOMBRE COMPLETO', key:'nombres', placeholder:'Su nombre' },
-              { label:'RUT', key:'rut', placeholder:'12.345.678-9', upper:true },
-            ].map(({ label, key, placeholder, upper }) => (
-              <div key={key}>
-                <label style={{ display:'block', fontSize:'0.6rem', color:'#64748b', letterSpacing:'3px', marginBottom:'6px' }}>{label}</label>
+        {/* LADO DERECHO: FORMULARIO */}
+        <div style={{ 
+          flex: 1, 
+          background:'#0A0A0A', 
+          padding: isMobile ? '2.5rem' : '4rem',
+          display:'flex',
+          flexDirection:'column',
+          justifyContent:'center'
+        }}>
+          <div style={{ marginBottom:'2.5rem' }}>
+            <h2 style={{ fontSize: '1.8rem', fontWeight:'900', textTransform:'uppercase', fontStyle:'italic', margin:0, color:'white' }}>
+              Identificación
+            </h2>
+            <div style={{ height:'4px', width:'40px', background:C.gold, marginTop:'10px', borderRadius:'2px' }}></div>
+          </div>
+
+          <div style={{ display:'flex', flexDirection:'column', gap:'1.5rem' }}>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'1rem' }}>
+              <div>
+                <label style={{ display:'block', fontSize:'0.65rem', color:'#64748b', letterSpacing:'2px', marginBottom:'8px', fontWeight:'700' }}>NOMBRES</label>
                 <input
-                  value={userData[key] || ''}
-                  onChange={e => setUserData({ ...userData, [key]: upper ? e.target.value.toUpperCase() : e.target.value })}
-                  placeholder={placeholder}
-                  style={{ width:'100%', background:'rgba(0,0,0,0.4)', border:`1.5px solid ${C.goldBrd}`, borderRadius:'12px', padding:'12px 16px', color:'white', fontSize:'1rem', outline:'none', boxSizing:'border-box', fontWeight:'600' }}
+                  value={userData.nombres || ''}
+                  onChange={e => setUserData({ ...userData, nombres: e.target.value })}
+                  placeholder="Ej: Rodrigo"
+                  style={{ width:'100%', background:'rgba(255,255,255,0.03)', border:`1px solid ${C.glassBrd}`, borderRadius:'22px', padding:'20px 24px', color:'white', fontSize:'1.1rem', lineHeight:'1.4', outline:'none', boxSizing:'border-box', transition:'border-color 0.3s' }}
+                  onFocus={e => e.target.style.borderColor = C.gold}
+                  onBlur={e => e.target.style.borderColor = C.glassBrd}
                 />
               </div>
-            ))}
+              <div>
+                <label style={{ display:'block', fontSize:'0.65rem', color:'#64748b', letterSpacing:'2px', marginBottom:'8px', fontWeight:'700' }}>APELLIDOS</label>
+                <input
+                  value={userData.apellidos || ''}
+                  onChange={e => setUserData({ ...userData, apellidos: e.target.value })}
+                  placeholder="Ej: Silva"
+                  style={{ width:'100%', background:'rgba(255,255,255,0.03)', border:`1px solid ${C.glassBrd}`, borderRadius:'16px', padding:'16px', color:'white', fontSize:'0.95rem', outline:'none', boxSizing:'border-box', transition:'border-color 0.3s' }}
+                  onFocus={e => e.target.style.borderColor = C.gold}
+                  onBlur={e => e.target.style.borderColor = C.glassBrd}
+                />
+              </div>
+            </div>
+
             <div>
-              <label style={{ display:'block', fontSize:'0.6rem', color:'#64748b', letterSpacing:'3px', marginBottom:'6px' }}>ÁREA / DIRECCIÓN</label>
-              <select value={userData.area} onChange={e => setUserData({ ...userData, area: e.target.value })}
-                style={{ width:'100%', background:'rgba(0,0,0,0.4)', border:`1.5px solid ${C.goldBrd}`, borderRadius:'12px', padding:'12px', color:'white', fontSize:'0.9rem', outline:'none' }}>
-                <option value="">Seleccione su área</option>
-                {['Alcaldía','Administración Municipal','SECPLAN','DAF / Finanzas','DIDECO','Comunicaciones / RDMLS','Gestión de Personas (RRHH)','Seguridad Ciudadana','Innovación Digital','Otra Dirección'].map(a => <option key={a}>{a}</option>)}
+              <label style={{ display:'block', fontSize:'0.65rem', color:'#64748b', letterSpacing:'2px', marginBottom:'8px', fontWeight:'700' }}>RUT INSTITUCIONAL</label>
+              <div style={{ position:'relative' }}>
+                <input
+                  value={userData.rut || ''}
+                  onChange={e => setUserData({ ...userData, rut: e.target.value.toUpperCase() })}
+                  placeholder="12.345.678-9"
+                  style={{ width:'100%', background:'rgba(255,255,255,0.03)', border:`1px solid ${C.glassBrd}`, borderRadius:'22px', padding:'20px 24px 20px 50px', color:'white', fontSize:'1.1rem', lineHeight:'1.4', outline:'none', boxSizing:'border-box', fontWeight:'700' }}
+                  onFocus={e => e.target.style.borderColor = C.gold}
+                  onBlur={e => e.target.style.borderColor = C.glassBrd}
+                />
+                <User size={20} color={C.gold} style={{ position:'absolute', left:'18px', top:'50%', transform:'translateY(-50%)' }}/>
+              </div>
+            </div>
+
+            <div>
+              <label style={{ display:'block', fontSize:'0.65rem', color:'#64748b', letterSpacing:'2px', marginBottom:'8px', fontWeight:'700' }}>DIRECCIÓN / DEPARTAMENTO</label>
+              <select 
+                value={userData.area} 
+                onChange={e => setUserData({ ...userData, area: e.target.value })}
+                style={{ width:'100%', background:'#111', border:`1px solid ${C.glassBrd}`, borderRadius:'22px', padding:'20px', color:'white', fontSize:'1.1rem', lineHeight:'1.4', outline:'none', cursor:'pointer' }}
+              >
+                <option value="">Seleccione su unidad...</option>
+                <option>Alcaldía / Gabinete</option>
+                <option>Admin. Municipal</option>
+                <option>SECPLAN / Proyectos</option>
+                <option>DAF / Finanzas</option>
+                <option>DIDECO / Social</option>
+                <option>Comunicaciones / RDMLS</option>
+                <option>Gestión de Personas (RRHH)</option>
+                <option>Seguridad Ciudadana 1420</option>
+                <option>Innovación / TICs</option>
+                <option>Jurídica / Control</option>
+                <option>Tránsito / DOM</option>
+                <option>Otra Dirección</option>
               </select>
             </div>
-            <button onClick={handleLogin} style={{ ...goldBtn, width:'100%', marginTop:'0.5rem' }}>
-              ENTRAR AL CENTRO →
+
+            <div style={{ display:'flex', alignItems:'center', gap:'10px', marginTop:'1rem' }}>
+              <input type="checkbox" id="terms" style={{ accentColor:C.gold }} />
+              <label htmlFor="terms" style={{ fontSize:'0.7rem', color:'#64748b' }}>Declaro que la información es fidedigna y autorizo la verificación institucional.</label>
+            </div>
+
+            <div style={{ display:'flex', gap:'1rem', marginTop:'1rem' }}>
+              <button 
+                onClick={handleLogin} 
+                style={{ ...goldBtn, flex:1, padding:'20px', fontSize:'1rem', display:'flex', alignItems:'center', justifyContent:'center', gap:'12px' }}
+              >
+                ACCESO SIMPLE <ArrowRight size={20}/>
+              </button>
+              
+              <button 
+                onClick={() => setShowFullGate(true)}
+                style={{ ...goldBtn, flex:1, background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color:'white', border:'none', padding:'20px', fontSize:'1rem', display:'flex', alignItems:'center', justifyContent:'center', gap:'12px' }}
+              >
+                <Camera size={20}/> BIOMETRÍA
+              </button>
+            </div>
+
+            <button 
+              onClick={() => window.location.href = '/'}
+              style={{ background:'transparent', border:'none', color:'#475569', fontSize:'0.75rem', fontWeight:'700', cursor:'pointer', textTransform:'uppercase', letterSpacing:'1px', marginTop:'1rem' }}
+            >
+              Cancelar y Salir
             </button>
           </div>
         </div>
       </motion.div>
+      
+      {/* Sello de Seguridad */}
+      <div style={{ marginTop:'2rem', display:'flex', alignItems:'center', gap:'1rem', color:'#334155', fontSize:'0.7rem', fontWeight:'800', letterSpacing:'2px' }}>
+        <ShieldCheck size={16}/> PROTOCOLO DE IDENTIDAD VLS-SECURE
+      </div>
     </div>
   );
+
 
   // ── PANTALLA: TRIVIA ──────────────────────────────────────────────
   if (step === 'trivia') {
@@ -753,9 +893,11 @@ export default function Aprende({ isRDMLS = false }) {
               {isPlaying ? <Radio size={isMobile ? 14 : 18} className="animate-pulse"/> : <Radio size={isMobile ? 14 : 18}/>}
               {isPlaying ? 'RDMLS FM' : 'RADIO OFF'}
             </button>
-            <div style={{ background:C.gold, padding: isMobile ? '6px' : '10px', borderRadius:'14px', boxShadow:`0 4px 20px rgba(197,160,101,0.4), inset 0 1px 0 rgba(255,255,255,0.4)` }}>
-              <Landmark size={isMobile ? 20 : 28} color="black"/>
-            </div>
+            <button onClick={() => { playSound('pop'); setShowAdminMode(true); }} style={{ background:'transparent', border:'none', cursor:'pointer' }}>
+              <div style={{ background:C.gold, padding: isMobile ? '6px' : '10px', borderRadius:'14px', boxShadow:`0 4px 20px rgba(197,160,101,0.4), inset 0 1px 0 rgba(255,255,255,0.4)`, display:'flex', alignItems:'center', justifyContent:'center' }}>
+                <Cpu size={isMobile ? 20 : 28} color="black"/>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -981,7 +1123,121 @@ export default function Aprende({ isRDMLS = false }) {
           </motion.div>
         )}
       </AnimatePresence>
+      <AnimatePresence>
+        {showFullGate && (
+          <IdentityGate 
+            onClose={() => setShowFullGate(false)} 
+            onVerified={(mode) => {
+               setUserData(p => ({ ...p, nombres: 'Funcionario', apellidos: 'Verificado', area: mode === 'institution' ? 'Institucional' : 'Ciudadano' }));
+               setStep('dashboard');
+               setShowFullGate(false);
+            }} 
+          />
+        )}
+      </AnimatePresence>
+
+      {/* ── MODO ADMINISTRADOR: PRESENTACIÓN TICs Y ARQUITECTURA ── */}
+      <AnimatePresence>
+        {showAdminMode && (
+          <motion.div initial={{ opacity:0 }} animate={{ opacity:1 }} exit={{ opacity:0 }}
+            style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.95)', backdropFilter:'blur(20px)', display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem', zIndex:200000, overflow:'hidden' }}>
+            <motion.div initial={{ scale:0.92, y:20 }} animate={{ scale:1, y:0 }} exit={{ scale:0.95 }}
+              style={{ ...glassCard, width:'100%', maxWidth:'1000px', maxHeight:'95vh', display:'flex', flexDirection:'column', overflow:'hidden', border:`1px solid ${C.gold}`, boxShadow:`0 0 100px rgba(197,160,101,0.2)` }}>
+              
+              {/* Header TICs */}
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'1.5rem', borderBottom:`1px solid ${C.glassBrd}`, background:'rgba(0,0,0,0.5)' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:'15px' }}>
+                  <div style={{ background:C.gold, borderRadius:'12px', padding:'10px' }}>
+                    <Cpu size={28} color="black" />
+                  </div>
+                  <div>
+                    <span style={{ display:'block', color:C.gold, fontSize:'0.7rem', letterSpacing:'5px', fontWeight:'900', textTransform:'uppercase' }}>Presentación Institucional TICs</span>
+                    <span style={{ fontWeight:'900', fontSize:'1.5rem', fontStyle:'italic', textTransform:'uppercase' }}>ARQUITECTURA VLS 2026</span>
+                  </div>
+                </div>
+                <button onClick={() => setShowAdminMode(false)} style={{ background:'transparent', border:`1px solid ${C.glassBrd}`, borderRadius:'10px', padding:'10px', cursor:'pointer', color:'white' }}>
+                  <X size={24}/>
+                </button>
+              </div>
+
+              {/* Body */}
+              <div style={{ flex:1, overflowY:'auto', padding:'2rem', display:'flex', flexDirection:'column', gap:'2rem' }}>
+                <p style={{ color:'#94a3b8', fontSize:'1.1rem', lineHeight:1.7, margin:0, fontWeight:'600' }}>
+                  Esta plataforma no es un sistema estático; es el <span style={{ color:C.gold, fontWeight:'900' }}>Ecosistema Digital 2026</span> para la IMLS. Desarrollado con tecnología Edge, inteligencia artificial cognitiva y un frontend de ultra-desempeño diseñado para escalar en toda la red municipal de La Serena.
+                </p>
+
+                {/* Stack Tags */}
+                <div style={{ display:'flex', gap:'15px', flexWrap:'wrap' }}>
+                   {['React 19 Hooks', 'Cloudflare Pages (Edge)', 'Gemini Flash AI', 'Cloudflare D1 (SQL Serverless)', 'Vite.js Build'].map(t => (
+                     <div key={t} style={{ background:'rgba(255,255,255,0.05)', border:`1px solid ${C.glassBrd}`, borderRadius:'8px', padding:'8px 16px', fontSize:'0.85rem', color:'white', fontWeight:'700', letterSpacing:'1px' }}>
+                        {t}
+                     </div>
+                   ))}
+                </div>
+
+                {/* ANIMACIÓN: Flujo de Datos Interactiva */}
+                <div style={{ background:'rgba(0,0,0,0.4)', borderRadius:'20px', border:`1px solid ${C.glassBrd}`, padding:'2rem', display:'flex', flexDirection:'column', alignItems:'center', position:'relative', overflow:'hidden' }}>
+                    <div style={{ color:C.gold, fontSize:'0.7rem', letterSpacing:'4px', fontWeight:'900', textTransform:'uppercase', marginBottom:'2rem', alignSelf:'flex-start' }}>FLUJO DE MICROSERVICIOS Y TELEMETRÍA MÓVIL</div>
+                    
+                    <div style={{ display:'flex', flexDirection: isMobile ? 'column' : 'row', alignItems:'center', justifyContent:'space-between', width:'100%', maxWidth:'800px', position:'relative' }}>
+                        
+                        {/* Línea de conexión de fondo */}
+                        {!isMobile && <div style={{ position:'absolute', top:'50%', left:'5%', right:'5%', height:'2px', background:'rgba(197,160,101,0.2)', zIndex:0 }}></div>}
+                        
+                        {/* Componentes de la Arquitectura */}
+                        {[
+                          { id: 1, label: "Funcionario", icon: <User size={isMobile ? 24 : 32} color={C.gold}/>, detail: "Interfaz Móvil / Desktop" },
+                          { id: 2, label: "Red Global (Edge)", icon: <Globe size={isMobile ? 24 : 32} color={C.gold}/>, detail: "Cloudflare Routing" },
+                          { id: 3, label: "IA Cognitiva", icon: <Bot size={isMobile ? 24 : 32} color={C.gold}/>, detail: "Gemini / Faro AI" },
+                          { id: 4, label: "DB Serverless", icon: <Database size={isMobile ? 24 : 32} color={C.gold}/>, detail: "SQL + D1 Storage" },
+                        ].map((node, i) => (
+                           <div key={node.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', zIndex:1, background:'#050505', padding:'10px', borderRadius:'10px', margin: isMobile ? '10px 0' : '0' }}>
+                              <motion.div 
+                                animate={{ y: [0, -10, 0], boxShadow: [`0 0 0px ${C.goldDim}`, `0 0 30px ${C.gold}`, `0 0 0px ${C.goldDim}`] }}
+                                transition={{ repeat: Infinity, duration: 3, delay: i * 0.5 }}
+                                style={{ width:'80px', height:'80px', borderRadius:'50%', background:'rgba(255,255,255,0.03)', border:`2px solid ${C.gold}`, display:'flex', alignItems:'center', justifyContent:'center', marginBottom:'15px', position:'relative' }}
+                              >
+                                {node.icon}
+                                {/* Pulso de transmisión */}
+                                <motion.div animate={{ scale:[1,2.5], opacity:[0.8,0] }} transition={{ repeat:Infinity, duration:2, delay: i*0.8 }} style={{ position:'absolute', inset:0, border:`1px solid ${C.gold}`, borderRadius:'50%' }}></motion.div>
+                              </motion.div>
+                              <div style={{ fontWeight:'900', color:'white', fontSize:'1.1rem', marginBottom:'5px', textTransform:'uppercase', letterSpacing:'1px' }}>{node.label}</div>
+                              <div style={{ fontSize:'0.7rem', color:'#64748b', letterSpacing:'1px' }}>{node.detail}</div>
+                           </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Detalles Operativos */}
+                <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:'2rem' }}>
+                    <div>
+                        <h4 style={{ color:C.gold, fontSize:'0.85rem', textTransform:'uppercase', letterSpacing:'2px', marginBottom:'10px' }}>Ventaja Financiera TICs</h4>
+                        <p style={{ color:'#94a3b8', fontSize:'0.95rem', lineHeight:1.6, margin:0 }}>Al emplear Edge Computing, el costo del servidor físico desaparece. Operativo 24/7 sin dependencias de hardware interno sujeto a cortes eléctricos del municipio.</p>
+                    </div>
+                    <div>
+                        <h4 style={{ color:C.gold, fontSize:'0.85rem', textTransform:'uppercase', letterSpacing:'2px', marginBottom:'10px' }}>Seguridad e Integridad</h4>
+                        <p style={{ color:'#94a3b8', fontSize:'0.95rem', lineHeight:1.6, margin:0 }}>Inyección de IA a nivel perimetral. Cada ciudadano/funcionario está protegido por JWT + Biometría (WebAuthn). Las bases de datos nunca exponen IPs públicas.</p>
+                    </div>
+                </div>
+
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <SmartAssistantInduccion />
+      
+      {isRDMLS && (
+        <a 
+          href="https://rdmls.cl" 
+          style={{ position:'fixed', bottom:'20px', left:'20px', background:'#fbbf24', color:'black', padding:'10px 20px', borderRadius:'30px', fontWeight:'900', textDecoration:'none', zIndex:10000, boxShadow:'0 5px 20px rgba(251,191,36,0.3)', display:'flex', alignItems:'center', gap:'10px' }}
+        >
+          <ChevronLeft size={20}/> VOLVER A RADIO
+        </a>
+      )}
+
+      <MicroTutorialVLS section="induccion" isOpen={showTutorial} onFinish={() => setShowTutorial(false)} />
     </div>
   );
 }

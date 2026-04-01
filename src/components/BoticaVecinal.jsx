@@ -40,7 +40,7 @@ export default function BoticaVecinal({ onClose }) {
 
     const results = ailments.filter(a => 
         a.name.toLowerCase().includes(searchTerm) || 
-        a.tags.some(t => t.toLowerCase().includes(searchTerm))
+        a.tags.some(tag => tag.toLowerCase().includes(searchTerm))
     );
 
     return (

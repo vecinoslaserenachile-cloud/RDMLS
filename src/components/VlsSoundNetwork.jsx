@@ -222,16 +222,16 @@ export default function VlsSoundNetwork({ onClose }) {
                                     </div>
                                 </div>
                             ))}
-                            {mode === 'top' && topTracks.map((t, i) => (
-                                <div key={t.id} onClick={() => { setCurrentTrack(t); playTrack(t.uri); }}
-                                    style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '8px', borderRadius: '8px', cursor: 'pointer', background: currentTrack?.id === t.id ? 'rgba(29,185,84,0.15)' : 'transparent' }}
+                             {mode === 'top' && topTracks.map((trackItem, i) => (
+                                <div key={trackItem.id} onClick={() => { setCurrentTrack(trackItem); playTrack(trackItem.uri); }}
+                                    style={{ display: 'flex', gap: '10px', alignItems: 'center', padding: '8px', borderRadius: '8px', cursor: 'pointer', background: currentTrack?.id === trackItem.id ? 'rgba(29,185,84,0.15)' : 'transparent' }}
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.07)'}
-                                    onMouseLeave={e => e.currentTarget.style.background = currentTrack?.id === t.id ? 'rgba(29,185,84,0.15)' : 'transparent'}>
+                                    onMouseLeave={e => e.currentTarget.style.background = currentTrack?.id === trackItem.id ? 'rgba(29,185,84,0.15)' : 'transparent'}>
                                     <span style={{ color: '#b3b3b3', fontSize: '0.75rem', width: '20px', textAlign: 'right' }}>{i + 1}</span>
-                                    <img src={t.album.images?.[0]?.url} style={{ width: '35px', height: '35px', borderRadius: '4px' }} alt={t.name} />
+                                    <img src={trackItem.album.images?.[0]?.url} style={{ width: '35px', height: '35px', borderRadius: '4px' }} alt={trackItem.name} />
                                     <div style={{ overflow: 'hidden' }}>
-                                        <div style={{ fontSize: '0.82rem', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: currentTrack?.id === t.id ? '#1DB954' : 'white' }}>{t.name}</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#b3b3b3', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t.artists.map(a => a.name).join(', ')}</div>
+                                        <div style={{ fontSize: '0.82rem', fontWeight: 'bold', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: currentTrack?.id === trackItem.id ? '#1DB954' : 'white' }}>{trackItem.name}</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#b3b3b3', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{trackItem.artists.map(a => a.name).join(', ')}</div>
                                     </div>
                                 </div>
                             ))}

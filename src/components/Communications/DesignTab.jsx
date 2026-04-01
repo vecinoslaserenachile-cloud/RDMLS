@@ -18,7 +18,7 @@ export default function DesignTab() {
             'en-proceso': 'terminado',
             'terminado': 'por-hacer'
         };
-        setKanbanTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: nextStatus[currentStatus] } : t));
+        setKanbanTasks(prev => prev.map(task => task.id === taskId ? { ...task, status: nextStatus[currentStatus] } : task));
     };
 
     const getPriorityColor = (prior) => {
@@ -32,7 +32,7 @@ export default function DesignTab() {
             <h4 style={{ color: color, display: 'flex', alignItems: 'center', gap: '0.5rem', borderBottom: `1px solid ${color}30`, paddingBottom: '0.5rem', marginBottom: '0.5rem', fontSize: '1rem' }}>
                 <KanbanSquare size={16} /> {title}
             </h4>
-            {kanbanTasks.filter(t => t.status === status).map(task => (
+            {kanbanTasks.filter(taskItem => taskItem.status === status).map(task => (
                 <div key={task.id} onClick={() => advanceTask(task.id, task.status)} className="glass-panel" style={{ padding: '1rem', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', gap: '0.5rem', cursor: 'pointer', transition: 'all 0.3s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'} title="Clic para avanzar etapa">
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '4px', background: `${getPriorityColor(task.priority)}20`, color: getPriorityColor(task.priority), fontWeight: 'bold' }}>{task.priority}</span>

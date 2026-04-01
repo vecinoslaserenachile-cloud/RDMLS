@@ -3,6 +3,130 @@ import { X, ExternalLink, Newspaper, Search, ArrowRight, Star, Heart, Share2, Zo
 import SmartVerticalReel from './SmartVerticalReel';
 import Kiosko3DModal from './Kiosko3DModal';
 
+const getLaRegionUrl = (date) => {
+    const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+    const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    if (!date) return 'https://www.diariolaregion.cl/';
+    const dayName = days[date.getDay()];
+    const dayNum = date.getDate();
+    const monthName = months[date.getMonth()];
+    const year = date.getFullYear();
+    return `https://www.diariolaregion.cl/edicion-${dayName}-${dayNum}-de-${monthName}-${year}/`;
+};
+
+const getDiarios = (currentTime) => [
+    { 
+        id: 'eldia', 
+        name: 'Diario El Día', 
+        region: 'La Serena / Coquimbo', 
+        type: 'Tradicional', 
+        color: '#1e3a8a', 
+        url: 'https://papeldigital.eldia.la/',
+        headline: 'Más de cien detenidos tras megaoperativo policial en la Región de Coquimbo', 
+        cover: 'https://www.diarioeldia.cl/social/diario_el_dia/portadas/portada_dia.jpg', 
+        legacyTag: 'DIARIO DE LA CUARTA REGIÓN',
+        price: '$600',
+        isSpecial: true
+    },
+    { 
+        id: 'laregion', 
+        name: 'Diario La Región', 
+        region: 'Coquimbo', 
+        type: 'Tradicional', 
+        color: '#b91c1c', 
+        url: getLaRegionUrl(currentTime),
+        headline: 'Siete detenidos en Coquimbo tras intenso operativo policial en Punta Mira',
+        cover: 'https://www.diariolaregion.cl/wp-content/uploads/2024/01/PORTADA-REGIONAL.jpg',
+        legacyTag: 'LA VOZ DE COQUIMBO',
+        price: '$500'
+    },
+    { 
+        id: 'tiempo', 
+        name: 'Semanario Tiempo', 
+        region: 'La Serena', 
+        type: 'Tradicional', 
+        color: '#065f46', 
+        url: 'https://semanariotiempo.cl/',
+        headline: 'Lluvias se pronostican para este fin de semana en la región previo al otoño',
+        cover: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'EDICIÓN SEMANAL',
+        price: '$800'
+    },
+    { 
+        id: 'elmercurio', 
+        name: 'El Mercurio', 
+        region: 'Nacional', 
+        type: 'Tradicional', 
+        color: '#0f172a', 
+        url: 'https://www.emol.com/',
+        headline: 'Dólar repunta con fuerza y sube alrededor de $18 ante caída del cobre',
+        cover: 'https://images.unsplash.com/photo-1566378246598-5b11a0ff7f97?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'DECANO DE LA PRENSA',
+        price: '$1.000'
+    },
+    { 
+        id: 'latercera', 
+        name: 'La Tercera', 
+        region: 'Nacional', 
+        type: 'Tradicional', 
+        color: '#ef4444', 
+        url: 'https://www.latercera.com/',
+        headline: 'Lollapalooza Chile 2026: Los Bunkers y Lorde marcan el inicio del festival',
+        cover: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'EDICIÓN PAPER DIGITAL',
+        price: '$900'
+    },
+    { 
+        id: 'lun', 
+        name: 'LUN', 
+        region: 'Nacional', 
+        type: 'Tradicional', 
+        color: '#f59e0b', 
+        url: 'https://www.lun.com/',
+        headline: '31 Minutos colapsa el Kidzapalooza con emotivo espectáculo masivo',
+        cover: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'HISTORIAS DEL DÍA',
+        price: '$500'
+    },
+    { 
+        id: 'paradoja_2026', 
+        name: 'VLS: LA PARADOJA 2026', 
+        region: 'Regional', 
+        type: 'Investigación', 
+        color: '#ef4444', 
+        url: '/hub', // Link to hub where investigations are
+        headline: '¿Por qué la educación apagó el supercomputador del futuro?',
+        cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'INVESTIGACIÓN ESPECIAL',
+        price: 'FREE'
+    },
+    { 
+        id: 'poduje_effect', 
+        name: 'VLS: EFECTO PODUJE', 
+        region: 'Regional', 
+        type: 'Vivienda', 
+        color: '#8b5cf6', 
+        url: '/hub',
+        headline: 'El 19% que congeló el sueño de la casa propia',
+        cover: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop',
+        legacyTag: 'ALERTA INMOBILIARIA',
+        price: 'FREE'
+    },
+    { 
+        id: 'entre_vecinas', 
+        name: 'Revista Entre Vecinas', 
+        region: 'Comunidad', 
+        type: 'Magazine', 
+        color: '#ec4899', 
+        url: 'https://entrevecinas.cl',
+        headline: 'Emprendimiento Femenino: El motor de la innovación en La Serena',
+        cover: '/revista_entre_vecinas_cover_1773625657231.png',
+        legacyTag: '100% COLABORATIVA',
+        price: 'GRATIS'
+    }
+];
+
+
 // Component for the CSS-generated fallback newspaper cover
 const FallbackNewspaperCover = ({ name, headline, color }) => (
     <div style={{
@@ -70,6 +194,7 @@ export default function KioskoDiarios({ onClose }) {
     const [selectedPaper, setSelectedPaper] = useState(null);
     const [filter, setFilter] = useState('todos');
     const [currentTime, setCurrentTime] = useState(new Date());
+    const diarios = React.useMemo(() => getDiarios(currentTime), [currentTime]);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
     const [showStoryMode, setShowStoryMode] = useState(false);
     const [show3DMode, setShow3DMode] = useState(false);
@@ -129,129 +254,6 @@ export default function KioskoDiarios({ onClose }) {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-
-    const getLaRegionUrl = (date) => {
-        const days = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
-        const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        const dayName = days[date.getDay()];
-        const dayNum = date.getDate();
-        const monthName = months[date.getMonth()];
-        const year = date.getFullYear();
-        // Nota: Algunos días omiten el "de" o tienen variaciones, pero este es el patrón estándar detectado
-        return `https://www.diariolaregion.cl/edicion-${dayName}-${dayNum}-de-${monthName}-${year}/`;
-    };
-
-    const diarios = [
-        { 
-            id: 'eldia', 
-            name: 'Diario El Día', 
-            region: 'La Serena / Coquimbo', 
-            type: 'Tradicional', 
-            color: '#1e3a8a', 
-            url: 'https://papeldigital.eldia.la/',
-            headline: 'Más de cien detenidos tras megaoperativo policial en la Región de Coquimbo', 
-            cover: 'https://www.diarioeldia.cl/social/diario_el_dia/portadas/portada_dia.jpg', 
-            legacyTag: 'DIARIO DE LA CUARTA REGIÓN',
-            price: '$600',
-            isSpecial: true
-        },
-        { 
-            id: 'laregion', 
-            name: 'Diario La Región', 
-            region: 'Coquimbo', 
-            type: 'Tradicional', 
-            color: '#b91c1c', 
-            url: getLaRegionUrl(currentTime),
-            headline: 'Siete detenidos en Coquimbo tras intenso operativo policial en Punta Mira',
-            cover: 'https://www.diariolaregion.cl/wp-content/uploads/2024/01/PORTADA-REGIONAL.jpg',
-            legacyTag: 'LA VOZ DE COQUIMBO',
-            price: '$500'
-        },
-        { 
-            id: 'tiempo', 
-            name: 'Semanario Tiempo', 
-            region: 'La Serena', 
-            type: 'Tradicional', 
-            color: '#065f46', 
-            url: 'https://semanariotiempo.cl/',
-            headline: 'Lluvias se pronostican para este fin de semana en la región previo al otoño',
-            cover: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'EDICIÓN SEMANAL',
-            price: '$800'
-        },
-        { 
-            id: 'elmercurio', 
-            name: 'El Mercurio', 
-            region: 'Nacional', 
-            type: 'Tradicional', 
-            color: '#0f172a', 
-            url: 'https://www.emol.com/',
-            headline: 'Dólar repunta con fuerza y sube alrededor de $18 ante caída del cobre',
-            cover: 'https://images.unsplash.com/photo-1566378246598-5b11a0ff7f97?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'DECANO DE LA PRENSA',
-            price: '$1.000'
-        },
-        { 
-            id: 'latercera', 
-            name: 'La Tercera', 
-            region: 'Nacional', 
-            type: 'Tradicional', 
-            color: '#ef4444', 
-            url: 'https://www.latercera.com/',
-            headline: 'Lollapalooza Chile 2026: Los Bunkers y Lorde marcan el inicio del festival',
-            cover: 'https://images.unsplash.com/photo-1588681664899-f142ff2dc9b1?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'EDICIÓN PAPER DIGITAL',
-            price: '$900'
-        },
-        { 
-            id: 'lun', 
-            name: 'LUN', 
-            region: 'Nacional', 
-            type: 'Tradicional', 
-            color: '#f59e0b', 
-            url: 'https://www.lun.com/',
-            headline: '31 Minutos colapsa el Kidzapalooza con emotivo espectáculo masivo',
-            cover: 'https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'HISTORIAS DEL DÍA',
-            price: '$500'
-        },
-        { 
-            id: 'paradoja_2026', 
-            name: 'VLS: LA PARADOJA 2026', 
-            region: 'Regional', 
-            type: 'Investigación', 
-            color: '#ef4444', 
-            url: '/hub', // Link to hub where investigations are
-            headline: '¿Por qué la educación apagó el supercomputador del futuro?',
-            cover: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'INVESTIGACIÓN ESPECIAL',
-            price: 'FREE'
-        },
-        { 
-            id: 'poduje_effect', 
-            name: 'VLS: EFECTO PODUJE', 
-            region: 'Regional', 
-            type: 'Vivienda', 
-            color: '#8b5cf6', 
-            url: '/hub',
-            headline: 'El 19% que congeló el sueño de la casa propia',
-            cover: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?q=80&w=600&auto=format&fit=crop',
-            legacyTag: 'ALERTA INMOBILIARIA',
-            price: 'FREE'
-        },
-        { 
-            id: 'entre_vecinas', 
-            name: 'Revista Entre Vecinas', 
-            region: 'Comunidad', 
-            type: 'Magazine', 
-            color: '#ec4899', 
-            url: 'https://entrevecinas.cl',
-            headline: 'Emprendimiento Femenino: El motor de la innovación en La Serena',
-            cover: '/revista_entre_vecinas_cover_1773625657231.png',
-            legacyTag: '100% COLABORATIVA',
-            price: 'GRATIS'
-        }
-    ];
 
     const filteredDiarios = filter === 'todos' ? diarios : diarios.filter(d => d.region.includes(filter) || d.type === filter);
 

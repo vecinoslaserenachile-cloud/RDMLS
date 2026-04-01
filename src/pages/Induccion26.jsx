@@ -256,7 +256,7 @@ export default function Induccion26({ isRDMLS }) {
         return (
             <div style={{ minHeight:'100vh', background:`radial-gradient(ellipse at top, #1a0800, ${C.dark})`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Segoe UI', Roboto, sans-serif", padding:'2rem', color:'white' }}>
                 <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
-                    <img src="/serenito_3d_avatar_premium_1774312066289.png" alt="Serenito 3D" style={{ height: '140px', filter: 'drop-shadow(0 0 30px rgba(249,115,22,0.4))' }} className="animate-float" />
+                    <img src="/serenito_3d_humanized_2026_1774875415876.png" alt="Serenito" style={{ height: '140px', filter: 'drop-shadow(0 0 30px rgba(249,115,22,0.4))' }} className="animate-float" />
                     <img src="/escudo.png" alt="IMLS" style={{ height: '32px', position: 'absolute', bottom: '0', right: '-10px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' }} />
                 </div>
                 <h1 style={{ color:C.orange, fontSize:'clamp(1.4rem,4vw,2.2rem)', fontWeight:'900', letterSpacing:'2px', textAlign:'center', margin:'0 0 0.3rem' }}>PORTAL INDUCCIÓN RDMLS</h1>

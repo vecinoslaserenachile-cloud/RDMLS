@@ -78,7 +78,7 @@ export default function VLSNewsPoduje({ onClose }) {
         <div style={{ display: 'flex', gap: isMobile ? '0.5rem' : '1.5rem', alignItems: 'center' }}>
           <button 
             onClick={() => {
-               const shareUrl = `${window.location.origin}${window.location.pathname}?news=poduje`;
+               const shareUrl = `${window.location.origin}/poduje`;
                window.open(`https://wa.me/?text=${encodeURIComponent('Hemeroteca VLS: El Dilema de la Vivienda. Lee aquí: ' + shareUrl)}`, '_blank')
             }}
             style={{ background: '#25D366', color: 'white', border: 'none', padding: '0.4rem', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

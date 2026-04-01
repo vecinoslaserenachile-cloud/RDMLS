@@ -189,7 +189,7 @@ export default function RDMLSRadioDial({ onClose }) {
                 position: 'relative',
                 overflow: 'hidden'
             }}>
-                {isPowerOn ? (
+                {isPowerOn && currentStation ? (
                     <>
                         <div style={{ fontSize: '0.7rem', color: currentStation.color, fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>
                             {currentStation.name}
@@ -202,7 +202,7 @@ export default function RDMLSRadioDial({ onClose }) {
                         </div>
                     </>
                 ) : (
-                    <div style={{ color: '#222', fontSize: '1.2rem', fontWeight: 'bold' }}>RDMLS OFF</div>
+                    <div style={{ color: '#222', fontSize: '1.2rem', fontWeight: 'bold' }}>{isPowerOn ? 'STATION ERROR' : 'RDMLS OFF'}</div>
                 )}
                 <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1), rgba(0,0,0,0.1) 1px, transparent 1px, transparent 2px)', pointerEvents: 'none' }}></div>
             </div>
@@ -277,8 +277,8 @@ export default function RDMLSRadioDial({ onClose }) {
                         key={station.id}
                         onClick={() => changeStation(station)}
                         style={{
-                            background: currentStation.id === station.id ? station.color : 'rgba(255,255,255,0.05)',
-                            color: currentStation.id === station.id ? '#000' : '#fff',
+                            background: currentStation?.id === station?.id ? station?.color : 'rgba(255,255,255,0.05)',
+                            color: currentStation?.id === station?.id ? '#000' : '#fff',
                             border: '1px solid rgba(255,255,255,0.1)',
                             borderRadius: '20px',
                             padding: '5px 12px',

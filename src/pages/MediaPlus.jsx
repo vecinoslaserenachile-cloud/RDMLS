@@ -101,12 +101,12 @@ export default function MediaPlus() {
     const [search, setSearch] = useState('');
     const [layout, setLayout] = useState('grid');
 
-    const categories = ['All', ...new Set(MEDIA_TOOLS.map(t => t.category))];
+    const categories = ['All', ...new Set(MEDIA_TOOLS.map(item => item.category))];
 
-    const filteredTools = MEDIA_TOOLS.filter(t => {
-        const matchesFilter = filter === 'All' || t.category === filter;
-        const matchesSearch = t.name.toLowerCase().includes(search.toLowerCase()) || 
-                             t.desc.toLowerCase().includes(search.toLowerCase());
+    const filteredTools = MEDIA_TOOLS.filter(media => {
+        const matchesFilter = filter === 'All' || media.category === filter;
+        const matchesSearch = media.name.toLowerCase().includes(search.toLowerCase()) || 
+                             media.desc.toLowerCase().includes(search.toLowerCase());
         return matchesFilter && matchesSearch;
     });
 

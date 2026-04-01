@@ -81,11 +81,11 @@ export default function EntrevecinasHub() {
             guest: 'Identidad Soberana', 
             duration: '02:52', 
             tag: 'Soberanía',
-            desc: 'La visión fundacional de nuestro ecosistema digital. Un recorrido por los valores que unen a la comunidad de LA❤️SERENA bajo una tecnología propia y transparente.',
+            desc: 'La visión fundacional de nuestro ecosistema digital. Un recorrido por los valores que unen a la comunidad de LA❤️SERENA bajo una tecnología propia y transparente. En este episodio, desglosamos por qué la soberanía digital no es una opción técnica, sino una defensa territorial necesaria para proteger nuestros datos y nuestra identidad frente a las grandes plataformas globales.',
             img: '/images/entrevecinas_manifiesto.png',
-            quote: 'La soberanía digital no es una opción, es nuestra defensa como comunidad.',
+            quote: 'La soberanía digital no es una opción, es nuestra defensa como comunidad para que nadie decida por nosotros desde afuera.',
             stats: [
-                { icon: ShieldCheck, title: "Soberanía", desc: "Datos unificados" },
+                { icon: Shield, title: "Soberanía", desc: "Datos unificados" },
                 { icon: Globe, title: "Territorio", desc: "Conquista digital" },
                 { icon: Zap, title: "Impacto", desc: "+20k Alcance" }
             ]
@@ -96,12 +96,12 @@ export default function EntrevecinasHub() {
             guest: 'Serenito 3D Ariel', 
             duration: '01:26', 
             tag: 'Innovación',
-            desc: 'Un viaje onírico por la historia de Coquimbo y LA❤️SERENA. Nuestro avatar institucional nos guía hacia el futuro de los Smart Citizens.',
+            desc: 'Un viaje onírico por la historia de Coquimbo y LA❤️SERENA. Nuestro avatar institucional nos guía hacia el futuro de los Smart Citizens. Serenito no es solo un personaje; es la interfaz humana que traduce la complejidad de la Smart City en gestos cercanos y cotidianos para cada vecino de la conurbación.',
             img: '/images/entrevecinas_serenito.png',
-            quote: 'Soñamos con una ciudad donde la tecnología sea tan humana como un saludo vecinal.',
+            quote: 'Soñamos con una ciudad donde la tecnología sea tan humana como un saludo vecinal en la Avenida Francisco de Aguirre.',
             stats: [
                 { icon: Sparkles, title: "Avatar", desc: "Identidad 3D" },
-                { icon: Rocket, title: "Futuro", desc: "Rumbo Smart" },
+                { icon: Zap, title: "Futuro", desc: "Rumbo Smart" },
                 { icon: Zap, title: "Impacto", desc: "Viralidad 3D" }
             ]
         },
@@ -111,11 +111,11 @@ export default function EntrevecinasHub() {
             guest: 'Jazz Maestros', 
             duration: '23:26', 
             tag: 'Cultura',
-            desc: 'Grabado para Thema TV y Montecarlo. La sofisticación del Jazz regional en un formato cinematográfico íntimo y elegante.',
+            desc: 'Grabado para Thema TV y Montecarlo. La sofisticación del Jazz regional en un formato cinematográfico íntimo y elegante. Esta sesión explora los límites de la improvisación y cómo el paisaje semidesértico influye en las armonías de los músicos que han decidido hacer de La Serena su escenario principal.',
             img: '/images/entrevecinas_jazz.png',
-            quote: 'Traducimos el silencio de la Pampa en una sinfonía eléctrica.',
+            quote: 'Traducimos el silencio de la Pampa en una sinfonía eléctrica que resuena en cada rincón del centro histórico.',
             stats: [
-                { icon: Music, title: "Jazz", desc: "Maestría Reg" },
+                { icon: Mic, title: "Jazz", desc: "Maestría Reg" },
                 { icon: Mic, title: "Grabación", desc: "Alta Fide" },
                 { icon: Zap, title: "Vibra", desc: "Sello VLS" }
             ]
@@ -126,9 +126,9 @@ export default function EntrevecinasHub() {
             guest: 'Fernando Figueroa', 
             duration: '25:21', 
             tag: 'Liderazgo',
-            desc: 'Conversación sobre las influencias y el proceso creativo de un disco que redefine la identidad sonora de nuestra región.',
+            desc: 'Conversación sobre las influencias y el proceso creativo de un disco que redefine la identidad sonora de nuestra región. Fernando nos cuenta cómo el Valle de Elqui se convierte en un pentagrama natural y cómo la radio municipal puede ser el puente para que estos sonidos lleguen al mundo.',
             img: '/images/entrevecinas_fernando.png',
-            quote: 'Cada acorde es una historia que el Valle nos ha contado al oído.',
+            quote: 'Cada acorde es una historia que el Valle nos ha contado al oído bajo las estrellas más limpias del planeta.',
             stats: [
                 { icon: Heart, title: "Pasión", desc: "Entrega total" },
                 { icon: BookOpen, title: "Relatos", desc: "Memoria Aud" },
@@ -141,9 +141,9 @@ export default function EntrevecinasHub() {
             guest: 'Patrimonio Vivo', 
             duration: '34:43', 
             tag: 'Especial',
-            desc: 'Despliegue total en una sesión de larga duración. Registro histórico del talento musical que nace en nuestra conurbación.',
+            desc: 'Despliegue total en una sesión de larga duración. Registro histórico del talento musical que nace en nuestra conurbación. Un homenaje rítmico que mezcla el funk, el latín y la esencia del Barrio Inglés de Coquimbo en una sola toma cinematográfica.',
             img: '/images/entrevecinas_sesion.png',
-            quote: 'El sonido de La Serena es el latido de su gente despierta.',
+            quote: 'El sonido de La Serena es el latido de su gente despierta, vibrando en la misma frecuencia que el mar.',
             stats: [
                 { icon: Activity, title: "Ritmo", desc: "Mestizaje" },
                 { icon: Award, title: "Distinción", desc: "Sello VLS" },
@@ -156,16 +156,17 @@ export default function EntrevecinasHub() {
             guest: 'Cutu & Campos', 
             duration: '40:03', 
             tag: 'Maestros',
-            desc: 'El encuentro magistral de dos leyendas. Historia viva de la música local capturada en alta fidelidad y narrativa visual premium.',
+            desc: 'El encuentro magistral de dos leyendas. Historia viva de la música local capturada en alta fidelidad y narrativa visual premium. Este episodio cierra la primera temporada de Entrevecinas, dejando el listón alto para lo que será la integración total de la Radio Digital Municipal.',
             img: '/images/entrevecinas_final.png',
-            quote: 'Cerrar este ciclo es abrir la puerta a una nueva generación.',
+            quote: 'Cerrar este ciclo es abrir la puerta a una nueva generación de Smart Citizens que saben de dónde vienen.',
             stats: [
                 { icon: Users, title: "Encuentro", desc: "Magistral" },
-                { icon: Star, title: "Legado", desc: "Trasfusión" },
+                { icon: Sparkles, title: "Legado", desc: "Trasfusión" },
                 { icon: Zap, title: "Impacto", desc: "Final de Gala" }
             ]
         }
     ];
+
 
     const selectedData = interviews.find(v => v.id === selectedVideo) || interviews[0];
 
@@ -416,10 +417,16 @@ export default function EntrevecinasHub() {
                         <h2 className="text-6xl lg:text-8xl font-black uppercase tracking-tighter mb-16 italic">El Arte de <span className="text-pink-400">Escucharnos</span></h2>
                         <div className="prose prose-invert prose-xl font-serif text-gray-200 space-y-8 max-w-none leading-relaxed">
                             <p className="text-3xl font-black font-sans text-pink-400 italic">Bienvenidos al despliegue total de '{selectedData.guest}'.</p>
-                            <p>{selectedData.desc}</p>
+                            <p>
+                                Entrevecinas no es solo un programa de entrevistas; es una red de contención y visibilidad para el liderazgo femenino y comunitario en la zona norte. En este espacio, cada relato es una piedra angular de lo que llamamos 'Soberanía Digital'. No esperamos que las plataformas externas nos den permiso para hablar; hemos construido nuestro propio estudio, nuestra propia red y nuestra propia audiencia.
+                            </p>
+                            <p>
+                                Al explorar este archivo, te invitamos a mirar más allá de la pantalla. Cada vecina entrevistada representa un proyecto, una familia y una visión de ciudad. Nuestra misión en 2026 es que esta tecnología premium esté al servicio de las voces que históricamente han sido silenciadas por la pauta comercial tradicional.
+                            </p>
                             <QuoteBlock text={selectedData.quote} author={selectedData.guest} sub={selectedData.tag} />
                         </div>
                     </div>
+
                 </div>
             </article>
 

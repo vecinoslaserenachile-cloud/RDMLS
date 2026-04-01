@@ -1,7 +1,7 @@
 {
   "name": "app-ls-segura",
   "private": true,
-  "version": "1.0.1",
+  "version": "1.1.4",
   "type": "module",
   "scripts": {
     "dev": "tsx server/server.ts",
@@ -11,6 +11,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/react": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
     "@google/genai": "^1.46.0",
     "@google/generative-ai": "^0.24.1",
     "@react-three/drei": "^10.7.7",

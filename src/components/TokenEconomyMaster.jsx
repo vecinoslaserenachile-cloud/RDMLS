@@ -3,8 +3,8 @@ import { Ticket, StopCircle, UserCheck } from 'lucide-react';
 
 export default function TokenEconomyMaster() {
     const [tokens, setTokens] = useState(() => {
-        const t = localStorage.getItem('vls_tokens');
-        return t ? parseInt(t) : 0;
+        const storedTokensVal = localStorage.getItem('vls_tokens');
+        return storedTokensVal ? parseInt(storedTokensVal) : 0;
     });
     const [showNoBalance, setShowNoBalance] = useState(false);
 

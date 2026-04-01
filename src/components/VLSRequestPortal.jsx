@@ -8,10 +8,16 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../utils/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { pushToBigBrain, checkDelegadoStatus } from '../utils/BigBrainHelper';
 
-export default function VLSRequestPortal({ onClose, isPage = false }) {
-    const [view, setView] = useState('report'); // 'report' or 'feed'
+const isMobile = typeof window !== 'undefined' ? window.innerWidth < 768 : false;
+
+export default function VLSRequestPortal({ onClose, isPage = false, initialCategory = null }) {
+    const [view, setView] = useState('report'); 
     const [step, setStep] = useState(1);
+    const [isLocating, setIsLocating] = useState(false);
+    const [location, setLocation] = useState(null); // { lat, lng }
+    const [evidence, setEvidence] = useState([]); // { type, url, file }
     const [incidents, setIncidents] = useState(() => {
         const saved = localStorage.getItem('vls_public_incidents');
         return saved ? JSON.parse(saved) : [
@@ -30,7 +36,12 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
         message: '',
         link: '',
         reason: 'copyright',
-        declaration: false
+        declaration: false,
+        // Transport Specific
+        transportLine: '',
+        transportPatent: '',
+        transportFrequency: 'normal', // 'normal', 'delay', 'no-show'
+        transportStars: 5
     });
 
     const [captchaValue, setCaptchaValue] = useState(0);
@@ -44,6 +55,29 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
     useEffect(() => {
         localStorage.setItem('vls_public_incidents', JSON.stringify(incidents));
     }, [incidents]);
+    
+    // Auto-select category if passed from external event (QuickEmergencyBar)
+    useEffect(() => {
+        if (initialCategory) {
+            let targetType = initialCategory;
+            // Normalización de mapeo entre componentes
+            const mapping = {
+                'agua': 'water',
+                'energia': 'lighting',
+                'señal': 'telecom',
+                'animales': 'security',
+                'emergencia': 'security'
+            };
+            
+            const normalizedType = mapping[initialCategory] || initialCategory;
+            
+            if (REQUEST_TYPES.find(typeItem => typeItem.id === normalizedType)) {
+                setFormData(prev => ({ ...prev, type: normalizedType }));
+                setStep(2);
+                setView('report');
+            }
+        }
+    }, [initialCategory]);
 
     const EMERGENCY_NUMBERS = [
         { name: 'Seguridad Ciudadana LS', phone: '1457', color: '#38bdf8', icon: Shield },
@@ -60,7 +94,8 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
         { id: 'telecom', title: 'Falla Señal Móvil', icon: Radio, color: '#ef4444', desc: 'Caída de antenas celulares o falla de fibra óptica.', urgent: true },
         { id: 'security', title: 'Seguridad Ciudadana', icon: ShieldAlert, color: '#6366f1', desc: 'Actividades sospechosas, incivilidades o contingencias.' },
         { id: 'paving', title: 'Baches y Pavimento', icon: AlertCircle, color: '#f59e0b', desc: 'Calles en mal estado u hoyos peligrosos.' },
-        { id: 'cleaning', title: 'Aseo y Ornato', icon: Trash2, color: '#10b981', desc: 'Microbasurales, retiro de escombros o mantención.' }
+        { id: 'cleaning', title: 'Aseo y Ornato', icon: Trash2, color: '#10b981', desc: 'Microbasurales, retiro de escombros o mantención.' },
+        { id: 'transport', title: 'Transporte Público', icon: Smartphone, color: '#a855f7', desc: 'Micros y Colectivos: No pasa, mucha espera o mala calidad.', urgent: true }
     ];
 
     const handleResolve = (id) => {
@@ -80,13 +115,44 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
         }
     }
 
+    const handleGetLocation = () => {
+        if (!navigator.geolocation) return alert("Tu navegador no soporta geolocalización.");
+        setIsLocating(true);
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                setLocation({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+                setIsLocating(false);
+            },
+            (err) => {
+                console.error("Geo error:", err);
+                alert("No se pudo obtener la ubicación. Por favor, actívala en tu navegador.");
+                setIsLocating(false);
+            }
+        );
+    };
+
+    const handleFileChange = (e) => {
+        const files = Array.from(e.target.files);
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setEvidence(prev => [...prev, { 
+                    type: file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : 'audio',
+                    url: reader.result,
+                    name: file.name
+                }]);
+            };
+            reader.readAsDataURL(file);
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!isCaptchaSolved) return alert("Por favor, resuelve el desafío de seguridad.");
         setIsSubmitting(true);
         
         try {
-            const typeInfo = REQUEST_TYPES.find(t => t.id === formData.type) || REQUEST_TYPES[0];
+            const typeInfo = REQUEST_TYPES.find(typeItem => typeItem.id === formData.type) || REQUEST_TYPES[0];
             const newIncident = {
                 id: Date.now(),
                 type: formData.type,
@@ -105,7 +171,36 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
                 ...newIncident,
                 userId: currentUser?.uid || 'guest',
                 userEmail: currentUser?.email || formData.email || 'N/A',
-                createdAt: serverTimestamp()
+                location: location || null,
+                evidenceCount: evidence.length,
+                evidenceMetadata: evidence.map(e => ({ type: e.type, name: e.name })),
+                createdAt: serverTimestamp(),
+                // Transport Metadata
+                transportMetadata: formData.type === 'transport' ? {
+                    line: formData.transportLine,
+                    patent: formData.transportPatent,
+                    frequency: formData.transportFrequency,
+                    stars: formData.transportStars
+                } : null
+            });
+
+            // "Gran Cerebro" Push
+            await pushToBigBrain({
+                type: formData.type,
+                title: `${typeInfo.title} - ${formData.transportLine || 'General'}`,
+                description: formData.message,
+                location: location || null,
+                metadata: {
+                    line: formData.transportLine,
+                    patent: formData.transportPatent,
+                    frequency: formData.transportFrequency,
+                    stars: formData.transportStars
+                },
+                user: {
+                    id: currentUser?.uid || 'guest',
+                    name: formData.name,
+                    title: checkDelegadoStatus(incidents.length) // Recognition logic
+                }
             });
 
             // Update purely visual state with actual Component Object reference
@@ -224,13 +319,73 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
                                             <div className="scale-in" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <button type="button" onClick={() => setStep(1)} style={{ color: '#94a3b8', background: 'none', border: 'none', cursor: 'pointer' }}>← Volver</button>
-                                                    <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold' }}>REPORTE: {REQUEST_TYPES.find(t => t.id === formData.type)?.title}</span>
+                                                    <span style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 'bold' }}>REPORTE: {REQUEST_TYPES.find(typeItem => typeItem.id === formData.type)?.title}</span>
                                                 </div>
                                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                                     <input required placeholder="Tu Nombre" className="vls-input" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
                                                     <input required placeholder="Teléfono" className="vls-input" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} />
                                                 </div>
                                                 <textarea required placeholder="Describe la situación (Lugar, detalles, urgencia)..." className="vls-input" style={{ minHeight: '120px' }} value={formData.message} onChange={e => setFormData({...formData, message: e.target.value})} />
+                                                
+                                                {/* Campos Específicos de Transporte */}
+                                                {formData.type === 'transport' && (
+                                                    <div className="scale-in" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', padding: '1.2rem', background: 'rgba(168, 85, 247, 0.1)', borderRadius: '20px', border: '1px solid rgba(168, 85, 247, 0.3)' }}>
+                                                        <div style={{ display: 'flex', gap: '1rem' }}>
+                                                            <input placeholder="N° Línea / Nombre" className="vls-input" value={formData.transportLine} onChange={e => setFormData({...formData, transportLine: e.target.value})} />
+                                                            <input placeholder="Patente (Opcional)" className="vls-input" value={formData.transportPatent} onChange={e => setFormData({...formData, transportPatent: e.target.value})} />
+                                                        </div>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                            <select className="vls-input" style={{ flex: 1, appearance: 'auto' }} value={formData.transportFrequency} onChange={e => setFormData({...formData, transportFrequency: e.target.value})}>
+                                                                <option value="normal">Frecuencia Normal</option>
+                                                                <option value="delay">Demorado / Mucha espera</option>
+                                                                <option value="no-show">No pasó / Inexistente</option>
+                                                            </select>
+                                                            <div style={{ display: 'flex', gap: '4px' }}>
+                                                                {[1,2,3,4,5].map(s => (
+                                                                    <button key={s} type="button" onClick={() => setFormData({...formData, transportStars: s})} style={{ background: 'none', border: 'none', cursor: 'pointer', transition: '0.2s', transform: formData.transportStars >= s ? 'scale(1.1)' : 'scale(1)' }}>
+                                                                        <Star size={18} fill={formData.transportStars >= s ? '#fbbf24' : 'none'} color={formData.transportStars >= s ? '#fbbf24' : '#94a3b8'} />
+                                                                    </button>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                                    <button 
+                                                        type="button" 
+                                                        onClick={handleGetLocation}
+                                                        className={`btn-gps ${location ? 'active' : ''}`}
+                                                        style={{ 
+                                                            padding: '1rem', borderRadius: '15px', background: location ? '#10b981' : 'rgba(255,255,255,0.05)', 
+                                                            border: 'none', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.8rem' 
+                                                        }}
+                                                    >
+                                                        <MapPin size={18} /> {isLocating ? 'LOCALIZANDO...' : location ? 'PUNTO GPS FIJADO' : 'GEOLOCALIZAR'}
+                                                    </button>
+
+                                                    <label style={{ cursor: 'pointer', padding: '1rem', borderRadius: '15px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: 'white', fontSize: '0.8rem' }}>
+                                                        <Upload size={18} /> EVIDENCIA ({evidence.length})
+                                                        <input type="file" multiple accept="image/*,video/*,audio/*" onChange={handleFileChange} style={{ display: 'none' }} />
+                                                    </label>
+                                                </div>
+
+                                                {evidence.length > 0 && (
+                                                    <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', padding: '0.5rem 0' }}>
+                                                        {evidence.map((ev, idx) => (
+                                                            <div key={idx} style={{ position: 'relative', width: '60px', height: '60px', borderRadius: '10px', overflow: 'hidden', background: 'rgba(0,0,0,0.5)', flexShrink: 0 }}>
+                                                                {ev.type === 'image' ? (
+                                                                    <img src={ev.url} alt="ev" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                                ) : ev.type === 'video' ? (
+                                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Eye size={20} color="#ef4444" /></div>
+                                                                ) : (
+                                                                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Music size={20} color="#ef4444" /></div>
+                                                                )}
+                                                                <button onClick={() => setEvidence(prev => prev.filter((_, i) => i !== idx))} style={{ position: 'absolute', top: 0, right: 0, background: 'red', color: 'white', border: 'none', padding: '2px', cursor: 'pointer' }}><CloseIcon size={12} /></button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                                 
                                                 <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
                                                     <div style={{ fontSize: '0.7rem', color: '#ef4444', marginBottom: '10px', fontWeight: 'bold' }}>DESLIZA PARA ACTIVAR PROTOCOLO</div>
@@ -318,4 +473,3 @@ export default function VLSRequestPortal({ onClose, isPage = false }) {
     );
 }
 
-const isMobile = window.innerWidth < 768;

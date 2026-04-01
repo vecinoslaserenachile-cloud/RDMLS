@@ -78,7 +78,7 @@ export default function VLSNewsBencinazo({ onClose }) {
         <div style={{ display: 'flex', gap: isMobile ? '0.5rem' : '1.5rem', alignItems: 'center' }}>
           <button 
             onClick={() => {
-               const shareUrl = `${window.location.origin}${window.location.pathname}?news=bencinazo`;
+               const shareUrl = `${window.location.origin}/bencinazo`;
                window.open(`https://wa.me/?text=${encodeURIComponent('Hemeroteca VLS: Espejismo Americano. Lee aquí: ' + shareUrl)}`, '_blank')
             }}
             style={{ background: '#25D366', color: 'white', border: 'none', padding: '0.4rem', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -177,17 +177,19 @@ export default function VLSNewsBencinazo({ onClose }) {
                        </tr>
                     </thead>
                     <tbody>
-                       {[
-                          { label: 'Sueldo Mínimo', us: 'US$ 1.500', cl: 'US$ 550' },
-                          { label: 'Impuesto Galón', us: 'US$ 0.18', cl: 'US$ 1.30' },
-                          { label: 'Efecto Bolsillo', us: '1.2%', cl: '4.8%' }
-                       ].map((row, idx) => (
-                          <tr key={idx} style={{ background: 'rgba(255,255,255,0.05)' }}>
-                             <td style={{ padding: '15px', fontSize: '0.9rem' }}>{row.label}</td>
-                             <td style={{ padding: '15px', textAlign: 'center', color: '#94a3b8' }}>{row.us}</td>
-                             <td style={{ padding: '15px', textAlign: 'center', fontWeight: '900', color: '#fbbf24' }}>{row.cl}</td>
-                          </tr>
-                       ))}
+                        {[
+                           { label: 'Sueldo Mínimo', us: 'US$ 1.500', cl: 'US$ 550' },
+                           { label: 'Impuesto Galón', us: 'US$ 0.18', cl: 'US$ 1.30' },
+                           { label: 'Precio Real Galón', us: 'US$ 3.80', cl: 'US$ 6.20' },
+                           { label: 'Efecto Bolsillo', us: '1.2%', cl: '4.8%' },
+                           { label: 'Índice de Libertad', us: '9.2', cl: '4.1' }
+                        ].map((row, idx) => (
+                           <tr key={idx} style={{ background: 'rgba(255,255,255,0.05)' }}>
+                              <td style={{ padding: '15px', fontSize: '0.9rem' }}>{row.label}</td>
+                              <td style={{ padding: '15px', textAlign: 'center', color: '#94a3b8' }}>{row.us}</td>
+                              <td style={{ padding: '15px', textAlign: 'center', fontWeight: '900', color: '#fbbf24' }}>{row.cl}</td>
+                           </tr>
+                        ))}
                     </tbody>
                  </table>
               </div>
@@ -243,19 +245,84 @@ export default function VLSNewsBencinazo({ onClose }) {
                </div>
             </section>
 
+            <section style={{ marginBottom: '4rem', background: '#fff', border: '1px solid #e1e4e8', padding: isMobile ? '2rem' : '3rem', borderRadius: '32px' }}>
+               <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', fontWeight: '900', color: '#000', marginBottom: '1.5rem' }}>Capítulo III: El Laberinto del MEPCO</h2>
+               <p style={{ marginBottom: '1.5rem', color: '#111827', fontWeight: '500' }}>
+                  El Mecanismo de Estabilización de Precios de los Combustibles (MEPCO) se ha convertido en un amortiguador insuficiente ante un dólar que ya no obedece a las bandas tradicionales. 
+               </p>
+               <div style={{ background: '#f8fafc', padding: '2rem', borderRadius: '20px', marginBottom: '1.5rem', borderLeft: '4px solid #fbbf24' }}>
+                  <TrendingUp size={32} color="#fbbf24" style={{ marginBottom: '10px' }} />
+                  <p style={{ fontSize: '1rem', color: '#000', margin: 0, fontWeight: '700', lineHeight: '1.5' }}>
+                    "La importación del 98% del petróleo crudo expone a Chile a la volatilidad del Estrecho de Ormuz, pero con una moneda local que ha perdido el 15% de su poder adquisitivo en los últimos 6 meses."
+                  </p>
+               </div>
+            </section>
+
+            <section style={{ marginBottom: '4rem', background: '#020617', padding: isMobile ? '2rem' : '3.5rem', borderRadius: '32px', color: 'white' }}>
+               <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', fontWeight: '900', color: '#fbbf24', marginBottom: '2rem' }}>Capítulo IV: Reacciones de los Actores</h2>
+               
+               <div style={{ display: 'grid', gap: '2rem' }}>
+                  <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', pb: '1.5rem' }}>
+                     <h4 style={{ color: '#fbbf24', fontWeight: '900', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '2px', marginBottom: '1rem' }}>POSTURA MUNICIPAL</h4>
+                     <p style={{ fontStyle: 'italic', fontSize: '1.1rem', lineHeight: '1.4' }}>
+                        "No podemos dejar a la deriva a las familias del sector rural. Veremos recortes en otras áreas pero el combustible para el agua es sagrado."
+                     </p>
+                  </div>
+                  
+                  <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', pb: '1.5rem' }}>
+                     <h4 style={{ color: '#fbbf24', fontWeight: '900', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '2px', marginBottom: '1rem' }}>GREMIO DE CAMIONEROS</h4>
+                     <p style={{ fontStyle: 'italic', fontSize: '1.1rem', lineHeight: '1.4' }}>
+                        "Un camión parado es abastecimiento que no llega. Estamos evaluando la continuidad operativa si el Diésel supera la barrera de los $1.500."
+                     </p>
+                  </div>
+
+                  <div>
+                     <h4 style={{ color: '#fbbf24', fontWeight: '900', textTransform: 'uppercase', fontSize: '0.7rem', letterSpacing: '2px', marginBottom: '1rem' }}>PERSPECTIVA CIUDADANA</h4>
+                     <p style={{ fontStyle: 'italic', fontSize: '1.1rem', lineHeight: '1.4' }}>
+                        "Me dicen que en EE.UU. pagan más, pero allá un conserje gana 4 veces más que yo. Es comparar manzanas con peras."
+                     </p>
+                  </div>
+               </div>
+            </section>
+
             {/* Regional Impact */}
             <section style={{ marginBottom: '4rem', padding: isMobile ? '2rem' : '3rem', background: '#f8fafc', borderRadius: '32px' }}>
-               <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', fontWeight: '900', marginBottom: '1.5rem' }}>Capítulo V: El Grito Regional</h2>
+               <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', fontWeight: '900', marginBottom: '1.5rem' }}>Capítulo V: El Grito de las Playas y Cerros</h2>
                <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                   <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '24px', borderLeft: '6px solid #ef4444' }}>
                      <h4 style={{ color: '#ef4444', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '10px' }}>PESCA ARTESANAL</h4>
-                     <p style={{ margin: 0, fontStyle: 'italic', fontSize: '1rem' }}>"Es una tragedia para el mundo de la pesca artesanal. Los costos ya no dan."</p>
+                     <p style={{ margin: 0, fontStyle: 'italic', fontSize: '1rem' }}>"Es una tragedia para el mundo de la pesca artesanal en Punta de Choros. Los costos de los motores fuera de borda ya no dan para el flete."</p>
                   </div>
                   <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '24px', borderLeft: '6px solid #3b82f6' }}>
-                     <h4 style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '10px' }}>AGUA RURAL</h4>
-                     <p style={{ margin: 0, fontSize: '1rem' }}>Los camiones aljibe dependen del petróleo para llevar vida a los cerros.</p>
+                     <h4 style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '10px' }}>AGUA RURAL (APRs)</h4>
+                     <p style={{ margin: 0, fontSize: '1rem' }}>Los camiones aljibe que surten a los sectores altos de Las Compañías y San Juan dependen del petróleo para llevar vida a los cerros.</p>
                   </div>
                </div>
+            </section>
+
+            {/* NEW GOV ANNOUNCEMENT */}
+            <section style={{ marginBottom: '4rem', padding: isMobile ? '2rem' : '3.5rem', background: 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)', borderRadius: '32px', color: '#000' }}>
+               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                  <Info size={32} />
+                  <h2 style={{ fontSize: isMobile ? '1.8rem' : '2.2rem', fontWeight: '900', margin: 0 }}>ÚLTIMO MINUTO: Medidas del Gobierno</h2>
+               </div>
+               <p style={{ fontWeight: 'bold', fontSize: '1.1rem', marginBottom: '2rem' }}>
+                  Ante la presión social y el estallido del debate Quiroz, el Palacio ha anunciado hoy tres medidas de choque:
+               </p>
+               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                  <li style={{ background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid #000', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                     <strong style={{ display: 'block', fontSize: '1.1rem', color: '#000' }}>1. Bono Alivio Diésel 2026:</strong>
+                     <p style={{ margin: 0, fontSize: '1rem', color: '#000', fontWeight: '500' }}>Subsidio directo a micro-transportistas para cubrir el 20% del alza proyectada en el próximo trimestre.</p>
+                  </li>
+                  <li style={{ background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid #000', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                     <strong style={{ display: 'block', fontSize: '1.1rem', color: '#000' }}>2. Modificación al Impuesto Específico:</strong>
+                     <p style={{ margin: 0, fontSize: '1rem', color: '#000', fontWeight: '500' }}>Revisión técnica de la componente fija del impuesto para flexibilizarla si el barril de WTI supera los US$110.</p>
+                  </li>
+                  <li style={{ background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid #000', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
+                     <strong style={{ display: 'block', fontSize: '1.1rem', color: '#000' }}>3. Fondo de Estabilización Comunal:</strong>
+                     <p style={{ margin: 0, fontSize: '1rem', color: '#000', fontWeight: '500' }}>Inyección de recursos especiales a municipios para evitar alzas en los pasajes de microbuses locales.</p>
+                  </li>
+               </ul>
             </section>
 
             {/* Action Bar */}

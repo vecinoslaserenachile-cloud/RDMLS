@@ -76,7 +76,7 @@ export default function VLSNewsAguasValle({ onClose }) {
         <div style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
           <button 
             onClick={() => {
-               const shareUrl = `${window.location.origin}${window.location.pathname}?news=aguasvalle`;
+               const shareUrl = `${window.location.origin}/media/aguasvalle`;
                window.open(`https://wa.me/?text=${encodeURIComponent('Hemeroteca VLS: Caso Aguas del Valle (Emisario). Lee aquí: ' + shareUrl)}`, '_blank')
             }}
             style={{ background: '#25D366', color: 'white', border: 'none', padding: '0.5rem', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -175,24 +175,51 @@ export default function VLSNewsAguasValle({ onClose }) {
         }}>
           
           <div style={{ position: 'relative', zIndex: 1, fontSize: isMobile ? '1.1rem' : '1.2rem', lineHeight: '1.8', color: '#111827' }}>
-            <div style={{ borderLeft: '5px solid #0284c7', paddingLeft: '1.5rem', marginBottom: '3rem' }}>
-               <p style={{ fontSize: isMobile ? '1.2rem' : '1.4rem', lineHeight: '1.5', color: '#334155', fontStyle: 'italic' }}>
-                  "Aguas del Valle, que en 2023 cumplió 20 años operando en la región, enfrenta cuestionamientos por el uso de tecnologías de 1987."
+            <div style={{ borderLeft: '5px solid #0284c7', paddingLeft: '2rem', marginBottom: '4rem', marginTop: '3rem' }}>
+               <p style={{ fontSize: isMobile ? '1.3rem' : '1.6rem', lineHeight: '1.5', color: '#1e293b', fontStyle: 'italic', fontWeight: '500' }}>
+                  "Aguas del Valle, que en 2023 cumplió 20 años operando en la región, enfrenta hoy el desafío de transitar desde una infraestructura de disposición reactiva a una de recuperación circular bajo estándares OCDE."
                </p>
             </div>
 
+            <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#0f172a', marginBottom: '1.5rem' }}>El Legado del Emisario de 1987</h2>
             <p style={{ marginBottom: '2rem' }}>
-              El sistema de saneamiento implementado originalmente por SENDOS ha cumplido la normativa, pero su efectividad hoy es debatida bajo estándares globales de sustentabilidad hídrica.
+              El sistema de saneamiento actual, heredado del antiguo SENDOS, se basa en un emisario submarino que fue punta de lanza tecnológica a finales de los 80. Sin embargo, en el contexto de la megasequía que azota a la Región de Coquimbo en 2026, la idea de "disponer" agua tratada en el mar es vista por expertos como un desperdicio de recursos críticos. 
             </p>
 
-            <div style={{ background: '#f1f5f9', padding: isMobile ? '2rem' : '3rem', borderRadius: '24px', margin: '3rem 0' }}>
-               <Quote size={32} color="#0284c7" style={{ marginBottom: '1rem', opacity: 0.5 }} />
-               <p style={{ fontSize: isMobile ? '1.2rem' : '1.5rem', lineHeight: '1.4', color: '#0f172a', fontWeight: 'bold' }}>
-                  «Las aguas residuales solo tienen tratamiento primario... la OCDE ya no reconoce estos sistemas de tratamiento propoamente tal».
+            <p style={{ marginBottom: '2rem' }}>
+               Nuestra investigación para la Hemeroteca VLS revela que el emisario de La Serena descarga aguas con tratamiento primario avanzado, un nivel que cumplía la normativa chilena histórica pero que hoy palidece ante los requerimientos de la OCDE para países en estrés hídrico extremo. La soberanía hídrica de la comuna depende de la capacidad de reconvertir estas plantas en biofactorías de recuperación total.
+            </p>
+
+            <div style={{ background: '#f1f5f9', padding: isMobile ? '2rem' : '3.5rem', borderRadius: '32px', margin: '4rem 0', border: '1px solid #e2e8f0' }}>
+               <Quote size={40} color="#0284c7" style={{ marginBottom: '1.5rem', opacity: 0.3 }} />
+               <p style={{ fontSize: isMobile ? '1.3rem' : '1.7rem', lineHeight: '1.4', color: '#0f172a', fontWeight: '900', letterSpacing: '-0.5px' }}>
+                  «Las aguas residuales no son un desperdicio, son una reserva estratégica. La OCDE no reconoce sistemas de descarga como soluciones de largo plazo; la meta es la descarga cero al mar para el 2030».
                </p>
+               <div style={{ marginTop: '2rem', borderTop: '1px solid #cbd5e1', paddingTop: '1.5rem' }}>
+                  <p style={{ color: '#64748b', fontSize: '0.9rem', fontWeight: 'bold' }}>— Panel de Expertos VLS Intelligence</p>
+               </div>
             </div>
 
-            <CommentSection themeColor="#0284c7" reportTitle="Hemeroteca: Aguas del Valle 2023" />
+            <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#0f172a', marginBottom: '1.5rem' }}>Hacia el Reuso Soberano</h3>
+            <p style={{ marginBottom: '2rem' }}>
+               El debate no es solo técnico, es político. ¿A quién pertenece el agua una vez tratada? Mientras la sanitaria evalúa la factibilidad económica de mantener el emisario, los ciudadanos de La Serena exigen que ese recurso sea reinyectado en el riego de áreas verdes o procesos industriales que hoy consumen agua potable. El portal **Smart Citizens** monitoreará en tiempo real la calidad de estas descargas para asegurar la salud de nuestra bahía.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '2rem', margin: '4rem 0' }}>
+               <div style={{ background: '#0a192f', color: 'white', padding: '2rem', borderRadius: '24px' }}>
+                  <Waves size={32} color="#38bdf8" style={{ marginBottom: '1rem' }} />
+                  <h4 style={{ fontWeight: 'bold', marginBottom: '10px' }}>Emisario 1.0</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Disposición oceánica. Dilución natural. Bajo costo operativo pero nula recuperación de recurso.</p>
+               </div>
+               <div style={{ background: '#f0f9ff', color: '#0369a1', padding: '2rem', borderRadius: '24px', border: '2px solid #0369a1' }}>
+                  <Droplets size={32} color="#0369a1" style={{ marginBottom: '1rem' }} />
+                  <h4 style={{ fontWeight: 'bold', marginBottom: '10px' }}>Biofactoría 2027</h4>
+                  <p style={{ fontSize: '0.85rem', color: '#0c4a6e' }}>Tratamiento terciario. Remoción de nutrientes. Reuso agrícola e industrial. Soberanía Hídrica.</p>
+               </div>
+            </div>
+
+            <CommentSection themeColor="#0284c7" reportTitle="Hemeroteca: Aguas del Valle 2026" />
+
           </div>
 
           {/* Sidebar */}

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Share2, ArrowLeft, Gamepad2, Shield, Zap, Trophy, ChevronRight } from 'lucide-react';
+import { Share2, ArrowLeft, Gamepad2, Shield, Zap, Trophy, ChevronRight, X } from 'lucide-react';
 
 export default function Serenito1945Page() {
     const shareUrl = 'https://www.vecinoslaserena.cl/1945';
@@ -34,15 +34,19 @@ export default function Serenito1945Page() {
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <button
-                        onClick={() => window.history.back()}
+                        onClick={() => window.location.href = '/'}
                         style={{
-                            background: 'rgba(56,189,248,0.1)', border: '1px solid #38bdf8',
-                            color: '#38bdf8', borderRadius: '50%', width: '34px', height: '34px',
+                            background: 'rgba(239, 68, 68, 0.1)', border: '1px solid #ef4444',
+                            color: '#ef4444', borderRadius: '50%', width: '34px', height: '34px',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                            cursor: 'pointer'
+                            cursor: 'pointer', transition: 'all 0.2s',
+                            boxShadow: '0 0 10px rgba(239, 68, 68, 0.3)'
                         }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        title="Volver al Inicio"
                     >
-                        <ArrowLeft size={16} />
+                        <X size={18} strokeWidth={3} />
                     </button>
                     <span style={{ fontSize: '0.85rem', fontWeight: '900', letterSpacing: '2px', color: '#38bdf8' }}>
                         🛩️ SERENITO 1945 · VLS MASTER

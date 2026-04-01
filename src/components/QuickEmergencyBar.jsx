@@ -3,7 +3,8 @@ import {
     Droplet, Zap, ZapOff, Radio, Cat, AlertTriangle, 
     Phone, Smartphone, ShieldAlert, WifiOff, Activity, LifeBuoy
 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import VLSSOSOverlay from './VLSSOSOverlay';
 
 const EmergencyItem = ({ icon: Icon, label, color, onClick }) => (
     <motion.button
@@ -54,6 +55,8 @@ const EmergencyItem = ({ icon: Icon, label, color, onClick }) => (
 );
 
 export default function QuickEmergencyBar() {
+    const [showSOS, setShowSOS] = React.useState(false);
+
     const handleReport = (type) => {
         // Disparar evento global para abrir el formulario de reportes con la categoría pre-seleccionada
         window.dispatchEvent(new CustomEvent('open-smart-report', { detail: { category: type } }));
@@ -104,8 +107,35 @@ export default function QuickEmergencyBar() {
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
                 WebkitOverflowScrolling: 'touch',
-                justifyContent: window.innerWidth > 768 ? 'center' : 'flex-start'
+                justifyContent: window.innerWidth > 768 ? 'center' : 'flex-start',
+                alignItems: 'center'
             }}>
+                {/* BOTÓN VLSOS MAESTRO */}
+                <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setShowSOS(true)}
+                    style={{
+                        padding: '1rem 2rem',
+                        background: 'linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%)',
+                        borderRadius: '24px',
+                        border: 'none',
+                        color: 'white',
+                        fontWeight: '900',
+                        fontSize: '1rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        boxShadow: '0 10px 20px rgba(239, 68, 68, 0.3)',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    <ShieldAlert size={24} className="animate-pulse" /> VLSOS
+                </motion.button>
+
+                <div style={{ width: '2px', height: '40px', background: 'rgba(255,255,255,0.1)', margin: '0 0.5rem' }}></div>
+
                 {emergencies.map(item => (
                     <EmergencyItem 
                         key={item.id} 
@@ -114,6 +144,10 @@ export default function QuickEmergencyBar() {
                     />
                 ))}
             </div>
+
+            <AnimatePresence>
+                {showSOS && <VLSSOSOverlay onCancel={() => setShowSOS(false)} />}
+            </AnimatePresence>
             
             <style>{`
                 div::-webkit-scrollbar {

@@ -19,9 +19,27 @@ export const INFRAESTRUCTURA_IMLS = [
 
 export default function LiveVenuesMonitor({ detailed = false, showPrintQR = false }) {
     const [selectedQR, setSelectedQR] = useState(null);
+    const [venues, setVenues] = useState(INFRAESTRUCTURA_IMLS);
 
-    const totalActive = INFRAESTRUCTURA_IMLS.reduce((acc, curr) => acc + curr.active, 0);
-    const totalWaiting = INFRAESTRUCTURA_IMLS.reduce((acc, curr) => acc + curr.waiting, 0);
+    // VLS 2026: Comuna Smart Ghost Simulator (Auto-Pilot)
+    React.useEffect(() => {
+        const phantomDriver = setInterval(() => {
+            setVenues(prev => prev.map(venue => {
+                // Generar fluctuación autónoma simulada
+                const changeActive = Math.floor(Math.random() * 5) - 2; // -2 a +2
+                const changeWait = Math.floor(Math.random() * 3) - 1;   // -1 a +1
+                return {
+                    ...venue,
+                    active: Math.max(0, venue.active + changeActive),
+                    waiting: Math.max(0, venue.waiting + changeWait)
+                };
+            }));
+        }, 2500);
+        return () => clearInterval(phantomDriver);
+    }, []);
+
+    const totalActive = venues.reduce((acc, curr) => acc + curr.active, 0);
+    const totalWaiting = venues.reduce((acc, curr) => acc + curr.waiting, 0);
 
     return (
         <div className="scale-in" style={{ width: '100%' }}>
@@ -47,7 +65,7 @@ export default function LiveVenuesMonitor({ detailed = false, showPrintQR = fals
                 gridTemplateColumns: detailed ? 'repeat(auto-fill, minmax(280px, 1fr))' : 'repeat(auto-fill, minmax(220px, 1fr))',
                 gap: '1.5rem'
             }}>
-                {INFRAESTRUCTURA_IMLS.map((inf, i) => {
+                {venues.map((inf, i) => {
                     const statusColor = inf.waiting > 10 ? '#ef4444' : inf.waiting > 4 ? '#f59e0b' : '#3b82f6';
                     return (
                         <div key={inf.id} className="glass-panel" style={{

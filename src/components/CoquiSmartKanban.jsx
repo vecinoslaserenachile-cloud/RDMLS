@@ -118,7 +118,7 @@ const CoquiSmartKanban = () => {
                 {column.title}
               </h2>
               <span className="bg-yellow-400/10 text-yellow-400 text-xs font-bold px-2 py-1 rounded-full">
-                {tasks.filter(t => t.columnId === column.id).length}
+                {tasks.filter(taskItem => taskItem.columnId === column.id).length}
               </span>
             </div>
 
@@ -162,7 +162,7 @@ const CoquiSmartKanban = () => {
                 ))}
               
               {/* Dropzone visual (vacía) */}
-              {tasks.filter(t => t.columnId === column.id).length === 0 && (
+              {tasks.filter(taskItem => taskItem.columnId === column.id).length === 0 && (
                 <div className="border-2 border-dashed border-gray-800 rounded-lg p-8 text-center text-gray-600 text-sm">
                   Arrastra una tarjeta aquí
                 </div>

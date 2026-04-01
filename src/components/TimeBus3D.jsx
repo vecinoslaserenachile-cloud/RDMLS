@@ -32,7 +32,7 @@ function SerenitoGuide() {
     }, [actions]);
 
     return (
-        <group ref={groupRef} position={[-8, -5, 10]} rotation={[0, Math.PI / 4, 0]}>
+        <group ref={groupRef} position={[-8, 0, 10]} rotation={[0, Math.PI / 4, 0]}>
             <primitive object={scene} scale={3} />
             <Html position={[0, 4, 0]} center>
                 <div style={{ background: 'rgba(56,189,248,0.9)', padding: '6px 14px', borderRadius: '20px', color: '#000', fontWeight: '900', fontSize: '0.85rem', whiteSpace: 'nowrap', border: '2px solid white', boxShadow: '0 0 15px rgba(56,189,248,0.6)' }}>
@@ -111,16 +111,16 @@ function Ring({ ringIndex }) {
     const meshRef = React.useRef();
     const innerRef = React.useRef();
     useFrame(({ clock }) => {
-        const t = clock.getElapsedTime();
+        const elapsedTime = clock.getElapsedTime();
         if (meshRef.current) {
             const speed = 5;
             const totalDepth = 80 * 4.5;
-            const offset = (t * speed + ringIndex * 4.5) % totalDepth;
+            const offset = (elapsedTime * speed + ringIndex * 4.5) % totalDepth;
             meshRef.current.position.z = -ringIndex * 4.5 + (offset % 4.5);
-            meshRef.current.rotation.z = ringIndex * 0.2 + t * 0.15;
+            meshRef.current.rotation.z = ringIndex * 0.2 + elapsedTime * 0.15;
         }
         if (innerRef.current) {
-            innerRef.current.rotation.z = -(ringIndex * 0.2 + t * 0.1);
+            innerRef.current.rotation.z = -(ringIndex * 0.2 + elapsedTime * 0.1);
         }
     });
     const hue = (ringIndex * 8) % 360;

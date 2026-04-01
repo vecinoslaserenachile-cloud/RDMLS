@@ -53,7 +53,7 @@ export default function RadioHomeWidget() {
         { id: 1, sub: 'vls', name: 'VLS Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3' }
     ];
 
-    const initialStation = isRDMLS ? stations[0] : stations[1];
+    const initialStation = stations[0];
     const [currentStation, setCurrentStation] = useState(initialStation);
 
     const broadcastSchedule = isRDMLS ? [
@@ -84,21 +84,47 @@ export default function RadioHomeWidget() {
         return current ? current.name : (isRDMLS ? 'RDMLS Transmisión Continua' : 'VLS Transmisión Continua');
     };
 
+    // ============================================================
+    // VLS RADIO SYNC (Master Engine Interface 2026)
+    // ============================================================
+    const syncChannel = useRef(new BroadcastChannel('vls_radio_master'));
+
     useEffect(() => {
-        const handleRadioState = (e) => {
-            if (e.detail) {
-                setIsPlaying(e.detail.playing);
-                if (e.detail.volume !== undefined && e.detail.volume !== volume) {
-                   setVolume(e.detail.volume);
-                   if (e.detail.volume === 0) setIsMuted(true);
-                   else setIsMuted(false);
+        const handleSyncMessage = (e) => {
+            if (e.data?.type === 'STATE_SYNC' || e.data?.type === 'VLS_RADIO_STATE_HEARTBEAT') {
+                const incomingState = e.data.state || e.data;
+                const incomingStation = incomingState?.station || incomingState?.currentStation;
+                const incomingPlaying = incomingState?.playing !== undefined ? incomingState.playing : incomingState?.isPlaying;
+                const incomingVolume = incomingState?.volume !== undefined ? incomingState.volume : (incomingState?.volInState);
+
+                if (incomingPlaying !== undefined && incomingPlaying !== isPlaying) setIsPlaying(incomingPlaying);
+                if (incomingStation && incomingStation.id && incomingStation.id !== currentStation?.id) {
+                    setCurrentStation(incomingStation);
                 }
-                if (e.detail.station) setCurrentStation(e.detail.station);
+                if (incomingVolume !== undefined && incomingVolume !== (volume * 100)) {
+                    // Logic to update volume if needed
+                }
             }
         };
-        window.addEventListener('vls-radio-state-sync', handleRadioState);
-        return () => window.removeEventListener('vls-radio-state-sync', handleRadioState);
-    }, [volume]);
+        
+        syncChannel.current.onmessage = handleSyncMessage;
+
+        // Legacy compatibility
+        const handleRadioStateEvent = (e) => {
+            if (e.detail && !syncChannel.current) {
+                /* Handled by BroadcastChannel primarily */
+            }
+        };
+        window.addEventListener('vls-radio-state-sync', handleRadioStateEvent);
+        
+        // Request immediate state sync on mount
+        syncChannel.current.postMessage({ type: 'REQUEST_SYNC' });
+
+        return () => {
+            window.removeEventListener('vls-radio-state-sync', handleRadioStateEvent);
+            syncChannel.current.onmessage = null;
+        };
+    }, [isPlaying, currentStation, volume]);
 
     const handleVolumeChange = (newVal) => {
         const v = parseFloat(newVal);
@@ -280,7 +306,7 @@ export default function RadioHomeWidget() {
                     <div style={{ flex: 1, minWidth: '250px' }}>
                         <div style={{ fontSize: '0.7rem', color: '#94a3b8', letterSpacing: '2px', fontWeight: '900', marginBottom: '8px' }}>PLAYING NOW ({isRDMLS ? 'RDMLS MASTER' : 'VLS MASTER'})</div>
                         <div style={{ fontSize: '1.3rem', color: '#fff', fontWeight: 'bold', textShadow: '0 0 10px rgba(56,189,248,0.3)' }}>
-                            {currentStation.name}
+                            {currentStation?.name || (isRDMLS ? 'RDMLS OFICIAL' : 'VLS RADIO')}
                         </div>
                         <div style={{ fontSize: '0.85rem', color: '#38bdf8', marginTop: '4px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
                             <Zap size={14} /> 192kbps HD Digital Stream (SSL Direct)

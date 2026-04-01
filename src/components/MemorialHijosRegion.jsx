@@ -3,9 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     X, Heart, Star, BookOpen, Music, Medal, MapPin, 
     Search, ArrowRight, Share2, Calendar, Award, 
-    Castle, Shield, Sparkles, AlertTriangle, RefreshCw, Skull, Plus 
+    Castle, Shield, Sparkles, AlertTriangle, RefreshCw, Skull, Plus, FileText
 } from 'lucide-react';
 import MasterDanielPalominos3D from './MasterDanielPalominos3D';
+import MasterDonWilson3D from './MasterDonWilson3D';
 import HolographicFigure from './HolographicFigure';
 
 const ImageFallback = ({ src, alt, style, className }) => {
@@ -39,7 +40,175 @@ const ImageFallback = ({ src, alt, style, className }) => {
     );
 };
 
-export default function MemorialHijosRegion({ onClose }) {
+const StarfieldStar = () => {
+    const style = React.useMemo(() => ({
+        position: 'absolute',
+        left: Math.random() * 100 + '%',
+        top: Math.random() * 100 + '%',
+        width: '2px', height: '2px',
+        background: 'white',
+        borderRadius: '50%',
+        boxShadow: '0 0 10px white',
+        animation: `pulse ${2 + Math.random() * 3}s infinite`
+    }), []);
+    return <div style={style} />;
+};
+
+// ── DATA DE FIGURAS (Exportada para rutas directas /altar/:id) ────────
+export const FIGURAS_MEMORIAL = [
+    {
+        id: 'mistral',
+        name: 'Gabriela Mistral',
+        pseudonym: 'Lucila Godoy Alcayaga',
+        title: 'Premio Nobel de Literatura',
+        birth: '7 de abril de 1889, Vicuña',
+        death: '10 de enero de 1957',
+        legacy: 'Poetisa, diplomática y pedagoga. Primera mujer iberoamericana en recibir el Nobel de Literatura.',
+        image: '/memorial-mistral.png',
+        category: 'Letras',
+        location: 'Vicuña / La Serena',
+        icon: BookOpen,
+        color: '#7c3aed'
+    },
+    {
+        id: 'videla',
+        name: 'Gabriel González Videla',
+        title: 'Presidente de Chile (1946-1952)',
+        birth: '23 de noviembre de 1898, La Serena',
+        death: '22 de agosto de 1980',
+        legacy: 'Impulsor del "Plan Serena", transformó la arquitectura de la ciudad al estilo neo-colonial. Estableció la presencia de Chile en la Antártida.',
+        image: '/memorial-videla.png',
+        category: 'Política / Historia',
+        location: 'La Serena',
+        icon: Star,
+        color: '#2563eb'
+    },
+    {
+        id: 'sulantay',
+        name: 'José Sulantay',
+        title: 'Arquitecto de la "Generación Dorada"',
+        birth: '3 de abril de 1940, Coquimbo',
+        death: '20 de julio de 2023',
+        legacy: 'Legendario DT de Coquimbo Unido y creador de la base del éxito del fútbol chileno moderno. Un maestro de disciplina y visión.',
+        image: '/memorial-sulantay.png',
+        category: 'Deportes',
+        location: 'Coquimbo',
+        icon: Medal,
+        color: '#ca8a04'
+    },
+    {
+        id: 'pena',
+        name: 'Jorge Peña Hen',
+        title: 'Director y Compositor',
+        birth: '16 de enero de 1928',
+        death: '16 de octubre de 1973',
+        legacy: 'Fundador de la primera Orquesta Sinfónica Infantil en Latinoamérica. Su legado vive en cada niño que toma un instrumento en la región.',
+        image: '/memorial-pena.png',
+        category: 'Música',
+        location: 'La Serena',
+        icon: Music,
+        color: '#db2777'
+    },
+    {
+        id: 'vdsilva',
+        name: 'Víctor Domingo Silva',
+        title: 'El Poeta de la Bandera',
+        birth: '12 de mayo de 1882, Tongoy',
+        death: '20 de agosto de 1960',
+        legacy: 'Poeta, diplomático y dramaturgo chileno. Premio Nacional de Literatura y de Teatro. Autor de "Al pie de la bandera".',
+        image: '/memorial_vdsilva.png',
+        category: 'Letras',
+        location: 'Tongoy / La Serena',
+        icon: BookOpen,
+        color: '#10b981',
+        audio: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_entre_letras_y_pol%C3%ADtica.mp3',
+        pptx: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_Poet_of_Activity.pptx',
+        pdf: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/16e92b725dc12842f88c6d64f4de551a1d3f4083/V%C3%ADctor_Domingo_Silva_Poet_of_Activity.pdf'
+    },
+    {
+        id: 'bohon',
+        name: 'Juan Bohón',
+        title: 'Fundador de La Serena',
+        birth: 'Siglo XVI, Países Bajos',
+        death: '1548, Chile',
+        legacy: 'Capitán español que fundó la ciudad de San Bartolomé de La Serena en 1544 por orden de Pedro de Valdivia.',
+        image: '/memorial_bohon.png',
+        category: 'Historia',
+        location: 'La Serena',
+        icon: Castle,
+        color: '#f59e0b'
+    },
+    {
+        id: 'ppmunoz',
+        name: 'Pedro Pablo Muñoz',
+        title: 'Revolucionario Constituyente',
+        birth: '1828, La Serena',
+        death: '1882, La Serena',
+        legacy: 'Líder de la Revolución de 1851 y 1859. Defensor de la descentralización y la soberanía de las regiones del norte.',
+        image: '/memorial_ppmunoz.png',
+        category: 'Política',
+        location: 'La Serena',
+        icon: Shield,
+        color: '#ef4444'
+    },
+    {
+        id: 'palominos',
+        name: 'Maestro Daniel Palominos',
+        title: 'Artista Ceramista y Defensor DD.HH.',
+        birth: '1953',
+        death: '5 de junio de 2024',
+        legacy: 'Eximio ceramista de la ULS, profesor y ex concejal. Defensor infatigable de los Derechos Humanos. Su arte en arcilla es un testimonio eterno de la memoria y la cultura regional.',
+        image: '/homenaje/palominos_mural_humanity_1773806652665.png',
+        category: 'Arte / Social',
+        location: 'La Serena / Región de Coquimbo',
+        icon: Award,
+        color: '#92400e',
+        has3D: true
+    },
+    {
+        id: 'blanche',
+        name: 'Bartolomé Blanche',
+        title: 'General y Presidente Provisional',
+        birth: '1879, La Serena',
+        death: '1970, Santiago',
+        legacy: 'Militar y político serenense. Ejerció la presidencia provisional de la República en 1932. Destacado por su rectitud institucional.',
+        image: '/memorial_bartolome_blanche.png',
+        category: 'Política / Historia',
+        location: 'La Serena',
+        icon: Shield,
+        color: '#64748b'
+    },
+    {
+        id: 'bongard',
+        name: 'Isabel Bongard',
+        title: 'Educadora y Reformadora',
+        birth: '1849, Alemania',
+        death: '1928, La Serena',
+        legacy: 'Directora de la Escuela Normal de Preceptoras de La Serena. Revolucionó la pedagogía femenina en Chile con métodos modernos y humanistas.',
+        image: '/memorial_isabel_bongard.png',
+        category: 'Educación / Historia',
+        location: 'La Serena',
+        icon: BookOpen,
+        color: '#14b8a6'
+    },
+    {
+        id: 'cuturrufo',
+        name: 'Dinastía Cuturrufo',
+        title: 'Wilson & Cristian Cuturrufo',
+        birth: 'Coquimbo',
+        death: 'Legado Eterno',
+        legacy: 'Cristián, del "Clan Cuturrufo", democratizó el jazz en Chile. Desde el reto de "La Bamba" impuesto por su padre Don Wilson, hasta el "Jazz Nativo" con raíces diaguitas junto a Valentín Trujillo. Un genio que convirtió el bebop en la banda sonora festiva y profunda de nuestro pueblo.',
+        image: '/DonWilson/cuturrufo_clan_final.jpg',
+        category: 'Música',
+        location: 'Coquimbo / La Serena',
+        icon: Music,
+        color: '#fbbf24',
+        audio: '/DonWilson/Wilson_Cuturrufo_y_la_biologa_del_acorden.m4a',
+        has3D: true
+    },
+];
+
+export default function MemorialHijosRegion({ onClose, tributeId }) {
     const [selectedFigure, setSelectedFigure] = useState(null);
     const [filter, setFilter] = useState('Todos');
     const [searchTerm, setSearchTerm] = useState('');
@@ -57,116 +226,15 @@ export default function MemorialHijosRegion({ onClose }) {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const figuras = [
-        {
-            id: 'mistral',
-            name: 'Gabriela Mistral',
-            pseudonym: 'Lucila Godoy Alcayaga',
-            title: 'Premio Nobel de Literatura',
-            birth: '7 de abril de 1889, Vicuña',
-            death: '10 de enero de 1957',
-            legacy: 'Poetisa, diplomática y pedagoga. Primera mujer iberoamericana en recibir el Nobel de Literatura.',
-            image: '/memorial-mistral.png',
-            category: 'Letras',
-            location: 'Vicuña / La Serena',
-            icon: BookOpen,
-            color: '#7c3aed'
-        },
-        {
-            id: 'videla',
-            name: 'Gabriel González Videla',
-            title: 'Presidente de Chile (1946-1952)',
-            birth: '23 de noviembre de 1898, La Serena',
-            death: '22 de agosto de 1980',
-            legacy: 'Impulsor del "Plan Serena", transformó la arquitectura de la ciudad al estilo neo-colonial. Estableció la presencia de Chile en la Antártida.',
-            image: '/memorial-videla.png',
-            category: 'Política / Historia',
-            location: 'La Serena',
-            icon: Star,
-            color: '#2563eb'
-        },
-        {
-            id: 'sulantay',
-            name: 'José Sulantay',
-            title: 'Arquitecto de la "Generación Dorada"',
-            birth: '3 de abril de 1940, Coquimbo',
-            death: '20 de julio de 2023',
-            legacy: 'Legendario DT de Coquimbo Unido y creador de la base del éxito del fútbol chileno moderno. Un maestro de disciplina y visión.',
-            image: '/memorial-sulantay.png',
-            category: 'Deportes',
-            location: 'Coquimbo',
-            icon: Medal,
-            color: '#ca8a04'
-        },
-        {
-            id: 'pena',
-            name: 'Jorge Peña Hen',
-            title: 'Director y Compositor',
-            birth: '16 de enero de 1928',
-            death: '16 de octubre de 1973',
-            legacy: 'Fundador de la primera Orquesta Sinfónica Infantil en Latinoamérica. Su legado vive en cada niño que toma un instrumento en la región.',
-            image: '/memorial-pena.png',
-            category: 'Música',
-            location: 'La Serena',
-            icon: Music,
-            color: '#db2777'
-        },
-        {
-            id: 'vdsilva',
-            name: 'Víctor Domingo Silva',
-            title: 'El Poeta de la Bandera',
-            birth: '12 de mayo de 1882, Tongoy',
-            death: '20 de agosto de 1960',
-            legacy: 'Poeta, diplomático y dramaturgo chileno. Premio Nacional de Literatura y de Teatro. Autor de "Al pie de la bandera".',
-            image: '/memorial_victor_domingo_silva_1774821509621.png',
-            category: 'Letras',
-            location: 'Tongoy / La Serena',
-            icon: BookOpen,
-            color: '#10b981'
-        },
-        {
-            id: 'bohon',
-            name: 'Juan Bohón',
-            title: 'Fundador de La Serena',
-            birth: 'Siglo XVI, Países Bajos',
-            death: '1548, Chile',
-            legacy: 'Capitán español que fundó la ciudad de San Bartolomé de La Serena en 1544 por orden de Pedro de Valdivia.',
-            image: '/memorial_juan_bohon_1774821523329.png',
-            category: 'Historia',
-            location: 'La Serena',
-            icon: Castle,
-            color: '#f59e0b'
-        },
-        {
-            id: 'ppmunoz',
-            name: 'Pedro Pablo Muñoz',
-            title: 'Revolucionario Constituyente',
-            birth: '1828, La Serena',
-            death: '1882, La Serena',
-            legacy: 'Líder de la Revolución de 1851 y 1859. Defensor de la descentralización y la soberanía de las regiones del norte.',
-            image: '/memorial_pedro_pablo_muñoz_1774821539283.png',
-            category: 'Política',
-            location: 'La Serena',
-            icon: Shield,
-            color: '#ef4444'
-        },
-        {
-            id: 'palominos',
-            name: 'Maestro Daniel Palominos',
-            title: 'Artista Ceramista y Defensor DD.HH.',
-            birth: '1953',
-            death: '5 de junio de 2024',
-            legacy: 'Eximio ceramista de la ULS, profesor y ex concejal. Defensor infatigable de los Derechos Humanos. Su arte en arcilla es un testimonio eterno de la memoria y la cultura regional.',
-            image: '/homenaje/palominos_mural_humanity_1773806652665.png',
-            category: 'Arte / Social',
-            location: 'La Serena / Región de Coquimbo',
-            icon: Award,
-            color: '#92400e',
-            has3D: true
+    // Si viene tributeId (desde ruta directa), abrirlo automáticamente
+    useEffect(() => {
+        if (tributeId) {
+            const f = FIGURAS_MEMORIAL.find(x => x.id === tributeId);
+            if (f) setSelectedFigure(f);
         }
-    ];
+    }, [tributeId]);
 
-    const filteredFiguras = figuras.filter(f => {
+    const filteredFiguras = FIGURAS_MEMORIAL.filter(f => {
         const matchesFilter = filter === 'Todos' || f.category === filter;
         const matchesSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                              f.legacy.toLowerCase().includes(searchTerm.toLowerCase());
@@ -191,10 +259,12 @@ export default function MemorialHijosRegion({ onClose }) {
     };
 
     const handleShareFigure = (figura) => {
+        // Nueva URL directa para compartir (Regla: cada homenaje tiene su propio enlace)
+        const directUrl = `${window.location.origin}/altar/${figura.id}`;
         const shareData = {
             title: `Homenaje: ${figura.name} - ComunaSmart`,
             text: `VLS rinde tributo a ${figura.name}. ${figura.legacy.substring(0, 120)}... Conoce su historia en:`,
-            url: window.location.href,
+            url: directUrl,
             image: window.location.origin + figura.image 
         };
         window.dispatchEvent(new CustomEvent('open-smart-share', { detail: shareData }));
@@ -280,6 +350,12 @@ export default function MemorialHijosRegion({ onClose }) {
                                         alt={figura.name} 
                                         style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} 
                                     />
+                                    {/* DISCREET WATERMARK COVER (Regla Institucional VLS) */}
+                                    {figura.id === 'cuturrufo' && (
+                                        <div style={{ position: 'absolute', bottom: '0', right: '0', width: '80px', height: '60px', background: 'linear-gradient(to top left, #0f172a 0%, transparent 80%)', zIndex: 10, pointerEvents: 'none', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end', padding: '10px' }}>
+                                            <Sparkles size={14} color="#fbbf2466" />
+                                        </div>
+                                    )}
                                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0f172a 0%, transparent 100%)' }} />
                                     
                                     <div style={{ position: 'absolute', top: '20px', right: '20px', display: 'flex', gap: '10px' }}>
@@ -312,7 +388,7 @@ export default function MemorialHijosRegion({ onClose }) {
                                             <span style={{ color: 'white', fontWeight: 900, fontSize: '1rem' }}>{flowers[figura.id] || 0}</span>
                                         </div>
                                         <button 
-                                            onClick={() => figura.has3D ? setIs3DOpen(true) : setSelectedFigure(figura)}
+                                            onClick={() => figura.has3D ? setIs3DOpen(figura.id) : setSelectedFigure(figura)}
                                             style={{ background: 'transparent', border: '1px solid rgba(56, 189, 248, 0.4)', color: '#38bdf8', padding: '10px 15px', borderRadius: '12px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer' }}
                                         >
                                             {figura.has3D ? 'HOMENAJE 3D' : 'VER DETALLE'}
@@ -343,8 +419,32 @@ export default function MemorialHijosRegion({ onClose }) {
                         style={{ position: 'fixed', inset: 0, zIndex: 100010, background: 'rgba(2, 6, 23, 0.95)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}
                     >
                         <div style={{ maxWidth: '900px', width: '100%', background: '#0f172a', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden', display: 'flex', height: '600px' }}>
-                            <div style={{ flex: 1, background: '#000', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                <HolographicFigure image={selectedFigure.image} name={selectedFigure.name} color={selectedFigure.color} />
+                            <div style={{ 
+                                flex: 1, 
+                                background: 'radial-gradient(circle at center, #1e1b4b 0%, #000 100%)', 
+                                position: 'relative', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center',
+                                overflow: 'hidden' 
+                            }}>
+                                {/* Starfield/Particles Background */}
+                                <div style={{ position: 'absolute', inset: 0, opacity: 0.5 }}>
+                                    {Array.from({ length: 40 }).map((_, i) => (
+                                        <StarfieldStar key={i} />
+                                    ))}
+                                </div>
+
+                                <div style={{ transform: 'scale(1.2)' }}>
+                                    <HolographicFigure image={selectedFigure.image} name={selectedFigure.name} color={selectedFigure.color} />
+                                </div>
+
+                                {/* Futuristic Aura */}
+                                <div style={{ 
+                                    position: 'absolute', bottom: '100px', width: '200px', height: '20px', 
+                                    background: selectedFigure.color, filter: 'blur(30px)', opacity: 0.3,
+                                    borderRadius: '50%', animation: 'pulse 3s infinite'
+                                }} />
                             </div>
                             <div style={{ flex: 1.2, padding: '3rem', overflowY: 'auto', position: 'relative' }}>
                                 <button onClick={() => setSelectedFigure(null)} style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}><X size={24} /></button>
@@ -352,11 +452,58 @@ export default function MemorialHijosRegion({ onClose }) {
                                 <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, marginBottom: '0.5rem' }}>{selectedFigure.name}</h2>
                                 <p style={{ color: '#94a3b8', fontStyle: 'italic', marginBottom: '2rem' }}>{selectedFigure.title}</p>
                                 <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', lineHeight: 1.8, marginBottom: '2rem' }}>{selectedFigure.legacy}</p>
-                                <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                 <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.05)', marginBottom: '2rem' }}>
                                     <div style={{ display: 'flex', gap: '20px' }}>
                                         <div><p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0 }}>NACIMIENTO</p><p style={{ color: 'white', fontWeight: 'bold' }}>{selectedFigure.birth}</p></div>
                                         <div><p style={{ color: '#64748b', fontSize: '0.7rem', margin: 0 }}>FALLECIMIENTO</p><p style={{ color: 'white', fontWeight: 'bold' }}>{selectedFigure.death}</p></div>
                                     </div>
+                                </div>
+
+                                {/* Multimedia Section */}
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                    {selectedFigure.audio && (
+                                        <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '15px', borderRadius: '15px', border: '1px solid rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                                                <Music size={20} />
+                                            </div>
+                                            <div style={{ flex: 1 }}>
+                                                <p style={{ color: 'white', fontSize: '0.8rem', fontWeight: 900, margin: 0, textTransform: 'uppercase' }}>Oír Relato Biográfico</p>
+                                                <audio controls style={{ width: '100%', height: '30px', marginTop: '8px' }}>
+                                                    <source src={selectedFigure.audio} type="audio/mpeg" />
+                                                </audio>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {selectedFigure.pptx && (
+                                        <button 
+                                            onClick={() => window.open(`https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(selectedFigure.pptx)}`, '_blank')}
+                                            style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '15px', borderRadius: '15px', border: '1px solid rgba(245,158,11,0.3)', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                                        >
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                                                <RefreshCw size={20} />
+                                            </div>
+                                            <div>
+                                                <p style={{ color: 'white', fontSize: '0.8rem', fontWeight: 900, margin: 0, textTransform: 'uppercase' }}>Presentación PPTX</p>
+                                                <p style={{ color: '#f59e0b', fontSize: '0.65rem', margin: '3px 0 0 0' }}>Visualizar en Office Online Hub</p>
+                                            </div>
+                                        </button>
+                                    )}
+
+                                    {selectedFigure.pdf && (
+                                        <button 
+                                            onClick={() => window.open(selectedFigure.pdf, '_blank')}
+                                            style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '15px', borderRadius: '15px', border: '1px solid rgba(239,68,68,0.3)', display: 'flex', alignItems: 'center', gap: '15px', cursor: 'pointer', width: '100%', textAlign: 'left' }}
+                                        >
+                                            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                                                <FileText size={20} />
+                                            </div>
+                                            <div>
+                                                <p style={{ color: 'white', fontSize: '0.8rem', fontWeight: 900, margin: 0, textTransform: 'uppercase' }}>Documento PDF</p>
+                                                <p style={{ color: '#ef4444', fontSize: '0.65rem', margin: '3px 0 0 0' }}>Click para leer o descargar</p>
+                                            </div>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -365,17 +512,26 @@ export default function MemorialHijosRegion({ onClose }) {
             </AnimatePresence>
 
             {/* 3D Component */}
-            {is3DOpen && (
+            {is3DOpen === 'palominos' && (
                 <MasterDanielPalominos3D 
                     onClose={() => setIs3DOpen(false)} 
+
                     muralImages={[
                         '/homenaje/palominos_mural_humanity_1773806652665.png',
-                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_2.jpg',
-                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_3.jpg',
-                        'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/mural_palominos_4.jpg'
+                        '/homenaje/palominos_mural_humanity_1773806652665.png',
+                        '/homenaje/palominos_mural_humanity_1773806652665.png',
+                        '/homenaje/palominos_mural_humanity_1773806652665.png'
                     ]}
                 />
             )}
+
+            {is3DOpen === 'cuturrufo' && (
+                <MasterDonWilson3D onClose={() => setIs3DOpen(false)} />
+            )}
+            
+            
+            
+
 
             {/* Flower Animations Layer */}
             {animatedFlowers.map(f => (
@@ -388,6 +544,7 @@ export default function MemorialHijosRegion({ onClose }) {
                 .memorial-card:hover { transform: translateY(-10px); transition: 0.4s; border-color: #ec4899; }
                 .btn-tribute { background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; }
                 .btn-tribute:hover { background: #ec4899; transform: scale(1.1); }
+                @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } }
                 @keyframes floatFlower { 0% { transform: translateY(0) rotate(0deg) scale(0.5); opacity: 0; } 20% { opacity: 1; transform: translateY(-20vh) rotate(10deg) scale(1.2); } 100% { transform: translateY(-110vh) rotate(-20deg) scale(1); opacity: 0; } }
                 @keyframes spin { to { transform: rotate(360deg); } }
                 @media (max-width: 768px) { .hide-on-mobile { display: none; } }

@@ -73,7 +73,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     const [themeId, setThemeId] = useState(() =>
         localStorage.getItem('vls_quantum_theme') || 'blue'
     );
-    const theme = themes.find(t => t.id === themeId) || themes[0];
+    const theme = themes.find(themeItem => themeItem.id === themeId) || themes[0];
 
     const setTheme = (id, e) => {
         e && e.stopPropagation();
@@ -104,7 +104,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     };
 
     useEffect(() => {
-        const t = setInterval(() => { 
+        const timerWatch = setInterval(() => { 
             const now = new Date();
             setTime(now); 
             setBlink(p => !p); 
@@ -119,7 +119,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                 }
             }
         }, 1000);
-        return () => clearInterval(t);
+        return () => clearInterval(timerWatch);
     }, [isAlarmSet, alarmTime, isAlarmRinging]);
 
     // Efecto de Sonido de Alarma
@@ -360,17 +360,17 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                             
                             {/* Color dots — Agrandados y centrados para evitar que salgan del visor */}
                             <div style={{ display:'flex', gap:'10px', alignItems:'center', background: 'rgba(0,0,0,0.3)', padding:'5px 15px', borderRadius:'20px', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                {themes.map(t => (
+                                {themes.map(themeItem => (
                                     <button
-                                        key={t.id}
-                                        onClick={(e) => { e.stopPropagation(); setTheme(t.id); playBeep(1200, 0.05); }}
-                                        title={`Color ${t.id}`}
+                                        key={themeItem.id}
+                                        onClick={(e) => { e.stopPropagation(); setTheme(themeItem.id); playBeep(1200, 0.05); }}
+                                        title={`Color ${themeItem.id}`}
                                         style={{
                                             width:'14px', height:'14px', borderRadius:'50%',
-                                            background:t.pin, padding:0, cursor:'pointer',
-                                            border: themeId === t.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)',
-                                            boxShadow: themeId === t.id ? `0 0 12px ${t.pin}` : 'none',
-                                            transform: themeId === t.id ? 'scale(1.2)' : 'scale(1)',
+                                            background:themeItem.pin, padding:0, cursor:'pointer',
+                                            border: themeId === themeItem.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)',
+                                            boxShadow: themeId === themeItem.id ? `0 0 12px ${themeItem.pin}` : 'none',
+                                            transform: themeId === themeItem.id ? 'scale(1.2)' : 'scale(1)',
                                             transition:'all 0.2s'
                                         }}
                                     />

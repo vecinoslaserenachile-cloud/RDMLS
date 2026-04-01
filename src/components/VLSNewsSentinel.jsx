@@ -78,7 +78,7 @@ export default function VLSNewsSentinel({ onClose }) {
         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <button 
             onClick={() => {
-               const shareUrl = `${window.location.origin}${window.location.pathname}?news=sentinel`;
+               const shareUrl = `${window.location.origin}/sentinel`;
                window.open(`https://wa.me/?text=${encodeURIComponent('Hemeroteca VLS: Centinel Faro 2026. Lee aquí: ' + shareUrl)}`, '_blank')
             }}
             style={{ background: '#25D366', color: 'white', border: 'none', padding: '0.4rem', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}

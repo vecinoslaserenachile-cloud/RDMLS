@@ -105,10 +105,25 @@ export default function CentroRadio({ isDevMode = false }) {
         };
     }, [isVLS]);
     
-    // Stream URL obfuscated — managed via infrastructure layer (AzuraCast / YesStreaming reseller)
-    const MAIN_RADIO_URL = atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODU5MC9yYWRpby5tcDM=');
-    const AUDIO_URL = MAIN_RADIO_URL;
-    const [streamUrl, setStreamUrl] = useState(AUDIO_URL);
+    // ── CONFIGURACIÓN DE SEÑALES (Soberanía Digital RDMLS) ──────────────────
+    // Se utiliza redundancia de endpoints para asegurar la escucha continua.
+    const RDMLS_MAIN_STREAM = 'https://az11.yesstreaming.net:8590/radio.mp3';
+    const RDMLS_FALLBACK_STREAM = 'https://az11.yesstreaming.net/listen/rdmls/radio.mp3';
+    
+    const [streamUrl, setStreamUrl] = useState(RDMLS_MAIN_STREAM);
+    const [streamError, setStreamError] = useState(false);
+
+    const handleStreamError = () => {
+        if (streamUrl === RDMLS_MAIN_STREAM) {
+            console.warn("[RDMLS] Señal principal falló, activando redundancia...");
+            setStreamUrl(RDMLS_FALLBACK_STREAM);
+        } else {
+            console.error("[RDMLS] Error crítico en todas las señales.");
+            setStreamError(true);
+        }
+    };
+    // ──────────────────────────────────────────────────────────────────────────
+    
     const [deferredPrompt, setDeferredPrompt] = useState(null);
     const [djImageError, setDjImageError] = useState(false);
     const [showArcade, setShowArcade] = useState(false);
@@ -205,7 +220,7 @@ export default function CentroRadio({ isDevMode = false }) {
             name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
             dialLabel: 'RDMLS',
             slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
-            url: atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODU5MC9yYWRpby5tcDM='), 
+            url: RDMLS_MAIN_STREAM, 
             color: '#f97316',
             logo: '/escudo.png',
             badge: 'RDMLS'
@@ -251,7 +266,7 @@ export default function CentroRadio({ isDevMode = false }) {
     // weather fetch removed from here (handled below with correct temp extraction)
 
     const changeStation = (station) => {
-        if (station.id === currentStation.id) return;
+        if (!station || station.id === currentStation?.id) return;
         setCurrentStation(station);
         if (!station.isVideo) {
             setStreamUrl(station.url);
@@ -771,7 +786,8 @@ export default function CentroRadio({ isDevMode = false }) {
     }, []);
 
     // --- BYPASS RENDER AFTER ALL HOOKS ---
-    if (mode === 'aprende' || mode === 'induccion') {
+    const isInduccionPath = location.pathname.toLowerCase().includes('/imls/induccion') || location.pathname.toLowerCase().includes('/induccion');
+    if (mode === 'aprende' || mode === 'induccion' || isInduccionPath) {
         return <Aprende isRDMLS={isRDMLS} />;
     }
 
@@ -790,9 +806,11 @@ export default function CentroRadio({ isDevMode = false }) {
             position: 'relative'
         }}>
             {/* ELEMENTO AUDIO OCULTO — ancla del audioRef */}
-            <audio
+            <audio 
                 ref={audioRef}
-                preload="none"
+                src={streamUrl} 
+                onError={handleStreamError}
+                autoPlay
                 crossOrigin="anonymous"
                 style={{ display: 'none' }}
             />
@@ -839,41 +857,11 @@ export default function CentroRadio({ isDevMode = false }) {
                     </div>
                 </div>
 
-                <div className="hide-mobile" style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <button 
-                        onClick={() => {
-                            const next = !is24h;
-                            setIs24h(next);
-                            localStorage.setItem('vls_time_format', next ? '24h' : '12h');
-                        }}
-                        style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold', background: 'none', border: 'none', color: 'inherit', cursor: 'pointer' }}
-                    >
-                        <Clock size={18} color="#FFD700" />
-                        {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', hour12: !is24h })}
-                    </button>
-                    <button 
-                        onClick={() => navigate('/induccion')}
-                        style={{
-                            padding: '0.4rem 1rem',
-                            background: 'rgba(234, 179, 8, 0.2)',
-                            border: '1px solid #eab308',
-                            borderRadius: '20px',
-                            color: '#eab308',
-                            fontSize: '0.7rem',
-                            fontWeight: '900',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px'
-                        }}
-                    >
-                        <GraduationCap size={16} /> PORTAL INDUCCIÓN
-                    </button>
-                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.2)' }}></div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
-                        <CloudSun size={18} color="#FFD700" />
-                        {weather ? `${weather}°C` : '--'}
-                    </div>
+                {/* Solo dejamos links oficiales de Noticias y Contacto */}
+                <div style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                    <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>NOTICIAS @ LASERENA.CL</a>
+                    <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                    <a href="mailto:radio@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>RADIO@LASERENA.CL</a>
                 </div>
             </header>
 
@@ -918,32 +906,6 @@ export default function CentroRadio({ isDevMode = false }) {
                         </div>
                     </div>
                     
-                    {/* ACCESO RÁPIDO INDUCCIÓN - REGLA: VISIBLE EN MÓVIL */}
-                    <button 
-                        onClick={() => navigate('/induccion')}
-                        style={{
-                            width: '100%',
-                            maxWidth: '450px',
-                            background: 'linear-gradient(90deg, #FFD700, #C5A065)',
-                            color: 'black',
-                            border: 'none',
-                            borderRadius: '50px',
-                            padding: '1.2rem',
-                            fontSize: '1.2rem',
-                            fontWeight: '900',
-                            letterSpacing: '3px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '15px',
-                            boxShadow: '0 15px 40px rgba(197,160,101,0.3)',
-                            transform: 'translateY(-10px)',
-                            transition: 'all 0.3s'
-                        }}
-                    >
-                        <GraduationCap size={30} /> ENTRAR A INDUCCIÓN →
-                    </button>
 
                     {/* MARQUEE DINÁMICO */}
                     <div style={{ 
@@ -1468,15 +1430,11 @@ export default function CentroRadio({ isDevMode = false }) {
                         />
                                              <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>
                         
-                        {/* Links */}
+                        {/* Links Consolidados RDMLS */}
                         <div style={{ display: 'flex', gap: '1.2rem', marginTop: '1.2rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start', alignItems: 'center' }}>
-                            <a href="https://www.laserena.cl" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>WWW.LASERENA.CL</a>
+                            <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>NOTICIAS</a>
                             <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-                            <a href="/induccion" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>INDUCCIÓN</a>
-                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-                            <a href="/opciones" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>OPCIONES</a>
-                            <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-                            <a href="mailto:comunicaciones@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>CONTACTO</a>
+                            <a href="mailto:radio@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>CONTACTO</a>
                         </div>
 
                         {/* Botón instalar APP */}

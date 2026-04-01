@@ -8,7 +8,7 @@ import {
   Search, Package, BookOpen, Anchor, Plane, 
   Ruler, MapPin, Newspaper, PlayCircle, Palette, 
   Music, ShieldAlert, LineChart, Fuel, GraduationCap, Sun,
-  Move
+  Move, Briefcase, History as HistoryIcon, TrendingUp, Gamepad2
 } from 'lucide-react';
 
 const SITEMAP_DATA = [
@@ -57,6 +57,7 @@ const SITEMAP_DATA = [
     color: '#a855f7',
     links: [
       { name: 'Portal de Inducción', url: '/induccion', icon: <BookOpen size={14} />, description: 'Capacitación institucional' },
+      { name: 'Ajedrez Patrimonial 3D', url: '/?app=ajedrez-patrimonial', icon: <Gamepad2 size={14} />, description: 'Sandbox y juego cerebral 3D' },
       { name: 'E-learning VLS', url: '/elearning', icon: <PlayCircle size={14} />, description: 'Cursos y formación ciudadana' },
       { name: 'Escuela de Música', url: '/escuela-musica', icon: <Music size={14} />, description: 'Formación artística regional' },
       { name: 'Escuela de Artes', url: '/escuela-artes', icon: <Palette size={14} />, description: 'Talleres creativos comunitarios' },
@@ -72,6 +73,17 @@ const SITEMAP_DATA = [
       { name: 'Monitor de Puerto', url: '/?app=port', icon: <Anchor size={14} />, description: 'Seguimiento naviero en tiempo real' },
       { name: 'Monitor Aeropuerto', url: '/?app=airport', icon: <Plane size={14} />, description: 'Vuelos La Florida (SCSE)' },
       { name: 'Analytics Dashboard', url: '/?app=analytics', icon: <LineChart size={14} />, description: 'Métricas de la red comunal' },
+    ]
+  },
+  {
+    id: 'investors',
+    title: 'CORPORATIVO E INVERSIONES',
+    icon: <Briefcase size={20} />,
+    color: '#06b6d4',
+    links: [
+      { name: 'Roadmap Producto 2026', url: '/?app=roadmap', icon: <HistoryIcon size={14} />, description: 'Proyección y validación cívica' },
+      { name: 'Pitch Inversionistas (B2G)', url: '/?app=manifesto', icon: <TrendingUp size={14} />, description: 'Modelo SaaS y Joint-Venture' },
+      { name: 'Hub de Soberanía (VLS)', url: '/?app=safe-route', icon: <Globe size={14} />, description: 'Red de 9 dominios Edge' }
     ]
   }
 ];

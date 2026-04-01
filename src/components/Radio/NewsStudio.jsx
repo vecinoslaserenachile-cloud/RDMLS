@@ -17,7 +17,7 @@ export default function NewsStudio({ stationId, onCancel, onSuccess }) {
 
     useEffect(() => {
         if (isRecording) {
-            timerRef.current = setInterval(() => setTimer(t => t + 1), 1000);
+            timerRef.current = setInterval(() => setTimer(curr => curr + 1), 1000);
         } else {
             clearInterval(timerRef.current);
         }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Polyline, Marker, Popup, useMap } from 'react-leaflet';
 import { motion, AnimatePresence } from 'framer-motion';
 import L from 'leaflet';
-import { X, Navigation, Car, Bus, Bike, Plane, Footprints, Minimize2, Award } from 'lucide-react';
+import { X, Navigation, Car, Bus, Bike, Plane, Footprints, Minimize2, Award, Folder } from 'lucide-react';
 
 const MapController = ({ selectedRoute }) => {
     const map = useMap();

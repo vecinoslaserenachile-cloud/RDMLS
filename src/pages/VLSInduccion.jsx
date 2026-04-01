@@ -100,7 +100,7 @@ const SmartAssistantInduccion = () => {
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="bg-red-600 p-0.5 rounded-full overflow-hidden border-2 border-white/20 w-12 h-12">
-                    <img src="/serenito_3d_avatar_premium_1774312066289.png" alt="Serenito 3D" className="w-full h-full object-cover" />
+                    <img src="/serenito_3d_humanized_2026_1774875415876.png" alt="Serenito 3D" className="w-full h-full object-cover" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-slate-950 animate-pulse"></div>
                 </div>

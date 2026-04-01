@@ -121,7 +121,7 @@ export default function ChatAssistant({ onClose, isOpenDefault = false }) {
                 };
                 socket.onclose = () => {
                     mediaRecorder.stop();
-                    stream.getTracks().forEach(t => t.stop());
+                    stream.getTracks().forEach(track => track.stop());
                     setIsListening(false);
                 };
                 recognitionRef.current = { stop: () => socket.close() };

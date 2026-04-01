@@ -118,7 +118,7 @@ export default function SmartFloatingTV({
                                     src={item.url}
                                     autoPlay
                                     muted={muted}
-                                    loop
+                                    loop={!onEnded}
                                     playsInline
                                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     onEnded={onEnded}

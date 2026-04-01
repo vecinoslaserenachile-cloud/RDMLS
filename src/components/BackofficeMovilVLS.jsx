@@ -55,7 +55,7 @@ export default function BackofficeMovilVLS({ userType = 'neighbor', onClose }) {
 
     const stopLiveCamera = () => {
         if (videoRef.current && videoRef.current.srcObject) {
-            videoRef.current.srcObject.getTracks().forEach(t => t.stop());
+            videoRef.current.srcObject.getTracks().forEach(track => track.stop());
         }
         setIsLiveCamera(false);
     };

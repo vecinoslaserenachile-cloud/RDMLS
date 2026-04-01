@@ -212,7 +212,7 @@ const translations = {
 export const LanguageProvider = ({ children }) => {
     const [lang, setLang] = useState(localStorage.getItem('vls_lang') || 'es');
 
-    const t = (key, params = {}) => {
+    const translate = (key, params = {}) => {
         let text = translations[lang]?.[key] || translations['es']?.[key] || key;
         Object.keys(params).forEach(p => {
             text = text.replace(`{${p}}`, params[p]);
@@ -227,7 +227,7 @@ export const LanguageProvider = ({ children }) => {
     }, [lang]);
 
     return (
-        <LanguageContext.Provider value={{ lang, setLang, t }}>
+        <LanguageContext.Provider value={{ lang, setLang, t: translate }}>
             {children}
         </LanguageContext.Provider>
     );

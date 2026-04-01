@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle2, Loader2, Sparkles, Target, Users, Briefcase, Zap, Heart, PartyPopper, Radio } from 'lucide-react';
+import { X, CheckCircle2, Loader2, Sparkles, Target, Users, Briefcase, Zap, Heart, PartyPopper, Radio, ShoppingCart } from 'lucide-react';
 
 export default function VLSRoadmap({ onClose }) {
     const pillars = [
@@ -39,15 +39,15 @@ export default function VLSRoadmap({ onClose }) {
             ]
         },
         {
-            title: 'Smart Events & Patrimonio',
-            icon: PartyPopper,
+            title: 'Smart Economy & Retención',
+            icon: ShoppingCart,
             color: '#f59e0b',
             items: [
-                { name: 'Paseo Histórico 3D', status: 'functional', desc: 'Simulador 3D del casco histórico.' },
-                { name: 'Bus del Tiempo', status: 'functional', desc: 'Viaje virtual por la historia de La Serena.' },
-                { name: 'Galaxia Discoteque', status: 'functional', desc: 'Nostalgia local de discos y colegios.' },
-                { name: 'Glosario Regional', status: 'functional', desc: 'Rescate de modismos e identidad.' },
-                { name: 'CD La Serena Club', status: 'development', desc: 'Portal de beneficios para el hincha granate.' }
+                { name: 'Vecinity Pay (Suscripciones)', status: 'functional', desc: 'Motor de micro-transacciones e impacto gamificado.' },
+                { name: 'Motor Tienda 3D', status: 'functional', desc: 'Cross-selling y venta de artículos/merchandising Premium.' },
+                { name: 'Paseo Histórico 3D', status: 'functional', desc: 'Turismo interactivo digitalizado con monetización pasiva.' },
+                { name: 'Marketplace Vecinal', status: 'projected', desc: 'Plataforma B2C local sin comisiones asimétricas.' },
+                { name: 'Red de Descuentos (QR)', status: 'development', desc: 'Alianzas B2B con comercio local asociado a Serenito.' }
             ]
         }
     ];
@@ -142,11 +142,11 @@ export default function VLSRoadmap({ onClose }) {
                         ))}
                     </div>
 
-                    {/* Footer / Disclaimer */}
+                    {/* Footer / Disclaimer de Inversion */}
                     <div style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.4)', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                        <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontStyle: 'italic' }}>
-                            Nota: Los servicios proyectados están sujetos a factibilidad técnica y voluntad política regional. 
-                            La versión Beta actual incluye monitoreo preventivo de logs para aseguramiento de calidad.
+                        <p style={{ margin: 0, color: 'rgba(255,255,255,0.5)', fontSize: '0.8rem', fontStyle: 'italic', letterSpacing: '0.5px' }}>
+                            CONFIDENCIAL: Roadmap de Producto sometido a la metodología Lean Startup Cívico para rondas de escalamiento a modelo SaaS Multi-Tenant.
+                            La infraestructura base opera de manera autónoma con cumplimiento de soberanía de datos chilena y encriptación Edge.
                         </p>
                     </div>
                 </motion.div>

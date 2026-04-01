@@ -5,10 +5,13 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { supabase } from '../utils/supabase';
 import { socket } from '../utils/socket';
-import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users, LayoutGrid, Database } from 'lucide-react';
 import RadioBackofficeModal from '../components/RadioBackofficeModal';
 import MartinSecurityShield from '../components/MartinSecurityShield';
 import OmniBackofficeDesk from '../components/OmniBackofficeDesk';
+import { db } from '../utils/firebase';
+import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
+import OmniFeedBackoffice from '../components/OmniFeedBackoffice';
 
 // Fix para los iconos de Leaflet en React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -57,7 +60,9 @@ function TimeWidget() {
 export default function Backoffice() {
     const navigate = useNavigate();
     const [alerts, setAlerts] = useState([]);
+    const [citizenReports, setCitizenReports] = useState([]);
     const [selectedAlert, setSelectedAlert] = useState(null);
+    const [selectedReport, setSelectedReport] = useState(null);
     const [mapCenter, setMapCenter] = useState([-29.90453, -71.24894]); // La Serena Default
     const [showReportModal, setShowReportModal] = useState(false);
     const [activeFilter, setActiveFilter] = useState('todas'); // 'todas', 'servicios_basicos'
@@ -71,6 +76,8 @@ export default function Backoffice() {
     const [showRadioBackoffice, setShowRadioBackoffice] = useState(false);
     const [showSecurityShield, setShowSecurityShield] = useState(false);
     const [showNewsCodesManager, setShowNewsCodesManager] = useState(false); // Refiere al OmniBackofficeDesk
+    const [showCitizenReports, setShowCitizenReports] = useState(true);
+    const [showOmniFeed, setShowOmniFeed] = useState(false);
 
     // Auth States
     const [user, setUser] = useState(null);
@@ -195,6 +202,19 @@ export default function Backoffice() {
             socket.off('initial_state');
             socket.off('alert_broadcast');
         };
+    }, []);
+
+    // Real-time Firestore Citizens Reports
+    useEffect(() => {
+        const q = query(collection(db, "vls_reportes_ciudadanos"), orderBy("timestamp", "desc"), limit(50));
+        const unsub = onSnapshot(q, (snapshot) => {
+            const reports = [];
+            snapshot.forEach((doc) => {
+                reports.push({ id: doc.id, ...doc.data() });
+            });
+            setCitizenReports(reports);
+        });
+        return () => unsub();
     }, []);
 
     const getCategoryColor = (cat) => {
@@ -380,9 +400,25 @@ export default function Backoffice() {
                     <button
                         className={`btn ${showPowerOutageMap ? 'btn-primary' : 'btn-glass'}`}
                         style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', background: showPowerOutageMap ? '#ef4444' : 'rgba(239, 68, 68, 0.2)', borderRadius: '8px', marginTop: '0.5rem' }}
-                        onClick={() => { setShowPowerOutageMap(!showPowerOutageMap); setActiveFilter('todas'); }}
+                        onClick={() => { setShowPowerOutageMap(!showPowerOutageMap); setActiveFilter('todas'); setShowCitizenReports(false); }}
                     >
                         <Activity size={14} style={{ display: 'inline', marginRight: '4px' }} /> Mapa Cortes Eléctricos
+                    </button>
+
+                    <button
+                        className={`btn ${showOmniFeed ? 'btn-primary' : 'btn-glass'}`}
+                        style={{ width: '100%', padding: '0.5rem', fontSize: '0.85rem', background: showOmniFeed ? 'linear-gradient(45deg, #d4af37, #b45309)' : 'rgba(212, 175, 55, 0.1)', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid #d4af37', fontWeight: 'bold' }}
+                        onClick={() => { setShowOmniFeed(!showOmniFeed); setShowPowerOutageMap(false); setShowCitizenReports(!showOmniFeed ? false : true); }}
+                    >
+                        <Zap size={14} style={{ display: 'inline', marginRight: '4px' }} /> GRAN CEREBRO VLS
+                    </button>
+
+                    <button
+                        className={`btn ${showCitizenReports ? 'btn-primary' : 'btn-glass'}`}
+                        style={{ width: '100%', padding: '0.5rem', fontSize: '0.8rem', background: showCitizenReports ? '#22c55e' : 'rgba(34, 197, 94, 0.2)', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid #22c55e' }}
+                        onClick={() => { setShowCitizenReports(!showCitizenReports); setShowPowerOutageMap(false); }}
+                    >
+                        <Users size={14} style={{ display: 'inline', marginRight: '4px' }} /> Reportes Ciudadanos C5
                     </button>
 
                     <button
@@ -465,11 +501,47 @@ export default function Backoffice() {
                 <div style={{ flex: 1, overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                         <h3 style={{ fontSize: '1rem', color: 'var(--text-muted)' }}>
-                            {showPowerOutageMap ? 'Cortes Activos' : 'Alertas Activas'} ({showPowerOutageMap ? powerOutages.length : filteredAlerts.length})
+                            {showPowerOutageMap ? 'Cortes Activos' : (showCitizenReports ? 'Reportes C5' : 'Alertas Activas')} ({showPowerOutageMap ? powerOutages.length : (showCitizenReports ? citizenReports.length : filteredAlerts.length)})
                         </h3>
                     </div>
 
-                    {showPowerOutageMap ? (
+                    {showCitizenReports ? (
+                        citizenReports.map(report => (
+                            <div
+                                key={report.id}
+                                className={`glass-panel ${selectedReport?.id === report.id ? 'active-alert' : ''}`}
+                                style={{
+                                    padding: '1rem',
+                                    cursor: 'pointer',
+                                    borderLeft: `4px solid #22c55e`,
+                                    background: selectedReport?.id === report.id ? 'rgba(34, 197, 94, 0.1)' : 'transparent',
+                                    marginBottom: '0.5rem'
+                                }}
+                                onClick={() => { 
+                                    setSelectedReport(report); 
+                                    setSelectedAlert(null);
+                                    if(report.location?.lat) setMapCenter([report.location.lat, report.location.lng]); 
+                                }}
+                            >
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 'bold' }}>
+                                        <Users size={16} color="#22c55e" />
+                                        <span style={{ textTransform: 'capitalize' }}>{report.category || 'Ciudadano'}</span>
+                                    </div>
+                                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                        {report.timestamp ? new Date(report.timestamp).toLocaleTimeString() : 'Ahora'}
+                                    </span>
+                                </div>
+                                <div style={{ fontSize: '0.9rem', color: 'white' }}>{report.name || 'Vecino Anónimo'}</div>
+                                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.2rem' }}>{report.message?.substring(0, 60)}...</div>
+                                {report.evidenceMetadata?.length > 0 && (
+                                    <div style={{ marginTop: '0.5rem', display: 'flex', gap: '4px' }}>
+                                        <span style={{ fontSize: '0.65rem', background: '#38bdf820', color: '#38bdf8', padding: '2px 6px', borderRadius: '4px' }}>📎 {report.evidenceMetadata.length} Archivos</span>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    ) : showPowerOutageMap ? (
                         // Vista Especial Cortes Eléctricos
                         powerOutages.map(outage => (
                             <div key={outage.id} className="glass-panel" style={{ padding: '1rem', borderLeft: '4px solid #ef4444', background: 'rgba(239, 68, 68, 0.1)', cursor: 'pointer' }} onClick={() => setMapCenter(outage.coords)}>
@@ -519,9 +591,47 @@ export default function Backoffice() {
                 {/* Chat / Detalles */}
                 <div style={{ height: '35%', borderTop: '1px solid var(--glass-border)', padding: '1.5rem', background: 'var(--bg-primary)', display: 'flex', flexDirection: 'column' }}>
                     <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Detalle y Contacto</h3>
-                    {!selectedAlert ? (
+                    {(!selectedAlert && !selectedReport) ? (
                         <p className="text-muted" style={{ fontSize: '0.85rem' }}>Seleccione una incidencia para visualizar evidencia o interactuar.</p>
+                    ) : selectedReport ? (
+                        // Detalle Reporte de Vecino
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', paddingRight: '0.4rem' }}>
+                             <div style={{ display: 'flex', gap: '1rem' }}>
+                                <div style={{ flex: 1 }}>
+                                    <p style={{ margin: 0, fontWeight: 'bold', color: '#22c55e' }}>{selectedReport.category || 'REPORTE C5'}</p>
+                                    <p style={{ margin: '4px 0', fontSize: '1rem', color: 'white' }}>{selectedReport.name}</p>
+                                    <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>Recibido: {selectedReport.timestamp}</p>
+                                </div>
+                            </div>
+                            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', borderRadius: '12px', fontSize: '0.9rem', lineHeight: '1.5' }}>
+                                {selectedReport.message}
+                            </div>
+                            
+                            {/* Galería de Evidencia */}
+                            {selectedReport.evidenceMetadata?.length > 0 && (
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                    {selectedReport.evidenceMetadata.map((ev, idx) => (
+                                        <div key={idx} style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', height: '100px', background: '#1e293b' }}>
+                                            {ev.type?.startsWith('image') ? (
+                                                <img src={ev.preview} alt="Evidencia" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                            ) : (
+                                                <div style={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                                    <div style={{ fontSize: '1.5rem' }}>{ev.type?.startsWith('video') ? '🎥' : '🎤'}</div>
+                                                    <span style={{ fontSize: '0.6rem' }}>{ev.name?.substring(0, 10)}</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            <div style={{ display: 'flex', gap: '0.5rem', marginTop: 'auto' }}>
+                                <button className="btn btn-primary" style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem' }}>Gestionar C5</button>
+                                <button className="btn btn-glass" style={{ flex: 1, padding: '0.5rem', fontSize: '0.85rem', color: '#ef4444' }}>Cerrar Caso</button>
+                            </div>
+                        </div>
                     ) : (
+                        // Detalle Alerta (Original)
                         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             <div style={{ display: 'flex', gap: '1rem' }}>
                                 {selectedAlert.photo ? (
@@ -542,9 +652,15 @@ export default function Backoffice() {
                 </div>
             </aside>
 
-            {/* Main Map Area */}
-            <main style={{ flex: 1, position: 'relative' }}>
-                {/* Expansión Territorial Flotante (Botones Pastilla) */}
+            {/* Main Map Area / OmniFeed Area */}
+            <main style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                {showOmniFeed ? (
+                    <div className="fade-in" style={{ flex: 1, padding: '1rem', background: '#020617' }}>
+                        <OmniFeedBackoffice />
+                    </div>
+                ) : (
+                    <>
+                        {/* Expansión Territorial Flotante (Botones Pastilla) */}
                 <div style={{ position: 'absolute', top: '20px', left: '50px', zIndex: 1000, display: 'flex', gap: '0.5rem', flexWrap: 'wrap', maxWidth: '80%' }}>
                     <div style={{ background: 'var(--glass-bg)', padding: '0.5rem 1rem', borderRadius: '8px', display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '1rem', color: 'white', border: '1px solid var(--glass-border)' }}>
                         <Navigation size={18} color="var(--brand-primary)" /> Expansión Territorial
@@ -584,6 +700,38 @@ export default function Backoffice() {
                                             <strong style={{ textTransform: 'uppercase', color: getCategoryColor(alert.category) }}>{alert.subcategory}</strong><br />
                                             <span style={{ fontSize: '0.8rem', color: '#666' }}>{new Date(alert.timestamp).toLocaleTimeString()}</span><br />
                                             Protocolo: <b>{alert.protocol}</b>
+                                        </div>
+                                    </Popup>
+                                </Marker>
+                            </React.Fragment>
+                        )
+                    ))}
+
+                    {/* Render Markers for Citizen Reports */}
+                    {showCitizenReports && citizenReports.map(report => (
+                        report.location?.lat && (
+                            <React.Fragment key={report.id}>
+                                <CircleMarker
+                                    center={[report.location.lat, report.location.lng]}
+                                    pathOptions={{ fillColor: '#22c55e', color: '#10b981', fillOpacity: 0.5, weight: 2 }}
+                                    radius={20}
+                                    className="pulse-slow"
+                                />
+                                <Marker 
+                                    position={[report.location.lat, report.location.lng]}
+                                    eventHandlers={{
+                                        click: () => {
+                                            setSelectedReport(report);
+                                            setSelectedAlert(null);
+                                        }
+                                    }}
+                                >
+                                    <Popup>
+                                        <div style={{ color: '#000', minWidth: '150px' }}>
+                                            <strong style={{ color: '#059669' }}>REPORTE VECINAL</strong><br />
+                                            <b>{report.name}</b><br />
+                                            {report.category}<br />
+                                            <small>{report.timestamp}</small>
                                         </div>
                                     </Popup>
                                 </Marker>
@@ -666,6 +814,8 @@ export default function Backoffice() {
                         <circle cx="12" cy="13" r="3"></circle>
                     </svg>
                 </button>
+                </>
+            )}
             </main>
 
             {/* Modal de Registro in situ */}

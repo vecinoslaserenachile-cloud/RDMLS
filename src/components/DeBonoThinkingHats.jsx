@@ -44,6 +44,7 @@ export default function DeBonoThinkingHats({ onClose = () => window.history.back
     const [currentTime, setCurrentTime] = useState("0:00");
 
     const audioContextRef = useRef(null);
+    const musicRef = useRef(new Audio());
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth < 768);

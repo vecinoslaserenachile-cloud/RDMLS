@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { useOutletContext, useNavigate, Navigate } from 'react-router-dom';
 
 // Listas de reproducción diferenciadas por pilares
 const PLAYLIST_INSTITUTIONAL = [
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4', title: 'Serenito Kiosco Suplementero' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_nocturno_Avenida_Francisco_de_Aguirre.mp4', title: 'Noche en La Serena' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videla.mp4', title: 'Museo Gabriel González Videla' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4', title: 'Avenida Francisco de Aguirre' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compañias.mp4', title: 'Polideportivo Las Compañias' },
-    { url: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_kiosco_suplementero.mp4', title: 'Serenito Kiosco Suplementero' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_playa_con_gato_Juanin.mp4', title: 'Serenito en la Playa con Juanín' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_nocturno_Avenida_Francisco_de_Aguirre.mp4', title: 'Noche en La Serena' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_Museo_Gabriel_Gonzalez_Videla.mp4', title: 'Museo Gabriel González Videla' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4', title: 'Avenida Francisco de Aguirre' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_Polideportivo_Las_Compañias.mp4', title: 'Polideportivo Las Compañias' },
+    { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
     { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE' }
 ];
 
@@ -24,11 +24,11 @@ import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
     VolumeX, ChevronUp, ChevronDown, Activity,
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock,
-    MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, Clock, Star, Play, Pause,
+    MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
-    Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, History, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull
+    Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf, Droplets,
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -41,6 +41,8 @@ import SportsDataStrip from '../components/SportsDataStrip';
 import VecnityPay from '../components/VecnityPay';
 import TuercaVecinos from '../components/TuercaVecinos';
 import VeciCat from '../components/VeciCat';
+import AlcaldesHistory3D from '../components/AlcaldesHistory3D';
+import EstudioVLS from '../components/EstudioVLS';
 import AzuraCastSync from '../components/AzuraCastSync';
 import VLSRequestPortal from '../components/VLSRequestPortal';
 import PremiumClub from '../components/PremiumClub';
@@ -65,51 +67,139 @@ import HechoEnChile from '../components/HechoEnChile';
 import LaFloridaAirport from '../components/LaFloridaAirport';
 import BackofficeMovilVLS from '../components/BackofficeMovilVLS';
 import TiendaPoleras3D from '../components/TiendaPoleras3D';
+import AjedrezPatrimonialVLS from '../components/AjedrezPatrimonialVLS';
 
 import OrientacionLegal from '../components/OrientacionLegal';
 import SerenaMetAdmin from '../components/SerenaMetAdmin';
 import VLSpeakTranslator from '../components/VLSpeakTranslator';
 import SafeRouteAI from '../components/SafeRouteAI';
 import SmartAdminPortal from '../components/SmartAdminPortal';
-import VLSNewsInvestigacion from '../components/VLSNewsInvestigacion';
-import VLSNewsSemanaSanta from '../components/VLSNewsSemanaSanta';
-import VLSNewsBencinazo from '../components/VLSNewsBencinazo';
-import VLSNewsSentinel from '../components/VLSNewsSentinel';
-import VLSNewsPoduje from '../components/VLSNewsPoduje';
-import VLSNewsAguasValle from '../components/VLSNewsAguasValle';
-import VLSNotesGallery from '../components/VLSNotesGallery';
+const VLSNewsInvestigacion = lazy(() => import('../components/VLSNewsInvestigacion'));
+const VLSNewsSemanaSanta = lazy(() => import('../components/VLSNewsSemanaSanta'));
+const VLSNewsBencinazo = lazy(() => import('../components/VLSNewsBencinazo'));
+const VLSNewsSentinel = lazy(() => import('../components/VLSNewsSentinel'));
+const VLSNewsPoduje = lazy(() => import('../components/VLSNewsPoduje'));
+const VLSNewsAguasValle = lazy(() => import('../components/VLSNewsAguasValle'));
+const VLSNotesGallery = lazy(() => import('../components/VLSNotesGallery'));
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
 import SmartFloatingTV from '../components/SmartFloatingTV';
 import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
-import AlcaldesHistory from './AlcaldesHistory';
 import LoadingScreen from '../components/LoadingScreen';
-import MemorialHijosRegion from '../components/MemorialHijosRegion';
-import DistancesMap from '../components/DistancesMap';
+const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion'));
+const DistancesMap = lazy(() => import('../components/DistancesMap'));
 import QuickEmergencyBar from '../components/QuickEmergencyBar';
+import EmergencyDirectory from '../components/EmergencyDirectory';
 
 
 export default function HubDashboard() {
+    // 1. Context & Routing
+    const navigate = useNavigate();
+    const { weather, isAuthorized, isGuest, isRegistered, currentUser } = useOutletContext();
+    const { lang, setLang, t: translate } = useTranslation();
+
+    // 2. Environmental Constants & Storage
     const host = (window.location.host || window.location.hostname).toLowerCase();
     const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
     const isVLS = !isRDMLS;
-    const navigate = useNavigate();
-    const { lang, setLang, t: baseT } = useTranslation();
+    const curTenant = localStorage.getItem('smart_tenant') || 'laserena';
+    const tenant = localStorage.getItem('smart_tenant');
+    const customConfig = JSON.parse(localStorage.getItem('smart_custom_config') || '{}');
 
+    // 3. Core States
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [brandOrg, setBrandOrg] = useState(() => {
+        return tenant === 'custom' && customConfig.orgName ? customConfig.orgName : 'La Serena';
+    });
+    const [brandLogo, setBrandLogo] = useState(() => {
+        return tenant === 'custom' ? (customConfig.logoUrl || '/escudo.png') : '/escudo.png';
+    });
+    const [showPremiumClub, setShowPremiumClub] = useState(false);
+    const [greetingIdx, setGreetingIdx] = useState(0);
+    const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+    const [currentFlashIndex, setCurrentFlashIndex] = useState(0);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [viewMode, setViewMode] = useState('full');
+    const [pinnedApps, setPinnedApps] = useState(() => {
+        const saved = localStorage.getItem('vls_pinned_apps');
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [deferredPrompt, setDeferredPrompt] = useState(null);
+    const [deviceType, setDeviceType] = useState('Escritorio');
+    const [DeviceIcon, setDeviceIcon] = useState(() => Monitor);
+    const [vlsStats, setVlsStats] = useState({ liveUsers: 14228, totalServed: 2453.44, growth: '+284%' });
+
+    // UI State Toggles
+    const [showOmnibox, setShowOmnibox] = useState(false);
+    const [showPoll, setShowPoll] = useState(false);
+    const [showMusicRanking, setShowMusicRanking] = useState(false);
+    const [showDistancias, setShowDistancias] = useState(false);
+    const [showRoadmap, setShowRoadmap] = useState(false);
+    const [showManifesto, setShowManifesto] = useState(false);
+    const [showPrecolombino, setShowPrecolombino] = useState(false);
+    const [showAmbientMode, setShowAmbientMode] = useState(false);
+    const [showCentralDifusion, setShowCentralDifusion] = useState(false);
+    const [hasVoted, setHasVoted] = useState(false);
+    const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
+    const [showSmartAdminPortal, setShowSmartAdminPortal] = useState(false);
+    const [showVirtualAssistant, setShowVirtualAssistant] = useState(false);
+    const [showAirportMonitor, setShowAirportMonitor] = useState(false);
+    const [showPortMonitor, setShowPortMonitor] = useState(false);
+    const [showMemorialHijos, setShowMemorialHijos] = useState(false);
+    const [showTuerca, setShowTuerca] = useState(false);
+    const [showVeciCat, setShowVeciCat] = useState(false);
+    const [showDirectory, setShowDirectory] = useState(false);
+    const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
+    const [showAlcaldes, setShowAlcaldes] = useState(false);
+    const [showEstudio, setShowEstudio] = useState(false);
+    const [reportInitialCategory, setReportInitialCategory] = useState(null);
+    const [showVLSMotors, setShowVLSMotors] = useState(false);
+    const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
+    const [showSerenaMetAdmin, setShowSerenaMetAdmin] = useState(false);
+    const [showVLSpeak, setShowVLSpeak] = useState(false);
+    const [showSafeRoute, setShowSafeRoute] = useState(false);
+    const [showSocialVision, setShowSocialVision] = useState(false);
+    const [showInvestigacion, setShowInvestigacion] = useState(false);
+    const [showSemanaSanta, setShowSemanaSanta] = useState(false);
+    const [showBencinazo, setShowBencinazo] = useState(false);
+    const [showSentinelNote, setShowSentinelNote] = useState(false);
+    const [showPoduje, setShowPoduje] = useState(false);
+    const [showAguasValle, setShowAguasValle] = useState(false);
+    const [showParliamentary, setShowParliamentary] = useState(false);
+    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
+    const [showGalaxia, setShowGalaxia] = useState(false);
+    const [showRequestPortal, setShowRequestPortal] = useState(false);
+    const [activeTutorial, setActiveTutorial] = useState(null);
+    const [selectedNews, setSelectedNews] = useState(null);
+    const [showVecnityPay, setShowVecnityPay] = useState(false);
+    const [initialOrder, setInitialOrder] = useState(null);
+    const [showBackofficeMovil, setShowBackofficeMovil] = useState(false);
+    const [showAjedrez, setShowAjedrez] = useState(false);
+    const [showFloatingTV, setShowFloatingTV] = useState(true);
+    const [floatingTVItem, setFloatingTVItem] = useState(PLAYLIST_INSTITUTIONAL[0]);
+    const [isVideoPlaying, setIsVideoPlaying] = useState(true);
+    const [isMuted, setIsMuted] = useState(true);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+    const [videoSelected, setVideoSelected] = useState(false);
+    const [currentPlaylist, setCurrentPlaylist] = useState('institutional');
+    const [previewIndex, setPreviewIndex] = useState(0);
+    const [officialNews, setOfficialNews] = useState([]);
+
+    // 4. Dictionary & Internal Logic Objects
     const dict = {
         es: {
             title: isRDMLS ? "Hub de Gestión Institucional - Portal RDMLS.cl" : "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
-            citizensTitle: "Smart Citizens", 
+            citizensTitle: "Vecino Smart", 
             citizensSub: isRDMLS ? "Atención Ciudadana y Monitoreo Urbano" : "Atención Ciudadana y Radio Digital",
-            adminTitle: isRDMLS ? "Smart Administration" : "Escuelas y Oficios", 
+            adminTitle: isRDMLS ? "Administración Smart" : "Vecino Aprende (Escuelas y Oficios)", 
             adminSub: isRDMLS ? "Gestión Interna, RRHH y Portal de Inducción E-learning" : "Formación Ciudadana, E-learning e Iniciativas de Empleo",
             newsAlert: isRDMLS 
                 ? "INFORMATIVO MUNICIPAL: La Ilustre Municipalidad de La Serena informa despliegue de equipos en terreno para mantención urbana. Siga la señal de RDMLS.cl para más detalles."
                 : "VECINOS LA SERENA Informa: Se detecta patrullaje preventivo en cuadrantes urbanos y turísticos. Seguridad comunitaria activa para vecinos, visitantes y comerciantes.",
-            eventsTitle: "Smart Events", 
+            eventsTitle: "Eventos Vecinales", 
             eventsSub: isRDMLS ? "Gestión Automatizada y Monitor de Precedencias" : "Monitor de Precedencia y Protocolo",
-            listeningTitle: "Smart Listening", 
+            listeningTitle: "Escucha Vecinal", 
             listeningSub: isRDMLS ? "Inteligencia Artificial y Social Listening" : "Centinel Faro y Red de Escucha Social",
             paseo3dTitle: isRDMLS ? "Paseo Patrimonial 3D" : "Paseo Histórico 3D", 
             paseo3dSub: "Arquitectura Tradicional y Museos",
@@ -131,7 +221,9 @@ export default function HubDashboard() {
                 : "Bienvenido al portal unificado de Vecinos La Serena para vecinos, visitantes, turistas, anunciantes y compraventas.",
             heroDescription: isRDMLS
                 ? 'Plataforma oficial de inducción, gestión y capacitación continua para trabajadores de la Ilustre Municipalidad a honorarios y contrata.'
-                : 'La red inteligente para vecinos, visitantes, turistas, anunciantes y compraventas. Conecta, aporta, monitorea y mantente seguro junto al resto de tu comunidad en La Serena.'
+                : 'La red inteligente para vecinos, visitantes, turistas, anunciantes y compraventas. Conecta, aporta, monitorea y mantente seguro junto al resto de tu comunidad en La Serena.',
+            saludTitle: "Smart Salud",
+            memorialTitle: "Altares de la Región"
         },
         en: {
             title: "Smart Communications & Citizenship Hub - VLS Unified Portal",
@@ -157,7 +249,9 @@ export default function HubDashboard() {
             retroTitle: "Retro TV Master", retroSub: "Classic Channels and Historical Archive",
             vhsTitle: "VHS Film Library", vhsSub: "Regional Videos and Documentaries",
             memoryTitle: "Memory Portal", memorySub: "Upload Memories and Photos from the Past",
-            sentinelTitle: "Sentinel Faro AI", sentinelSub: "Advanced Social Media Monitoring"
+            sentinelTitle: "Sentinel Faro AI", sentinelSub: "Advanced Social Media Monitoring",
+            saludTitle: "Smart Health",
+            memorialTitle: "Regional Memorials"
         },
         zh: {
             title: "智慧通讯与公民中心 - VLS 统一门户",
@@ -178,35 +272,40 @@ export default function HubDashboard() {
             vhsTitle: "VHS 电影库", vhsSub: "地区视频和纪录片",
             memoryTitle: "记忆门户", memorySub: "上传过去的会议和照片",
             sentinelTitle: "哨兵灯塔 AI", sentinelSub: "先进的社交媒体监控",
+            saludTitle: "智慧健康 (Smart Health)",
+            memorialTitle: "地区纪念馆 (Regional Memorials)",
             welcomePortales: "欢迎来到 La Serena 邻居统一门户。探索以下所有公民工具。"
         },
         arn: {
             title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
+            saludTitle: "Smart Salud", memorialTitle: "Altares de la Región",
             welcomePortales: "Küme akun portal unificado Vecinos La Serena mu. Inatunge kom pu küzaw ciudadanas fan."
         },
         ht: {
             title: "Hub de Comunicaciones y Ciudadanía Smart - Portal Unificado VLS",
+            saludTitle: "Smart Salud", memorialTitle: "Altares de la Región",
             welcomePortales: "Byenveni nan pòtal inifye Vwazen La Serena. Eksplore tout zouti sitwayen yo anba a."
         },
         it: {
-            title: "Hub di Comunicazione e Cittadinanza Smart - Portale Unificato VLS",
+            title: "Hub di Comunicazione e Cittadinanza Smart - Portale Unificado VLS",
+            saludTitle: "Salute Smart", memorialTitle: "Memoriali Regionali",
             welcomePortales: "Benvenuti nel portale unificato di Vecinos La Serena. Esplora tutti gli strumenti cittadini qui sotto."
         },
         fr: {
             title: "Smart Communications & Citizenship Hub - Portail Unifié VLS",
+            saludTitle: "Santé Smart", memorialTitle: "Mémoriaux Régionaux",
             welcomePortales: "Bienvenue sur le portail unifié de Vecinos La Serena. Explorez tous les outils citoyens ci-dessous."
         },
         pt: {
             title: "Hub de Comunicações e Cidadania Smart - Portal Unificado VLS",
-            welcomePortales: "Bem-vindo ao portal unificado de Vecinos La Serena. Explore todas as ferramentas cidadãs abaixo."
+            saludTitle: "Saúde Smart", memorialTitle: "Memoriais Regionais",
+            welcomePortales: "Bem-vindo ao portal unificado de Vecinos La Serena. Explore todas as herramientas cidadãs abaixo."
         }
     };
 
 
-    const curTenant = localStorage.getItem('smart_tenant') || 'laserena';
-    // State missing from broken file
-    const [showPremiumClub, setShowPremiumClub] = useState(false);
-    const [greetingIdx, setGreetingIdx] = useState(0);
+
+
 
     const greetingsVLS = [
         { text: "¡HOLA, VECINO!", sub: "SOY SERENITO, TU GUÍA SMART CITY", color: "#ef4444", bg: "linear-gradient(135deg, #ef4444 0%, #1e3a8a 100%)", flag: "🇨🇱" },
@@ -250,7 +349,6 @@ export default function HubDashboard() {
         }
     ];
 
-    const [currentFlashIndex, setCurrentFlashIndex] = useState(0);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -268,11 +366,10 @@ export default function HubDashboard() {
 
     // Auto-rotate greeting every 4 seconds
     useEffect(() => {
-        const t = setInterval(() => setGreetingIdx(prev => (prev + 1) % greetings.length), 4000);
-        return () => clearInterval(t);
+        const timerGreeting = setInterval(() => setGreetingIdx(prev => (prev + 1) % greetings.length), 4000);
+        return () => clearInterval(timerGreeting);
     }, [greetings.length]);
 
-    const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
     
     useEffect(() => {
         const handleTokensUpdate = (e) => setVlsTokens(e.detail);
@@ -280,58 +377,7 @@ export default function HubDashboard() {
         return () => window.removeEventListener('tokens-updated', handleTokensUpdate);
     }, []);
 
-    const [showOmnibox, setShowOmnibox] = useState(false);
-    const [showPoll, setShowPoll] = useState(false);
-    const [showMusicRanking, setShowMusicRanking] = useState(false);
-    const [showDistancias, setShowDistancias] = useState(false);
-    const [showRoadmap, setShowRoadmap] = useState(false);
-    const [showManifesto, setShowManifesto] = useState(false);
-    const [showPrecolombino, setShowPrecolombino] = useState(false);
-    const [showAmbientMode, setShowAmbientMode] = useState(false);
-    const [showCentralDifusion, setShowCentralDifusion] = useState(false);
-    const [hasVoted, setHasVoted] = useState(false);
-    const [isCaptchaSolved, setIsCaptchaSolved] = useState(false);
-    const [showSmartAdminPortal, setShowSmartAdminPortal] = useState(false);
-    const [showVirtualAssistant, setShowVirtualAssistant] = useState(false); // New state for virtual assistant
-    const [showAirportMonitor, setShowAirportMonitor] = useState(false);
-    const [showPortMonitor, setShowPortMonitor] = useState(false);
-    const [showMemorialHijos, setShowMemorialHijos] = useState(false);
-    const [showTuerca, setShowTuerca] = useState(false);
-    const [showVeciCat, setShowVeciCat] = useState(false);
-    const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
 
-    const [showVLSMotors, setShowVLSMotors] = useState(false); // Estado para VLS Motors Spot
-    const [showOrientacionLegal, setShowOrientacionLegal] = useState(false);
-    const [showSerenaMetAdmin, setShowSerenaMetAdmin] = useState(false);
-    const [showVLSpeak, setShowVLSpeak] = useState(false);
-    const [showSafeRoute, setShowSafeRoute] = useState(false);
-    const [showSocialVision, setShowSocialVision] = useState(false);
-    const [showInvestigacion, setShowInvestigacion] = useState(false);
-    const [showSemanaSanta, setShowSemanaSanta] = useState(false);
-    const [showBencinazo, setShowBencinazo] = useState(false);
-    const [showSentinelNote, setShowSentinelNote] = useState(false);
-    const [showPoduje, setShowPoduje] = useState(false);
-    const [showAguasValle, setShowAguasValle] = useState(false);
-    const [showParliamentary, setShowParliamentary] = useState(false);
-    const [showAlcaldes, setShowAlcaldes] = useState(false);
-    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
-    const [showGalaxia, setShowGalaxia] = useState(false);
-    const [showRequestPortal, setShowRequestPortal] = useState(false);
-    const [activeTutorial, setActiveTutorial] = useState(null); // 'radar', 'vlspeak', 'safe-route'
-    const [selectedNews, setSelectedNews] = useState(null); // Estado para el juego VLSabes
-    const [showVecnityPay, setShowVecnityPay] = useState(false);
-    const [initialOrder, setInitialOrder] = useState(null); // Added for cart transition
-    const [showBackofficeMovil, setShowBackofficeMovil] = useState(false);
-    const [showFloatingTV, setShowFloatingTV] = useState(true);
-    const [floatingTVItem, setFloatingTVItem] = useState(PLAYLIST_INSTITUTIONAL[0]);
-
-    const [isVideoPlaying, setIsVideoPlaying] = useState(true);
-    const [isMuted, setIsMuted] = useState(true);
-    const [isFullscreen, setIsFullscreen] = useState(false);
-    const [videoSelected, setVideoSelected] = useState(false);
-
-    const [currentPlaylist, setCurrentPlaylist] = useState('institutional'); // 'institutional' or 'ludic'
-    const [previewIndex, setPreviewIndex] = useState(0);
 
     const TVLS_VIDEOS = currentPlaylist === 'institutional' ? PLAYLIST_INSTITUTIONAL : PLAYLIST_LUDIC;
 
@@ -379,7 +425,6 @@ export default function HubDashboard() {
         return () => clearInterval(interval);
     }, [videoSelected, currentPlaylist, TVLS_VIDEOS.length]);
 
-    const [officialNews, setOfficialNews] = useState([]);
 
     const closeAllPopups = () => {
         setShowPoll(false); setShowGalaxia(false); setShowRoadmap(false); setShowManifesto(false);
@@ -391,7 +436,9 @@ export default function HubDashboard() {
         setShowSentinelNote(false); setShowAirportMonitor(false); setShowPortMonitor(false);
         setShowParliamentary(false); setShowAlcaldes(false); setShowMemorialHijos(false);
         setShowTuerca(false); setShowVeciCat(false); setShowTiendaPoleras(false); setShowVecnityPay(false);
-        setShowRequestPortal(false); setShowBackofficeMovil(false);
+        setShowDirectory(false);
+        setShowRequestPortal(false); setShowBackofficeMovil(false); setShowAjedrez(false);
+        setShowEstudio(false); setReportInitialCategory(null);
     };
 
     useEffect(() => {
@@ -424,6 +471,13 @@ export default function HubDashboard() {
         const handlePort = () => { closeAllPopups(); setShowPortMonitor(true); };
         const handleParliamentary = () => { closeAllPopups(); setShowParliamentary(true); };
         const handleAlcaldes = () => { closeAllPopups(); setShowAlcaldes(true); };
+        const handleHubDirectory = () => { closeAllPopups(); setShowDirectory(true); };
+        const handleSmartReport = (e) => { 
+            closeAllPopups(); 
+            setReportInitialCategory(e.detail?.category || null);
+            setShowRequestPortal(true); 
+        };
+        const handleEstudio = () => { closeAllPopups(); setShowEstudio(true); };
         const handleMemorial = () => { closeAllPopups(); setShowMemorialHijos(true); };
         const handleTuerca = () => { closeAllPopups(); setShowTuerca(true); };
         const handleVeciCat = () => { closeAllPopups(); setShowVeciCat(true); };
@@ -436,6 +490,7 @@ export default function HubDashboard() {
         };
         const handleRequestPortal = () => { closeAllPopups(); setShowRequestPortal(true); };
         const handleBackofficeMovil = () => { closeAllPopups(); setShowBackofficeMovil(true); };
+        const handleAjedrez = () => { closeAllPopups(); setShowAjedrez(true); };
 
 
         window.addEventListener('open-decision-vecinal', handleDecision);
@@ -446,7 +501,7 @@ export default function HubDashboard() {
         window.addEventListener('open-ambient-mode', handleAmbient);
         window.addEventListener('open-central-difusion', handleDifusion);
         window.addEventListener('open-faro-ia', handleFaroIA);
-        window.addEventListener('open-hub-directory', onOpenDirectory);
+        window.addEventListener('open-hub-directory', handleHubDirectory);
 
         window.addEventListener('open-vls-motors', handleMotors);
         window.addEventListener('open-orientacion-legal', handleLegal);
@@ -471,6 +526,8 @@ export default function HubDashboard() {
         window.addEventListener('open-port-monitor', handlePort);
         window.addEventListener('open-parlamento-regional', handleParliamentary);
         window.addEventListener('open-alcaldes-history', handleAlcaldes);
+        window.addEventListener('open-smart-report', handleSmartReport);
+        window.addEventListener('open-estudio-vls', handleEstudio);
         window.addEventListener('open-memorial-hijos', handleMemorial);
         window.addEventListener('open-tuerca-vecinos', handleTuerca);
         window.addEventListener('open-vecicat', handleVeciCat);
@@ -478,6 +535,7 @@ export default function HubDashboard() {
         window.addEventListener('open-vecinity-pay', handleVecnityPay);
         window.addEventListener('open-smart-business', handleRequestPortal);
         window.addEventListener('open-backoffice-movil', handleBackofficeMovil);
+        window.addEventListener('open-ajedrez-patrimonial', handleAjedrez);
 
         // URL Parameter Routing (Deep Linking)
         const urlParams = new URLSearchParams(window.location.search);
@@ -507,6 +565,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-ambient-mode', handleAmbient);
             window.removeEventListener('open-central-difusion', handleDifusion);
             window.removeEventListener('open-faro-ia', handleFaroIA);
+            window.removeEventListener('open-hub-directory', handleHubDirectory);
 
             window.removeEventListener('open-vls-motors', handleMotors);
             window.removeEventListener('open-orientacion-legal', handleLegal);
@@ -524,6 +583,8 @@ export default function HubDashboard() {
             window.removeEventListener('open-port-monitor', handlePort);
             window.removeEventListener('open-parlamento-regional', handleParliamentary);
             window.removeEventListener('open-alcaldes-history', handleAlcaldes);
+            window.removeEventListener('open-smart-report', handleSmartReport);
+            window.removeEventListener('open-estudio-vls', handleEstudio);
             window.removeEventListener('open-memorial-hijos', handleMemorial);
             window.removeEventListener('open-tuerca-vecinos', handleTuerca);
             window.removeEventListener('open-vecicat', handleVeciCat);
@@ -531,6 +592,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-vecinity-pay', handleVecnityPay);
             window.removeEventListener('open-smart-business', handleRequestPortal);
             window.removeEventListener('open-backoffice-movil', handleBackofficeMovil);
+            window.removeEventListener('open-ajedrez-patrimonial', handleAjedrez);
 
         };
     }, []);
@@ -567,16 +629,6 @@ export default function HubDashboard() {
         return Res;
     };
 
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [deviceType, setDeviceType] = useState('Escritorio');
-    const [DeviceIcon, setDeviceIcon] = useState(() => Monitor);
-    const [isMiniTV, setIsMiniTV] = useState(false);
-    const [isFullscreenTV, setIsFullscreenTV] = useState(false);
-    const [vlsStats, setVlsStats] = useState({
-        liveUsers: 14228,
-        totalServed: 2453.44,
-        growth: '+284%'
-    });
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -604,12 +656,6 @@ export default function HubDashboard() {
         return () => clearInterval(sInt);
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [viewMode, setViewMode] = useState('full'); // 'full' or 'personalized'
-    const [pinnedApps, setPinnedApps] = useState(() => {
-        const saved = localStorage.getItem('vls_pinned_apps');
-        return saved ? JSON.parse(saved) : [];
-    });
 
     const togglePin = (id) => {
         setPinnedApps(prev => {
@@ -618,17 +664,6 @@ export default function HubDashboard() {
             return next;
         });
     };
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-
-    const tenant = localStorage.getItem('smart_tenant');
-    const customConfig = JSON.parse(localStorage.getItem('smart_custom_config') || '{}');
-
-    const [brandOrg, setBrandOrg] = useState(() => {
-        return tenant === 'custom' && customConfig.orgName ? customConfig.orgName : 'La Serena';
-    });
-    const [brandLogo, setBrandLogo] = useState(() => {
-        return tenant === 'custom' ? (customConfig.logoUrl || '/escudo.png') : '/escudo.png';
-    });
 
     useEffect(() => {
         const detectDevice = () => {
@@ -684,9 +719,11 @@ export default function HubDashboard() {
     }, []);
 
     const rawDict = dict[lang] || dict['es'];
-    const t = {
-        ...baseT,
+    const tHub = {
         ...rawDict,
+        glosario: rawDict.glosario || translate('glosarioTitle'),
+        smartFeed: rawDict.smartFeed || 'SMART FEED',
+        city3d: rawDict.city3d || 'CIUDAD 3D',
         title: (rawDict.title || '').replace('La Serena', brandOrg),
         sentinelSub: (rawDict.sentinelSub || '').replace('La Serena', brandOrg),
         eventsTitle: (rawDict.eventsTitle || '').replace('La Serena', brandOrg),
@@ -699,7 +736,7 @@ export default function HubDashboard() {
     const formatoHora = currentTime.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
 
-    const { weather, isAuthorized, isGuest, isRegistered, currentUser } = useOutletContext();
+
 
     const HUB_OPEN_ACCESS_IDS = [
         'vhs-tv', 'retro-tv', 'cine', 'debono', 'donradios',
@@ -742,6 +779,10 @@ export default function HubDashboard() {
         {
             id: 'plaza-vecinal', title: 'Plaza Vecinal AI', subtitle: 'Espacio de encuentro ciudadano moderado por IA.', icon: Users, color: '#ec4899', path: 'https://ais-dev-m2dndpdv73k2izyiea7mef-41245370989.us-east5.run.app', isExternal: true, active: true },
         {
+            id: 'ajedrez-patrimonial', title: 'Ajedrez Patrimonial 3D', subtitle: 'Desafía tu mente en el casco histórico',
+            icon: Gamepad2, color: '#fcd34d', isEvent: 'open-ajedrez-patrimonial', active: true, badge: 'SABERES'
+        },
+        {
             id: 'vls-trivia', title: isRDMLS ? 'Saberes: Gestión del Conocimiento' : 'VLSabes: Juegaprende', subtitle: isRDMLS ? 'Pilar #2: Saberes, Historia y Soberanía' : 'Pilar #2: Trivia Educativa y Soberanía Comunicacional',
             icon: Gamepad2, color: '#FFD700', path: '/vlsabes', active: true, badge: isRDMLS ? 'SABERES' : 'TRIVIA'
         },
@@ -782,7 +823,7 @@ export default function HubDashboard() {
             icon: AlertTriangle, color: '#ef4444', path: '/citizens', active: true, badge: 'RED 24/7'
         },
         {
-            id: 'smart-salud', title: t.saludTitle || 'Smart Salud', subtitle: 'Atención Médica y Agendamiento Vecinal',
+            id: 'smart-salud', title: tHub.saludTitle || 'Smart Salud', subtitle: 'Atención Médica y Agendamiento Vecinal',
             icon: Stethoscope, color: '#10b981', path: '/smart-salud', active: true
         },
         {
@@ -819,7 +860,7 @@ export default function HubDashboard() {
             icon: Music, color: '#f59e0b', isEvent: 'open-personal-stereo', active: true, badge: 'RETRO'
         },
         {
-            id: 'memorial-hijos', title: t.memorialTitle || 'Altares de la Región', subtitle: 'Homenaje Póstumo Digital y Hologramas',
+            id: 'memorial-hijos', title: tHub.memorialTitle || 'Altares de la Región', subtitle: 'Homenaje Póstumo Digital y Hologramas',
             icon: Heart, color: '#f472b6', isEvent: 'open-memorial-hijos', active: true
         },
         {
@@ -836,7 +877,7 @@ export default function HubDashboard() {
         },
         {
             id: 'personal-stereo', title: 'Personal Stereo VLS', subtitle: 'Tu música nostálgica siempre contigo',
-            icon: History, color: '#fcd34d', isEvent: 'open-personal-stereo', active: true
+            icon: HistoryIcon, color: '#fcd34d', isEvent: 'open-personal-stereo', active: true
         },
         {
             id: 'faro-ia', title: 'Serenito Guía (IA)', subtitle: 'Asistente Virtual con Inteligencia Humana',
@@ -849,6 +890,10 @@ export default function HubDashboard() {
         {
             id: 'busdeltiempo', title: 'Bus del Tiempo 3D', subtitle: 'Viaje Interdimensional por La Serena',
             icon: Map, color: '#c084fc', isEvent: 'open-time-bus', active: true
+        },
+        {
+            id: 'roadmap', title: 'Roadmap VLS', subtitle: 'Hitos proyectados 2026',
+            icon: HistoryIcon, color: '#06b6d4', isEvent: 'open-vls-roadmap', active: true, badge: 'ESTRATÉGICO'
         },
         {
             id: 'legacy-game', title: 'Salón Arcade Retro', subtitle: 'Desafía el Record y gana Papayas',
@@ -867,8 +912,8 @@ export default function HubDashboard() {
             icon: ListChecks, color: '#3b82f6', isEvent: 'open-vls-roadmap', active: true, badge: 'ESTATUS'
         },
         {
-            id: 'vls-manifesto', title: 'Sobre el Proyecto', subtitle: 'Nuestra Visión, Tecnología y Metas VLS 2026',
-            icon: Rocket, color: '#c084fc', isEvent: 'open-vls-manifesto', active: true, badge: 'MANIFIESTO'
+            id: 'pitch-inversionistas', title: 'Pitch Inversionistas (B2G)', subtitle: 'Modelo SaaS Municipal y Nube Cero Costo (Cloudflare D1/R2)',
+            icon: Rocket, color: '#c084fc', isEvent: 'open-project-info', active: true, badge: 'Dossier 2030'
         },
         {
             id: 'lite-portal-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
@@ -988,6 +1033,10 @@ export default function HubDashboard() {
             icon: Heart, color: '#fcd34d', isEvent: 'open-ecumenical', active: true
         },
         {
+            id: 'estudio-vls', title: 'Estudio Audiovisual VLS', subtitle: 'Arriendo de Estudio Broadcast & Podcast PRO',
+            icon: Radio, color: '#00BCD4', isEvent: 'open-estudio-vls', active: true, badge: 'BROADCAST'
+        },
+        {
             id: 'laico', title: 'Portal Cívico y Laico', subtitle: 'Librepensamiento, Agrupaciones Cívicas y Voluntariado',
             icon: Globe, color: '#10b981', isEvent: 'open-secular', active: true
         },
@@ -1005,14 +1054,15 @@ export default function HubDashboard() {
         },
         {
             id: 'alcaldes-history', title: 'Archivo Alcaldes Regionales', subtitle: 'Hemeroteca y Cronología de Liderazgo Comunal',
-            icon: History, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: true, badge: 'HISTORIAL'
+            icon: HistoryIcon, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: true, badge: 'HISTORIAL'
         }
     ];
 
     // Strict Filtering for RDMLS: Only show professional/institutional tools
     const allApps = [...servicios, ...participacionCiudadana, ...internalTools]
-        .filter(a => a.active)
+        .filter(a => a && a.active)
         .filter(a => {
+            if (!a || !a.id) return false;
             if (!isRDMLS) return true;
             // Purge ludic/citizen-only apps from RDMLS
             const vlsOnly = [
@@ -1026,16 +1076,21 @@ export default function HubDashboard() {
             return !vlsOnly.includes(a.id);
         })
         .map(app => {
+            if (!app) return null;
             if (isRDMLS) {
                 // Renombrar apps para el portal institucional
                 if (app.id === 'vls-trivia') return { ...app, title: 'Saberes Regionales', badge: 'INSTITUCIONAL' };
                 if (app.id === 'smart-learning') return { ...app, title: 'Inducción Municipal', badge: 'RRHH' };
             }
             return app;
-        });
+        })
+        .filter(app => app !== null);
+
     const filteredApps = allApps.filter(app =>
-        (app.title || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
-        (app.subtitle || '').toLowerCase().includes((searchTerm || '').toLowerCase())
+        app && (
+            (app.title || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+            (app.subtitle || '').toLowerCase().includes((searchTerm || '').toLowerCase())
+        )
     );
 
     const baseCategories = [
@@ -1045,7 +1100,7 @@ export default function HubDashboard() {
             description: isRDMLS ? 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.' : 'Registro digital de accesos, reportes para vecinos/visitantes y Radio Digital VLS.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'vls-manifesto', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat']
+            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat']
         },
         {
             id: 'admin',
@@ -1086,11 +1141,13 @@ export default function HubDashboard() {
         : baseCategories;
 
 
-    const displayApps = viewMode === 'personalized'
-        ? allApps.filter(a => pinnedApps.includes(a.id))
-        : filteredApps;
+    const displayApps = (viewMode === 'personalized'
+        ? allApps.filter(a => a && pinnedApps.includes(a.id))
+        : filteredApps
+    ).filter(Boolean); // ← Blindaje: elimina cualquier undefined residual
 
     const AppCard = ({ app }) => {
+        if (!app || !app.id) return null; // ← Guardia crítica contra undefined
         const locked = isRestrictedModule(app.id);
         const isPinned = pinnedApps.includes(app.id);
 
@@ -1214,19 +1271,24 @@ export default function HubDashboard() {
     const CurrentIcon = CurrentMessage.icon;
 
     const handleSearchSubmit = (term) => {
-        const t = term.toLowerCase();
+        const lowerTerm = term.toLowerCase();
         
         // Atajos directos para módulos maestros o registros históricos
-        if (t.includes('alcalde') || t.includes('historia') || t.includes('registro') || t.includes('municipio')) {
+        if (lowerTerm.includes('alcalde') || lowerTerm.includes('historia') || lowerTerm.includes('registro') || lowerTerm.includes('municipio')) {
             setShowAlcaldes(true);
             return;
         }
 
-        if (t.includes('arrendar') || t.includes('arriendo') || t.includes('casa') || t.includes('propiedad') || t.includes('vender') || t.includes('comprar')) {
+        if (lowerTerm.includes('miguel') || lowerTerm.includes('melendez') || lowerTerm.includes('agua')) {
+            window.dispatchEvent(new CustomEvent('open-memorial-hijos', { detail: { id: 'miguel' } }));
+            return;
+        }
+
+        if (lowerTerm.includes('arrendar') || lowerTerm.includes('arriendo') || lowerTerm.includes('casa') || lowerTerm.includes('propiedad') || lowerTerm.includes('vender') || lowerTerm.includes('comprar')) {
             navigate('/propiedades');
-        } else if (t.includes('diseñar') || t.includes('arquitecto') || t.includes('construir') || t.includes('ampliación') || t.includes('obra')) {
+        } else if (lowerTerm.includes('diseñar') || lowerTerm.includes('arquitecto') || lowerTerm.includes('construir') || lowerTerm.includes('ampliación') || lowerTerm.includes('obra')) {
             navigate('/arquitectura');
-        } else if (t.includes('salud') || t.includes('médico') || t.includes('doctor')) {
+        } else if (lowerTerm.includes('salud') || lowerTerm.includes('médico') || lowerTerm.includes('doctor')) {
             navigate('/smart-salud');
         } else {
             // Si no es un atajo, scrollear suavemente a los resultados filtrados
@@ -1404,7 +1466,7 @@ export default function HubDashboard() {
                                 gap: '6px'
                             }}
                         >
-                            <Book size={14} /> {t.glosario || 'GLOSARIO'}
+                            <Book size={14} /> {tHub.glosario || 'GLOSARIO'}
                         </button>
                         
                         {/* TOKEN DISPLAY IN HEADER */}
@@ -1463,7 +1525,7 @@ export default function HubDashboard() {
                                     whiteSpace: 'nowrap'
                                 }}
                             >
-                                <Zap size={14} /> {t.smartFeed || 'SMART FEED'}
+                                <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
                             </button>
                             <button
                                 onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
@@ -1483,7 +1545,7 @@ export default function HubDashboard() {
                                     whiteSpace: 'nowrap'
                                 }}
                             >
-                                <Sparkles size={14} /> {t.city3d || 'CIUDAD 3D'}
+                                <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
                             </button>
                         </div>
                     )}
@@ -1546,7 +1608,7 @@ export default function HubDashboard() {
                             {isRDMLS ? 'BIENVENIDOS A LA RED ' : 'BIENVENIDO A '} <br/> <span style={{ color: '#38bdf8' }}>{isRDMLS ? 'MUNICIPAL RDMLS' : 'VECINOS LA SERENA'}</span>
                         </h2>
                         <p style={{ maxWidth: '900px', fontSize: '1.15rem', color: '#94a3b8', margin: '0.5rem 0', lineHeight: '1.6' }}>
-                            {t.heroDescription}
+                            {tHub.heroDescription}
                         </p>
                         <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                             {!isRDMLS && (
@@ -1571,7 +1633,7 @@ export default function HubDashboard() {
                     borderBottom: '2px solid rgba(255,215,0,0.4)',
                     padding: '0.75rem 1rem',
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gridTemplateColumns: 'repeat(3, 1fr)',
                     gap: '0.75rem',
                     boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
                 }}>
@@ -1647,8 +1709,43 @@ export default function HubDashboard() {
                                 Vuela, dispara y defiende La Serena
                             </p>
                         </div>
+                    </div>
+
+                    {/* Tarjeta 3: AJEDREZ PATRIMONIAL 3D */}
+                    <div
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-ajedrez-patrimonial'))}
+                        style={{
+                            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+                            border: '1px solid rgba(252,211,77,0.4)',
+                            borderRadius: '16px',
+                            padding: '0.9rem 1rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.75rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.25s ease',
+                            boxShadow: '0 0 20px rgba(252,211,77,0.1)',
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(252,211,77,0.35)'; e.currentTarget.style.borderColor = 'rgba(252,211,77,0.8)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(252,211,77,0.1)'; e.currentTarget.style.borderColor = 'rgba(252,211,77,0.4)'; }}
+                    >
+                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(252,211,77,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
+                        <div style={{ background: 'linear-gradient(135deg, #fcd34d, #b45309)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(252,211,77,0.5)', flexShrink: 0 }}>
+                            <Gamepad2 size={22} color="#0f172a" />
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
+                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#fcd34d', textShadow: '0 0 12px rgba(252,211,77,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>AJEDREZ 3D</span>
+                                <span style={{ background: 'rgba(252,211,77,0.2)', color: '#fcd34d', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px', border: '1px solid rgba(252,211,77,0.3)' }}>SANDBOX</span>
+                            </div>
+                            <p style={{ color: 'rgba(252,211,77,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                Casco Histórico en Tres Dimensiones
+                            </p>
                         </div>
                     </div>
+                </div>
                 )}
 
 
@@ -1768,7 +1865,7 @@ export default function HubDashboard() {
                                     {!isVLS && (
                                         <div style={{ background: 'rgba(255,255,255,0.05)', padding: '0.6rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.9rem', color: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <span style={{ fontSize: '1.1rem' }}>{greetings[greetingIdx].flag}</span>
-                                            {t.welcomePortales || 'Bienvenido al portal unificado de La Serena.'}
+                                            {tHub.welcomePortales || 'Bienvenido al portal unificado de La Serena.'}
                                         </div>
                                     )}
                                 </div>
@@ -1797,26 +1894,29 @@ export default function HubDashboard() {
 
                             {/* GALERÍA DE LOS 4 PILARES */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', width: '100%', maxWidth: '1200px', marginTop: '0.5rem' }}>
-                                {categories.map(pillar => (
-                                    <div
-                                        key={pillar.id}
-                                        onClick={() => {
-                                            setSearchTerm("");
-                                            const element = document.getElementById(`cat-section-${pillar.id}`);
-                                            if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                                        }}
-                                        className="glass-panel gaudi-curves hover-lift"
-                                        style={{ padding: '2rem', borderRadius: '32px', border: `1.5px solid ${pillar.color}50`, background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', boxShadow: `0 20px 40px rgba(0,0,0,0.4)` }}
-                                    >
-                                        <div style={{ background: pillar.color, padding: '1.2rem', borderRadius: '24px', color: pillar.id === 'citizens' ? 'black' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                            <pillar.icon size={36} />
+                                {categories.map(pillar => {
+                                    if (!pillar || !pillar.id) return null;
+                                    return (
+                                        <div
+                                            key={pillar.id}
+                                            onClick={() => {
+                                                setSearchTerm("");
+                                                const element = document.getElementById(`cat-section-${pillar.id}`);
+                                                if (element) element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                            }}
+                                            className="glass-panel gaudi-curves hover-lift"
+                                            style={{ padding: '2rem', borderRadius: '32px', border: `1.5px solid ${pillar.color}50`, background: `linear-gradient(135deg, ${pillar.color}20 0%, rgba(15,23,42,0.9) 100%)`, cursor: 'pointer', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem', boxShadow: `0 20px 40px rgba(0,0,0,0.4)` }}
+                                        >
+                                            <div style={{ background: pillar.color, padding: '1.2rem', borderRadius: '24px', color: pillar.id === 'citizens' ? 'black' : 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                {pillar.icon && <pillar.icon size={36} />}
+                                            </div>
+                                            <div>
+                                                <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{tHub[`${pillar.id}Title`] || pillar.name}</h4>
+                                                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{tHub[`${pillar.id}Sub`] || pillar.description}</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.3rem', fontWeight: '900', letterSpacing: '1px' }}>{t[`${pillar.id}Title`] || pillar.name}</h4>
-                                            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.85rem', lineHeight: '1.5', margin: 0 }}>{t[`${pillar.id}Sub`] || pillar.description}</p>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -1836,7 +1936,7 @@ export default function HubDashboard() {
                                 onClick={() => window.dispatchEvent(new CustomEvent('open-smart-share'))}
                             >
                                 <QRCodeSVG value={isRDMLS ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl"} size={35} level={"L"} />
-                                <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{t.qrText}</span>
+                                <span style={{ fontSize: '0.8rem', color: 'white', fontWeight: 'bold' }}>{tHub.qrText}</span>
                             </button>
 
                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}>
@@ -1933,7 +2033,7 @@ export default function HubDashboard() {
                                 style={{ 
                                     gridColumn: isMobile ? '1 / -1' : (window.innerWidth > 900 ? '1 / -1' : 'auto'),
                                     background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', 
-                                    padding: window.innerWidth < 768 ? '1.5rem' : '3rem', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
                                     borderRadius: '35px', 
                                     cursor: 'pointer',
                                     border: '2px solid #7c3aed60',
@@ -1941,148 +2041,146 @@ export default function HubDashboard() {
                                     overflow: 'hidden',
                                     boxShadow: '0 25px 50px rgba(0,0,0,0.6)',
                                     display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '3rem'
+                                    flexDirection: 'column',
+                                    gap: '1.5rem'
                                 }}
                             >
                                 <div style={{ position: 'absolute', top: '-10%', right: '-5%', opacity: 0.1, zIndex: 0 }}>
-                                    <Church size={350} color="#7c3aed" />
+                                    <Church size={isMobile ? 200 : 350} color="#7c3aed" />
                                 </div>
-                                <div style={{ flex: 1, position: 'relative', zIndex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
-                                        <span style={{ background: '#7c3aed', color: 'white', padding: '0.6rem 2rem', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '2px' }}>HEMEROTECA VLS</span>
-                                        <span style={{ color: '#a78bfa', fontWeight: 'bold' }}>ESPECIAL SEMANA SANTA 2026</span>
+                                <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+                                        <span style={{ background: '#7c3aed', color: 'white', padding: '0.4rem 1.5rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px' }}>HEMEROTECA VLS</span>
+                                        <span style={{ color: '#a78bfa', fontWeight: 'bold', fontSize: '0.8rem' }}>ESPECIAL SEMANA SANTA 2026</span>
                                     </div>
-                                    <h1 style={{ color: 'white', fontSize: '3.5rem', fontWeight: 950, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>Semana Santa 2026:<br/><span style={{ color: '#a78bfa' }}>Historia y Tradición</span></h1>
-                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.3rem', maxWidth: '600px', margin: 0, fontWeight: 400, lineHeight: 1.5 }}>
-                                        Más allá de la fe: Un viaje por las tradiciones globales y chilenas que definen nuestro patrimonio.
+                                    <h1 style={{ color: 'white', fontSize: isMobile ? '1.8rem' : '2.8rem', fontWeight: 950, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>
+                                        Semana Santa 2026:<br/>
+                                        <span style={{ color: '#a78bfa' }}>Historia y Tradición</span>
+                                    </h1>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: isMobile ? '0.95rem' : '1.15rem', maxWidth: '800px', margin: 0, fontWeight: 400, lineHeight: 1.5 }}>
+                                        Más allá de la fe: Un viaje por las tradiciones globales y chilenas que definen nuestro patrimonio ancestral en la Región de Coquimbo.
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1.5rem', marginTop: '3.5rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-light" style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '1rem 2.5rem', borderRadius: '15px', fontWeight: 900 }}>LEER INVESTIGACIÓN</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#a78bfa', fontWeight: 'bold' }}>
-                                            <BookOpen size={20} /> ALTA RELEVANCIA
+                                    
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', marginTop: '2.5rem', alignItems: 'center' }}>
+                                        <button className="btn-vls-action-light" style={{ background: '#7c3aed', color: 'white', border: 'none', padding: '0.8rem 2rem', borderRadius: '15px', fontWeight: 900 }}>LEER INVESTIGACIÓN</button>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#a78bfa', fontWeight: 'bold', fontSize: '0.85rem' }}>
+                                            <BookOpen size={18} /> ALTA RELEVANCIA
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="hide-on-mobile" style={{ 
-                                    width: '320px', 
-                                    height: '320px', 
-                                    borderRadius: '40px', 
-                                    background: 'linear-gradient(135deg, rgba(30,27,75,0.4) 0%, rgba(139,92,246,0.1) 100%)',
-                                    border: '1px solid rgba(124,58,237,0.3)', 
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)', 
-                                    flexShrink: 0, 
+                                    width: '100%', 
+                                    height: '220px', 
+                                    borderRadius: '25px', 
+                                    background: 'radial-gradient(ellipse at center, #1a0a3a 0%, #07030f 100%)',
+                                    border: '1px solid rgba(255,180,0,0.25)', 
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5), 0 0 40px rgba(255,160,0,0.08)', 
                                     position: 'relative',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    overflow: 'hidden'
+                                    overflow: 'hidden',
+                                    marginTop: '1rem'
                                 }}>
-                                    <div style={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(124,58,237,0.5) 20px, rgba(124,58,237,0.5) 21px)' }} />
-                                    
-                                    {/* Faro Monumental - Hiper-detallado con Lógica de Líneas */}
-                                    <div style={{ position: 'relative', zIndex: 1, width: '220px', height: '260px' }}>
-                                        <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-                                            {/* Torre Principal con perspectiva */}
-                                            <motion.path
-                                                d="M 46 25 L 54 25 L 56 100 L 44 100 Z"
-                                                stroke="#a78bfa" strokeWidth="1" strokeLinecap="round"
-                                                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
-                                            />
-                                            {/* Cúpula y Linterna (Cabeza) */}
-                                            <motion.path
-                                                d="M 43 25 L 57 25 M 44 20 L 56 20 L 56 25 L 44 25 Z M 47 20 L 53 20 L 53 15 L 47 15 Z M 50 15 L 50 10"
-                                                stroke="#a78bfa" strokeWidth="1"
-                                                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
-                                            />
-                                            {/* Fortificación (Base Murallada) */}
-                                            <motion.path
-                                                d="M 20 100 L 80 100 L 85 115 L 15 115 Z M 25 100 L 25 95 L 30 95 L 30 100 M 70 100 L 70 95 L 75 95 L 75 100"
-                                                stroke="#a78bfa" strokeWidth="1"
-                                                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                transition={{ duration: 4, repeat: Infinity, repeatType: "reverse", delay: 0.5 }}
-                                            />
-                                            {/* Garitas (Torrecillas laterales) */}
-                                            <motion.circle cx="15" cy="115" r="4" stroke="#a78bfa" strokeWidth="1" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity }} />
-                                            <motion.circle cx="85" cy="115" r="4" stroke="#a78bfa" strokeWidth="1" initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, repeat: Infinity, delay: 0.2 }} />
-                                            
-                                            {/* Banderas (Animación de viento sutil) */}
-                                            <motion.path
-                                                d="M 15 115 L 15 90 M 15 90 L 22 93 L 15 96"
-                                                stroke="#a78bfa" strokeWidth="0.8"
-                                                animate={{ x: [0, 2, 0] }} transition={{ duration: 1.5, repeat: Infinity }}
-                                            />
-                                            <motion.path
-                                                d="M 85 115 L 85 85 M 85 85 L 92 88 L 85 91"
-                                                stroke="#a78bfa" strokeWidth="0.8"
-                                                animate={{ x: [0, -2, 0] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-                                            />
-
-                                            {/* Detalles: Ventanas y Líneas de textura */}
-                                            {[35, 50, 65, 80].map((y, i) => (
-                                                <motion.rect key={i} x="48.5" y={y} width="3" height="5" stroke="#a78bfa" strokeWidth="0.5" 
-                                                    initial={{ opacity: 0 }} animate={{ opacity: [0, 1, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: i * 0.4 }} />
-                                            ))}
-                                            
-                                            {/* Luz del Faro (Ambiental) */}
-                                            <motion.circle 
-                                                cx="50" cy="18" r="8" fill="rgba(167,139,250,0.1)"
-                                                animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
-                                                transition={{ duration: 2.5, repeat: Infinity }}
-                                            />
-                                        </svg>
-                                    </div>
-
-                                    <div style={{ 
-                                        position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)',
-                                        padding: '8px 20px', background: 'rgba(15,23,42,0.8)', borderRadius: '20px', backdropFilter: 'blur(10px)',
-                                        border: '1px solid rgba(255,255,255,0.1)', display: 'flex', flexDirection: 'column', alignItems: 'center'
-                                    }}>
-                                        <span style={{ fontSize: '0.6rem', color: '#a78bfa', fontWeight: '900', letterSpacing: '2px' }}>RDMLS HERITAGE</span>
-                                    </div>
+                                    {/* Cruz del Tercer Milenio - Coquimbo */}
+                                    <svg viewBox="0 0 200 300" width="160" height="210"
+                                        style={{ filter: 'drop-shadow(0 0 18px rgba(255,190,0,0.7)) drop-shadow(0 0 40px rgba(255,120,0,0.3))', position: 'relative', zIndex: 2 }}>
+                                        <defs>
+                                            <linearGradient id="cg1" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                <stop offset="0%" stopColor="#fff5a0"/>
+                                                <stop offset="35%" stopColor="#FFD700"/>
+                                                <stop offset="75%" stopColor="#FFA500"/>
+                                                <stop offset="100%" stopColor="#b85a00"/>
+                                            </linearGradient>
+                                            <linearGradient id="cg2" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                <stop offset="0%" stopColor="#b85a00"/>
+                                                <stop offset="40%" stopColor="#FFA500"/>
+                                                <stop offset="60%" stopColor="#FFD700"/>
+                                                <stop offset="100%" stopColor="#b85a00"/>
+                                            </linearGradient>
+                                            <style>{`
+                                                .cv1{stroke-dasharray:280;stroke-dashoffset:280;animation:dL 2.2s ease-out 0.1s forwards;}
+                                                .cv2{stroke-dasharray:280;stroke-dashoffset:280;animation:dL 2.2s ease-out 0.4s forwards;}
+                                                .cv3{stroke-dasharray:280;stroke-dashoffset:280;animation:dL 2.2s ease-out 0.7s forwards;}
+                                                .ch1{stroke-dasharray:180;stroke-dashoffset:180;animation:dL 1.6s ease-out 1.6s forwards;}
+                                                .ch2{stroke-dasharray:180;stroke-dashoffset:180;animation:dL 1.6s ease-out 1.9s forwards;}
+                                                .cb{stroke-dasharray:240;stroke-dashoffset:240;animation:dL 1.4s ease-out 2.2s forwards;}
+                                                .cpulse{animation:gP 2.8s ease-in-out 3.2s infinite;}
+                                                @keyframes dL{to{stroke-dashoffset:0;}}
+                                                @keyframes gP{0%,100%{opacity:.7;}50%{opacity:1;filter:drop-shadow(0 0 18px #FFD700);}}
+                                            `}</style>
+                                        </defs>
+                                        <g className="cpulse">
+                                            {/* Vertical — 3 líneas paralelas */}
+                                            <line className="cv1" x1="87" y1="10" x2="87" y2="210" stroke="url(#cg1)" strokeWidth="8" strokeLinecap="round"/>
+                                            <line className="cv2" x1="100" y1="4" x2="100" y2="214" stroke="url(#cg1)" strokeWidth="13" strokeLinecap="round"/>
+                                            <line className="cv3" x1="113" y1="10" x2="113" y2="210" stroke="url(#cg1)" strokeWidth="8" strokeLinecap="round"/>
+                                            {/* Horizontal — 2 líneas paralelas */}
+                                            <line className="ch1" x1="18" y1="78" x2="182" y2="78" stroke="url(#cg2)" strokeWidth="8" strokeLinecap="round"/>
+                                            <line className="ch2" x1="18" y1="94" x2="182" y2="94" stroke="url(#cg2)" strokeWidth="8" strokeLinecap="round"/>
+                                            {/* Base piramidal */}
+                                            <line className="cb" x1="72" y1="212" x2="100" y2="246" stroke="url(#cg1)" strokeWidth="6" strokeLinecap="round"/>
+                                            <line className="cb" x1="128" y1="212" x2="100" y2="246" stroke="url(#cg1)" strokeWidth="6" strokeLinecap="round"/>
+                                            <line className="cb" x1="50" y1="246" x2="150" y2="246" stroke="url(#cg2)" strokeWidth="5" strokeLinecap="round"/>
+                                            <line className="cb" x1="50" y1="246" x2="36" y2="270" stroke="url(#cg1)" strokeWidth="4" strokeLinecap="round"/>
+                                            <line className="cb" x1="150" y1="246" x2="164" y2="270" stroke="url(#cg1)" strokeWidth="4" strokeLinecap="round"/>
+                                            <line className="cb" x1="30" y1="270" x2="170" y2="270" stroke="url(#cg2)" strokeWidth="4" strokeLinecap="round"/>
+                                            {/* Luces pulsantes */}
+                                            <circle cx="18" cy="86" r="4" fill="#FFD700">
+                                                <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <circle cx="182" cy="86" r="4" fill="#FFD700">
+                                                <animate attributeName="opacity" values="0.4;1;0.4" dur="1.8s" begin="0.5s" repeatCount="indefinite"/>
+                                            </circle>
+                                            <circle cx="100" cy="4" r="5" fill="#fff5a0">
+                                                <animate attributeName="r" values="3;7;3" dur="2.2s" repeatCount="indefinite"/>
+                                                <animate attributeName="opacity" values="0.5;1;0.5" dur="2.2s" repeatCount="indefinite"/>
+                                            </circle>
+                                        </g>
+                                    </svg>
+                                    {/* Halo de fondo */}
+                                    <div style={{ position: 'absolute', width: '140px', height: '140px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255,185,0,0.12) 0%, transparent 70%)', top: '25%', left: '50%', transform: 'translate(-50%, -20%)' }} />
+                                    <div style={{ position: 'absolute', bottom: '10px', right: '15px', color: '#a78bfa', fontSize: '0.6rem', fontWeight: '900', letterSpacing: '2px' }}>✝ RDMLS HERITAGE · COQUIMBO</div>
                                 </div>
                             </div>
 
                             {/* SENTINEL PREDICTIVE REPORT */}
                             <div 
-                                onClick={() => setShowSentinelNote(true)}
-                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
-                                style={{ 
-                                    background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', 
-                                    padding: '2.5rem', 
-                                    borderRadius: '35px', 
-                                    cursor: 'pointer',
-                                    border: '1px solid rgba(56,189,248,0.4)',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
-                                }}
+                                 onClick={() => setShowSentinelNote(true)}
+                                 className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                 style={{ 
+                                     background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', 
+                                     padding: isMobile ? '1.5rem' : '2.5rem', 
+                                     borderRadius: '35px', 
+                                     cursor: 'pointer',
+                                     border: '1px solid rgba(56,189,248,0.4)',
+                                     position: 'relative',
+                                     overflow: 'hidden',
+                                     display: 'flex',
+                                     flexDirection: 'column',
+                                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                 }}
                             >
                                 <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <Radar size={220} color="#38bdf8" />
+                                    <Radar size={isMobile ? 150 : 220} color="#38bdf8" />
                                 </div>
-                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '100%', background: '#38bdf8', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
-                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>INTELIGENCIA IA</span>
+                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>INTELIGENCIA IA</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', color: '#38bdf8', opacity: 0.8 }}>
-                                            <Play size={18} />
-                                            <Volume2 size={18} />
+                                            <TrendingUp size={18} />
                                         </div>
                                     </div>
-                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>CENTINEL FARO 2026</h1>
-                                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                                        Ojo Social Predictivo: El sistema que está detectando las crisis antes de que ocurran en la Serena.
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>CENTINEL FARO 2026</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        Ojo Social Predictivo: El sistema que está detectando las crisis antes de que ocurran en la Serena mediante Social Listening.
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-light">ANALIZAR DATOS</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                            <TrendingUp size={16} /> RADAR ACTIVO
-                                        </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-light" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem' }}>ANALIZAR DATOS</button>
+                                        <span style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>RADAR ACTIVO</span>
                                     </div>
                                 </div>
                             </div>
@@ -2093,38 +2191,36 @@ export default function HubDashboard() {
                                 className="glass-panel gaudi-curves hover-lift animate-fade-in" 
                                 style={{ 
                                     background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)', 
-                                    padding: '2.5rem', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
                                     borderRadius: '35px', 
                                     cursor: 'pointer',
                                     border: '1px solid #fbbf2460',
                                     position: 'relative',
                                     overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
                                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
                                 }}
                             >
                                 <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <Fuel size={220} color="#fbbf24" />
+                                    <Fuel size={isMobile ? 150 : 220} color="#fbbf24" />
                                 </div>
-                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '100%', background: '#fbbf24', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
-                                            <span style={{ background: '#fbbf24', color: '#000', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>ALERTA ECONÓMICA</span>
+                                            <span style={{ background: '#fbbf24', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>ALERTA ECONÓMICA</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', color: '#fbbf24', opacity: 0.8 }}>
-                                            <Play size={18} />
-                                            <Volume2 size={18} />
+                                            <AlertCircle size={18} />
                                         </div>
                                     </div>
-                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>ESPEJISMO AMERICANO</h1>
-                                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                                        ¿Bencina de Primer Mundo con sueldos de tercero? El choque de realidades del Ministro Quiroz.
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>ESPEJISMO AMERICANO</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        ¿Bencina de Primer Mundo con sueldos de tercero? El choque de realidades del Ministro Quiroz y su impacto en La Serena.
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-yellow text-black" style={{ background: '#fbbf24', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none' }}>VER REPORTE</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fbbf24', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                            <AlertCircle size={16} /> 88% CRÍTICO
-                                        </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-yellow" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem', color: '#000', border: 'none', background: '#fbbf24', borderRadius: '12px', fontWeight: '900' }}>VER REPORTE</button>
+                                        <span style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>88% CRÍTICO</span>
                                     </div>
                                 </div>
                             </div>
@@ -2135,38 +2231,36 @@ export default function HubDashboard() {
                                 className="glass-panel gaudi-curves hover-lift animate-fade-in" 
                                 style={{ 
                                     background: 'linear-gradient(135deg, #ef4444 0%, #7f1d1d 100%)', 
-                                    padding: '2.5rem', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
                                     borderRadius: '35px', 
                                     cursor: 'pointer',
                                     border: '1px solid rgba(255,255,255,0.2)',
                                     position: 'relative',
                                     overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
                                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
                                 }}
                             >
                                 <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <Newspaper size={200} color="white" />
+                                    <Newspaper size={isMobile ? 150 : 200} color="white" />
                                 </div>
-                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '100%', background: 'white', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
-                                            <span style={{ background: 'white', color: '#ef4444', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>INVESTIGACIÓN CENTRAL</span>
+                                            <span style={{ background: 'white', color: '#ef4444', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>INVESTIGACIÓN CENTRAL</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', color: 'white', opacity: 0.8 }}>
-                                            <Play size={18} />
-                                            <Volume2 size={18} />
+                                            <Zap size={18} />
                                         </div>
                                     </div>
-                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>LA PARADOJA 2026</h1>
-                                    <p style={{ color: 'white', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                    ¿Por qué la educación apagó el supercomputador del futuro? Una crisis pedagógica silenciada.
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>LA PARADOJA 2026</h2>
+                                    <p style={{ color: 'white', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        ¿Por qué la educación apagó el supercomputador del futuro? Una crisis pedagógica silenciada en el Chile actual.
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-white text-danger" style={{ background: 'white', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none', color: '#ef4444' }}>LEER AHORA</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                            <Zap size={16} /> EDICIÓN ESPECIAL
-                                        </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-white" style={{ background: 'white', color: '#ef4444', padding: '0.6rem 1.5rem', fontSize: '0.8rem', border: 'none', borderRadius: '12px', fontWeight: '900' }}>LEER AHORA</button>
+                                        <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>VLS EXCLUSIVO</span>
                                     </div>
                                 </div>
                             </div>
@@ -2176,83 +2270,41 @@ export default function HubDashboard() {
                                 className="glass-panel gaudi-curves hover-lift animate-fade-in" 
                                 style={{ 
                                     background: 'linear-gradient(135deg, #8b5cf6 0%, #4c1d95 100%)', 
-                                    padding: '2.5rem', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
                                     borderRadius: '35px', 
                                     cursor: 'pointer',
                                     border: '1px solid rgba(255,255,255,0.2)',
                                     position: 'relative',
                                     overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
                                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
                                 }}
                             >
                                 <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <HomeIcon size={200} color="white" />
+                                    <HomeIcon size={isMobile ? 150 : 200} color="white" />
                                 </div>
-                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '100%', background: 'white', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
-                                            <span style={{ background: 'white', color: '#8b5cf6', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>VIVIENDA Y TERRITORIO</span>
+                                            <span style={{ background: 'white', color: '#8b5cf6', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>VIVIENDA Y TERRITORIO</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '8px', color: 'white', opacity: 0.8 }}>
-                                            <Play size={18} />
-                                            <Volume2 size={18} />
+                                            <LayoutGrid size={18} />
                                         </div>
                                     </div>
-                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>EL DILEMA DE LA VIVIENDA</h1>
-                                    <p style={{ color: 'white', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}>
-                                    ¿Por qué nadie compra casas hoy? La paradoja de la vivienda sin IVA que congeló el mercado nacional.
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>DILEMA DE LA VIVIENDA</h2>
+                                    <p style={{ color: 'white', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        ¿Por qué nadie compra casas hoy? La paradoja de la vivienda sin IVA que congeló el mercado nacional y regional.
                                     </p>
-                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-white" style={{ background: 'white', color: '#8b5cf6', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, border: 'none' }}>VER INVESTIGACIÓN</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'white', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                            <Scale size={16} /> ALERTA MERCADO
-                                        </div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-white" style={{ background: 'white', color: '#8b5cf6', padding: '0.6rem 1.5rem', fontSize: '0.8rem', border: 'none', borderRadius: '12px', fontWeight: '900' }}>VER INFORME</button>
+                                        <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>ALERTA MERCADO</span>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* AGUAS DEL VALLE REPORT */}
-                            <div 
-                                onClick={() => setShowAguasValle(true)}
-                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
-                                style={{ 
-                                    background: 'linear-gradient(135deg, #0c4a6e 0%, #075985 100%)', 
-                                    padding: '2.5rem', 
-                                    borderRadius: '35px', 
-                                    cursor: 'pointer',
-                                    border: '1px solid #38bdf860',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
-                                }}
-                            >
-                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <Droplets size={220} color="#38bdf8" />
-                                </div>
-                                <div style={{ position: 'relative', zIndex: 1, paddingLeft: '2.5rem' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <div style={{ width: '8px', height: '100%', background: '#38bdf8', position: 'absolute', left: 0, top: 0, borderRadius: '4px' }} />
-                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.5rem 1.5rem', borderRadius: '50px', fontSize: '0.75rem', fontWeight: 900 }}>CRISIS HÍDRICA</span>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '8px', color: '#38bdf8', opacity: 0.8 }}>
-                                            <Play size={18} />
-                                            <Volume2 size={18} />
-                                        </div>
-                                    </div>
-                                    <h1 style={{ color: 'white', fontSize: '2.4rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', fontFamily: '"Outfit", sans-serif' }}>AGUAS DEL VALLE</h1>
-                                    <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: '1.1rem', margin: 0, fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
-                                        El Gran Engaño: Por qué el emisario submarino es una bomba de tiempo para las playas de La Serena.
-                                    </p>
-                                    <div style={{ display: 'flex', gap: '1rem', marginTop: '3rem', alignItems: 'center' }}>
-                                        <button className="btn-vls-action-light" style={{ background: '#38bdf8', color: 'black', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900 }}>ANALIZAR IMPACTO</button>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                            <Droplets size={16} /> ALERTA AMBIENTAL
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
                          </div>
                     </div>
                     )}
@@ -2318,7 +2370,7 @@ export default function HubDashboard() {
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                                    {displayApps.map(app => <AppCard key={app.id} app={app} />)}
+                                    {displayApps.filter(Boolean).map(app => <AppCard key={app.id} app={app} />)}
                                 </div>
                             </div>
                         )}
@@ -2327,17 +2379,17 @@ export default function HubDashboard() {
                         {viewMode === 'full' && searchTerm === "" && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5rem' }}>
                                 {categories.map(cat => (
-                                    <div key={cat.id} id={`cat-section-${cat.id}`} style={{ scrollMarginTop: '100px' }}>
+                                    <div key={cat?.id || Math.random()} id={cat?.id ? `cat-section-${cat.id}` : undefined} style={{ scrollMarginTop: '100px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
                                             <h3 style={{ color: 'white', margin: 0, fontSize: '1.5rem', letterSpacing: '4px', textTransform: 'uppercase', fontWeight: '900', fontFamily: '"Outfit", sans-serif' }}>
-                                                {cat.name}
+                                                {cat?.name || 'SECCIÓN'}
                                             </h3>
                                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, rgba(255,255,255,0.2), transparent)' }}></div>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                                             {allApps
-                                                .filter(app => cat.modules.includes(app.id))
-                                                .map(app => <AppCard key={app.id} app={app} />)
+                                                .filter(app => app?.id && cat?.modules?.includes(app.id))
+                                                .map(app => <AppCard key={app?.id || Math.random()} app={app} />)
                                             }
                                         </div>
                                     </div>
@@ -2417,7 +2469,7 @@ export default function HubDashboard() {
                             </div>
                             {/* Main Content Grid */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem', marginTop: '2.5rem' }}>
-                                {internalTools.map(app => (
+                                {internalTools.filter(app => app && app.id).map(app => (
                                     <AppCard key={app.id} app={app} />
                                 ))}
                             </div>
@@ -2472,52 +2524,55 @@ export default function HubDashboard() {
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem' }}>
-                            {guardianes.map((char) => (
-                                <div key={char.id} className="glass-panel gaudi-curves hover-lift" style={{ 
-                                    padding: '2rem', 
-                                    textAlign: 'center', 
-                                    border: '1.5px solid rgba(255,255,255,0.15)', 
-                                    background: 'linear-gradient(180deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.95) 100%)', 
-                                    display: 'flex', 
-                                    flexDirection: 'column', 
-                                    alignItems: 'center', 
-                                    gap: '1.2rem', 
-                                    boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
-                                    position: 'relative',
-                                    overflow: 'hidden'
-                                }}>
-                                    {/* Visual 3D Loader Placeholder (Reemplazar por Canvas si @react-three/fiber está disponible globalmente) */}
-                                    <div style={{ 
-                                        position: 'relative', 
-                                        width: '240px', 
-                                        height: '240px', 
-                                        borderRadius: '32px', 
-                                        overflow: 'hidden', 
-                                        border: '1.5px solid rgba(56,189,248,0.3)', 
-                                        background: 'radial-gradient(circle, #1e293b 0%, #020617 100%)',
-                                        boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8), 0 0 25px rgba(56,189,248,0.2)',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center'
+                            {guardianes.map((char) => {
+                                if (!char || !char.id) return null;
+                                return (
+                                    <div key={char.id} className="glass-panel gaudi-curves hover-lift" style={{ 
+                                        padding: '2rem', 
+                                        textAlign: 'center', 
+                                        border: '1.5px solid rgba(255,255,255,0.15)', 
+                                        background: 'linear-gradient(180deg, rgba(30,41,59,0.7) 0%, rgba(15,23,42,0.95) 100%)', 
+                                        display: 'flex', 
+                                        flexDirection: 'column', 
+                                        alignItems: 'center', 
+                                        gap: '1.2rem', 
+                                        boxShadow: '0 25px 60px rgba(0,0,0,0.5)',
+                                        position: 'relative',
+                                        overflow: 'hidden'
                                     }}>
-                                        {/* Fallback a Imagen si el modelo no carga o para preview rápido, pero con estilo 3D */}
-                                        <div style={{ fontSize: '0.6rem', position: 'absolute', top: 10, left: 10, color: '#38bdf8', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>VLS BIOMETRIC SCAN</div>
-                                        <img src={char.model.includes('Serenito') ? '/serenito_v3.png' : (char.model.includes('tata') ? '/avatars/tata_rojas_sticker.png' : char.img)} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} />
-                                        <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '10px', background: 'linear-gradient(90deg, #38bdf8, transparent, #38bdf8)', opacity: 0.3 }}></div>
-                                    </div>
+                                        {/* Visual 3D Loader Placeholder (Reemplazar por Canvas si @react-three/fiber está disponible globalmente) */}
+                                        <div style={{ 
+                                            position: 'relative', 
+                                            width: '240px', 
+                                            height: '240px', 
+                                            borderRadius: '32px', 
+                                            overflow: 'hidden', 
+                                            border: '1.5px solid rgba(56,189,248,0.3)', 
+                                            background: 'radial-gradient(circle, #1e293b 0%, #020617 100%)',
+                                            boxShadow: 'inset 0 0 40px rgba(0,0,0,0.8), 0 0 25px rgba(56,189,248,0.2)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}>
+                                            {/* Fallback a Imagen si el modelo no carga o para preview rápido, pero con estilo 3D */}
+                                            <div style={{ fontSize: '0.6rem', position: 'absolute', top: 10, left: 10, color: '#38bdf8', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>VLS BIOMETRIC SCAN</div>
+                                            <img src={(char.model && char.model.includes('Serenito')) ? '/serenito_v3.png' : ((char.model && char.model.includes('tata')) ? '/avatars/tata_rojas_sticker.png' : char.img)} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} />
+                                            <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '10px', background: 'linear-gradient(90deg, #38bdf8, transparent, #38bdf8)', opacity: 0.3 }}></div>
+                                        </div>
 
-                                    <div style={{ width: '100%' }}>
-                                        <h4 style={{ color: '#fff', margin: '0 0 0.3rem 0', fontSize: '1.5rem', fontWeight: '900', letterSpacing: '2px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{char.name.toUpperCase()}</h4>
-                                        <div style={{ display: 'inline-block', fontSize: '0.8rem', color: '#000', background: '#38bdf8', padding: '4px 20px', borderRadius: '50px', fontWeight: '900', marginBottom: '1.2rem', boxShadow: '0 0 15px rgba(56,189,248,0.5)' }}>{char.role}</div>
-                                        <p style={{ margin: 0, color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', lineHeight: '1.6', fontWeight: 500 }}>"{char.bio}"</p>
+                                        <div style={{ width: '100%' }}>
+                                            <h4 style={{ color: '#fff', margin: '0 0 0.3rem 0', fontSize: '1.5rem', fontWeight: '900', letterSpacing: '2px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>{(char.name || '').toUpperCase()}</h4>
+                                            <div style={{ display: 'inline-block', fontSize: '0.8rem', color: '#000', background: '#38bdf8', padding: '4px 20px', borderRadius: '50px', fontWeight: '900', marginBottom: '1.2rem', boxShadow: '0 0 15px rgba(56,189,248,0.5)' }}>{char.role}</div>
+                                            <p style={{ margin: 0, color: 'rgba(255,255,255,0.8)', fontSize: '0.95rem', lineHeight: '1.6', fontWeight: 500 }}>"{char.bio}"</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => window.dispatchEvent(new CustomEvent('open-faro-ia', { detail: { target: char.name } }))} 
+                                            className="btn-vls-action-light" 
+                                            style={{ width: '100%', padding: '1.2rem', borderRadius: '15px', fontSize: '1rem', fontWeight: '900' }}
+                                        >Hablar con {char.name}</button>
                                     </div>
-                                    <button 
-                                        onClick={() => window.dispatchEvent(new CustomEvent('open-faro-ia', { detail: { target: char.name } }))} 
-                                        className="btn-vls-action-light" 
-                                        style={{ width: '100%', padding: '1.2rem', borderRadius: '15px', fontSize: '1rem', fontWeight: '900' }}
-                                    >Hablar con {char.name}</button>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -2625,12 +2680,14 @@ export default function HubDashboard() {
             {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
             {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
             {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
-            {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
-            {showSemanaSanta && <VLSNewsSemanaSanta onClose={() => setShowSemanaSanta(false)} />}
-            {showBencinazo && <VLSNewsBencinazo onClose={() => setShowBencinazo(false)} />}
-            {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
-            {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
-            {showAguasValle && <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />}
+            <Suspense fallback={<LoadingScreen />}>
+                {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
+                {showSemanaSanta && <VLSNewsSemanaSanta onClose={() => setShowSemanaSanta(false)} />}
+                {showBencinazo && <VLSNewsBencinazo onClose={() => setShowBencinazo(false)} />}
+                {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
+                {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
+                {showAguasValle && <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />}
+            </Suspense>
             {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
             {showAirportMonitor && <LaFloridaAirport onClose={() => setShowAirportMonitor(false)} />}
             {showPortMonitor && (
@@ -2650,12 +2707,20 @@ export default function HubDashboard() {
 
             {showAlcaldes && (
                 <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
-                    <AlcaldesHistory onClose={() => setShowAlcaldes(false)} />
+                    <AlcaldesHistory3D onClose={() => setShowAlcaldes(false)} />
+                </Suspense>
+            )}
+
+            {showEstudio && (
+                <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
+                    <EstudioVLS onClose={() => setShowEstudio(false)} />
                 </Suspense>
             )}
 
             {showMemorialHijos && (
-                <MemorialHijosRegion onClose={() => setShowMemorialHijos(false)} />
+                <Suspense fallback={<LoadingScreen />}>
+                    <MemorialHijosRegion onClose={() => setShowMemorialHijos(false)} />
+                </Suspense>
             )}
 
             {showTiendaPoleras && (
@@ -2663,7 +2728,9 @@ export default function HubDashboard() {
             )}
 
             {showDistancias && (
-                <DistancesMap onClose={() => setShowDistancias(false)} />
+                <Suspense fallback={<LoadingScreen />}>
+                    <DistancesMap onClose={() => setShowDistancias(false)} />
+                </Suspense>
             )}
 
             {showVecnityPay && (
@@ -2671,11 +2738,19 @@ export default function HubDashboard() {
             )}
 
             {showRequestPortal && (
-                <VLSRequestPortal onClose={() => setShowRequestPortal(false)} />
+                <VLSRequestPortal onClose={() => { setShowRequestPortal(false); setReportInitialCategory(null); }} initialCategory={reportInitialCategory} />
             )}
 
             {showBackofficeMovil && (
                 <BackofficeMovilVLS onClose={() => setShowBackofficeMovil(false)} />
+            )}
+
+            {showAjedrez && (
+                <AjedrezPatrimonialVLS onClose={() => setShowAjedrez(false)} />
+            )}
+            
+            {showDirectory && (
+                <EmergencyDirectory onClose={() => setShowDirectory(false)} />
             )}
             {showTuerca && (
                 <TuercaVecinos onClose={() => setShowTuerca(false)} />

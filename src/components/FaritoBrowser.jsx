@@ -82,7 +82,7 @@ export default function FaritoBrowser({ onClose, initialQuery }) {
         setEngineStatus('SCANNING');
         setUrl(finalUrl);
         setInputUrl(finalUrl.replace('https://', '').replace('http://', ''));
-        setTabs(prev => prev.map(t => t.id === activeTabId ? { ...t, url: finalUrl, title: finalUrl.split('/')[2] || finalUrl } : t));
+        setTabs(prev => prev.map(tab => tab.id === activeTabId ? { ...tab, url: finalUrl, title: finalUrl.split('/')[2] || finalUrl } : tab));
         
         setTimeout(() => {
             setIsLoading(false);

@@ -18,12 +18,12 @@ export default function ProjectInfoModal({ onClose }) {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
     const handleNext = () => {
-        const idx = tabsLayout.findIndex(t => t.id === activeTab);
+        const idx = tabsLayout.findIndex(tabItem => tabItem.id === activeTab);
         if (idx < tabsLayout.length - 1) setActiveTab(tabsLayout[idx + 1].id);
     };
 
     const handlePrev = () => {
-        const idx = tabsLayout.findIndex(t => t.id === activeTab);
+        const idx = tabsLayout.findIndex(tabItem => tabItem.id === activeTab);
         if (idx > 0) setActiveTab(tabsLayout[idx - 1].id);
     };
 
@@ -36,9 +36,9 @@ export default function ProjectInfoModal({ onClose }) {
                     <div style={{ flex: '1 1 min-content' }}>
                         <h2 className="text-gradient" style={{ margin: 0, fontSize: 'clamp(1.5rem, 5vw, 2.5rem)', display: 'flex', alignItems: 'center', gap: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px' }}>
                             <Star size={28} color="#fcd34d" style={{ animation: 'spin 10s linear infinite', flexShrink: 0 }} />
-                            ComunaSmart La Serena 2026
+                            VecinosSmart La Serena 2030 (B2G SaaS)
                         </h2>
-                        <h3 style={{ margin: '0.5rem 0 0 0', color: '#fcd34d', fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', fontWeight: 'bold', letterSpacing: '1px' }}>"INNOVACIÓN MUNICIPAL DE NIVEL MUNDIAL CENTRADA EN LAS PERSONAS"</h3>
+                        <h3 style={{ margin: '0.5rem 0 0 0', color: '#fcd34d', fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', fontWeight: 'bold', letterSpacing: '1px' }}>"INNOVACIÓN GUBERNAMENTAL DE NIVEL MUNDIAL CENTRADA EN LAS PERSONAS"</h3>
                     </div>
                     <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                         <button onClick={() => setIsFullscreen(!isFullscreen)} className="btn-glass" title="Modo Presentación" style={{ padding: '0.8rem', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', flexShrink: 0, border: '1px solid rgba(255,255,255,0.2)', cursor: 'pointer' }}>
@@ -108,7 +108,7 @@ export default function ProjectInfoModal({ onClose }) {
                             <div style={{ background: 'linear-gradient(135deg, rgba(236,72,153,0.15) 0%, rgba(0,0,0,0.8) 100%)', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(236,72,153,0.4)' }}>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <h4 style={{ color: '#ec4899', fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Star size={24} /> Visión General</h4>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>Presentación de "ComunaSmart", una plataforma tecnológica de bajo costo y código cerrado/abierto mixto diseñada exclusivamente para la Ilustre Municipalidad de La Serena.</p>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.2rem', lineHeight: '1.6' }}>Presentación de "VecinosSmart", una plataforma tecnológica B2G de bajo costo y código cerrado/abierto mixto diseñada para la Ilustre Municipalidad de La Serena y escalable a 300+ comunas mediante AWS/Cloudflare.</p>
                                 </div>
                                 <div style={{ marginBottom: '2rem' }}>
                                     <h4 style={{ color: '#ec4899', fontSize: '1.5rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={24} /> El Concepto "Humano-Céntrico"</h4>
@@ -260,51 +260,51 @@ export default function ProjectInfoModal({ onClose }) {
                         </div>
                     )}
 
-                    {/* DIAPOSITIVA 6: ROADMAP GANTT */}
+                    {/* DIAPOSITIVA 6: ROADMAP GANTT Y ESCALABILIDAD B2G */}
                     {activeTab === 'slide6' && (
                         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
                             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                                 <div style={{ background: '#38bdf8', display: 'inline-flex', padding: '1.5rem', borderRadius: '50%', marginBottom: '1.5rem', boxShadow: '0 0 30px rgba(56,189,248,0.5)' }}>
                                     <Clock size={48} color="white" />
                                 </div>
-                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>Hoja de Ruta para el Despliegue 2026/2027</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Planificación y Carta Gantt Estratégica en 5 Fases.</p>
+                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>Roadmap de Tracción B2G 2026/2027</h3>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Escalabilidad Modular y Penetración de Mercado en 5 Fases.</p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'linear-gradient(90deg, rgba(236,72,153,0.1), transparent)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #ec4899' }}>
                                     <div style={{ width: '40px', height: '40px', background: '#ec4899', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', flexShrink: 0 }}>1</div>
                                     <div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 1: Arquitectura y Prototipado Base</h4>
-                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Levantamiento del diseño <em>Mobile-First</em>, arquitectura de menús principales y desarrollo total del Dashboard Ciudadano.</p>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 1: Minimum Viable Ecosystem (MVE)</h4>
+                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Lanzamiento del Núcleo React/Vite. Validación del producto en terreno (Product-Market Fit cívico) con métricas de retención sobre 10,000 MAUs.</p>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'linear-gradient(90deg, rgba(59,130,246,0.1), transparent)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #3b82f6' }}>
                                     <div style={{ width: '40px', height: '40px', background: '#3b82f6', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', flexShrink: 0 }}>2</div>
                                     <div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 2: Desarrollo Backend y Módulos Fundamentales</h4>
-                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Sistema de permisos/autenticación de funcionarios, recepción de data georreferenciada y estabilización de la subida multimedia en dispositivos móviles.</p>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 2: Infraestructura Edge & Smart Economy</h4>
+                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Migración completa a Cloudflare Edge (Workers/D1) e introducción del motor transaccional Vecinity Pay para monetizar *in-app* y habilitar cross-selling.</p>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'linear-gradient(90deg, rgba(16,185,129,0.1), transparent)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #10b981' }}>
                                     <div style={{ width: '40px', height: '40px', background: '#10b981', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', flexShrink: 0 }}>3</div>
                                     <div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 3: Ecosistema "Smart Skills" & IA</h4>
-                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Implementación del Portal E-learning para capacitación, Bus del Tiempo, Motor inmersivo 3D y despliegue local del asistente cognitivo "Faro IA".</p>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 3: Smart Listening & IA Predictiva</h4>
+                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Despliegue de NotebookLM/Gemini en *Centinel Faro* para análisis de sentimiento profundo. Trazabilidad de flujos oscuros (WhatsApp) transformados en inteligencia de datos C5.</p>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'linear-gradient(90deg, rgba(245,158,11,0.1), transparent)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #f59e0b' }}>
                                     <div style={{ width: '40px', height: '40px', background: '#f59e0b', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', flexShrink: 0 }}>4</div>
                                     <div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 4: QA, Pruebas y Marcha Blanca</h4>
-                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Testeos rigurosos de estrés en terreno con juntas de vecinos pioneras y procesos de capacitación formal en las oficinas y delegaciones municipales.</p>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 4: Expansión Multi-Tenant (SaaS)</h4>
+                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Empaquetamiento modular ('White Label') y despliegue del ecosistema en redes vecinas (Ej. comunasmart.cl / piratasmart.cl) multiplicando el mercado direccionable.</p>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'linear-gradient(90deg, rgba(167,139,250,0.1), transparent)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #a78bfa' }}>
                                     <div style={{ width: '40px', height: '40px', background: '#a78bfa', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: 'white', flexShrink: 0 }}>5</div>
                                     <div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 5: Lanzamiento Oficial y Transferencia</h4>
-                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Puesta en producción total (App desplegada) y lanzamiento de la campaña publicitaria comunal masiva de adopción ciudadana.</p>
+                                        <h4 style={{ color: 'white', margin: '0 0 0.2rem 0', fontSize: '1.2rem' }}>Fase 5: Series A & Escalabilidad Nacional</h4>
+                                        <p style={{ color: 'var(--text-secondary)', margin: 0 }}>Apertura para capital de crecimiento institucional, logrando el dominio país "vecinoschile.cl" como estándar infraestructural en 300+ municipios.</p>
                                     </div>
                                 </div>
                             </div>
@@ -377,34 +377,34 @@ export default function ProjectInfoModal({ onClose }) {
                         </div>
                     )}
 
-                    {/* DIAPOSITIVA 9: INTEGRACIÓN 1 Y 2 */}
+                    {/* DIAPOSITIVA 9: MODELOS DE NEGOCIO Y ADOPCIÓN B2G */}
                     {activeTab === 'slide9' && (
                         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
                             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                                 <div style={{ background: '#00ffcc', display: 'inline-flex', padding: '1.5rem', borderRadius: '50%', marginBottom: '1.5rem', boxShadow: '0 0 30px rgba(0,255,204,0.5)' }}>
                                     <Building size={48} color="#0f172a" />
                                 </div>
-                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>Estrategias de Adopción Tecnológica Municipal (Opciones)</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Modelos de Integración Institucional (Opción 1 y 2).</p>
+                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>Estrategias de Licensing y Adopción (Go-To-Market)</h3>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Modelos de Monetización e Integración Institucional (Opciones 1 y 2).</p>
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                                 {/* Opcion 1 */}
                                 <div style={{ background: 'rgba(0,0,0,0.6)', padding: '2.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
                                     <div style={{ position: 'absolute', top: 0, left: 0, width: '8px', height: '100%', background: '#00ffcc', borderRadius: '20px 0 0 20px' }}></div>
-                                    <h4 style={{ color: '#00ffcc', fontSize: '1.6rem', margin: '0 0 1.5rem 0' }}>Opción 1: Infraestructura Municipal Tradicional (Absorción Total)</h4>
+                                    <h4 style={{ color: '#00ffcc', fontSize: '1.6rem', margin: '0 0 1.5rem 0' }}>Opción 1: Enterprise On-Premise (Despliegue Aislado)</h4>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
                                         <div>
-                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Mecánica:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>El proyecto se ancla completamente a los pesados servidores internos locales y redes estructurales de la Dirección de Informática del actual municipio.</p>
+                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Estructura Tech:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Instalación directa del framework en los centros de datos (bare-metal) del municipio, asegurando un aislamiento total de la red de internet exterior en caso de corte global.</p>
                                         </div>
                                         <div>
-                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Proceso:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>Otorga un control físico absoluto y se apega a un marco de ejecución presupuestario municipal estándar.</p>
+                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Modelo de Ingreso:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Licenciamiento *One-Off* (pago único) alto, más contratos anuales de mantenimiento de software (SLA).</p>
                                         </div>
                                         <div>
-                                            <strong style={{ color: '#ef4444', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Desventaja:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>El informático del municipio carga con la brutal mantención dura de hardware, sufriendo cuellos de botella del personal actual y posible sobrecarga ("caída de sistema") en contingencias masivas.</p>
+                                            <strong style={{ color: '#ef4444', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Riesgo Operativo:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Responsabilidad de seguridad (DDoS / Pentesting) recae en el equipo de TI interno del municipio, que suele carecer del capital humano especializado en ciberseguridad.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -412,19 +412,19 @@ export default function ProjectInfoModal({ onClose }) {
                                 {/* Opcion 2 */}
                                 <div style={{ background: 'rgba(0,0,0,0.6)', padding: '2.5rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', position: 'relative' }}>
                                     <div style={{ position: 'absolute', top: 0, left: 0, width: '8px', height: '100%', background: '#38bdf8', borderRadius: '20px 0 0 20px' }}></div>
-                                    <h4 style={{ color: '#38bdf8', fontSize: '1.6rem', margin: '0 0 1.5rem 0' }}>Opción 2: Supra-Estructura "Asset Light" (Modelo Nube Híbrida)</h4>
+                                    <h4 style={{ color: '#38bdf8', fontSize: '1.6rem', margin: '0 0 1.5rem 0' }}>Opción 2: SaaS Descentralizado (Asset-Light Cloudflare Edge)</h4>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
                                         <div>
-                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Mecánica:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>Se crea un departamento municipal ágil y dedicado exclusivamente a la plataforma, que contrata infraestructura de nube bajo demanda (Ej: AWS / Google Cloud) sin requerir poseer "fierros" o metales ("Asset Light").</p>
+                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Estructura Tech:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Arquitectura *Serverless* 100% alojada en Edge (Cloudflare). Tolerancia a fallos sub-milisegundo, con bases de datos D1 replicadas globalmente frente a desastres locales (terremotos).</p>
                                         </div>
                                         <div>
-                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Proceso:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>Crecimiento dinámico y elástico (Auto-Scaling) ante los picos de demanda y consultas ciudadanas.</p>
+                                            <strong style={{ color: 'white', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Modelo de Ingreso:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Suscripción MRR (Ingreso Recurrente Mensual) altamente predecible para inversionistas, con bajos costos de mantenimiento (OPEX).</p>
                                         </div>
                                         <div>
-                                            <strong style={{ color: '#ef4444', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Desventaja:</strong>
-                                            <p style={{ color: 'var(--text-secondary)' }}>Incurre en la dependencia financiera de pagos mensuales o regulares variables por los servicios consumidos corporativos en la nube (OPEX).</p>
+                                            <strong style={{ color: '#ef4444', display: 'block', fontSize: '1.1rem', marginBottom: '0.5rem' }}>Mitigaciones:</strong>
+                                            <p style={{ color: 'var(--text-secondary)' }}>Máxima rentabilidad al escalar a 300+ comunas, el costo marginal por nueva comuna añadida es virtualmente $0 gracias a la arquitectura Multi-Tenant.</p>
                                         </div>
                                     </div>
                                 </div>
@@ -432,38 +432,37 @@ export default function ProjectInfoModal({ onClose }) {
                         </div>
                     )}
 
-                    {/* DIAPOSITIVA 10: INTEGRACION 3 Y CIERRE */}
+                    {/* DIAPOSITIVA 10: ASOCIACIÓN PÚBLICO PRIVADA Y CIERRE B2G */}
                     {activeTab === 'slide10' && (
                         <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '1000px', margin: '0 auto' }}>
                             <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
                                 <div style={{ background: '#a78bfa', display: 'inline-flex', padding: '1.5rem', borderRadius: '50%', marginBottom: '1.5rem', boxShadow: '0 0 30px rgba(167,139,250,0.5)' }}>
                                     <Network size={48} color="white" />
                                 </div>
-                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>El Ecosistema Corporativo Externo y Cierre</h3>
-                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Opción 3 de Integración Definitiva y las Conclusiones del Proyecto.</p>
+                                <h3 style={{ color: 'white', fontSize: '2.5rem', margin: '0 0 1rem 0' }}>El Vehículo Definitivo (Escenario Target de Inversión)</h3>
+                                <p style={{ color: 'var(--text-secondary)', fontSize: '1.3rem' }}>Opción 3: Asociación Público-Privada (PPP) y Visión 2030.</p>
                             </div>
 
                             <div style={{ background: 'linear-gradient(135deg, rgba(167,139,250,0.15) 0%, rgba(0,0,0,0.8) 100%)', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(167,139,250,0.4)', marginBottom: '2rem' }}>
-                                <h4 style={{ color: '#a78bfa', fontSize: '1.8rem', margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.8rem' }}><Star fill="#a78bfa" /> Opción 3: Externalización y Alianza Público-Privada (VLS Spa / Corp.)</h4>
+                                <h4 style={{ color: '#a78bfa', fontSize: '1.8rem', margin: '0 0 1.5rem 0', display: 'flex', alignItems: 'center', gap: '0.8rem' }}><Star fill="#a78bfa" /> Opción 3: Corporación "VecinosSmart" (Joint Venture SPV)</h4>
 
                                 <div style={{ marginBottom: '1.5rem' }}>
-                                    <strong style={{ color: 'white', display: 'block', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Mecánica Estratégica:</strong>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.6' }}>La mantención profunda, el desarrollo continuo de software y el despliegue del proyecto recae formalmente (y legalmente) sobre un Consejo Consultivo o una entidad externa dedicada, como la "Corporación Smart City", administrada tecnológicamente por <strong>VLS Spa Desarrollos</strong>.</p>
+                                    <strong style={{ color: 'white', display: 'block', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Estrategia Financiera:</strong>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.6' }}>Se conforma un **Special Purpose Vehicle (SPV)** o Corporación externa de desarrollo mixto. El capital privado asume el OPEX tecnológico, mientras el Municipio actúa como cliente Ancla (Anchor Client) aportando los datos macro-comunales anonimizados (Data Lake).</p>
                                 </div>
 
                                 <div style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '16px', borderLeft: '4px solid #a78bfa' }}>
-                                    <strong style={{ color: 'white', display: 'block', fontSize: '1.2rem', marginBottom: '0.5rem' }}>Ventajas Operativas Insuperables:</strong>
-                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.6', margin: 0 }}>Descongestiona de raíz los recursos de informática del municipio. Otorga una agilidad de innovación de clase mundial, incorpora talentos profesionales de forma dinámica y facilita enormemente la captación de donaciones, incentivos tributarios y subsidios tecnológicos nacionales que el municipio (por rigidez legal) no podría captar fácilmente.</p>
+                                    <strong style={{ color: 'white', display: 'block', fontSize: '1.2rem', marginBottom: '0.5rem' }}>MOAT Insuperable para Inversores:</strong>
+                                    <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', lineHeight: '1.6', margin: 0 }}>Desbloquea el acceso masivo a donaciones corporativas tecnológicas, leyes de I+D (Incentivos Tributarios CORFO), e inversión extranjera directa (VCs). La data comunal geolocalizada no tiene precio en el mercado de la IA predictiva, blindado bajo un férreo NDA ético nacional.</p>
                                 </div>
                             </div>
 
-                            {/* Conclusion final */}
+                            {/* Conclusion final de inversion */}
                             <div style={{ background: 'radial-gradient(ellipse at center, rgba(56,189,248,0.2) 0%, rgba(0,0,0,0.8) 100%)', padding: '3rem', borderRadius: '24px', border: '1px solid rgba(56,189,248,0.5)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-                                <Leaf size={100} color="rgba(56,189,248,0.1)" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
-                                <h3 style={{ color: 'white', fontSize: '2rem', margin: '0 0 1rem 0', position: 'relative', zIndex: 1 }}>Conclusión del Proyecto</h3>
+                                <ShieldCheck size={100} color="rgba(56,189,248,0.1)" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }} />
+                                <h3 style={{ color: 'white', fontSize: '2rem', margin: '0 0 1rem 0', position: 'relative', zIndex: 1 }}>Tesis de Inversión 2026/2030</h3>
                                 <p style={{ color: '#e0f2fe', fontSize: '1.3rem', lineHeight: '1.6', margin: '0 auto', maxWidth: '800px', position: 'relative', zIndex: 1, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
-                                    "La Plataforma ComunaSmart de La Serena es una inversión estratégica que pagará dividendos inmediatos en cohesión social comunitaria, seguridad urbana proactiva, eficiencia profunda del gasto público y, sobre todo, devolverá el orgullo de ser Serenense.
-                                    <br /><br /><strong>La tecnología se convierte, así, en el mejor vecino de todos.</strong>"
+                                    "La plataforma *VecinosSmart* es un mercado B2G con un potencial de monopolización natural altamente ético. Con márgenes de software del ~85% en modelo multi-tenant, invertir hoy es fundar el Sistema Operativo (OS) de los municipios chilenos del mañana."
                                 </p>
                             </div>
                         </div>
