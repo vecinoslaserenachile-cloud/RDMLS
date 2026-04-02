@@ -22,13 +22,15 @@ const PLAYLIST_LUDIC = [
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
-    VolumeX, ChevronUp, ChevronDown, Activity,
+    VolumeX, ChevronUp, ChevronDown, Heart as ActivityIcon,
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
-    Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
+    Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2
+} from 'lucide-react';
+import {
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf, Droplets,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -150,6 +152,7 @@ export default function HubDashboard() {
     const [showRoadmap, setShowRoadmap] = useState(false);
     const [showManifesto, setShowManifesto] = useState(false);
     const [showPrecolombino, setShowPrecolombino] = useState(false);
+    const [showGalaxia, setShowGalaxia] = useState(false);
     const [showAmbientMode, setShowAmbientMode] = useState(false);
     const [showCentralDifusion, setShowCentralDifusion] = useState(false);
     const [hasVoted, setHasVoted] = useState(false);
@@ -178,7 +181,9 @@ export default function HubDashboard() {
     const [showSentinelNote, setShowSentinelNote] = useState(false);
     const [showPoduje, setShowPoduje] = useState(false);
     const [showVLSNewsIan, setShowVLSNewsIan] = useState(false);
+    const [showAguasValle, setShowAguasValle] = useState(false);
     const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
+    const [showParliamentary, setShowParliamentary] = useState(false);
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null);
     const [selectedNews, setSelectedNews] = useState(null);
@@ -186,6 +191,7 @@ export default function HubDashboard() {
     const [initialOrder, setInitialOrder] = useState(null);
     const [showBackofficeMovil, setShowBackofficeMovil] = useState(false);
     const [showAjedrez, setShowAjedrez] = useState(false);
+    const [showAnalyticsApp, setShowAnalyticsApp] = useState(false);
     const [showFloatingTV, setShowFloatingTV] = useState(true);
     const [floatingTVItem, setFloatingTVItem] = useState(PLAYLIST_INSTITUTIONAL[0]);
     const [isVideoPlaying, setIsVideoPlaying] = useState(true);
@@ -243,10 +249,10 @@ export default function HubDashboard() {
             welcomePortales: isRDMLS 
                 ? "Welcome to the RDMLS.cl Institutional Portal of the Municipality of La Serena."
                 : "Welcome to the unified portal of Vecinos La Serena for neighbors, visitors, tourists, advertisers and trade.",
-            citizensTitle: "Smart Citizens", citizensSub: "Reports, Maps and Digital Radio",
-            adminTitle: "Smart Administration", adminSub: "Internal Management, E-learning & Reports",
-            eventsTitle: "Smart Events", eventsSub: "Precedence Monitor and Protocol",
-            listeningTitle: "Smart Listening", listeningSub: "Sentinel Faro & Social Listening Network",
+            citizensTitle: "Smart Citizens", citizensSub: "Access Registry, Citizen Reports, Urban Monitoring & Digital Radio",
+            adminTitle: "Smart Administration", adminSub: "Internal Management, E-learning & Reports with Digital Signature",
+            eventsTitle: "Smart Events", eventsSub: "Precedence Monitor and Automated Protocol",
+            listeningTitle: "Smart Listening", listeningSub: "Sentinel Faro & AI Social Listening Network",
             paseo3dTitle: "3D Historic Walk", paseo3dSub: "Traditional Architecture & Museums",
             busdeltiempoTitle: "The Time Bus", busdeltiempoSub: "Travel from 1948 to the Smart City",
             gameTitle: "3D Gamer Portal", gameSub: "Create your Serenito and Explore",
@@ -798,6 +804,10 @@ export default function HubDashboard() {
             icon: ShieldCheck, color: '#10b981', isEvent: 'open-vls-seguridad', active: true, badge: 'PRO VLS'
         },
         {
+            id: 'sticky-note', title: 'Papelito Amarillo', subtitle: 'Recordatorios, Dibujos y Notas Rápidas (Post-it)',
+            icon: PenTool, color: '#fbbf24', isEvent: 'open-sticky-note', active: true, badge: 'FAVORITO'
+        },
+        {
             id: 'vecinity-pay', title: 'Recargar Fichas VLS', subtitle: 'Billetera Digital y Canje de Recompensas',
             icon: Award, color: '#FFD700', isEvent: 'open-vecinity-pay', active: true, badge: 'SISTEMA'
         },
@@ -841,7 +851,7 @@ export default function HubDashboard() {
         },
         {
             id: 'safe-route', title: 'Safe Route AI', subtitle: 'Rutas seguras basadas en telemetría real (Leds/GPS)',
-            icon: ShieldAlert, color: '#10b981', isEvent: 'open-safe-route', active: true, badge: 'SEGURIDAD IA'
+            icon: ShieldAlert, color: '#10b981', isEvent: 'open-safe-route', active: false, badge: 'SEGURIDAD IA'
         },
         {
             id: 'distances', title: 'Cuadro de Distancias', subtitle: 'Tiempos de viaje y rutas interurbanas optimizadas',
@@ -865,8 +875,8 @@ export default function HubDashboard() {
             icon: Ruler, color: '#3b82f6', path: '/arquitectura', active: true, badge: 'DOM'
         },
         {
-            id: 'smart-learning', title: 'Portal de Inducción VLS', subtitle: 'Pilar #2: Capacitación, Diplomas y Soberanía',
-            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: isRDMLS, badge: 'INDUCCIÓN'
+            id: 'smart-learning', title: isRDMLS ? 'Inducción Municipal' : 'Smart Academia VLS', subtitle: isRDMLS ? 'Pilar #2: Capacitación, Diplomas y Soberanía' : 'Capacitación, Inglés, Diplomas y Saberes Locales',
+            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: true, badge: isRDMLS ? 'INDUCCIÓN' : 'ESTUDIOS'
         },
         {
             id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',
@@ -1128,32 +1138,32 @@ export default function HubDashboard() {
     const baseCategories = [
         {
             id: 'citizens',
-            name: isRDMLS ? 'Smart Citizens (Atención Ciudadana)' : 'Smart Citizens (Vecinos & Turistas)',
-            description: isRDMLS ? 'Portal georreferenciado para reportes vecinales y monitoreo urbano/ambiental.' : 'Registro digital de accesos, reportes para vecinos/visitantes y Radio Digital VLS.',
+            name: 'Smart Citizens (Atención Ciudadana)',
+            description: 'Registro digital de accesos, portal georreferenciado para reportes vecinales, monitoreo urbano/ambiental (baches, luminarias, playas, humedales) y Radio Digital Municipal.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat']
+            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat', 'sticky-note']
         },
         {
             id: 'admin',
-            name: isRDMLS ? 'Smart Administration (Gestión Interna)' : 'Escuelas y Oficios (Formación Ciudadana)',
-            description: isRDMLS ? 'Portal de inducción E-learning y digitalización de informes (Honorarios) con firma digital.' : 'Portal de inducción E-learning, Escuelas de Música/Artes y diplomados vecinales.',
+            name: 'Smart Administration (Gestión Interna)',
+            description: 'Portal de inducción E-learning (entrega de diplomas) y digitalización de informes para trabajadores (Honorarios) con firma digital.',
             icon: Briefcase,
             color: '#10b981',
             modules: ['smart-learning', 'smart-admin-internal', 'vls-trivia', 'legal', 'vls-pyme-builder', 'smart-architecture', 'smart-real-estate', 'vlspeak', 'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales']
         },
         {
             id: 'events',
-            name: 'Smart Events (Protocolo & Agenda)',
-            description: isRDMLS ? 'Gestión automatizada de eventos y Monitor de Precedencias en tiempo real.' : 'Agenda para turistas, eventos comunales y Monitor de Precedencias.',
+            name: 'Smart Events (Protocolo)',
+            description: 'Gestión automatizada de eventos y un Monitor de Precedencias en tiempo real para autoridades.',
             icon: PartyPopper,
             color: '#f59e0b',
             modules: ['protocolo', 'almanaque-2026', 'muralismo', 'decision-vecinal']
         },
         {
             id: 'listening',
-            name: 'Smart Listening (Inteligencia & IA)',
-            description: isRDMLS ? 'Centinel Faro, Social Listening y Radio Digital Municipal.' : 'Centinel Faro, Social Listening y Análisis de Redes mediante IA.',
+            name: 'Smart Listening (Inteligencia)',
+            description: 'Centinel Faro (Social Listening, monitoreo de redes y videos mediante IA).',
             icon: Radio,
             color: '#38bdf8',
             modules: ['vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 'central-difusion', 'plaza-vecinal', 'parlamento-regional']
@@ -1677,8 +1687,8 @@ export default function HubDashboard() {
                                     <span style={{ background: '#ef4444', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '0.65rem', fontWeight: '900', letterSpacing: '1px' }}>BREAKING NEWS</span>
                                     <span style={{ color: '#ef4444', fontWeight: '900', fontSize: '0.75rem', letterSpacing: '2px' }}>VLS SALA DE INTELIGENCIA</span>
                                 </div>
-                                <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '950', lineHeight: 1.2 }}>EL PUNTO CIEGO DEL RETAIL: INVESTIGACIÓN CASO IAN</h2>
-                                <p style={{ color: '#94a3b8', margin: '4px 0 0 0', fontSize: '0.85rem', fontWeight: 'bold' }}>Un análisis profundo sobre seguridad, vulnerabilidad y soberanía vecinal.</p>
+                                <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '950', lineHeight: 1.2 }}>EL PUNTO CIEGO DEL RETAIL: CASO IAN</h2>
+                                <p style={{ color: '#94a3b8', margin: '4px 0 0 0', fontSize: '0.85rem', fontWeight: 'bold' }}>Buscamos contribuir para mejorar la seguridad de los vecinos y trabajadores.</p>
                             </div>
                             <button className="btn btn-primary" style={{ padding: '0.8rem 2rem', background: '#ef4444', border: 'none', borderRadius: '12px', fontWeight: '900' }}>
                                 LEER INVESTIGACIÓN →
@@ -1930,8 +1940,7 @@ export default function HubDashboard() {
                                                             <span>{greetings[greetingIdx].sub}</span>
                                                         </p>
                                                     </motion.div>
-                                                    {showDistancias && <DistancesMap onClose={() => setShowDistancias(false)} />}
-                </AnimatePresence>
+                                                </AnimatePresence>
                                             </div>
                                         </div>
                                     ) : (
@@ -2168,7 +2177,7 @@ export default function HubDashboard() {
                                         El Punto Ciego del Retail: <span style={{ color: '#fca5a5' }}>Caso Ian</span>
                                     </h3>
                                     <p style={{ color: 'rgba(255,255,255,0.65)', margin: 0, fontSize: isMobile ? '0.82rem' : '0.95rem', lineHeight: 1.5 }}>
-                                        La trampa de los $100 y el abismo de la negligencia. Una investigación exclusiva que cambió la seguridad en los supermercados de Chile.
+                                        Buscamos contribuir para mejorar la seguridad de los vecinos y trabajadores.
                                     </p>
                                 </div>
                                 <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
@@ -2453,6 +2462,92 @@ export default function HubDashboard() {
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
                                         <button className="btn-vls-action-white" style={{ background: 'white', color: '#8b5cf6', padding: '0.6rem 1.5rem', fontSize: '0.8rem', border: 'none', borderRadius: '12px', fontWeight: '900' }}>VER INFORME</button>
                                         <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>ALERTA MERCADO</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* JORGE CAMPOS REPORT */}
+                            <div 
+                                onClick={() => {
+                                    const ev = new CustomEvent('open-vls-note', { detail: 'ZAJpC9o-Mok' });
+                                    window.dispatchEvent(ev);
+                                }}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(59,130,246,0.4)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <Music size={isMobile ? 150 : 200} color="#3b82f6" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ background: '#3b82f6', color: 'white', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>ARTE Y CULTURA</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: '#3b82f6', opacity: 0.8 }}>
+                                            <Star size={18} />
+                                        </div>
+                                    </div>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>MAESTRO CAMPOS</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        La Arquitectura y el Arte de Girar: El virtuoso bajista de Congreso y Fulano reflexiona sobre el bajo como cimiento.
+                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-light" style={{ background: '#3b82f6', color: 'white', padding: '0.6rem 1.5rem', fontSize: '0.8rem', border: 'none', borderRadius: '12px', fontWeight: '900' }}>VER SESIÓN</button>
+                                        <span style={{ color: '#3b82f6', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>VLS MASTERCLASS</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* CULEBRON REPORT */}
+                            <div 
+                                onClick={() => {
+                                    const ev = new CustomEvent('open-vls-note', { detail: 'lgjba4j0Afo' });
+                                    window.dispatchEvent(ev);
+                                }}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #831843 0%, #064e3b 100%)', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(236,72,153,0.4)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
+                                    <Waves size={isMobile ? 150 : 200} color="#ec4899" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ background: '#ec4899', color: 'white', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>MEDIO AMBIENTE</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: '#ec4899', opacity: 0.8 }}>
+                                            <Droplets size={18} />
+                                        </div>
+                                    </div>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>EL CULEBRÓN</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        Urbanismo de Borde: Recuperando el Pulmón de Coquimbo. Una infraestructura verde resiliente para el futuro.
+                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-light" style={{ background: '#ec4899', color: 'white', padding: '0.6rem 1.5rem', fontSize: '0.8rem', border: 'none', borderRadius: '12px', fontWeight: '900' }}>VER PROYECTO</button>
+                                        <span style={{ color: '#ec4899', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>SANTUARIO VLS</span>
                                     </div>
                                 </div>
                             </div>

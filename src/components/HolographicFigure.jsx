@@ -16,6 +16,7 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
 
         let isUnmounted = false;
         const img = new Image();
+        
         img.onload = () => {
             if (!isUnmounted) setIsLoaded(true);
         };
@@ -26,9 +27,11 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
 
         let frame = 0;
         let animId;
+
         const draw = () => {
             if (isUnmounted) return;
             frame++;
+            
             ctx.clearRect(0, 0, W, H);
             
             // Glow base
@@ -39,8 +42,8 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, W, H);
 
-            // Solo dibujar si la imagen est cargada y es vlida
-            if (img.complete && img.naturalWidth > 0 && isLoaded) {
+            // Solo dibujar si la imagen está cargada
+            if (img.complete && img.naturalWidth > 0) {
                 ctx.save();
                 
                 // Hologram transformation (floating & slight rotation)
@@ -52,23 +55,23 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                 
                 // Multiple layers for depth
                 for(let i=0; i<3; i++) {
-                    ctx.globalAlpha = 0.2 + (i * 0.1);
-                    const offset = Math.sin(frame * 0.02 + i) * 2;
+                    ctx.globalAlpha = 0.15 + (i * 0.08);
+                    const offset = Math.sin(frame * 0.02 + i) * 3;
                     ctx.drawImage(img, -W/3 + offset, -H/3, (W/3)*2, (H/3)*2);
                 }
                 
                 // Add color tint
                 ctx.globalCompositeOperation = 'source-atop';
                 ctx.fillStyle = color;
-                ctx.globalAlpha = 0.25;
+                ctx.globalAlpha = 0.3;
                 ctx.fillRect(-W/3, -H/3, (W/3)*2, (H/3)*2);
                 
                 ctx.restore();
 
                 // Scanlines & Interference
                 ctx.globalCompositeOperation = 'source-over';
-                for (let i = 0; i < H; i += 3) {
-                    const alpha = 0.05 + Math.sin(frame * 0.1 + i * 0.5) * 0.03;
+                for (let i = 0; i < H; i += 4) {
+                    const alpha = 0.03 + Math.sin(frame * 0.1 + i * 0.5) * 0.02;
                     ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
@@ -78,21 +81,31 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                 }
 
                 // High-freq jitter lines
-                if (Math.random() > 0.95) {
+                if (Math.random() > 0.97) {
                     ctx.strokeStyle = color;
                     ctx.lineWidth = 0.5;
+                    ctx.globalAlpha = 0.5;
                     ctx.beginPath();
                     const y = Math.random() * H;
                     ctx.moveTo(0, y);
                     ctx.lineTo(W, y);
                     ctx.stroke();
+                    ctx.globalAlpha = 1;
                 }
-            } else if (hasError) {
-                // Fallback icon or text if image fails
-                ctx.font = 'bold 12px "Outfit"';
+            } else if (img.complete && (img.naturalWidth === 0 || hasError)) {
+                ctx.font = '900 14px "Outfit"';
                 ctx.fillStyle = color;
                 ctx.textAlign = 'center';
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = color;
                 ctx.fillText('NODO OFFLINE', W/2, H/2);
+                ctx.shadowBlur = 0;
+            } else {
+                // Loading state inside canvas
+                ctx.font = '900 12px "Outfit"';
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.textAlign = 'center';
+                ctx.fillText('CARGANDO...', W/2, H/2);
             }
 
             // Pedestal (Advanced Cyber Style)
@@ -104,7 +117,7 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             // Neon rings
             for(let i=0; i<3; i++) {
                 ctx.strokeStyle = color;
-                ctx.globalAlpha = 1 / (i + 1);
+                ctx.globalAlpha = 0.8 / (i + 1);
                 ctx.lineWidth = 2 - (i*0.5);
                 ctx.beginPath();
                 ctx.ellipse(W/2, H-30, 80 + i*5, 20 + i*2, 0, 0, Math.PI * 2);
@@ -121,6 +134,7 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             ctx.shadowBlur = 0;
 
             // Light Beams (Volumetric Style)
+            ctx.globalAlpha = 0.4;
             for (let i = 0; i < 8; i++) {
                 const gradBeam = ctx.createLinearGradient(W/2, H-35, W/2, H/2);
                 gradBeam.addColorStop(0, `${color}66`);
@@ -132,6 +146,7 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
                 ctx.lineTo(W/2, H/2 - 20);
                 ctx.stroke();
             }
+            ctx.globalAlpha = 1.0;
 
             animId = requestAnimationFrame(draw);
         };
@@ -141,26 +156,33 @@ export default function HolographicFigure({ image, name, color = '#38bdf8' }) {
             isUnmounted = true;
             cancelAnimationFrame(animId);
         };
-    }, [image, color, isLoaded, hasError]);
+    }, [image, color]); // Removed isLoaded, hasError from here
 
     return (
         <div style={{ position: 'relative', width: '300px', height: '450px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <canvas ref={canvasRef} style={{ pointerEvents: 'none' }} />
+            <canvas ref={canvasRef} style={{ pointerEvents: 'none', filter: 'drop-shadow(0 0 20px rgba(0,0,0,0.5))' }} />
             <div style={{
                 marginTop: '-40px',
-                padding: '4px 12px',
-                background: 'rgba(0,0,0,0.8)',
+                padding: '6px 16px',
+                background: 'rgba(15,23,42,0.9)',
+                backdropFilter: 'blur(10px)',
                 borderRadius: '20px',
-                border: `1px solid ${color}`,
-                color: 'white',
-                fontSize: '0.7rem',
-                fontWeight: 'bold',
+                border: `1px solid ${color}80`,
+                color: color,
+                fontSize: '0.75rem',
+                fontWeight: '950',
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
-                boxShadow: `0 0 15px ${color}50`
+                boxShadow: `0 0 30px ${color}30`,
+                zIndex: 10
             }}>
-                Holograma Proyectado: {name}
+                ID: {name}
             </div>
+            {!isLoaded && !hasError && (
+                <div style={{ position: 'absolute', top: '50%', transform: 'translateY(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                    <div className="pulse-fast" style={{ width: '30px', height: '30px', borderRadius: '50%', border: '3px solid transparent', borderTopColor: color, animation: 'spin 1s linear infinite' }}></div>
+                </div>
+            )}
         </div>
     );
 }

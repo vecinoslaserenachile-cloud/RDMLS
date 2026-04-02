@@ -54,6 +54,23 @@ const StarfieldStar = () => {
     return <div style={style} />;
 };
 
+const AnanucaFlower = ({ color = '#ef4444' }) => (
+    <svg viewBox="0 0 100 100" style={{ width: '60px', height: '60px', filter: `drop-shadow(0 0 12px ${color})` }}>
+        {/* Stem with subtle lines */}
+        <path d="M50 95 Q50 65 50 45" stroke="#10b981" strokeWidth="2" fill="none" opacity="0.6" />
+        {/* Simple strokes for petals */}
+        <g transform="translate(50, 45)">
+            <path d="M0 0 C-8 -18 0 -32 0 -32 C0 -32 8 -18 0 0" fill={color} stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+            <path d="M0 0 C-12 -12 -25 -12 -25 -12 C-25 -12 -12 -4 0 0" fill={color} opacity="0.9" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+            <path d="M0 0 C12 -12 25 -12 25 -12 C25 -12 12 -4 0 0" fill={color} opacity="0.9" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+            <path d="M0 0 C-18 4 -30 12 -30 12 C-30 12 -12 8 0 0" fill={color} opacity="0.8" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+            <path d="M0 0 C18 4 30 12 30 12 C30 12 12 8 0 0" fill={color} opacity="0.8" stroke="rgba(255,255,255,0.3)" strokeWidth="0.5" />
+        </g>
+        {/* Glowing Center */}
+        <circle cx="50" cy="45" r="3" fill="white" style={{ filter: 'blur(2px)' }} />
+    </svg>
+);
+
 // ── DATA DE FIGURAS (Exportada para rutas directas /altar/:id) ────────
 export const FIGURAS_MEMORIAL = [
     {
@@ -207,6 +224,45 @@ export const FIGURAS_MEMORIAL = [
         pptx: '/DonWilson/clean_Dinastía_Musical_Cuturrufo_legado.pptx',
         has3D: true
     },
+    {
+        id: 'elolivar',
+        name: 'Sitio El Olivar',
+        title: 'Santuario de los Pueblos Ancestrales',
+        birth: 'Cultura El Molle / Las Ánimas',
+        death: 'Cultura Diaguita',
+        legacy: 'El hallazgo arqueológico más relevante de Chile. Un cementerio y centro ceremonial que resguarda el alma de los primeros habitantes de nuestro territorio. Un tributo eterno a los ancestros.',
+        image: '/vls_elolivar_sanctuary_3d_1774012523251.png',
+        category: 'Historia',
+        location: 'Salida Norte La Serena',
+        icon: Landmark,
+        color: '#d4af37'
+    },
+    {
+        id: 'cultura-diaguita',
+        name: 'Cultura Diaguita',
+        title: 'Maestros de la Alfarería Región de Coquimbo',
+        birth: '900 d.C.',
+        death: '1536 d.C.',
+        legacy: 'Famosos por sus jarros patos y patrones geométricos. Su arte cerámico es una de las expresiones culturales más sofisticadas de la América precolombina.',
+        image: '/vls_diaguita_ceramic_smart_ui_1774012541579.png',
+        category: 'Historia',
+        location: 'Valles Transversales',
+        icon: Landmark,
+        color: '#ef4444'
+    },
+    {
+        id: 'complejo-molle',
+        name: 'Complejo El Molle',
+        title: 'Pioneros del Valle del Elqui',
+        birth: '300 a.C.',
+        death: '700 d.C.',
+        legacy: 'Fueron los primeros en practicar la agricultura y la alfarería en la zona. Su legado de tembetás y metalurgia en cobre marca el inicio de la civilización en nuestros valles.',
+        image: '/vls-logo-3d.png',
+        category: 'Historia',
+        location: 'Valles del Elqui y Limarí',
+        icon: Landmark,
+        color: '#10b981'
+    }
 ];
 
 export default function MemorialHijosRegion({ onClose, tributeId }) {
@@ -248,12 +304,15 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
         setFlowers(updated);
         localStorage.setItem('vls_memorial_flowers', JSON.stringify(updated));
 
+        const colors = ['#ef4444', '#fbbf24', '#f97316']; 
         const newAnim = {
             idx: Date.now(),
             left: Math.random() * 80 + 10 + '%',
-            delay: Math.random() * 0.5
+            delay: Math.random() * 0.5,
+            color: colors[Math.floor(Math.random() * colors.length)]
         };
         setAnimatedFlowers(prev => [...prev, newAnim]);
+        window.dispatchEvent(new CustomEvent('vls-score-update', { detail: 1 }));
         setTimeout(() => {
             setAnimatedFlowers(prev => prev.filter(f => f.idx !== newAnim.idx));
         }, 3000);
@@ -537,7 +596,7 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
             {/* Flower Animations Layer */}
             {animatedFlowers.map(f => (
                 <div key={f.idx} style={{ position: 'fixed', bottom: '-100px', left: f.left, zIndex: 200000, pointerEvents: 'none', animation: `floatFlower 3s ease-out forwards`, animationDelay: `${f.delay}s` }}>
-                    <ImageFallback src="/ananuca_flower_3d_icon_1773625751027.png" alt="Flower" style={{ height: '60px', width: '60px' }} />
+                    <AnanucaFlower color={f.color} />
                 </div>
             ))}
 

@@ -1,9 +1,13 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid } from 'lucide-react';
+import StickyNoteWidget from './components/StickyNoteWidget';
+import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
+
+// Safe Icon Fallback for VLS_CRITICAL_RECOVERY (Prevent Recursive Crash)
+const VLSActivityIcon = Activity || Heart || 'div';
 
 // ─── LIMPIEZA DE FLAGS Y RECUPERACIÓN DE SEÑAL (C5-RECOVERY) ──────────────────
 if (typeof window !== 'undefined') {
@@ -141,14 +145,13 @@ const VLSNewsSentinel = lazy(() => import('./components/VLSNewsSentinel'));
 const VLSNewsInvestigacion = lazy(() => import('./components/VLSNewsInvestigacion'));
 const VLSNewsSemanaSanta = lazy(() => import('./components/VLSNewsSemanaSanta'));
 const VLSMotorsSpot = lazy(() => import('./components/VLSMotorsSpot'));
-const SafestRouteAI = lazy(() => import('./components/SafeRouteAI'));
+const SafeRouteAI = lazy(() => import('./components/SafeRouteAI'));
 const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
 const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
 const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
 const VLSNewsIan = lazy(() => import('./components/VLSNewsIan'));
 const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
 const BackofficeMovilVLS = lazy(() => import('./components/BackofficeMovilVLS'));
-const StickyNoteWidget = lazy(() => import('./components/StickyNoteWidget'));
 
 const SOVEREIGN_NAMES = [
   "vecinoslaserena.cl",
@@ -260,7 +263,7 @@ const MaintenanceNotice = () => {
         style={{ position: 'relative', width: '100%', maxWidth: '600px', background: '#0f172a', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '30px', padding: '3rem', textAlign: 'center', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }}
       >
         <div style={{ width: '60px', height: '60px', borderRadius: '20px', background: 'rgba(56, 189, 248, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', color: '#38bdf8' }}>
-          <Activity size={32} className="animate-pulse" />
+          <VLSActivityIcon size={32} className="animate-pulse" />
         </div>
         <h2 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-0.02em' }}>ESTAMOS MEJORANDO EL SISTEMA</h2>
         <p style={{ color: '#94a3b8', lineHeight: '1.6', marginBottom: '2.5rem' }}>
@@ -318,24 +321,55 @@ class ErrorBoundary extends React.Component {
   static getDerivedStateFromError(error) { return { hasError: true, error }; }
   componentDidCatch(error, errorInfo) {
     console.error("VLS_CRITICAL_CRASH:", error, errorInfo);
+    
+    // Auto-recuperación para errores de Chunks (post-deploy stale assets)
+    const isChunkError = error?.message?.includes('Failed to fetch dynamically imported module') ||
+                         error?.name === 'ChunkLoadError' ||
+                         error?.message?.includes('Importing a module script failed');
+                         
+    if (isChunkError) {
+      console.warn("VLS_RECOVERY: Chunk error detected inside App. Reloading...");
+      setTimeout(() => {
+        window.location.reload(true); // Hard reload if possible
+      }, 1000);
+    }
   }
   render() {
     if (this.state.hasError) {
+      const isChunkError = this.state.error?.message?.includes('Failed to fetch dynamically imported module') ||
+                           this.state.error?.name === 'ChunkLoadError';
+
       return (
-        <div style={{ padding: '40px', background: '#020617', color: '#ef4444', minHeight: '100vh', fontFamily: 'monospace' }}>
-          <h2 style={{ borderBottom: '2px solid #ef4444', paddingBottom: '10px' }}>⚠️ VLS_NUCLEUS_FAILURE (Signal Lost)</h2>
-          <pre style={{ background: '#7f1d1d', padding: '20px', borderRadius: '10px', overflow: 'auto', color: 'white' }}>
-            {this.state.error && this.state.error.toString()}
-          </pre>
-          <div style={{ marginTop: '20px', opacity: 0.8 }}>
-             Por favor, intenta limpiar la caché y reiniciar el portal. 
-             Si el error persiste, contacta al equipo técnico de soporte C5.
+        <div style={{ padding: '40px', background: '#020617', color: '#ef4444', minHeight: '100vh', fontFamily: 'monospace', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+          <div style={{ width: '80px', height: '2px', background: '#38bdf8', marginBottom: '2rem' }}></div>
+          <h2 style={{ color: 'white', fontSize: '2rem', fontWeight: '950', marginBottom: '1rem' }}>⚠️ {isChunkError ? 'SINCRONIZANDO SEÑAL...' : 'VLS_NUCLEUS_FAILURE'}</h2>
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '20px', borderRadius: '15px', border: '1px solid rgba(239, 68, 68, 0.2)', maxWidth: '800px', width: '100%' }}>
+            <pre style={{ margin: 0, whiteSpace: 'pre-wrap', color: '#fca5a5', fontSize: '0.9rem' }}>
+              {this.state.error && this.state.error.toString()}
+            </pre>
+          </div>
+          <div style={{ marginTop: '20px', color: '#94a3b8', fontSize: '0.9rem' }}>
+             {isChunkError 
+               ? "Detectamos una actualización en el portal. Re-sincronizando archivos..." 
+               : "Si el error persiste, limpia la caché o contacta al soporte C5."}
           </div>
           <button 
-            onClick={() => { localStorage.clear(); window.location.reload(); }}
-            style={{ marginTop: '30px', padding: '15px 30px', background: 'white', color: 'black', fontWeight: 'bold', border: 'none', borderRadius: '10px', cursor: 'pointer' }}
+            onClick={() => { 
+              localStorage.clear(); 
+              sessionStorage.clear();
+              if ('caches' in window) {
+                caches.keys().then(names => {
+                  for (let name of names) caches.delete(name);
+                }).finally(() => {
+                  window.location.href = window.location.pathname + '?vls_refresh=' + Date.now();
+                });
+              } else {
+                window.location.href = window.location.pathname + '?vls_refresh=' + Date.now();
+              }
+            }}
+            style={{ marginTop: '30px', padding: '15px 30px', background: '#38bdf8', color: '#020617', fontWeight: 'bold', border: 'none', borderRadius: '15px', cursor: 'pointer' }}
           >
-            HARD RESET (CLEAN ALL)
+            {isChunkError ? 'REINTENTAR AHORA' : 'LIMPIAR CACHÉ (RECUPERAR SISTEMA)'}
           </button>
         </div>
       );
@@ -557,6 +591,25 @@ function AppContent({ setShowCoquiSmartCRM }) {
       setSovereignName(SOVEREIGN_NAMES[Math.floor(Math.random() * SOVEREIGN_NAMES.length)]);
     }, 60000);
     return () => clearInterval(interval);
+  }, []);
+
+  // VLS_C5: Global KPI Score Synchronization
+  useEffect(() => {
+    const handleScore = (e) => {
+      setGameScore(prev => {
+        const newScore = prev + (e.detail || 1);
+        localStorage.setItem('vls_game_score', newScore.toString());
+        return newScore;
+      });
+    };
+    window.addEventListener('vls-score-update', handleScore);
+    return () => window.removeEventListener('vls-score-update', handleScore);
+  }, []);
+
+  // Sync initial score
+  useEffect(() => {
+    const saved = localStorage.getItem('vls_game_score');
+    if (saved) setGameScore(parseInt(saved));
   }, []);
 
   // REDIRECCIÓN CASCADA POR HOSTNAME
@@ -1268,6 +1321,31 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-roadmap-vls', handleOpenRoadmap);
     window.addEventListener('open-decision-vecinal', handleOpenCouncil);
     window.addEventListener('open-project-info', () => setShowProjectInfo(true));
+    window.addEventListener('vls-notification', (e) => {
+      if (e.detail) {
+        const newNotif = {
+          id: Date.now(),
+          title: e.detail.title || 'ALERTA REGIONAL',
+          body: e.detail.body || '',
+          read: false,
+          timestamp: new Date().toLocaleTimeString(),
+          type: 'push'
+        };
+        setNotifications(prev => [newNotif, ...prev]);
+        setShowAlert(true);
+      }
+    });
+
+    window.addEventListener('open-vls-note', (e) => {
+       const noteId = e.detail;
+       if (noteId) {
+          // Si es un ID de video de YouTube (11 caracs), abrimos la galería y le pasamos el ID
+          // VLSNotesGallery ya escucha este mismo evento y se abrirá internamente.
+          // Solo necesitamos asegurar que el contenedor de la galería sea visible si fuera necesario.
+          // Pero en HubDashboard el VLSNotesGallery está siempre montado estadísticamente.
+          // Si el usuario quiere que se abra un "modal" en App.jsx, deberíamos manejarlo aquí.
+       }
+    });
 
     // Escucha global para detener todos los audios
     window.addEventListener('stop-all-audio', () => {
@@ -1349,6 +1427,20 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-operacion-ls', handleOpenOperacionLS);
       window.removeEventListener('open-identity-gate', handleOpenIdentityGate);
       window.removeEventListener('open-memorial-hijos', handleOpenMemorial);
+      window.removeEventListener('vls-notification', (e) => {
+        if (e.detail) {
+          const newNotif = {
+            id: Date.now(),
+            title: e.detail.title || 'ALERTA REGIONAL',
+            body: e.detail.body || '',
+            read: false,
+            timestamp: new Date().toLocaleTimeString(),
+            type: 'push'
+          };
+          setNotifications(prev => [newNotif, ...prev]);
+          setShowAlert(true);
+        }
+      });
       window.removeEventListener('open-smart-admin', handleOpenSmartAdmin);
       window.removeEventListener('open-retro-room', handleOpenRetroRoom);
       window.removeEventListener('open-personal-stereo', handleOpenPersonalStereo);
@@ -1479,7 +1571,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       <Suspense fallback={null}>
         <MartinSecurityShield />
         {!isZeroDistraction && !isRDMLS && <NetSpeedMonitor />}
-        <SerenitoSecurityGuard />
+        {!showVLSNewsIan && <SerenitoSecurityGuard />}
         <SecurityHoneypot />
         <SmartShare renderAsHiddenObserver={true} />
         {!isZeroDistraction && !isRDMLS && <FloatingActionPanel />}
@@ -1524,7 +1616,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
       {/* Top Header — Branding dinámico según dominio */}
       {!isZeroDistraction && !isRDMLS && (
-        <header
+        <>
+          <header
           className="glass-header animate-fade-in"
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000,
@@ -1624,6 +1717,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
                  </button>
                  <button onClick={() => setShowFaroCentinel(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px', letterSpacing: '0.5px' }} className="hover:bg-red-900/40 transition-colors">
                     <div className="pulse-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} /> INTELIGENCIA
+                 </button>
+                 <button onClick={() => setShowMemorial(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ec4899', background: 'rgba(236, 72, 153, 0.1)', border: '1px solid rgba(236, 72, 153, 0.4)', cursor: 'pointer', borderRadius: '200px', display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '6px', letterSpacing: '0.5px' }} className="hover:bg-pink-900/40 transition-colors">
+                    <Heart size={12} fill="#ec4899" /> ALTARES
                  </button>
                </div>
             </div>
@@ -1796,31 +1892,97 @@ function AppContent({ setShowCoquiSmartCRM }) {
             )}
           </div>
 
-          {showNotificationsMenu && (
-            <div className="glass-panel" style={{ position: 'absolute', top: '50px', right: '10px', width: '300px', maxHeight: '400px', overflowY: 'auto', background: 'rgba(15, 23, 42, 0.95)', border: '1px solid var(--brand-primary)', borderRadius: '12px', zIndex: 100000 }}>
-              <div style={{ padding: '0.8rem 1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <strong style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#38bdf8' }}><Bell size={16} /> Alertas de la Red Vecinal</strong>
-                <button onClick={() => setShowNotificationsMenu(false)} className="btn-glass"><CloseIcon size={14} /></button>
-              </div>
-              {notifications.length === 0 ? (
-                <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#94a3b8', fontSize: '0.85rem' }}>No tienes notificaciones recientes.</div>
-              ) : (
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  {notifications.map((n, idx) => {
-                    if (!n) return null;
-                    return (
-                      <div key={n?.id || idx} style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: n?.read ? 'transparent' : 'rgba(16, 185, 129, 0.05)' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>{n?.timestamp}</div>
-                        <strong style={{ color: 'white', display: 'block', margin: '4px 0' }}>{n?.title}</strong>
-                        {n?.body && <p style={{ margin: 0, fontSize: '0.8rem', color: '#cbd5e1', lineHeight: '1.4' }}>{n.body}</p>}
-                      </div>
-                    );
-                  })}
+          <AnimatePresence>
+            {showNotificationsMenu && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                className="glass-panel" 
+                style={{ 
+                  position: 'absolute', top: '70px', right: '10px', width: '320px', 
+                  maxHeight: '500px', overflowY: 'auto', background: 'rgba(15, 23, 42, 0.98)', 
+                  border: '1px solid var(--brand-primary)', borderRadius: '16px', 
+                  zIndex: 200000, pointerEvents: 'auto',
+                  boxShadow: '0 20px 50px rgba(0,0,0,0.6)',
+                  backdropFilter: 'blur(20px)'
+                }}
+              >
+                <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <strong style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#38bdf8', fontSize: '0.9rem' }}>
+                    <Bell size={18} className="animate-pulse" /> Alertas de la Red Vecinal
+                  </strong>
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); setShowNotificationsMenu(false); }} 
+                    className="btn-glass" 
+                    style={{ padding: '4px', borderRadius: '50%', color: '#94a3b8' }}
+                  >
+                    <CloseIcon size={18} />
+                  </button>
                 </div>
-              )}
-            </div>
-          )}
+                {notifications.length === 0 ? (
+                  <div style={{ padding: '3rem 1.5rem', textAlign: 'center', color: '#64748b', fontSize: '0.85rem' }}>
+                    No hay alertas activas en tu sector en este momento.
+                  </div>
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {notifications.map((n, idx) => {
+                      if (!n) return null;
+                      return (
+                        <div key={n?.id || idx} style={{ padding: '1.2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', background: n?.read ? 'transparent' : 'rgba(56, 189, 248, 0.05)', transition: 'background 0.3s' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                            <span style={{ fontSize: '0.65rem', color: '#38bdf8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>{n?.type === 'push' ? '🚨 Sistema PUSH' : '📢 Notificación'}</span>
+                            <span style={{ fontSize: '0.65rem', color: '#64748b' }}>{n?.timestamp}</span>
+                          </div>
+                          <strong style={{ color: 'white', display: 'block', margin: '2px 0 6px 0', fontSize: '0.9rem', lineHeight: '1.2' }}>{n?.title}</strong>
+                          {n?.body && <p style={{ margin: 0, fontSize: '0.8rem', color: '#cbd5e1', lineHeight: '1.5', fontWeight: '300' }}>{n.body}</p>}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </header>
+
+        {/* BANNER DE ALERTAS CRITICAS (GLOBAL) */}
+        <AnimatePresence>
+          {showAlert && notifications.length > 0 && !notifications[0].read && (
+            <motion.div
+              initial={{ opacity: 0, y: -100 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -100 }}
+              style={{
+                position: 'fixed', top: '90px', left: '50%', transform: 'translateX(-50%)',
+                zIndex: 1000000, width: '90%', maxWidth: '600px',
+                pointerEvents: 'auto'
+              }}
+            >
+              <div className="glass-panel" style={{ 
+                background: 'rgba(239, 68, 68, 0.95)', 
+                border: '2px solid #ef4444', 
+                borderRadius: '16px', 
+                padding: '1rem 1.5rem',
+                display: 'flex', alignItems: 'center', gap: '15px',
+                boxShadow: '0 10px 40px rgba(239, 68, 68, 0.4)',
+                color: 'white'
+              }}>
+                <div style={{ background: 'white', borderRadius: '50%', padding: '8px', display: 'flex' }}>
+                   <ShieldAlert size={20} color="#ef4444" />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: '900', fontSize: '0.85rem', letterSpacing: '1px' }}>{notifications[0].title}</div>
+                  <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{notifications[0].body}</div>
+                </div>
+                <button onClick={() => setShowAlert(false)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', borderRadius: '50%', padding: '5px', cursor: 'pointer', color: 'white' }}>
+                  <CloseIcon size={18} />
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        </>
       )}
 
       <main className={`page-content ${location.pathname === '/dev' ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : 'var(--nav-height)' }}>
@@ -2207,57 +2369,103 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
       {/* Background Music Player (Always Active if stream/file set) */}
       {showUserProfile && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 3000000, background: 'rgba(15, 23, 42, 0.98)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-          <div className="glass-panel scale-in" style={{ maxWidth: '500px', width: '100%', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.5)', background: 'linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,58,138,0.95))', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}><UserCircle size={24} color="#38bdf8" /> Centro Vecinal</h2>
-              <button onClick={() => setShowUserProfile(false)} className="btn-glass" style={{ padding: '0.4rem', borderRadius: '50%' }}><CloseIcon size={18} /></button>
+        <div style={{ position: 'fixed', inset: 0, zIndex: 3000000, background: 'rgba(2, 6, 23, 0.9)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+          <div className="glass-panel scale-in" style={{ 
+            maxWidth: '500px', width: '100%', padding: '2.5rem', borderRadius: '32px', 
+            border: '1px solid rgba(56, 189, 248, 0.4)', 
+            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)', 
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', 
+            display: 'flex', flexDirection: 'column', gap: '2rem',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Background Glow */}
+            <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '250px', height: '250px', background: '#38bdf8', filter: 'blur(150px)', opacity: 0.1, pointerEvents: 'none' }} />
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'relative' }}>
+              <div>
+                <h2 style={{ color: 'white', margin: 0, fontSize: '1.6rem', fontWeight: 950, letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <UserCircle size={32} color="#38bdf8" /> CENTRO VECINAL
+                </h2>
+                <p style={{ margin: 0, color: '#38bdf8', fontSize: '0.7rem', fontWeight: 'bold', letterSpacing: '2px' }}>TERMINAL DEL CIUDADANO SMART</p>
+              </div>
+              <button 
+                onClick={() => setShowUserProfile(false)} 
+                style={{ background: 'rgba(239, 68, 68, 0.1)', border: 'none', color: '#ef4444', padding: '10px', borderRadius: '50%', cursor: 'pointer', transition: '0.3s' }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+              >
+                <CloseIcon size={24} />
+              </button>
             </div>
 
-            <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.5rem', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: '#38bdf8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', fontWeight: 'bold', color: '#0f172a' }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}>
+              <div style={{ 
+                width: '80px', height: '80px', borderRadius: '50%', 
+                background: 'linear-gradient(45deg, #38bdf8, #10b981)', 
+                display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                fontSize: '2rem', fontWeight: '950', color: '#0f172a',
+                boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)'
+              }}>
                 {currentUser ? currentUser.displayName?.[0] || 'U' : 'V'}
               </div>
               <div>
-                <h3 style={{ margin: '0 0 0.3rem 0', color: 'white' }}>{currentUser ? currentUser.displayName : 'Vecino Smart'}</h3>
-                <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.9rem' }}>{currentUser ? currentUser.email : 'vecino@laserena.cl'}</p>
+                <h3 style={{ margin: '0 0 0.4rem 0', color: 'white', fontSize: '1.4rem', fontWeight: 900 }}>
+                  {currentUser ? currentUser.displayName : 'Vecino Smart'}
+                </h3>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  <span style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold' }}>{currentUser ? currentUser.email : 'vecino@laserena.cl'}</span>
+                  {currentUser?.displayName?.toLowerCase().includes('cuturrufo') && (
+                    <span style={{ background: '#fbbf24', color: '#000', fontSize: '0.65rem', padding: '2px 10px', borderRadius: '10px', fontWeight: '950', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <Award size={12} /> LINAJE DE LA REGIÓN
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              <div style={{ background: 'rgba(16, 185, 129, 0.1)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                <span style={{ display: 'block', fontSize: '0.8rem', color: '#10b981', marginBottom: '0.3rem' }}>Reportes Enviados</span>
-                <strong style={{ fontSize: '1.5rem', color: 'white' }}>0</strong>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.2)', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '0.75rem', color: '#10b981', fontWeight: 'bold', marginBottom: '0.8rem', letterSpacing: '1px' }}>REPORTES ENVIADOS</span>
+                <strong style={{ fontSize: '2.2rem', color: 'white', fontWeight: 950 }}>0</strong>
               </div>
-              <div style={{ background: 'rgba(245, 158, 11, 0.1)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.3)' }}>
-                <span style={{ display: 'block', fontSize: '0.8rem', color: '#f59e0b', marginBottom: '0.3rem' }}>Puntos KPI Local</span>
-                <strong style={{ fontSize: '1.5rem', color: 'white' }}>{gameScore}</strong>
+              <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(245, 158, 11, 0.2)', textAlign: 'center' }}>
+                <span style={{ display: 'block', fontSize: '0.75rem', color: '#f59e0b', fontWeight: 'bold', marginBottom: '0.8rem', letterSpacing: '1px' }}>PUNTOS KPI LOCAL</span>
+                <strong style={{ fontSize: '2.2rem', color: 'white', fontWeight: 950 }}>{gameScore}</strong>
               </div>
             </div>
 
             {currentUser && (
-              <div style={{ background: 'linear-gradient(45deg, rgba(56, 189, 248, 0.1), rgba(16, 185, 129, 0.1))', padding: '1.2rem', borderRadius: '12px', border: '1px solid rgba(56, 189, 248, 0.3)', marginTop: '0.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                  <span style={{ fontSize: '0.9rem', color: '#bae6fd', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Sparkles size={16} color="#38bdf8" /> Invita a tu Red Vecinal
+              <div style={{ background: 'rgba(56, 189, 248, 0.03)', padding: '1.5rem', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.15)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <span style={{ fontSize: '0.95rem', color: '#38bdf8', fontWeight: 950, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Sparkles size={18} color="#38bdf8" /> INVITA A TU RED VECINAL
                   </span>
-                  <span style={{ fontSize: '0.75rem', background: '#38bdf8', color: '#0f172a', padding: '2px 8px', borderRadius: '10px', fontWeight: 'bold' }}>
-                    10 Cupos
+                  <span style={{ fontSize: '0.7rem', background: '#38bdf8', color: '#000', padding: '3px 10px', borderRadius: '20px', fontWeight: '950' }}>
+                    10 CUPOS
                   </span>
                 </div>
-                <p style={{ margin: '0 0 1rem 0', fontSize: '0.8rem', color: '#94a3b8', lineHeight: '1.4' }}>
-                  Asegura el barrio compartiendo tu enlace de validación exclusivo. Cada vecino que se una expande nuestra ComunaSmart.
+                <p style={{ margin: '0 0 1.5rem 0', fontSize: '0.85rem', color: '#94a3b8', lineHeight: '1.6' }}>
+                  Fortalece la seguridad y el tejido social compartiendo tu enlace de validación exclusivo.
                 </p>
                 <button
                   onClick={() => {
                     const inviteLink = `https://vecinoslaserena.cl/?invite_code=VLS-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
                     navigator.clipboard.writeText(inviteLink);
-                    alert(`¡Enlace copiado!\n\n${inviteLink}\n\nEnvíalo por WhatsApp o Correo a tus vecinos.`);
+                    window.dispatchEvent(new CustomEvent('vls-notification', { detail: { title: '¡Enlace Copiado!', body: 'Pégalo en WhatsApp para invitar a tus vecinos.', type: 'success' } }));
                   }}
-                  className="btn-glass hover-lift"
-                  style={{ width: '100%', padding: '0.8rem', background: 'rgba(56, 189, 248, 0.2)', border: '1px solid #38bdf8', color: '#38bdf8', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', fontSize: '0.85rem' }}
+                  style={{ 
+                    width: '100%', padding: '1.2rem', 
+                    background: 'linear-gradient(45deg, rgba(56, 189, 248, 0.2), rgba(56, 189, 248, 0.1))', 
+                    border: '1px solid #38bdf8', color: '#38bdf8', 
+                    borderRadius: '16px', cursor: 'pointer', fontWeight: 950, 
+                    fontSize: '0.9rem', letterSpacing: '1px',
+                    transition: '0.3s'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.3)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(56, 189, 248, 0.2)'}
                 >
-                  📋 Copiar Enlace Mágico (VLS Ticket)
+                  📋 COPIAR ENLACE MÁGICO (VLS TICKET)
                 </button>
               </div>
             )}

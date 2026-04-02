@@ -5,7 +5,7 @@ import {
   X, Clock, Share2, AlertTriangle, Zap, Shield, Gavel, Heart, 
   MapPin, Camera, Info, ExternalLink, ChevronRight, MessageSquare,
   ShieldAlert, UserCheck, Scale, Building2, Smartphone, DollarSign,
-  Stethoscope, Activity, Volume2
+  Stethoscope, Activity, Volume2, Brain
 } from 'lucide-react';
 import CommentSection from './CommentSection';
 
