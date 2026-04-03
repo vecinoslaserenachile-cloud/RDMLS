@@ -1211,6 +1211,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const handleOpenSkyGuide = () => setShowSkyGuide(true);
     const handleOpenMotorTiempo = () => setShowMotorTiempo(true);
     const handleOpenRadioMaster = () => setShowRadioMaster(true);
+    const handleOpenPrecolombino = () => setShowPrecolombino(true);
     const handleOpenCalendar = () => setShowCalendar(true);
     const handleOpenEnfermeria = () => setShowEnfermeria(true);
     const handleOpenSmartBusiness = () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowSmartBusiness(true); };
@@ -1226,6 +1227,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-3d-walk', handleOpen3DWalk);
     window.addEventListener('open-time-bus', handleOpenTimeBus);
     window.addEventListener('open-distances', handleOpenDistances);
+    window.addEventListener('open-precolombino', handleOpenPrecolombino);
     window.addEventListener('open-project-info', handleOpenProjectInfo);
     window.addEventListener('open-social-vision', () => setShowSocialVision(true));
     window.addEventListener('open-vls-vision', handleOpenProjectInfo);
@@ -1399,6 +1401,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-3d-walk', handleOpen3DWalk);
       window.removeEventListener('open-time-bus', handleOpenTimeBus);
       window.removeEventListener('open-distances', handleOpenDistances);
+      window.removeEventListener('open-precolombino', handleOpenPrecolombino);
       window.removeEventListener('open-project-info', handleOpenProjectInfo);
       window.removeEventListener('open-vls-vision', handleOpenProjectInfo);
       window.removeEventListener('open-embajadas', handleOpenEmbajadas);
@@ -2088,6 +2091,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showMemorial && (
         <Suspense fallback={null}>
           <MemorialHijosRegion onClose={() => setShowMemorial(false)} currentUser={currentUser} />
+        </Suspense>
+      )}
+
+      {showPrecolombino && (
+        <Suspense fallback={<LoadingScreen />}>
+          <PrecolombinoPortal onClose={() => setShowPrecolombino(false)} />
         </Suspense>
       )}
 
