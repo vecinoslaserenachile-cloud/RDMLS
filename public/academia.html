@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART ACADEMIA | VLS PRENDES</title>
+    
+    <!-- Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #030712;
+            --sidebar: #0f172a;
+            --primary: #38bdf8;
+            --accent: #0ea5e9;
+            --success: #22c55e;
+            --text: #f8fafc;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        body { background: var(--bg); color: var(--text); overflow: hidden; height: 100vh; }
+        #root { height: 100%; display: flex; }
+
+        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(20px); border: 1px solid var(--border); }
+        
+        .sidebar { width: 280px; height: 100vh; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; border-right: 1px solid var(--border); z-index: 100; position: relative; }
+        .main-content { flex: 1; height: 100vh; overflow-y: auto; padding-top: 80px; background: radial-gradient(circle at top right, #1e293b, transparent); position: relative; }
+
+        .nav-btn {
+            width: 100%; padding: 1rem; background: transparent; border: 1px solid var(--border); border-radius: 15px;
+            color: white; text-align: left; cursor: pointer; transition: 0.3s; font-weight: 800; display: flex; align-items: center; gap: 10px;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.05); border-color: var(--primary); }
+        .nav-btn.active { background: var(--primary); color: #000; border-color: white; }
+
+        .path-container { display: flex; flex-direction: column; align-items: center; padding: 4rem 2rem; position: relative; min-height: 1200px; }
+        .path-line { position: absolute; width: 4px; background: var(--border); z-index: 1; height: 90%; }
+
+        .step-node {
+            width: 100px; height: 100px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 2rem; cursor: pointer; transition: 0.4s; position: relative; z-index: 2; margin: 3rem 0;
+            background: #1e293b; border: 4px solid var(--border);
+        }
+        .step-node.completed { background: var(--success); border-color: white; box-shadow: 0 0 20px var(--success); }
+        .step-node.active { background: var(--primary); border-color: white; transform: scale(1.2); box-shadow: 0 0 30px var(--primary); }
+        .step-node.locked { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+
+        .step-label { position: absolute; width: 250px; }
+
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 2rem; }
+        .modal-content { width: 100%; max-width: 1000px; padding: 2.5rem; border-radius: 30px; position: relative; max-height: 90vh; overflow-y: auto; }
+
+        .option-btn { width: 100%; padding: 1.2rem; margin-top: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 15px; color: white; text-align: left; cursor: pointer; transition: 0.2s; font-weight: 600; }
+        .option-btn:hover { background: rgba(255,255,255,0.1); border-color: var(--primary); }
+        .option-btn.correct { background: var(--success); border-color: white; }
+        .option-btn.wrong { background: #ef4444; border-color: white; }
+
+        .progress-bar { height: 6px; background: var(--border); width: calc(100% - 280px); position: fixed; top: 0; left: 280px; z-index: 1001; }
+        .progress-fill { height: 100%; background: var(--primary); transition: 1s ease-in-out; }
+
+        .guide-box { position: fixed; bottom: 2rem; right: 2rem; width: 160px; z-index: 100; pointer-events: none; }
+        .guide-box img { width: 100%; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); transform: scaleX(-1); }
+        .chat-bubble { background: white; color: black; padding: 1rem; border-radius: 20px; border-bottom-right-radius: 2px; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); position: absolute; bottom: 100%; right: 0; width: 180px; }
+
+        .video-placeholder { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; }
+    </style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const STEPS = [
+        { id: 1, icon: '👋', title: 'Bienvenida Smart', desc: 'Visión de La Serena.', lesson: '¡Bienvenido! En este primer módulo conocerás la visión de La Serena como la primera Smart Comuna de Chile. Nuestro objetivo es acercar los servicios municipales al vecino mediante tecnología de punta.', q: '¿Cuál es el objetivo principal?', options: ['Vender productos', 'Acercar servicios al vecino', 'Sólo vigilar'], a: 1 },
+        { id: 2, icon: '🆔', title: 'Identidad Digital', desc: 'Registro VLS.', lesson: 'Tu Identidad Digital VLS es tu llave maestra para firmar documentos, consultar deudas y participar en cabildos digitales con total seguridad.', q: '¿Qué es la Identidad VLS?', options: ['Un juego', 'Llave maestra de servicios', 'No sirve'], a: 1 },
+        { id: 3, icon: '📢', title: 'Reporte Vecinal', desc: 'Mejorando el barrio.', lesson: 'El sistema georreferenciado permite reportar luminarias, baches o basura. Un equipo municipal recibirá tu ubicación exacta y foto.', q: '¿Qué se puede adjuntar?', options: ['Sólo texto', 'Ubicación y foto', 'Nada'], a: 1 },
+        { id: 4, icon: '🛡️', title: 'Seguridad Local', desc: 'Comunidad protegida.', lesson: 'Aprenderás a usar el botón de pánico que te conecta directamente con Seguridad Ciudadana y el cuadrante de Carabineros más cercano.', q: '¿A quién alerta el botón?', options: ['A los amigos', 'Seguridad y Cuadrante', 'Al diario'], a: 1 },
+        { id: 5, icon: '🌿', title: 'Medio Ambiente', desc: 'Protección Natural.', lesson: 'Sensores de IA protegen nuestros humedales y playas de ruidos molestos y contaminación, enviando alertas automáticas a los fiscalizadores.', q: '¿Cómo cuidamos los humedales?', options: ['Con rejas', 'Sensores IA 24/7', 'Yendo una vez al año'], a: 1 },
+        { id: 6, icon: '📋', title: 'Gestión Interna', desc: 'Eficiencia Pública.', lesson: 'Si eres funcionario, aprenderás a digitalizar tus informes semanales y firmar boletas de honorarios con firma electrónica avanzada.', q: '¿Qué mejora la firma digital?', options: ['El color del papel', 'Eficiencia y ahorro', 'Nada'], a: 1 },
+        { id: 7, icon: '🎩', title: 'Protocolo', desc: 'Gestión de Eventos.', lesson: 'El Monitor de Precedencias automatiza el orden legal de las autoridades en eventos, garantizando el cumplimiento de la ley de protocolo.', q: '¿Qué organiza el Monitor?', options: ['La comida', 'Orden de precedencia legal', 'El clima'], a: 1 },
+        { id: 8, icon: '🦅', title: 'Inteligencia Faro', desc: 'Social Listening.', lesson: 'El Centinel Faro escucha los sentimientos y necesidades de la comunidad en redes sociales para actuar proactivamente antes de que crezcan los problemas.', q: '¿Qué rol tiene Faro?', options: ['Vigilancia de drones', 'Análisis de sentimiento IA', 'Seguridad vial'], a: 1 },
+        { id: 9, icon: '📻', title: 'Radio Digital', desc: 'Voz Municipal.', lesson: 'Noticias, cultura y alertas 24/7. La primera radio digital municipal integrada en este ecosistema para mantener la transparencia.', q: '¿Qué transmite la radio?', options: ['Sólo música', 'Información y alertas 24h', 'Publicidad'], a: 1 },
+        { id: 10, icon: '🎓', title: 'Certificación', desc: 'Graduación Smart.', lesson: '¡Increíble! Has dominado el ecosistema. Ahora eres oficialmente un Ciudadano Smart de La Serena. Recibe tu diploma.', q: '¿Qué significa graduarse?', options: ['Saber computación', 'Dominar el ecosistema VLS', 'Tener internet'], a: 1 }
+    ];
+
+    function App() {
+        const [view, setView] = useState('path');
+        const [activeStep, setActiveStep] = useState(null);
+        const [completed, setCompleted] = useState(() => JSON.parse(localStorage.getItem('vls_progress') || '[]'));
+        const [selected, setSelected] = useState(null);
+        const [name, setName] = useState("Invitado Academia");
+
+        useEffect(() => localStorage.setItem('vls_progress', JSON.stringify(completed)), [completed]);
+
+        const progress = (completed.length / STEPS.length) * 100;
+
+        const handleOption = (idx) => {
+            setSelected(idx);
+            if (idx === activeStep.a) {
+                new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3').play().catch(() => {});
+                setTimeout(() => {
+                    confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+                    if (!completed.includes(activeStep.id)) setCompleted([...completed, activeStep.id]);
+                    setActiveStep(null);
+                    setSelected(null);
+                }, 1000);
+            } else {
+                new Audio('https://assets.mixkit.co/active_storage/sfx/2015/2015-preview.mp3').play().catch(() => {});
+            }
+        };
+
+        return (
+            <>
+                <aside className="sidebar glass">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '2rem' }}>
+                        <img src="logo_altacordillera.png" style={{ height: '50px', filter: 'drop-shadow(0 0 10px rgba(56,189,248,0.5))' }} />
+                        <h2 style={{ fontSize: '0.9rem', fontWeight: 900 }}>ACADEMIA SMART</h2>
+                    </div>
+                    <button className={`nav-btn ${view==='path'?'active':''}`} onClick={()=>setView('path')}>🏠 Dashboard</button>
+                    <button className={`nav-btn ${view==='courses'?'active':''}`} onClick={()=>setView('courses')}>📚 Mis Cursos</button>
+                    <button className="nav-btn" style={{ borderColor: '#fbbf24', color: '#fbbf24' }} onClick={()=>window.location.href='PRENDES_ENGLISH.html'}>🇬🇧 Curso de Inglés</button>
+                    <button className={`nav-btn ${view==='diplomas'?'active':''}`} onClick={()=>setView('diplomas')}>🏆 Mis Diplomas</button>
+                    <button className={`nav-btn ${view==='config'?'active':''}`} onClick={()=>setView('config')}>⚙️ Configuración</button>
+                    <div style={{ marginTop: 'auto', fontSize: '0.65rem', opacity: 0.5 }}>VLS PRENDES v3.9<br/>Surgiendo de las Altas Cordilleras</div>
+                </aside>
+
+                <main className="main-content">
+                    <div className="progress-bar"><div className="progress-fill" style={{ width: progress + '%' }}></div></div>
+                    
+                    <header style={{ position: 'fixed', top: 0, right: 0, left: '280px', padding: '1rem 3rem', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '20px', background: 'rgba(3,7,18,0.8)', zIndex: 99 }}>
+                        <div style={{ textAlign: 'right' }}><p style={{ fontSize: '0.6rem', opacity: 0.6 }}>CIUDADANO</p><p style={{ fontSize: '0.85rem', fontWeight: 900 }}>{name}</p></div>
+                        <div style={{ width: '40px', height: '40px', background: 'var(--primary)', borderRadius: '50%', border: '2px solid white', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'bold' }}>👤</div>
+                    </header>
+
+                    {view === 'path' && (
+                        <div className="path-container">
+                            <div className="path-line"></div>
+                            {STEPS.map((step, i) => {
+                                const isDone = completed.includes(step.id);
+                                const isLocked = i > 0 && !completed.includes(STEPS[i-1].id);
+                                return (
+                                    <div key={step.id} style={{ position: 'relative', width: '100%', display: 'flex', justifyContent: i % 2 === 0 ? 'flex-start' : 'flex-end', padding: '0 15%' }}>
+                                        <div className={`step-node ${isDone?'completed':''} ${!isDone && !isLocked?'active':''} ${isLocked?'locked':''}`} onClick={()=>!isLocked && setActiveStep(step)}>
+                                            {isDone ? '✅' : (isLocked ? '🔒' : step.icon)}
+                                            <div className="step-label" style={{ [i % 2 === 0 ? 'left' : 'right']: '120px', textAlign: i % 2 === 0 ? 'left' : 'right' }}>
+                                                <h3 style={{ fontSize: '1.2rem', fontWeight: 900, color: !isLocked ? 'var(--primary)' : 'inherit' }}>{step.title}</h3>
+                                                <p style={{ fontSize: '0.75rem', opacity: 0.6 }}>{step.desc}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+
+                    {view === 'courses' && (
+                        <div style={{ padding: '3rem' }}>
+                            <h1 style={{ marginBottom: '2rem', fontWeight: 900 }}>Mis Cursos Académicos</h1>
+                            <div style={{ display: 'grid', gap: '20px' }}>
+                                <div className="glass" style={{ padding: '2rem', borderRadius: '25px', border: '2px solid var(--primary)', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                                    <div style={{ fontSize: '3rem' }}>🏙️</div>
+                                    <div style={{ flex: 1 }}>
+                                        <h2 style={{ fontWeight: 900 }}>Smart City Expert: La Serena 2026</h2>
+                                        <p style={{ margin: '0.5rem 0', opacity: 0.7 }}>Aprende el uso avanzado del ecosistema PRENDES.</p>
+                                        <div style={{ background: 'rgba(255,255,255,0.1)', height: '12px', borderRadius: '10px', marginTop: '1rem', overflow:'hidden' }}>
+                                            <div style={{ width: progress + '%', background: 'var(--primary)', height: '100%' }}></div>
+                                        </div>
+                                    </div>
+                                    <button className="option-btn" style={{ width: '180px', marginTop: 0 }} onClick={()=>setView('path')}>CONTINUAR</button>
+                                </div>
+                                <div className="glass" style={{ padding: '2rem', borderRadius: '25px', border: '1px solid var(--border)', display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                                    <div style={{ fontSize: '3rem' }}>🇬🇧</div>
+                                    <div style={{ flex: 1 }}>
+                                        <h2 style={{ fontWeight: 900 }}>English Fast-Track</h2>
+                                        <p style={{ margin: '0.5rem 0', opacity: 0.7 }}>Comunicación institucional en Inglés.</p>
+                                    </div>
+                                    <button className="option-btn" style={{ width: '180px', marginTop: 0, background: '#fbbf24', color: '#000', border:'none' }} onClick={()=>window.location.href='PRENDES_ENGLISH.html'}>INICIAR</button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {view === 'diplomas' && (
+                        <div style={{ padding: '3rem' }}>
+                            <h1 style={{ marginBottom: '2rem', fontWeight: 900 }}>Tus Títulos Académicos</h1>
+                            {completed.length === STEPS.length ? (
+                                <div className="glass" style={{ padding: '3rem', borderRadius: '30px', textAlign: 'center', border: '2px solid var(--success)' }}>
+                                    <div style={{ fontSize: '5rem' }}>📜</div>
+                                    <h2 style={{ fontWeight: 900, fontSize: '2rem', margin: '1.5rem 0' }}>Magíster en Smart City</h2>
+                                    <p style={{ opacity: 0.8, marginBottom: '2rem' }}>Certificado emitido por la Municipalidad para {name}.</p>
+                                    <button className="nav-btn active" style={{ width: 'max-content', margin: '0 auto' }}>Descargar Diploma</button>
+                                </div>
+                            ) : (
+                                <div className="glass" style={{ padding: '2rem', opacity: 0.6 }}>Completa los 10 módulos para desbloquear tu certificación.</div>
+                            )}
+                        </div>
+                    )}
+
+                    {view === 'config' && (
+                        <div style={{ padding: '3rem' }}>
+                            <h1>Configuración de Usuario</h1>
+                            <div className="glass" style={{ padding: '2rem', marginTop: '1rem', maxWidth: '400px', borderRadius: '20px' }}>
+                                <label style={{ fontSize: '0.8rem', opacity: 0.6, display: 'block', marginBottom: '0.5rem' }}>Tu Nombre:</label>
+                                <input className="option-btn" value={name} onChange={e=>setName(e.target.value)} style={{ cursor: 'text', marginTop: 0 }} />
+                            </div>
+                        </div>
+                    )}
+                </main>
+
+                <div className="guide-box">
+                    <div className="chat-bubble">¡Hola! {progress===100 ? "¡Misión cumplida!" : "Comencemos."}</div>
+                    <img src="https://vecinoslaserena.cl/assets/serenito.png" />
+                </div>
+
+                {activeStep && (
+                    <div className="modal">
+                        <div className="modal-content glass">
+                            <button onClick={()=>setActiveStep(null)} style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', background: 'none', border: 'none', color: 'white', fontSize: '2rem', cursor: 'pointer', zIndex: 10 }}>×</button>
+                            <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
+                                <div style={{ flex: '1.6', minWidth: '350px' }}>
+                                    <div className="video-placeholder">
+                                        <div style={{ fontSize: '4rem', color: 'var(--primary)' }}>▶️</div>
+                                    </div>
+                                    <h2 style={{ margin: '1.5rem 0 1rem', fontSize: '1.8rem', fontWeight: 900 }}>{activeStep.title}</h2>
+                                    <p style={{ opacity: 0.8, lineHeight: 1.6 }}>{activeStep.lesson}</p>
+                                </div>
+                                <div style={{ flex: '1', minWidth: '300px', background: 'rgba(0,0,0,0.4)', padding: '2rem', borderRadius: '25px', border: '1px solid var(--border)' }}>
+                                    <h3 style={{ color: 'var(--primary)', marginBottom: '1.5rem', fontWeight: 900 }}>🎯 Trivia de Bloqueo</h3>
+                                    <p style={{ fontWeight: 600, marginBottom: '1.2rem' }}>{activeStep.q}</p>
+                                    {activeStep.options.map((opt, idx) => (
+                                        <button key={idx} className={`option-btn ${selected===idx ? (idx===activeStep.a ? 'correct' : 'wrong') : ''}`} onClick={()=>handleOption(idx)} disabled={selected!==null}>{opt}</button>
+                                    ))}
+                                    {selected !== null && selected === activeStep.a && <p style={{ color: 'var(--success)', marginTop: '1.5rem', fontWeight: 900, textAlign: 'center' }}>⭐ ¡LECCIÓN SUPERADA!</p>}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </>
+        );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+name = "prendes-api"
+main = "src/index.js"
+compatibility_date = "2024-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "prendes-db"
+database_id = "4cb1f4b2-e601-46b3-a146-44fe057b4737"

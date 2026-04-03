@@ -8,6 +8,7 @@ import {
     Dumbbell, Heart, HeartPulse, UserCircle,
     Maximize, Volume2, VolumeX
 } from 'lucide-react';
+import UniversalSerenito from './UniversalSerenito';
 
 /**
  * 🏋️‍♂️ GIMNASIO VIRTUAL 3D VLS 2026
@@ -116,10 +117,10 @@ const Gimnasio3D = ({ onClose }) => {
                     <pointLight position={[-10, -10, -10]} color="#38bdf8" intensity={1} />
 
                     <Suspense fallback={<Html center><div style={{ color: '#38bdf8', fontWeight: 'bold' }}>Sincronizando Entrenadores...</div></Html>}>
-                        < CoachModel 
-                            modelPath={currentRoutine.coach === 'serenito' ? '/serenito_draco.glb' : currentRoutine.coach === 'kevin' ? '/kevin_costanera.glb' : currentRoutine.coach === 'serenito_abuelo' ? '/serenito_abuelo.glb' : '/serenito_draco.glb'} 
-                            animationName={currentRoutine.animation}
-                            isPlaying={isPlaying}
+                        < UniversalSerenito 
+                            animation={isPlaying ? currentRoutine.animation : 'Idle'}
+                            scale={0.035} // Ajuste fino según el nuevo modelo
+                            position={[0, -1, 0]}
                         />
                         <ContactShadows resolution={1024} scale={20} blur={2} opacity={0.3} far={10} color="#000" />
                         

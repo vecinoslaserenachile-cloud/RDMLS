@@ -9,31 +9,12 @@ import VhsTVModal from './VhsTVModal';
 import RetroCubo3D from './RetroCubo3D';
 import MemoryPortalModal from './MemoryPortalModal';
 
-import PrecolombinoPortal from './PrecolombinoPortal';
+import UniversalSerenito from './UniversalSerenito';
+
 function SerenitoGuide() {
-    const groupRef = React.useRef();
-    const { scene, animations } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
-    const { actions } = useAnimations(animations, groupRef);
-
-    useEffect(() => {
-        if (!actions) return;
-        const idleAnims = ['Idle', 'Standing_Idle', 'Stay'];
-        let active = null;
-        for (const name of idleAnims) {
-            if (actions[name]) {
-                actions[name].reset().fadeIn(0.5).play();
-                active = name;
-                break;
-            }
-        }
-        if (!active && Object.keys(actions).length > 0) {
-            actions[Object.keys(actions)[0]].reset().fadeIn(0.5).play();
-        }
-    }, [actions]);
-
     return (
-        <group ref={groupRef} position={[-8, 0, 10]} rotation={[0, Math.PI / 4, 0]}>
-            <primitive object={scene} scale={3} />
+        <group position={[-8, 0, 10]} rotation={[0, Math.PI / 4, 0]}>
+            <UniversalSerenito animation="Wave" scale={0.12} />
             <Html position={[0, 4, 0]} center>
                 <div style={{ background: 'rgba(56,189,248,0.9)', padding: '6px 14px', borderRadius: '20px', color: '#000', fontWeight: '900', fontSize: '0.85rem', whiteSpace: 'nowrap', border: '2px solid white', boxShadow: '0 0 15px rgba(56,189,248,0.6)' }}>
                     ¡Sube a bordo viajero! ⏱️

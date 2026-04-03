@@ -1,3 +1,4 @@
+/** VLS_MAIN_ENTRY v1.1.5 - RECOVERY_SYNC_ACTIVE **/
 import React, { useState, useEffect, Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
@@ -69,13 +70,11 @@ const Aprende = React.lazy(() => import('./pages/Aprende.jsx'));
 const Sitemap = React.lazy(() => import('./pages/Sitemap'));
 const TributePage = React.lazy(() => import('./pages/TributePage.jsx'));
 const MasterMiguelMelendez3D = React.lazy(() => import('./components/MasterMiguelMelendez3D.jsx'));
-// Importaciones directas para estabilidad de despliegue
-import SeguridadVecinal from './pages/SeguridadVecinal.jsx';
-import VLSNewsIan from './components/VLSNewsIan.jsx';
-// const SeguridadVecinal = React.lazy(() => import('./pages/SeguridadVecinal.jsx'));
-// const VLSNewsIan = React.lazy(() => import('./components/VLSNewsIan.jsx'));
+const SeguridadVecinal = React.lazy(() => import('./pages/SeguridadVecinal.jsx'));
+const VLSNewsIan = React.lazy(() => import('./components/VLSNewsIan.jsx'));
 const ErrorCollector = React.lazy(() => import('./components/ErrorCollector.jsx'));
-import { Activity } from 'lucide-react';
+const MarruecosPortal = React.lazy(() => import('./components/MarruecosPortal.jsx'));
+// Marker for hash renewal
 import './index.css';
 
 // ── CAPTURA GLOBAL DE ERRORES PRE-REACT ──────────────────────────────────────
@@ -290,6 +289,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="investigacion" element={<HubDashboard />} />
                   </Route>
                   <Route path="/welcome" element={<WelcomePortal />} />
+                  <Route path="/marruecos" element={<MarruecosPortal />} />
                   <Route path="/smart-setup" element={<SuperAdminSetup />} />
                   <Route path="/bisabuelo" element={<GameVLS />} />
                   <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />

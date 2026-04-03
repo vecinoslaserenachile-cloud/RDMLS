@@ -94,6 +94,26 @@ export default function RDMLSRadioDial({ onClose }) {
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
 
     useEffect(() => {
+        const handleRemoteToggle = () => togglePlay();
+        const handleRemoteVolume = (e) => {
+            if (e.detail !== undefined) {
+                setVolume(e.detail / 100);
+            }
+        };
+        const handleRemoteMute = () => toggleMute();
+
+        window.addEventListener('vls-toggle-radio', handleRemoteToggle);
+        window.addEventListener('vls-set-volume', handleRemoteVolume);
+        window.addEventListener('vls-remote-mute', handleRemoteMute);
+
+        return () => {
+            window.removeEventListener('vls-toggle-radio', handleRemoteToggle);
+            window.removeEventListener('vls-set-volume', handleRemoteVolume);
+            window.removeEventListener('vls-remote-mute', handleRemoteMute);
+        };
+    }, [isPlaying, isMuted, volume]);
+
+    useEffect(() => {
         if (isPlaying && isPowerOn) {
             const interval = setInterval(() => {
                 const randomL = Math.random() * 40 - 20;
@@ -293,7 +313,14 @@ export default function RDMLSRadioDial({ onClose }) {
                 ))}
             </div>
 
-            <audio ref={audioRef} src={isPowerOn && isPlaying ? currentStation.url : ""} autoPlay muted={isMuted} />
+            <audio 
+                ref={audioRef} 
+                src={isPowerOn && isPlaying ? currentStation.url : ""} 
+                autoPlay 
+                muted={isMuted} 
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+            />
         </div>
     );
 }

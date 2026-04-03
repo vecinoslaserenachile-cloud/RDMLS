@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Reservado | PRENDES</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #020617;
+      --surface: #0f172a;
+      --surface2: #1e293b;
+      --primary: #38bdf8;
+      --accent: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: rgba(56,189,248,0.15);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit',sans-serif; }
+    body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; }
+
+    /* ── ACCESS GATE ── */
+    #access-screen {
+      width:100%; max-width:480px; padding:2rem;
+      animation: fadeUp 0.6s ease;
+    }
+    .gate-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:24px; padding:2.5rem; text-align:center;
+      box-shadow:0 40px 80px rgba(0,0,0,0.6);
+    }
+    .gate-flag { font-size:4rem; margin-bottom:1rem; display:block; }
+    .gate-title { font-size:1.6rem; font-weight:800; margin-bottom:0.4rem; }
+    .gate-sub { color:var(--muted); font-size:0.8rem; margin-bottom:1.5rem; letter-spacing:1px; text-transform:uppercase; line-height:1.4; }
+    .gate-input {
+      width:100%; padding:0.8rem 1rem; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      color:var(--text); font-size:0.95rem; outline:none; margin-bottom:1rem;
+      transition: all 0.3s;
+    }
+    .gate-input:focus { border-color:var(--primary); background:rgba(255,255,255,0.08); }
+    .gate-btn {
+      width:100%; padding:1rem; background:var(--primary); color:#020617;
+      border:none; border-radius:12px; font-weight:800; font-size:1rem;
+      cursor:pointer; transition: all 0.3s; letter-spacing:1px; margin-top:0.5rem;
+    }
+    .gate-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(56,189,248,0.4); }
+    #gate-error { color:var(--red); font-size:0.8rem; margin-bottom:1rem; min-height:1.2rem; }
+
+    /* ── LOGS VIEW ── */
+    #logs-screen { display:none; width:100%; max-width:900px; background:var(--surface); border-radius:20px; padding:2rem; border:1px solid var(--border); max-height:80vh; overflow-y:auto; }
+    .log-entry { font-size:0.8rem; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; }
+    .log-header { font-weight:bold; color:var(--primary); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; }
+
+    /* ── DASHBOARD ── */
+    #dashboard-screen { display:none; width:100%; max-width:960px; padding:2rem; animation: fadeUp 0.6s ease; }
+    .dash-header { text-align:center; margin-bottom:2rem; position:relative; }
+    .logout-btn { position:absolute; top:0; right:0; background:none; border:none; color:var(--muted); font-size:0.7rem; cursor:pointer; }
+    .logout-btn:hover { color:var(--red); }
+    .dash-flag { font-size:3rem; display:block; margin-bottom:0.5rem; }
+    .dash-title { font-size:1.8rem; font-weight:900; }
+    .dash-sub { color:var(--muted); font-size:0.85rem; margin-top:0.3rem; letter-spacing:2px; text-transform:uppercase; }
+
+    /* Tabs */
+    .tabs { display:flex; gap:0.5rem; border-bottom:2px solid var(--surface2); margin-bottom:2rem; overflow-x:auto; padding-bottom:0; flex-wrap:nowrap; }
+    .tab-btn {
+      padding:0.75rem 1.4rem; background:transparent; border:none; color:var(--muted);
+      cursor:pointer; font-size:0.9rem; font-weight:600; white-space:nowrap;
+      border-bottom:3px solid transparent; margin-bottom:-2px; transition:all 0.2s;
+    }
+    .tab-btn:hover { color:var(--text); }
+    .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+    /* Content */
+    .tab-panel { display:none; animation:fadeUp 0.3s ease; }
+    .tab-panel.active { display:block; }
+
+    .panel-title { font-size:1.3rem; font-weight:800; margin-bottom:1.5rem; color:var(--primary); }
+    
+    /* Interactive Accordion Pauta */
+    .pauta-accordion { background:var(--surface2); border:1px solid var(--border); border-radius:12px; margin-bottom:1rem; overflow:hidden; }
+    .pauta-header { padding:1.2rem; cursor:pointer; display:flex; justify-content:space-between; align-items:center; font-weight:700; color:var(--text); transition:background 0.2s; }
+    .pauta-header:hover { background:rgba(56,189,248,0.1); }
+    .pauta-content { padding:0 1.2rem; max-height:0; overflow:hidden; transition:max-height 0.4s ease, padding 0.4s ease; background:rgba(0,0,0,0.2); }
+    .pauta-accordion.expanded .pauta-content { padding:1.2rem; max-height:1500px; }
+    .pauta-accordion.expanded .pauta-header { color:var(--primary); border-bottom:1px solid var(--border); }
+    .question-box { background:var(--bg); border-left:3px solid var(--primary); padding:1rem; margin-bottom:1rem; border-radius:0 8px 8px 0; }
+    .q-number { font-size:0.8rem; color:var(--primary); text-transform:uppercase; font-weight:800; letter-spacing:1px; margin-bottom:0.3rem;}
+    .q-context { font-size:0.9rem; color:var(--muted); margin-bottom:0.8rem; line-height:1.5; }
+    .q-ask { font-weight:600; color:#fff; line-height:1.4; }
+
+    .pauta-block { background:var(--surface2); border-left:4px solid var(--primary); border-radius:0 12px 12px 0; padding:1.2rem 1.5rem; margin-bottom:1rem; }
+    .pauta-block strong { color:var(--accent); display:block; margin-bottom:0.3rem; font-size:0.8rem; letter-spacing:2px; text-transform:uppercase; }
+    .pauta-block p { color:var(--muted); line-height:1.6; }
+
+    /* Checklist */
+    .check-item { display:flex; align-items:center; gap:1rem; padding:1rem; background:var(--surface2); border-radius:12px; margin-bottom:0.8rem; cursor:pointer; transition:all 0.2s; border:1px solid transparent; }
+    .check-item:hover { border-color:var(--border); }
+    .check-item.done { opacity:0.5; text-decoration:line-through; }
+    .check-item input[type="checkbox"] { width:20px; height:20px; accent-color:var(--primary); cursor:pointer; flex-shrink:0; }
+
+    /* Música */
+    .music-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:1.5rem; }
+    .music-section { background:var(--surface2); border-radius:16px; padding:1.5rem; border:1px solid var(--border); }
+    .music-head { display:flex; align-items:center; gap:0.7rem; font-size:1rem; font-weight:800; padding-bottom:0.8rem; margin-bottom:1rem; border-bottom:2px solid; }
+    .music-head.nac { border-color:var(--red); color:var(--text); }
+    .music-head.int { border-color:var(--blue); color:var(--text); }
+    .track { display:flex; align-items:center; padding:0.8rem; background:rgba(255,255,255,0.04); border-radius:10px; margin-bottom:0.6rem; transition:background 0.2s; }
+    .track:hover { background:rgba(255,255,255,0.08); }
+    .track-num { font-weight:900; font-size:1.1rem; width:32px; text-align:center; flex-shrink:0; }
+    .track-num.nac { color:var(--red); }
+    .track-num.int { color:var(--blue); }
+    .track-info { margin-left:0.8rem; }
+    .track-song { font-weight:700; font-size:0.95rem; line-height:1.2; }
+    .track-artist { font-size:0.78rem; color:var(--muted); margin-top:0.15rem; }
+
+    /* PDF / Podcast */
+    .media-frame { background:var(--surface2); border-radius:16px; padding:1.5rem; border:1px solid var(--border); }
+    .audio-player { width:100%; margin-top:1rem; accent-color:var(--primary); }
+    iframe { border-radius:10px; border:1px solid var(--surface2); }
+
+    .mv-hero {
+      width:100%; max-height:320px;
+      background:transparent;
+      border-radius:20px;
+    }
+    .perfil-grid { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; align-items:start; }
+    @media(max-width:650px){ .perfil-grid { grid-template-columns:1fr; } }
+
+    /* Back btn */
+    .back-btn { display:inline-flex; align-items:center; gap:0.5rem; color:var(--muted); font-size:0.82rem; cursor:pointer; margin-bottom:1.5rem; background:none; border:none; padding:0.4rem 0; transition:color 0.2s; }
+    .back-btn:hover { color:var(--text); }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ GATE (CONTROL DE ACCESO) ══════════════ -->
+<div id="access-screen">
+  <div class="gate-card">
+    <span class="gate-flag">🇲🇦</span>
+    <div class="gate-title">Acceso Reservado</div>
+    <div class="gate-sub">Dossier Diplomático Marruecos<br><small>Uso restringido — Registro Obligatorio</small></div>
+    
+    <div id="gate-error"></div>
+    
+    <input type="text" id="user-name" class="gate-input" placeholder="Nombre Completo">
+    <input type="text" id="user-inst" class="gate-input" placeholder="Institución / Medio">
+    <input type="email" id="user-email" class="gate-input" placeholder="Correo Electrónico">
+    <input type="password" id="user-pass" class="gate-input" placeholder="Clave de Acceso">
+    
+    <button class="gate-btn" onclick="validateAccess()">SOLICITAR ACCESO</button>
+    <p style="margin-top:1.5rem; color:var(--muted); font-size:0.65rem; opacity:0.6;">🔒 Documento de circulación interna restringida. Su entrada quedará auditada.</p>
+  </div>
+</div>
+
+<!-- ══════════════ LOGS (VISTA MAESTRA) ══════════════ -->
+<div id="logs-screen">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+    <h2 style="color:var(--accent);">🕵️ Auditoría de Dossier Marruecos</h2>
+    <button onclick="location.reload()" style="background:none; border:1px solid var(--muted); color:var(--muted); padding:5px 15px; border-radius:5px; cursor:pointer;">Cerrar</button>
+  </div>
+  <div class="log-entry log-header">
+    <div>Fecha/Hora</div>
+    <div>Nombre</div>
+    <div>Institución</div>
+    <div>Email</div>
+  </div>
+  <div id="logs-content"></div>
+</div>
+
+<!-- ══════════════ DASHBOARD ══════════════ -->
+<div id="dashboard-screen">
+  <div class="dash-header">
+    <button class="back-btn" onclick="doLogout()">← Cerrar sesión</button>
+    <span class="dash-flag">🇲🇦</span>
+    <div class="dash-title">Dossier Especial: Embajadora Kenza El Ghali</div>
+    <div class="dash-sub">Uso exclusivo — Equipo PRENDES / VLS</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="setTab('pauta',this)">📋 Pauta Entrevista</button>
+    <button class="tab-btn" onclick="setTab('checklist',this)">✅ Checklist</button>
+    <button class="tab-btn" onclick="setTab('musica',this)">🎵 Top Musical</button>
+    <button class="tab-btn" onclick="setTab('perfil',this)">👤 Perfil 3D</button>
+    <button class="tab-btn" onclick="setTab('mezquita',this)">🕌 Mezquita 3D</button>
+    <button class="tab-btn" onclick="setTab('galeria',this)">📸 Galería</button>
+    <button class="tab-btn" onclick="setTab('pdf',this)">📄 Reporte PDF</button>
+    <button class="tab-btn" onclick="setTab('podcast',this)">🎙️ Podcast</button>
+  </div>
+
+  <!-- PAUTA -->
+  <div id="tab-pauta" class="tab-panel active">
+    <div class="panel-title">Entrevista Oficial: S.E. Kenza El Ghali</div>
+    <p style="color:var(--muted); margin-bottom:1.5rem;">Medio: vecinoslaserena.cl | Locación: Centro Cultural Mohammed VI / Mezquita de Coquimbo</p>
+
+    <div class="pauta-accordion expanded">
+      <div class="pauta-header" onclick="toggleAccordion(this)">
+        <span>BLOQUE 1: El Escenario Local y la Diplomacia Cultural</span>
+        <span style="font-size:1.2rem;">▼</span>
+      </div>
+      <div class="pauta-content">
+        <div class="question-box">
+          <div class="q-number">1. Bienvenida y contexto local</div>
+          <div class="q-context">Embajadora, usted es actualmente la Decana del Cuerpo Diplomático en Chile, tras casi una década en nuestro país. Estamos en la Región de Coquimbo, tierra de Gabriela Mistral. Usted ha realizado la histórica labor de traducir la obra de Mistral y "20 poemas de amor y una canción desesperada" de Pablo Neruda al idioma árabe.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Qué paralelos culturales encuentra entre la sensibilidad poética chilena de esta región y el mundo árabe, y qué impacto tiene esta traducción en el norte de África?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">2. Intercambio comercial</div>
+          <div class="q-context">Marruecos fue el primer país africano en establecer relaciones con Chile en 1961. Hoy en día, exportamos fuertemente frutos secos, nueces y uvas chilenas a su país.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Cómo visualiza la expansión de este comercio y la cooperación Sur-Sur, especialmente considerando que ambos países comparten el desafío de economías altamente expuestas a los mercados globales?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">3. Diplomacia humana</div>
+          <div class="q-context">Durante el Mundial Sub-20 en Chile, usted recibió y alimentó en su propia residencia a 600 hinchas marroquíes que llegaron en vuelos chárter sin visado, gestionando permisos especiales en tiempo récord.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Qué nos dice esa anécdota sobre su estilo de gestión diplomática y la importancia del fútbol como puente entre naciones?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pauta-accordion">
+      <div class="pauta-header" onclick="toggleAccordion(this)">
+        <span>BLOQUE 2: Perfil Humano y Derechos de la Mujer</span>
+        <span style="font-size:1.2rem;">▼</span>
+      </div>
+      <div class="pauta-content">
+        <div class="question-box">
+          <div class="q-number">4. Su historia personal</div>
+          <div class="q-context">Su trayectoria rompe muchos estereotipos occidentales. Sabemos que contrajo matrimonio a los 15 años, pero logró convencer a su familia de no gastar el dinero de su dote en una gran fiesta, utilizándolo en su lugar para pagar un internado y acceder a la educación superior.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Cuán difícil fue tomar esa decisión en su época y cómo ese momento exacto forjó su carácter para llegar a ser la voz de Marruecos en América Latina?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">5. Reformas de género y Mudawana</div>
+          <div class="q-context">Usted trabajó estrechamente con la expresidenta Michelle Bachelet en foros internacionales para asegurar el derecho histórico de las mujeres marroquíes a heredar tierras. Además, ha sido vocera de que Marruecos implementará un nuevo Código de la Familia (Mudawana) para ampliar las libertades femeninas.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> Con el nuevo Código en el horizonte, ¿cuáles son las barreras más urgentes que aún deben derribarse para la mujer en Marruecos y en el mundo árabe?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pauta-accordion">
+      <div class="pauta-header" onclick="toggleAccordion(this)">
+        <span>BLOQUE 3: Geopolítica, Megaproyectos y Visión 2030</span>
+        <span style="font-size:1.2rem;">▼</span>
+      </div>
+      <div class="pauta-content">
+        <div class="question-box">
+          <div class="q-number">6. La apuesta por la IA y el Plan Digital</div>
+          <div class="q-context">Marruecos no solo exporta fosfatos; hoy busca ser un centro tecnológico global con "AI Made in Morocco", proyectando crear 50.000 empleos directos en IA e inyectar 11.000 millones de dólares a su PIB para 2030.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> Al construir megaproyectos como el Al-Jazari Institute, ¿cómo planea Marruecos evitar ser solo un consumidor de tecnología extranjera y realmente competir en la innovación mundial?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">7. El gigante logístico</div>
+          <div class="q-context">Su país posee el puerto Tanger Med, el más grande de África y el Mediterráneo, que maneja 9 millones de contenedores anuales.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Cómo utiliza Marruecos esta posición de "pivote" estratégico entre Europa, el Atlántico y el resto de África para atraer inversión extranjera masiva?</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pauta-accordion">
+      <div class="pauta-header" onclick="toggleAccordion(this)">
+        <span>BLOQUE 4: Desafíos Sociales y Climáticos</span>
+        <span style="font-size:1.2rem;">▼</span>
+      </div>
+      <div class="pauta-content">
+        <div class="question-box">
+          <div class="q-number">8. Mundial 2030 vs. Demandas Sociales</div>
+          <div class="q-context">El Estado impulsa el Grand Stade Hassan II para 115.000 espectadores, generando debate frente a las movilizaciones de la juventud ("Gen Z 212"), quienes señalan un desempleo juvenil del 37% y piden atención a salud y educación.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> Embajadora, ¿cómo aborda el gobierno el balance entre inversión deportiva y las urgentes demandas por mejores servicios públicos esenciales?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">9. Las reformas del gobierno</div>
+          <div class="q-context">En respuesta, el gobierno aumentó el presupuesto de salud y educación, y legisló para subsidiar el 75% de las campañas políticas de menores de 35 años.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> ¿Constituyen estas medidas un cambio de paradigma a largo plazo para integrar a los jóvenes en la toma de decisiones?</div>
+        </div>
+        <div class="question-box">
+          <div class="q-number">10. La crisis climática</div>
+          <div class="q-context">Marruecos enfrenta un largo periodo de sequía afectando la agricultura.</div>
+          <div class="q-ask"><strong>Pregunta:</strong> Desde Coquimbo, zona que también sufre una desertificación brutal, ¿qué lecciones de adaptación climática, eficiencia hídrica o desalinización puede compartir Marruecos con Chile?</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div id="tab-checklist" class="tab-panel">
+    <div class="panel-title">Checklist de Producción</div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Confirmar permisos y protocolo en Mezquita de Coquimbo
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Sincronización de 3 cámaras y uso de Claqueta
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Configuración de micrófonos Lavalier (ocultos bajo blazer)
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Grabación B-Roll: Mosaicos Zellij y contexto arquitectónico
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Ingesta a discos dobles al finalizar grabación
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Revision de iluminación — evitar reflejos en pantallas diplomáticas
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Envío de pre-pauta 48 hrs antes a Embajada
+    </div>
+    <div class="check-item" onclick="toggle(this)">
+      <input type="checkbox"> Post-producción y subtítulos en español/árabe/francés
+    </div>
+  </div>
+
+  <!-- MÚSICA -->
+  <div id="tab-musica" class="tab-panel">
+    <div class="panel-title">Tendencias Musicales en Marruecos</div>
+    <div class="music-grid">
+      <div class="music-section">
+        <div class="music-head nac"><span>🇲🇦</span> Top 5 Nacional</div>
+        <div class="track"><span class="track-num nac">1</span><div class="track-info"><div class="track-song">KALIMAT</div><div class="track-artist">Manal</div></div></div>
+        <div class="track"><span class="track-num nac">2</span><div class="track-info"><div class="track-song">WARDA</div><div class="track-artist">Inkonnu (feat. Manal)</div></div></div>
+        <div class="track"><span class="track-num nac">3</span><div class="track-info"><div class="track-song">MOON</div><div class="track-artist">Stormy</div></div></div>
+        <div class="track"><span class="track-num nac">4</span><div class="track-info"><div class="track-song">Bali maak</div><div class="track-artist">Amine Farsi (feat. Stormy)</div></div></div>
+        <div class="track"><span class="track-num nac">5</span><div class="track-info"><div class="track-song">3DABI</div><div class="track-artist">Draganov</div></div></div>
+      </div>
+      <div class="music-section">
+        <div class="music-head int"><span>🌍</span> Top 5 Internacional</div>
+        <div class="track"><span class="track-num int">1</span><div class="track-info"><div class="track-song">SWIM</div><div class="track-artist">BTS</div></div></div>
+        <div class="track"><span class="track-num int">2</span><div class="track-info"><div class="track-song">Raindance</div><div class="track-artist">Dave (feat. Tems)</div></div></div>
+        <div class="track"><span class="track-num int">3</span><div class="track-info"><div class="track-song">love nwantiti</div><div class="track-artist">CKay</div></div></div>
+        <div class="track"><span class="track-num int">4</span><div class="track-info"><div class="track-song">Body to Body</div><div class="track-artist">BTS</div></div></div>
+        <div class="track"><span class="track-num int">5</span><div class="track-info"><div class="track-song">Babydoll</div><div class="track-artist">Dominic Fike</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PERFIL 3D -->
+  <div id="tab-perfil" class="tab-panel">
+    <div class="panel-title">👤 Perfil Visual — Embajadora Kenza El Ghali</div>
+    <div class="perfil-grid">
+      <div style="display:flex; justify-content:center;">
+        <model-viewer
+          src="embajadora3d.glb"
+          alt="Embajadora Kenza El Ghali"
+          auto-rotate
+          camera-controls
+          rotation-per-second="18deg"
+          style="width:100%; max-width:400px; height:420px; background:var(--surface2); border-radius:20px; border:1px solid var(--border);"
+          shadow-intensity="0.8"
+          exposure="1.3">
+        </model-viewer>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:1rem; justify-content:center;">
+        <div class="pauta-block"><strong>Nombre</strong><p>Kenza El Ghali</p></div>
+        <div class="pauta-block"><strong>Cargo</strong><p>Embajadora del Reino de Marruecos en Chile</p></div>
+        <div class="pauta-block"><strong>Residencia</strong><p>Santiago de Chile</p></div>
+        <div class="pauta-block"><strong>Agenda 2026</strong><p>Potenciar relaciones culturales, educativas y comerciales Marruecos–Chile. Énfasis en cooperación en energías renovables e intercambio académico.</p></div>
+        <div class="pauta-block"><strong>Nota protocolar</strong><p style="color:var(--accent);">⚠️ Reconfirmar disponibilidad 72 hrs antes del rodaje.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEZQUITA 3D -->
+  <div id="tab-mezquita" class="tab-panel">
+    <div class="panel-title">🕌 Arquitectura: Mezquita de Coquimbo</div>
+    <div class="media-frame" style="text-align:center;">
+      <p style="color:var(--muted); margin-bottom:1.5rem; padding-bottom:1rem; border-bottom:1px solid var(--surface2);">Símbolo de la hermandad chileno-marroquí. Modelo para pre-visualización de tomas de dron y escenografía de terreno.</p>
+      <model-viewer
+        src="mezquita3d.glb"
+        alt="Mezquita de Coquimbo 3D"
+        auto-rotate
+        camera-controls
+        rotation-per-second="10deg"
+        style="width:100%; height:450px; background:#0f172a; border-radius:15px;"
+        shadow-intensity="1"
+        exposure="1.2"
+        environment-image="legacy">
+      </model-viewer>
+    </div>
+  </div>
+
+  <!-- GALERIA GRAFICA -->
+  <div id="tab-galeria" class="tab-panel">
+    <div class="panel-title">📸 Apoyos Gráficos y Visuales</div>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1.5rem;">
+      <div class="media-frame" style="margin-bottom:0;"><img src="Marruecos_ciudad.png" style="width:100%; border-radius:10px; object-fit:cover;" alt="Ciudad de Marruecos"/></div>
+      <div class="media-frame" style="margin-bottom:0;"><img src="Marruecos_campo.jpg" style="width:100%; border-radius:10px; object-fit:cover;" alt="Cosecha en Marruecos"/></div>
+      <div class="media-frame" style="margin-bottom:0;"><img src="Marruecos_Mezquita.png" style="width:100%; border-radius:10px; object-fit:cover;" alt="Mezquita Hassan II"/></div>
+      <div class="media-frame" style="margin-bottom:0;"><img src="Marruecos_Puerto.png" style="width:100%; border-radius:10px; object-fit:cover;" alt="Puerto de Marruecos"/></div>
+    </div>
+  </div>
+
+  <!-- PDF -->
+  <div id="tab-pdf" class="tab-panel">
+    <div class="panel-title">Investigación Extendida (PDF)</div>
+    <div class="media-frame">
+      <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem;">Documento clasificado — uso exclusivo del equipo editorial.</p>
+      <iframe src="reporte-marruecos.pdf" width="100%" height="520px"></iframe>
+    </div>
+  </div>
+
+  <!-- PODCAST -->
+  <div id="tab-podcast" class="tab-panel">
+    <div class="panel-title">Podcast: Análisis Marruecos 2030</div>
+    <div class="media-frame">
+      <p style="color:var(--muted);margin-bottom:1rem;">Escucha el overview especial de nuestro equipo de investigación:</p>
+      <audio controls class="audio-player">
+        <source src="podcast-marruecos.mp3" type="audio/mpeg">
+        Tu navegador no soporta el elemento de audio.
+      </audio>
+    </div>
+  </div>
+</div>
+
+<script>
+  const CLAVE_ACCESO = 'laserena2026';
+  const CLAVE_MAESTRA = 'vlsadmin2026';
+
+  function validateAccess() {
+    const name = document.getElementById('user-name').value;
+    const inst = document.getElementById('user-inst').value;
+    const email = document.getElementById('user-email').value;
+    const pass = document.getElementById('user-pass').value;
+    const error = document.getElementById('gate-error');
+
+    if (pass === CLAVE_MAESTRA) {
+      showLogs();
+      return;
+    }
+
+    if (!name || !inst || !email || !pass) {
+      error.innerText = "⚠️ Todos los campos son obligatorios.";
+      return;
+    }
+
+    if (pass !== CLAVE_ACCESO) {
+      error.innerText = "❌ Clave de acceso incorrecta.";
+      return;
+    }
+
+    // Registrar acceso
+    const logs = JSON.parse(localStorage.getItem('vls_access_logs_marruecos') || '[]');
+    logs.push({
+      date: new Date().toLocaleString(),
+      name, inst, email
+    });
+    localStorage.setItem('vls_access_logs_marruecos', JSON.stringify(logs));
+
+    // Desbloquear
+    sessionStorage.setItem('unlocked_marruecos', 'true');
+    showDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById('access-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'block';
+    document.body.style.alignItems = 'flex-start';
+  }
+
+  function showLogs() {
+    document.getElementById('access-screen').style.display = 'none';
+    const logsScreen = document.getElementById('logs-screen');
+    const content = document.getElementById('logs-content');
+    const logs = JSON.parse(localStorage.getItem('vls_access_logs_marruecos') || '[]');
+    
+    content.innerHTML = logs.map(l => `
+      <div class="log-entry">
+        <div>${l.date}</div>
+        <div style="color:white;font-weight:bold;">${l.name}</div>
+        <div style="color:var(--primary);">${l.inst}</div>
+        <div style="font-size:0.7rem; opacity:0.6;">${l.email}</div>
+      </div>
+    `).reverse().join('') || '<p style="padding:2rem;text-align:center;color:var(--muted);">Sin registros aún.</p>';
+    
+    logsScreen.style.display = 'block';
+  }
+
+  function doLogout() {
+    sessionStorage.clear();
+    location.reload();
+  }
+
+  // Auto-login si ya se identificó en esta sesión
+  if (sessionStorage.getItem('unlocked_marruecos') === 'true') {
+    showDashboard();
+  }
+
+  function setTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+  }
+
+  function toggleAccordion(element) {
+    const accordion = element.parentElement;
+    accordion.classList.toggle('expanded');
+  }
+
+  function toggle(el) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    el.classList.toggle('done', cb.checked);
+  }
+</script>
+</body>
+</html>

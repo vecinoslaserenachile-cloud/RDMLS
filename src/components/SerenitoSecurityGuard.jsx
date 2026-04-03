@@ -79,7 +79,7 @@ const SerenitoSecurityGuard = () => {
             <div className="security-scan-line"></div>
             <div className="glitch-overlay"></div>
 
-            {/* Serenito Image */}
+            {/* Serenito 3D Model */}
             <div style={{
                 transition: 'all 5s cubic-bezier(0.19, 1, 0.22, 1)',
                 transform: phase === 'none' ? 'translateY(100vh) scale(0.5)' :
@@ -87,13 +87,20 @@ const SerenitoSecurityGuard = () => {
                            'translateY(0) scale(2.5)',
                 filter: phase === 'approaching' ? 'drop-shadow(0 0 50px rgba(255,0,0,0.5))' : 'none',
                 position: 'relative',
-                zIndex: 2
+                zIndex: 2,
+                width: '100%',
+                height: '600px'
             }}>
-                <img 
-                    src="/serenito_security_guard_close_up_1773392164475.png" 
-                    alt="Serenito Security" 
-                    style={{ height: '600px', objectFit: 'contain' }}
-                />
+                <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+                    <ambientLight intensity={0.5} />
+                    <pointLight position={[10, 10, 10]} intensity={2} />
+                    <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />
+                    <UniversalSerenito 
+                        animation={phase === 'warning' || phase === 'approaching' ? "Pointing" : "Idle"} 
+                        scale={0.14} 
+                        position={[0, -3.5, 0]} 
+                    />
+                </Canvas>
             </div>
 
             {/* Warning Message */}

@@ -98,12 +98,48 @@ body {
   
   /* Simplify background for mobile to avoid expensive repaints */
   .trencadis-guell {
-    background: var(--bg-primary);
-    background-image: none;
+    background-image: none !important;
   }
-  
   h1 { font-size: 1.8rem; }
   h2 { font-size: 1.5rem; }
+}
+
+/* VOLUME SLIDER PRECISE & SUAVE */
+.vls-volume-slider {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.vls-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  background: #38bdf8;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+  border: 2px solid white;
+  transition: all 0.2s;
+}
+
+.vls-volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.8);
+}
+
+.vls-volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  background: #38bdf8;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
 }
 
 /* Typography */

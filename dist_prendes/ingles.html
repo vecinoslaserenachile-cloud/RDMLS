@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRENDES English Fast-Track | Aprende, Comprende, Emprende</title>
+    <style>
+        :root {
+            --primary: #007bff;
+            --accent: #00e5ff;
+            --dark: #0f172a;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: var(--dark);
+            color: #fff;
+            overflow-x: hidden;
+            background: radial-gradient(circle at top right, #1e293b, #0f172a);
+            min-height: 100vh;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo-box { display: flex; align-items: center; gap: 1rem; }
+        .logo-box img { height: 40px; }
+
+        .fast-track-badge {
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hero-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .video-box {
+            background: #000;
+            border-radius: 20px;
+            aspect-ratio: 16/9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .video-overlay:hover { background: rgba(0,0,0,0.3); }
+
+        .play-icon { font-size: 4rem; color: var(--accent); }
+
+        .curriculum-box {
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid transparent;
+        }
+        .lesson-item:hover { background: rgba(255,255,255,0.05); border-color: var(--border); }
+        .lesson-item.active { background: rgba(0,123,255,0.1); border-color: var(--primary); }
+
+        .lesson-icon {
+            width: 35px; height: 35px;
+            background: var(--border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .vocab-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            padding: 1.5rem;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+        }
+        .vocab-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+
+        .vocab-card h4 { color: var(--accent); margin-bottom: 0.5rem; }
+        .vocab-card p { font-size: 0.9rem; color: #94a3b8; }
+
+        .footer-cta {
+            text-align: center;
+            margin-top: 5rem;
+            padding: 3rem;
+            background: var(--glass);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: #fff;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            display: inline-block;
+            margin-top: 1.5rem;
+            transition: 0.3s;
+        }
+        .btn:hover { box-shadow: 0 0 20px var(--primary); }
+
+        @media (max-width: 768px) {
+            .hero-layout { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-box">
+                <img src="images/logo_prendes.png" alt="PRENDES Logo">
+                <div class="fast-track-badge">ENGLISH FAST-TRACK</div>
+            </div>
+            <a href="academia.html" style="color: #94a3b8; text-decoration: none; font-size: 0.9rem;">← Volver a Academia</a>
+        </header>
+
+        <div class="hero-layout">
+            <div class="video-main">
+                <div class="video-box" id="main-player">
+                    <div class="video-overlay">
+                        <div class="play-icon">▶️</div>
+                        <p>Haz clic para iniciar la inmersión</p>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem;">
+                    <h2 id="current-title">Step 1: The Elevator Pitch Masterclass</h2>
+                    <p id="current-desc" style="color: #94a3b8; margin-top: 0.5rem; line-height: 1.6;">Aprende el guion exacto de 60 segundos para cautivar a un inversor o cliente internacional. No traduzcas, ¡conecta! Estructura: Hook, Problem, Solution, CTA.</p>
+                </div>
+                
+                <!-- SMART QUIZ AREA -->
+                <div id="quiz-container" style="margin-top: 2rem; background: rgba(0,229,255,0.05); border: 1px dashed var(--accent); padding: 1.5rem; border-radius: 15px; display: none;">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">📝 Quick Check: The Pitch</h4>
+                    <p id="quiz-question" style="margin-bottom: 1rem; font-size: 0.9rem;">What is the "Hook" in a pitch?</p>
+                    <div id="quiz-options" style="display: grid; gap: 0.5rem;">
+                        <!-- Options injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="curriculum">
+                <h3 style="margin-bottom: 1.5rem;">Plan de Estudios Rápido</h3>
+                <div class="curriculum-box">
+                    <div class="lesson-item active" onclick="loadLesson(this, 1)">
+                        <div class="lesson-icon">01</div>
+                        <div>
+                            <div style="font-weight: 700;">The Elevator Pitch</div>
+                            <div style="font-size: 0.7rem; color: #475569;">7 MIN - BUSINESS STRATEGY</div>
+                        </div>
+                    </div>
+                    <div class="lesson-item" onclick="loadLesson(this, 2)">
+                        <div class="lesson-icon">02</div>
+                        <div>
+                            <div style="font-weight: 700;">Daily Tech Stand-ups</div>
+                            <div style="font-size: 0.7rem; color: #475569;">8 MIN - AGILE COMMUNICATION</div>
+                        </div>
+                    </div>
+                    <div class="lesson-item" onclick="loadLesson(this, 3)">
+                        <div class="lesson-icon">03</div>
+                        <div>
+                            <div style="font-weight: 700;">Closing the Deal</div>
+                            <div style="font-size: 0.7rem; color: #475569;">10 MIN - SALES & PERSUASION</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section>
+            <h2 style="text-align: center; margin-bottom: 2rem;">Vocabulario de Alto Impacto</h2>
+            <div class="vocab-grid">
+                <div class="vocab-card">
+                    <h4>Breakthrough</h4>
+                    <p>Un avance significativo en el conocimiento o en la técnica.</p>
+                </div>
+                <div class="vocab-card">
+                    <h4>Scalability</h4>
+                    <p>La capacidad de un negocio para crecer sin límites estructurales.</p>
+                </div>
+                <div class="vocab-card">
+                    <h4>Insight</h4>
+                    <p>Una comprensión profunda de una situación o comportamiento.</p>
+                </div>
+            </div>
+        </section>
+
+        <div class="footer-cta">
+            <h2>¿Listo para el siguiente nivel?</h2>
+            <p>Al completar este módulo, recibirás tu **PRENDES English Certificate**.</p>
+            <a href="#" class="btn" onclick="saveProgress('prendes-english-01', 100)">Obtener mi Diploma</a>
+        </div>
+    </div>
+
+    <script>
+        const LESSON_DATA = {
+            1: {
+                title: "Step 1: The Elevator Pitch Masterclass",
+                desc: "Aprende el guion exacto de 60 segundos para cautivar a un inversor. Hook, Problem, Solution, CTA.",
+                question: "What is the primary goal of the 'Hook'?",
+                options: ["Ask for money", "Grasp immediate attention", "Describe technical details"],
+                correct: 1
+            },
+            2: {
+                title: "Step 2: Daily Tech Stand-ups",
+                desc: "Cómo comunicar tus avances diarios de forma clara y concisa en equipos remotos. 'What I did yesterday...'",
+                question: "Which tense is mostly used for 'What I did yesterday'?",
+                options: ["Present Continuous", "Simple Past", "Future Perfect"],
+                correct: 1
+            },
+            3: {
+                title: "Step 3: Closing the Deal",
+                desc: "Técnicas de negociación en inglés para cerrar acuerdos, manejar objeciones y firmar contratos.",
+                question: "What does 'To be on the same page' mean?",
+                options: ["Read a book together", "Complete agreement", "Write a document"],
+                correct: 1
+            }
+        };
+
+        function loadLesson(el, id) {
+            const data = LESSON_DATA[id];
+            document.getElementById('current-title').innerText = data.title;
+            document.getElementById('current-desc').innerText = data.desc;
+            document.querySelectorAll('.lesson-item').forEach(item => item.classList.remove('active'));
+            el.classList.add('active');
+            
+            // Setup Quiz
+            const quiz = document.getElementById('quiz-container');
+            quiz.style.display = 'block';
+            document.getElementById('quiz-question').innerText = data.question;
+            const optionsDiv = document.getElementById('quiz-options');
+            optionsDiv.innerHTML = '';
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.style.cssText = "padding: 0.8rem; background: var(--glass); border: 1px solid var(--border); border-radius: 10px; color: white; cursor: pointer; text-align: left;";
+                btn.onclick = () => checkAnswer(idx, data.correct);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, correct) {
+            if(selected === correct) {
+                alert("⭐ CORRECT! Your cognitive progress is rising.");
+                saveProgress('prendes-english-01', 33);
+            } else {
+                alert("❌ Try again. Real learning requires persistence.");
+            }
+        }
+
+        async function saveProgress(courseId, increment) {
+            if (!currentUser) return;
+            // logic to update percentage in cloud
+            alert(`Progress saved in PRENDES Cloud. Keep going, Global Learner!`);
+        }
+    </script>
+</body>
+</html>

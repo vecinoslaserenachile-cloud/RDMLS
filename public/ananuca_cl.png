@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- Active Defense Layer (Simulated/Basic WAF configuration) -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <!-- Note: A full strict CSP requires server backend, but we declare safe origin limits -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self' 'unsafe-inline' 'unsafe-eval' blob: http: https: ws: wss:; img-src 'self' data: blob: https: http:; object-src 'none'; font-src 'self' data: https:">
+
+  <link rel="icon" type="image/svg+xml" href="/vls-crystal-icon.svg" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/vls-logo-3d.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/vls-logo-3d.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#38bdf8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
+  <!-- Open Graph Data for Social Media -->
+  <meta property="og:title" content="La Serena Smart City 2026 - Portal Vecinal / VLSABES" />
+  <meta property="og:description" content="Ecosistema de Innovación, Seguridad y Co-creación Ciudadana. ¡Sé parte del futuro de nuestra comuna y ponte a prueba en nuestro juego trivia!" />
+  <meta property="og:image" content="/img_trivia/50serenitoBisabueloVLSABES.png" />
+  <meta property="og:type" content="website" />
+
+  <meta name="rdmls-version" content="RECOVERY-V49-DOMFIXED">
+  <title>vecinoslaserena.cl</title>
+  <script>
+    // DEEP SIGNAL SYNC v42: Recuperación Global ante Conflictos de Activos
+    window.addEventListener('unhandledrejection', function(e) {
+      const msg = (e.reason?.message || String(e.reason || "")).toLowerCase();
+      if (msg.includes('failed to fetch dynamically imported module') || 
+          msg.includes('chunkloaderror') || 
+          msg.includes('importing a module script failed')) {
+        
+        console.warn("VLS_DEEP_SYNC: Chunk Load Conflict. Purging and Hard Reloading...");
+        if ('caches' in window) {
+          caches.keys().then(names => {
+            for (let name of names) caches.delete(name);
+          }).finally(() => {
+            const sep = window.location.href.includes('?') ? '&' : '?';
+            window.location.href = window.location.pathname + sep + 'vls_sync=' + Date.now();
+          });
+        } else {
+          const sep = window.location.href.includes('?') ? '&' : '?';
+          window.location.href = window.location.pathname + sep + 'vls_sync=' + Date.now();
+        }
+      }
+    });
+    window.addEventListener('error', function(e) {
+      const msg = (e.message || String(e || "")).toLowerCase();
+      if (msg.includes('handleresize') || msg.includes('activity')) {
+        console.warn("VLS_RECOVERY: ReferenceError detected. Likely stale branch. Hard reloading...");
+        localStorage.clear();
+        sessionStorage.clear();
+        const sep = window.location.href.includes('?') ? '&' : '?';
+        window.location.href = window.location.pathname + sep + 'vls_force_sync=' + Date.now();
+      }
+    });
+  </script>
+  <script>
+    // PRE-HYDRATION BRANDING (Avoid flashing VLS on RDMLS Domains)
+    if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
+      document.title = "RDMLS · Radio Digital Municipal";
+      document.querySelector("meta[name='theme-color']").setAttribute('content', '#8B1D19');
+      document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/rdmls_favicon.png'));
+    }
+  </script>
+  <script>
+    // VLS_DEEP_TISSUE_RECOVERY v43
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(registrations => {
+        for (let registration of registrations) { registration.unregister(); console.log("VLS: SW Killed"); }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        for (let name of names) caches.delete(name);
+      });
+    }
+  </script>
+  <script type="module" crossorigin src="/assets/index-CRa7kBDA.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/vendor-react-BxzpqufX.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-3d-BSYemFta.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-lucide-Bvz1otHi.js">
+  <link rel="modulepreload" crossorigin href="/assets/context-language-DG7AKLaR.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-firebase-DE8Y5BfT.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-motion-C_nQa1n3.js">
+  <link rel="modulepreload" crossorigin href="/assets/vendor-router-ojTxEJ7r.js">
+  <link rel="stylesheet" crossorigin href="/assets/index-Dr0eosJp.css">
+</head>
+
+<body>
+  <div id="root"></div>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"e87c1feb68f54315a3c555091cb58922","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+</html>

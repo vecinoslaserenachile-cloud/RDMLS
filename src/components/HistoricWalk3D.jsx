@@ -7,54 +7,19 @@ import { X, Navigation, Info, Award, RefreshCw, ZoomIn, MessageSquare, User } fr
 // ============================================================
 // SERENITO 3D – Modelo GLTF Humanizado (Reemplaza Procedural)
 // ============================================================
-function SerenitoModel({ avatarRef, headRef, bodyRef, walkPhase, isMoving }) {
-  const { scene, animations } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
-  const { actions } = useAnimations(animations, avatarRef);
+import UniversalSerenito from './UniversalSerenito';
 
-  // Animaciones automáticas basadas en movimiento
-  useEffect(() => {
-    if (!actions) return;
-    
-    // Lista de nombres posibles para caminar/quieto
-    const walkAnims = ['Walk', 'Run', 'Walking', 'Sprint'];
-    const idleAnims = ['Idle', 'Standing_Idle', 'Stay'];
-
-    const playAnim = (list) => {
-      for (const name of list) {
-        if (actions[name]) {
-          actions[name].reset().fadeIn(0.5).play();
-          return name;
-        }
-      }
-      return null;
-    };
-
-    if (isMoving) {
-      const active = playAnim(walkAnims);
-      return () => { if(active) actions[active]?.fadeOut(0.5); };
-    } else {
-      const active = playAnim(idleAnims);
-      return () => { if(active) actions[active]?.fadeOut(0.5); };
-    }
-  }, [isMoving, actions]);
-
-  // Buscamos el hueso de la cabeza para el "Motor Tanque"
-  useEffect(() => {
-    if (scene) {
-      scene.traverse(node => {
-        // Mapeo robusto de huesos para modelos humanizados (Mixamo/Standard)
-        const name = node.name.toLowerCase();
-        if (node.isBone && (name.includes('head') || name.includes('neck') || name.includes('jefe') || name.includes('cranium'))) {
-          headRef.current = node;
-        }
-      });
-    }
-  }, [scene, headRef]);
-
+// ============================================================
+// SERENITO 3D – Modelo GLTF Humanizado (38 Movimientos)
+// ============================================================
+function SerenitoModel({ avatarRef, isMoving }) {
   return (
     <group ref={avatarRef}>
-      {/* Ajuste de altura: Serenito ya no está hundido (Y=1.5 para modelo con pivot central) */}
-      <primitive object={scene} scale={1.8} position={[0, 1.5, 0]} castShadow />
+      <UniversalSerenito 
+        animation={isMoving ? "Walking" : "Idle"} 
+        scale={0.06} 
+        position={[0, 0, 0]} 
+      />
     </group>
   );
 }
@@ -96,26 +61,22 @@ function TankPlayer({ targetPos, cameraMode, setTargetPos }) {
   }, []);
 
   useFrame((state, delta) => {
-    if (!avatarRef.current || !headRef.current) return;
+    if (!avatarRef.current) return;
 
     let moving = false;
     const moveSpeed = 8 * delta;
     const rotSpeed = 2.5 * delta;
-    let headLookAngle = 0;
 
     // ── TECLADO (modo clásico tanque: flechas/WASD) ──
     if (keys['KeyA'] || keys['ArrowLeft']) {
       bodyRotRef.current += rotSpeed;
-      headRotRef.current = 0; // cabeza mira al frente al girar
     }
     if (keys['KeyD'] || keys['ArrowRight']) {
       bodyRotRef.current -= rotSpeed;
-      headRotRef.current = 0;
     }
     if (keys['KeyW'] || keys['ArrowUp']) {
       posRef.current.x += Math.sin(bodyRotRef.current) * moveSpeed;
       posRef.current.z += Math.cos(bodyRotRef.current) * moveSpeed;
-      headRotRef.current = THREE.MathUtils.lerp(headRotRef.current, 0, 0.1);
       moving = true;
     }
     if (keys['KeyS'] || keys['ArrowDown']) {
@@ -124,7 +85,7 @@ function TankPlayer({ targetPos, cameraMode, setTargetPos }) {
       moving = true;
     }
 
-    // ── PUNTO Y CLICK: Cabeza → Cuerpo → Caminar ──
+    // ── PUNTO Y CLICK: Cuerpo → Caminar ──
     if (targetPos && !keys['KeyW'] && !keys['ArrowUp']) {
       const dir = new THREE.Vector3().subVectors(targetPos, posRef.current);
       dir.y = 0;
@@ -132,57 +93,29 @@ function TankPlayer({ targetPos, cameraMode, setTargetPos }) {
 
       if (dist > 0.8) {
         const globalTargetAngle = Math.atan2(dir.x, dir.z);
+        let bodyDiff = globalTargetAngle - bodyRotRef.current;
+        while (bodyDiff > Math.PI) bodyDiff -= Math.PI * 2;
+        while (bodyDiff < -Math.PI) bodyDiff += Math.PI * 2;
+        bodyRotRef.current += bodyDiff * 5 * delta;
 
-        // 1. Cabeza gira hacia el destino (relativa al cuerpo)
-        const relAngle = globalTargetAngle - bodyRotRef.current;
-        let clampedRel = relAngle;
-        while (clampedRel > Math.PI) clampedRel -= Math.PI * 2;
-        while (clampedRel < -Math.PI) clampedRel += Math.PI * 2;
-
-        // Lerp la cabeza hacia el ángulo relativo (max ±60°)
-        const maxHeadTurn = Math.PI / 3;
-        targetHeadRotRef.current = THREE.MathUtils.clamp(clampedRel, -maxHeadTurn, maxHeadTurn);
-        headRotRef.current = THREE.MathUtils.lerp(headRotRef.current, targetHeadRotRef.current, 8 * delta);
-
-        // 2. El cuerpo sigue a la cabeza con delay (cuando la cabeza llegó ~50%)
-        const headAligned = Math.abs(headRotRef.current - targetHeadRotRef.current) < 0.15;
-        if (headAligned || Math.abs(clampedRel) > maxHeadTurn) {
-          let bodyDiff = globalTargetAngle - bodyRotRef.current;
-          while (bodyDiff > Math.PI) bodyDiff -= Math.PI * 2;
-          while (bodyDiff < -Math.PI) bodyDiff += Math.PI * 2;
-          bodyRotRef.current += bodyDiff * 5 * delta;
-        }
-
-        // 3. Una vez el cuerpo está alineado → avanza
-        const bodyAligned = Math.abs(clampedRel) < 0.25;
+        const bodyAligned = Math.abs(bodyDiff) < 0.25;
         if (bodyAligned) {
           posRef.current.add(dir.normalize().multiplyScalar(9 * delta));
-          headRotRef.current = THREE.MathUtils.lerp(headRotRef.current, 0, 6 * delta);
           moving = true;
         }
       } else {
-        // Llegó al destino → cabeza vuelve al frente
-        headRotRef.current = THREE.MathUtils.lerp(headRotRef.current, 0, 6 * delta);
-        if (Math.abs(headRotRef.current) < 0.02) {
-          setTargetPos(null);
-        }
+        setTargetPos(null);
       }
     }
-    // Asegurar nivel del suelo VLS – NUNCA BAJAR O COLGARSE
+    // Asegurar nivel del suelo VLS
     posRef.current.y = 0;
 
     // Aplicar posición y rotaciones
     avatarRef.current.position.copy(posRef.current);
     avatarRef.current.rotation.y = bodyRotRef.current;
 
-    // Solo rotamos la cabeza si el hueso fue encontrado en el modelo GLTF
-    if (headRef.current) {
-        headRef.current.rotation.y = headRotRef.current;
-    }
-
-    // Actualizar estado para animación de piernas/brazos
+    // Actualizar estado para animación
     if (moving !== isMoving) setIsMoving(moving);
-    if (moving) setWalkPhase(state.clock.elapsedTime * 8);
 
     // ── CÁMARA ──
     const fwdX = Math.sin(bodyRotRef.current);
@@ -211,9 +144,6 @@ function TankPlayer({ targetPos, cameraMode, setTargetPos }) {
     <>
       <SerenitoModel
         avatarRef={avatarRef}
-        headRef={headRef}
-        bodyRef={bodyRef}
-        walkPhase={walkPhase}
         isMoving={isMoving}
       />
       {/* Indicador de destino */}
@@ -279,6 +209,50 @@ function Intendencia({ position }) {
 }
 
 // ============================================================
+// CARTEL ELEGANTE - Homenaje Cuturrufo
+// ============================================================
+function CuturrufoSign({ position, image, title, rotation = 0 }) {
+  const texture = useTexture(image);
+  
+  return (
+    <group position={position} rotation={[0, rotation, 0]}>
+      {/* Marco de Madera Noble - Mejorado */}
+      <mesh position={[0, 3.2, 0]} castShadow>
+        <boxGeometry args={[4.2, 5.2, 0.2]} />
+        <meshStandardMaterial color="#2d1c10" roughness={0.9} metalness={0.2} />
+      </mesh>
+      {/* Imagen - Escalada para impacto */}
+      <mesh position={[0, 3.2, 0.11]}>
+        <planeGeometry args={[3.8, 4.8]} />
+        <meshBasicMaterial map={texture} />
+      </mesh>
+      {/* Soporte Dorado Reforzado */}
+      <mesh position={[0, 0.6, 0]}>
+        <cylinderGeometry args={[0.08, 0.15, 1.2, 12]} />
+        <meshStandardMaterial color="#fbbf24" metalness={1} roughness={0} emissive="#fbbf24" emissiveIntensity={0.2} />
+      </mesh>
+      {/* Etiqueta Retroiluminada */}
+      <Html position={[0, 0.5, 0.2]} center>
+        <div style={{ 
+          background: 'rgba(251, 191, 36, 0.95)', 
+          color: 'black', 
+          padding: '8px 15px', 
+          borderRadius: '8px', 
+          fontSize: '14px', 
+          fontWeight: '950', 
+          whiteSpace: 'nowrap', 
+          border: '2px solid white',
+          boxShadow: '0 5px 15px rgba(0,0,0,0.4)',
+          textShadow: '0 0 5px rgba(255,255,255,0.5)'
+        }}>
+          ✨ {title.toUpperCase()} ✨
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+// ============================================================
 // ESCENA HISTÓRICA – Mapa + Columnas + POIs
 // ============================================================
 function HistoricScene({ setTargetPos, setSelectedPOI }) {
@@ -325,7 +299,7 @@ function HistoricScene({ setTargetPos, setSelectedPOI }) {
       pos: [-12, 0.5, 10],
       fact: 'Homenaje a las culturas Diaguita, El Molle y Changos, civilizaciones maestras del Elqui y la Costa.',
       audio: 'Este es el rincón precolombino. Aquí honramos a los Diaguitas, maestros de la alfarería; a la cultura El Molle, pioneros del valle; y a los Changos, nómades del mar que dominaron nuestras costas en balsas de cuero de lobo marino. Sus raíces son la esencia de nuestra Región de Coquimbo.',
-      image: '/homenaje/diaguita_ceramic.png' 
+      image: '/vls_diaguita_ceramic_smart_ui_1774012541579.png' 
     },
     {
       id: 'memorial-vecinos-region',
@@ -335,6 +309,31 @@ function HistoricScene({ setTargetPos, setSelectedPOI }) {
       fact: 'Memorial sagrado: Daniel Palominos, Jorge Peña Hen, Gabriela Mistral, Bartolomé Blanche e Isabel Bongard.',
       audio: 'Bienvenidos al Altar de los Hijos de la Región. En este espacio de reflexión recordamos al Maestro Daniel Palominos, cuya arcilla capturó el alma regional; a Jorge Peña Hen, quien sembró música en los niños; y a todos los vecinos ilustres que forjaron nuestra historia. Sus nombres están grabados en el corazón de La Serena.',
       image: '/homenaje/palominos_mural_humanity_1773806652665.png'
+    },
+    {
+      id: 'cuturrufo-piano',
+      name: 'Don Wilson Cuturrufo',
+      location: 'Homenaje Dinastic',
+      pos: [10, 0.5, -5],
+      fact: 'El maestro Don Wilson, biólogo y músico, creador de una dinastía que cambió el jazz en Chile.',
+      image: '/DonWilson/DonWilsonPiano.png'
+    },
+    {
+      id: 'cuturrufo-trompeta',
+      name: 'Cristián Cuturrufo',
+      location: 'Homenaje Dinastic',
+      pos: [-10, 0.5, -5],
+      fact: 'El trompetista que democratizó el jazz y lo fusionó con las raíces diaguitas del Elqui.',
+      image: '/DonWilson/Cristian_Cuturrufo.png'
+    },
+    {
+      id: 'combate-naval',
+      name: 'Combate Naval de Iquique',
+      location: 'Diorama Histórico',
+      pos: [15, 0.5, -30],
+      fact: 'Homenaje a Arturo Prat y la tripulación de la Esmeralda. El momento épico del espoloneo del Huáscar.',
+      audio: 'Bienvenidos al memorial del Combate Naval de Iquique. Aquí conmemoramos la gesta heroica del 21 de mayo de 1879, donde Arturo Prat Chacón saltó al abordaje del monitor Huáscar. Esta imagen captura el dramático momento del espoloneo, un símbolo eterno de valor y patriotismo chileno.',
+      image: '/combate_naval_iquique_diorama.png'
     }
   ];
 
@@ -372,6 +371,11 @@ function HistoricScene({ setTargetPos, setSelectedPOI }) {
       {/* EDIFICIOS */}
       <Municipalidad position={[28, 0, -20]} />
       <Intendencia position={[-28, 0, -20]} />
+
+      {/* CARTELES CUTURRUFO (Regla: Imágenes elegantes en paseo) */}
+      <CuturrufoSign position={[10, 0, -5]} image="/DonWilson/DonWilsonPiano.png" title="Maestro Wilson" rotation={-Math.PI / 6} />
+      <CuturrufoSign position={[-10, 0, -5]} image="/DonWilson/Cristian_Cuturrufo.png" title="Cristián Cuturrufo" rotation={Math.PI / 6} />
+      <CuturrufoSign position={[15, 0, -30]} image="/combate_naval_iquique_diorama.png" title="Combate Naval Iquique" rotation={-Math.PI / 8} />
 
       {/* COLUMNAS HISTÓRICAS LATERALES */}
       {pillars.map((p, idx) => (
@@ -754,6 +758,34 @@ export default function HistoricWalk3D({ onClose, era }) {
                   <span style={{ color: '#f59e0b', fontWeight: 'bold', fontSize: '0.85rem' }}>DATO HISTÓRICO</span>
                 </div>
                 <p style={{ color: '#94a3b8', lineHeight: '1.6', margin: 0, fontSize: '0.95rem' }}>{selectedPOI.fact}</p>
+                
+                {selectedPOI.id === 'memorial-precolombino' && (
+                  <button 
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('open-precolombino'));
+                      setSelectedPOI(null);
+                      onClose();
+                    }}
+                    style={{ 
+                      marginTop: '1.5rem', 
+                      width: '100%',
+                      background: 'linear-gradient(90deg, #ec4899, #8b5cf6)',
+                      color: 'white',
+                      border: 'none',
+                      padding: '12px',
+                      borderRadius: '10px',
+                      fontWeight: '900',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 4px 15px rgba(236,72,153,0.3)'
+                    }}
+                  >
+                    <Landmark size={18} /> INGRESAR AL PORTAL
+                  </button>
+                )}
               </div>
             </div>
 

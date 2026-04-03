@@ -26,10 +26,11 @@ function PlanetCore() {
     );
 }
 
+import UniversalSerenito from './UniversalSerenito';
+
 function PlayerAntigravity() {
     const playerRef = useRef();
     const { camera } = useThree();
-    const { scene } = useGLTF('/models/Serenito_polera_blancacuerpo_entero.glb');
     
     // Antigravity & Spherical logic placeholder
     useFrame((state, delta) => {
@@ -53,8 +54,7 @@ function PlayerAntigravity() {
 
     return (
         <group ref={playerRef} position={[0, 10.5, 0]}> {/* Inicia en el Polo Norte */}
-           {/* Serenito Humanizado – Regla #3 */}
-           <primitive object={scene} scale={0.6} />
+           <UniversalSerenito animation="Walking" scale={0.06} />
            <pointLight distance={15} intensity={2} color="#fca5a5" /> {/* Antorcha del Abuelo conceptual */}
         </group>
     );

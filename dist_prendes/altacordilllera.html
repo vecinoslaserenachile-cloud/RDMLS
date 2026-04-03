@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Reservado | Alta Cordillera</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #020617;
+      --surface: #0f172a;
+      --surface2: #1e293b;
+      --primary: #38bdf8;
+      --accent: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: rgba(56,189,248,0.15);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit',sans-serif; }
+    body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    
+    /* ── ACCESS GATE ── */
+    #access-screen {
+      width:100%; max-width:480px; padding:2rem;
+      animation: fadeUp 0.6s ease;
+    }
+    .gate-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:24px; padding:2.5rem; text-align:center;
+      box-shadow:0 40px 80px rgba(0,0,0,0.6);
+    }
+    .gate-flag { font-size:4rem; margin-bottom:1rem; display:block; }
+    .gate-title { font-size:1.6rem; font-weight:800; margin-bottom:0.4rem; }
+    .gate-sub { color:var(--muted); font-size:0.8rem; margin-bottom:1.5rem; letter-spacing:1px; text-transform:uppercase; line-height:1.4; }
+    .gate-input {
+      width:100%; padding:0.8rem 1rem; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      color:var(--text); font-size:0.95rem; outline:none; margin-bottom:1rem;
+      transition: all 0.3s;
+    }
+    .gate-input:focus { border-color:var(--primary); background:rgba(255,255,255,0.08); }
+    .gate-btn {
+      width:100%; padding:1rem; background:var(--primary); color:#020617;
+      border:none; border-radius:12px; font-weight:800; font-size:1rem;
+      cursor:pointer; transition: all 0.3s; letter-spacing:1px; margin-top:0.5rem;
+    }
+    .gate-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(56,189,248,0.4); }
+    #gate-error { color:var(--red); font-size:0.8rem; margin-bottom:1rem; min-height:1.2rem; }
+
+    /* ── LOGS VIEW ── */
+    #logs-screen { display:none; width:100%; max-width:900px; background:var(--surface); border-radius:20px; padding:2rem; border:1px solid var(--border); max-height:80vh; overflow-y:auto; }
+    .log-entry { font-size:0.8rem; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; }
+    .log-header { font-weight:bold; color:var(--primary); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; }
+
+    /* ── DASHBOARD ── */
+    #dashboard-screen { display:none; width:100%; max-width:960px; padding:2rem; animation: fadeUp 0.6s ease; }
+    .dash-header { text-align:center; margin-bottom:2rem; position:relative; }
+    .logout-btn { position:absolute; top:0; right:0; background:none; border:none; color:var(--muted); font-size:0.7rem; cursor:pointer; }
+    .logout-btn:hover { color:var(--red); }
+    .dash-flag { font-size:3rem; display:block; margin-bottom:0.5rem; }
+    .dash-title { font-size:1.8rem; font-weight:900; }
+    .dash-sub { color:var(--muted); font-size:0.85rem; margin-top:0.3rem; letter-spacing:2px; text-transform:uppercase; }
+
+    .panel-title { font-size:1.3rem; font-weight:800; margin-bottom:1.5rem; color:var(--primary); }
+    .media-frame { background:var(--surface2); border-radius:16px; padding:1.5rem; border:1px solid var(--border); margin-bottom: 2rem; position:relative; }
+    .audio-player { width:100%; margin-top:1rem; accent-color:var(--primary); }
+    
+    .anim-btn {
+      padding: 10px 18px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 800;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      backdrop-filter: blur(5px);
+    }
+    .anim-btn:hover {
+      background: var(--primary); color: var(--bg);
+      box-shadow: 0 0 25px var(--primary); transform: scale(1.05);
+    }
+    .anim-btn.active { background: var(--primary); color: var(--bg); box-shadow: 0 0 15px var(--primary); }
+
+    #anim-status {
+      position: absolute; top: 15px; left: 15px; background: rgba(15, 23, 42, 0.9);
+      padding: 8px 15px; border-radius: 12px; border: 1px solid var(--primary);
+      color: var(--primary); font-weight: bold; font-size: 0.75rem; pointer-events: none; z-index: 20;
+    }
+    .anim-reload {
+      position: absolute; top: 15px; right: 15px;
+      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; cursor: pointer; z-index: 20;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ GATE (CONTROL DE ACCESO) ══════════════ -->
+<div id="access-screen">
+  <div class="gate-card">
+    <span class="gate-flag">⛰️</span>
+    <div class="gate-title">Acceso Reservado</div>
+    <div class="gate-sub">Dossier Institucional: Alta Cordillera<br><small>Uso restringido — Registro Obligatorio</small></div>
+    
+    <div id="gate-error"></div>
+    
+    <input type="text" id="user-name" class="gate-input" placeholder="Nombre Completo">
+    <input type="text" id="user-inst" class="gate-input" placeholder="Institución / Medio">
+    <input type="email" id="user-email" class="gate-input" placeholder="Correo Electrónico">
+    <input type="password" id="user-pass" class="gate-input" placeholder="Clave de Acceso">
+    
+    <button class="gate-btn" onclick="validateAccess()">SOLICITAR ACCESO</button>
+    <p style="margin-top:1.5rem; color:var(--muted); font-size:0.65rem; opacity:0.6;">🔒 Documento de circulación interna restringida. Su entrada quedará registrada.</p>
+  </div>
+</div>
+
+<!-- ══════════════ LOGS (VISTA MAESTRA) ══════════════ -->
+<div id="logs-screen">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+    <h2 style="color:var(--accent);">🕵️ Bitácora de Accesos: Alta Cordillera</h2>
+    <button onclick="location.reload()" style="background:none; border:1px solid var(--muted); color:var(--muted); padding:5px 15px; border-radius:5px; cursor:pointer;">Cerrar</button>
+  </div>
+  <div class="log-entry log-header">
+    <div>Fecha/Hora</div>
+    <div>Nombre</div>
+    <div>Institución</div>
+    <div>Email</div>
+  </div>
+  <div id="logs-content"></div>
+</div>
+
+<!-- ══════════════ DASHBOARD (CONTENIDO) ══════════════ -->
+<div id="dashboard-screen">
+  <div class="dash-header">
+    <button class="logout-btn" onclick="sessionStorage.clear(); location.reload();">⏻ Cerrar Sesión</button>
+    <span class="dash-flag">⛰️</span>
+    <div class="dash-title">Dossier: Alta Cordillera</div>
+    <div class="dash-sub">Vialidad y Tránsito Escolar</div>
+  </div>
+
+  <div class="media-frame" style="text-align:center;">
+    <div class="panel-title">👤 Anfitriona Virtual</div>
+    <p style="color:var(--muted);margin-bottom:1rem;">Directora Corporativa - Colegio Alta Cordillera.</p>
+    <model-viewer
+      id="director-model"
+      src="directora_altacordillera.glb?v=20260402_FORCE_UPDATE"
+      alt="Directora Alta Cordillera 3D"
+      auto-rotate
+      camera-controls
+      autoplay
+      rotation-per-second="10deg"
+      style="width:100%; height:500px; background:#0f172a; border-radius:15px; cursor: grab;"
+      shadow-intensity="1"
+      exposure="1.0"
+      environment-image="legacy">
+      <div id="anim-status">⚙️ Iniciando articulaciones...</div>
+      <button class="anim-reload" onclick="detectAnimations()">🔄 Recargar</button>
+      <div id="controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; flex-wrap: wrap; z-index: 10; width: 90%; justify-content: center;">
+        <!-- Botones inyectados -->
+      </div>
+    </model-viewer>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">🎬 Video Institucional: Alta Cordillera</div>
+    <video controls style="width:100%; border-radius:10px; background:#000;">
+      <source src="video-altacordillera.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">🎙️ Podcast: Medidas de Tránsito en Colegio Alta Cordillera</div>
+    <p style="color:var(--muted);margin-bottom:1rem;">Audio informativo sobre el nuevo sentido único en calle Cardenal Oviedo.</p>
+    <audio controls class="audio-player">
+      <source src="Sentido_unico_AltaCordillera.mp3" type="audio/mpeg">
+      Tu navegador no soporta el audio.
+    </audio>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">📄 Minuta de Vialidad Escolar</div>
+    <p style="color:var(--muted);margin-bottom:1rem;">Documento técnico y plano de la nueva disposición.</p>
+    <iframe src="Vialidad_Escolar_AltaCordillera.pdf" width="100%" height="600px"></iframe>
+  </div>
+</div>
+
+<script>
+  const CLAVE_ACCESO = 'laserena2026';
+  const CLAVE_MAESTRA = 'vlsadmin2026';
+
+  function validateAccess() {
+    const name = document.getElementById('user-name').value;
+    const inst = document.getElementById('user-inst').value;
+    const email = document.getElementById('user-email').value;
+    const pass = document.getElementById('user-pass').value;
+    const error = document.getElementById('gate-error');
+
+    if (pass === CLAVE_MAESTRA) { showLogs(); return; }
+    if (!name || !inst || !email || !pass) { error.innerText = "⚠️ Todos los campos son obligatorios."; return; }
+    if (pass !== CLAVE_ACCESO) { error.innerText = "❌ Clave de acceso incorrecta."; return; }
+
+    const logs = JSON.parse(localStorage.getItem('vls_access_logs_altacordillera') || '[]');
+    logs.push({ date: new Date().toLocaleString(), name, inst, email });
+    localStorage.setItem('vls_access_logs_altacordillera', JSON.stringify(logs));
+
+    sessionStorage.setItem('unlocked_altacordillera', 'true');
+    showDashboard();
+  }
+
+  function showDashboard() {
+    document.getElementById('access-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'block';
+    document.body.style.alignItems = 'flex-start';
+    detectAnimations();
+  }
+
+  function showLogs() {
+    document.getElementById('access-screen').style.display = 'none';
+    const logs = JSON.parse(localStorage.getItem('vls_access_logs_altacordillera') || '[]');
+    document.getElementById('logs-content').innerHTML = logs.map(l => `
+      <div class="log-entry">
+        <div>${l.date}</div><div style="color:white;font-weight:bold;">${l.name}</div>
+        <div style="color:var(--primary);">${l.inst}</div><div style="font-size:0.7rem; opacity:0.6;">${l.email}</div>
+      </div>
+    `).reverse().join('') || '<p style="padding:2rem;text-align:center;">Sin registros.</p>';
+    document.getElementById('logs-screen').style.display = 'block';
+  }
+
+  const modelViewer = document.querySelector("#director-model");
+  function detectAnimations() {
+    const animations = modelViewer.availableAnimations;
+    const status = document.getElementById('anim-status');
+    const controls = document.getElementById('controls');
+    if (animations && animations.length > 0) {
+      status.innerHTML = `✅ ${animations.length} movimientos`;
+      controls.innerHTML = ""; 
+      animations.forEach((animName, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = animName.replace(/_/g, ' ').replace('Armature|', '').replace('Mixamo.com|', '').toUpperCase();
+        btn.className = "anim-btn"; btn.style.margin = "2px";
+        btn.onclick = () => { 
+          document.querySelectorAll(".anim-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active"); modelViewer.animationName = animName; modelViewer.play();
+        };
+        controls.appendChild(btn);
+        if (index === 0 && !modelViewer.animationName) { btn.classList.add("active"); modelViewer.animationName = animName; modelViewer.play(); }
+      });
+    }
+  }
+  modelViewer.addEventListener("load", () => { detectAnimations(); setTimeout(detectAnimations, 1000); });
+
+  if (sessionStorage.getItem('unlocked_altacordillera') === 'true') { showDashboard(); }
+</script>
+</body>
+</html>

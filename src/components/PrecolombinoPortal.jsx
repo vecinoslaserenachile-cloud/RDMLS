@@ -28,7 +28,7 @@ const CULTURAL_ITEMS = [
         period: '300 a.C. - 700 d.C.',
         desc: 'Pioneros en la metalurgia y la agricultura en los valles transversales. Sentaron las bases de la vida aldeana en la región.',
         details: 'Conocidos por sus "tembetás" (adornos labiales) y su avanzada técnica en el trabajo del cobre y oro, además de una alfarería de gran elegancia.',
-        image: '/vls-logo-3d.png',
+        image: '/vls_molle_animas_3d_1774012579587.png',
         color: '#10b981'
     },
     {
@@ -37,7 +37,7 @@ const CULTURAL_ITEMS = [
         period: 'Recolectores del Litoral',
         desc: 'Pueblos navegantes que dominaron las costas del norte de Chile. Su balsa de cuero de lobo marino es una obra maestra de ingeniería náutica.',
         details: 'Vivían de la pesca y la recolección marina. Su intercambio comercial con los pueblos del interior (Diaguitas y Molles) fue clave para el desarrollo regional.',
-        image: '/vls-logo-3d.png',
+        image: '/vls_chango_sea_lion_raft_3d_1774012557846.png',
         color: '#38bdf8'
     }
 ];

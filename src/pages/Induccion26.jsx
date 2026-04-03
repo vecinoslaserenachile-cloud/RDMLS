@@ -11,6 +11,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { Sparkles, X, Send, Loader2, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { Canvas } from '@react-three/fiber';
+import { Suspense } from 'react';
+import { Environment, Float, ContactShadows } from '@react-three/drei';
+import UniversalSerenito from '../components/UniversalSerenito';
 
 // --- COMPONENTE ASISTENTE SMART ---
 const SmartAssistantInduccion = () => {
@@ -72,10 +76,21 @@ const SmartAssistantInduccion = () => {
   
         {isOpen && (
           <div style={{ position:'fixed', bottom:'90px', right:'20px', zIndex:10000, width:'350px', height:'450px', background:'#0d0200', border:'1px solid rgba(249,115,22,0.3)', borderRadius:'20px', display:'flex', flexDirection:'column', overflow:'hidden', boxShadow:'0 10px 30px rgba(0,0,0,0.5)' }}>
-            <div style={{ padding:'1rem', background:'#180800', display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(249,115,22,0.2)' }}>
-              <div style={{ display:'flex', alignItems:'center', gap:'10px' }}>
-                <img src="/serenito_3d_avatar_premium_1774312066289.png" style={{ width:'40px', height:'40px', borderRadius:'50%', border:'2px solid #f97316' }} />
-                <span style={{ fontWeight:'900', color:'white', fontSize:'0.9rem' }}>SERENITO 3D</span>
+            <div style={{ padding:'0.8rem 1rem', background:'#180800', display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'1px solid rgba(249,115,22,0.2)' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'12px' }}>
+                <div style={{ width: '45px', height: '45px', background: 'rgba(249,115,22,0.1)', borderRadius: '50%', overflow: 'hidden', border: '2px solid #f97316' }}>
+                    <Canvas camera={{ position: [0, 1.5, 3], fov: 35 }}>
+                        <Suspense fallback={null}>
+                            <Environment preset="city" />
+                            <ambientLight intensity={0.8} />
+                            <UniversalSerenito animation={isLoading ? "Thinking" : "Wave"} scale={0.06} position={[0, -1.3, 0]} />
+                        </Suspense>
+                    </Canvas>
+                </div>
+                <div>
+                  <div style={{ fontWeight:'900', color:'white', fontSize:'0.85rem', letterSpacing: '1px' }}>SERENITO 3D</div>
+                  <div style={{ fontSize: '0.6rem', color: '#f97316', fontWeight: 'bold' }}>TUTOR ASISTENTE</div>
+                </div>
               </div>
               <button onClick={()=>setIsOpen(false)} style={{ background:'transparent', border:'none', color:'#64748b', cursor:'pointer' }}><X size={20}/></button>
             </div>
@@ -255,10 +270,24 @@ export default function Induccion26({ isRDMLS }) {
         };
         return (
             <div style={{ minHeight:'100vh', background:`radial-gradient(ellipse at top, #1a0800, ${C.dark})`, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', fontFamily:"'Segoe UI', Roboto, sans-serif", padding:'2rem', color:'white' }}>
-                <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
-                    <img src="/serenito_3d_humanized_2026_1774875415876.png" alt="Serenito" style={{ height: '140px', filter: 'drop-shadow(0 0 30px rgba(249,115,22,0.4))' }} className="animate-float" />
-                    <img src="/escudo.png" alt="IMLS" style={{ height: '32px', position: 'absolute', bottom: '0', right: '-10px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' }} />
-                </div>
+            <div style={{ position: 'relative', width: '200px', height: '200px', marginBottom: '1rem' }}>
+                <Canvas shadows camera={{ position: [0, 2, 5], fov: 40 }} style={{ height: '100%', width: '100%' }}>
+                    <Suspense fallback={null}>
+                        <Environment preset="city" />
+                        <ambientLight intensity={0.5} />
+                        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />
+                        <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
+                            <UniversalSerenito 
+                                animation="Talking" 
+                                scale={0.05} 
+                                position={[0, -1.2, 0]} 
+                            />
+                        </Float>
+                        <ContactShadows resolution={1024} scale={10} blur={2} opacity={0.25} far={10} color="#000" />
+                    </Suspense>
+                </Canvas>
+                <img src="/escudo.png" alt="IMLS" style={{ height: '32px', position: 'absolute', bottom: '20px', right: '0px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' }} />
+            </div>
                 <h1 style={{ color:C.orange, fontSize:'clamp(1.4rem,4vw,2.2rem)', fontWeight:'900', letterSpacing:'2px', textAlign:'center', margin:'0 0 0.3rem' }}>PORTAL INDUCCIÓN RDMLS</h1>
                 <p style={{ color:'#94a3b8', fontSize:'0.85rem', letterSpacing:'2px', marginBottom:'2rem', textAlign:'center' }}>RADIO DIGITAL MUNICIPAL · LA SERENA · 2026</p>
                 <div style={{ background:'rgba(249,115,22,0.07)', border:`1px solid ${C.border}`, borderRadius:'24px', padding:'2.5rem', width:'100%', maxWidth:'480px', display:'flex', flexDirection:'column', gap:'1rem' }}>

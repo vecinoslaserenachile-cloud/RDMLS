@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificado Oficial | PRENDES.cl</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@400;700&display=swap');
+
+        body {
+            background: #1e293b;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #diploma {
+            width: 900px;
+            height: 650px;
+            background: #fff url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+            border: 20px solid #d4af37; /* GOLD BORDER */
+            padding: 40px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+            position: relative;
+            text-align: center;
+            color: #1e293b;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        #diploma::before {
+            content: '';
+            position: absolute;
+            top: 5px; left: 5px; right: 5px; bottom: 5px;
+            border: 2px solid #d4af37;
+        }
+
+        .logo-diploma {
+            height: 80px;
+            margin-bottom: 2rem;
+            filter: grayscale(1) brightness(0.2);
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            color: #1e293b;
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            margin-top: 1rem;
+            color: #64748b;
+        }
+
+        .awarded-to {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+        }
+
+        .student-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 4rem;
+            color: #1e293b;
+            border-bottom: 2px solid #d4af37;
+            display: inline-block;
+            padding: 0 40px;
+            margin-bottom: 1rem;
+        }
+
+        .course-desc {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            line-height: 1.6;
+        }
+
+        .footer-diploma {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 4rem;
+            position: relative;
+        }
+
+        .signature {
+            border-top: 1px solid #1e293b;
+            width: 200px;
+            padding-top: 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .seal {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 120px;
+            height: 120px;
+            background: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+            font-size: 0.7rem;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+            transform: rotate(-15deg);
+        }
+
+        .btn-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            background: #d4af37;
+            color: #fff;
+            border: none;
+            border-radius: 50px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        @media print {
+            .btn-print { display: none; }
+            body { background: none; }
+            #diploma { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="btn-print" onclick="window.print()">📥 DESCARGAR DIPLOMA (PDF)</button>
+
+    <div id="diploma">
+        <img src="images/logo_prendes.png" class="logo-diploma" alt="PRENDES Logo">
+        <h1>Diploma Digital</h1>
+        <div class="subtitle">CERTIFICADO DE EXCELENCIA ACADÉMICA</div>
+
+        <div class="awarded-to">Certificamos que el alumno(a):</div>
+        <div class="student-name" id="display-name">RODRIGO ALARCÓN</div>
+
+        <div class="course-desc">
+            Ha completado satisfactoriamente el curso de inmersión avanzada <br>
+            <strong id="display-course">ENGLISH FAST-TRACK (LEVEL 1)</strong> <br>
+            con un desempeño sobresaliente en estrategias globales de comunicación.
+        </div>
+
+        <div class="footer-diploma">
+            <div class="signature">
+                DIRECCIÓN ACADÉMICA <br>
+                PRENDES.cl
+            </div>
+            <div class="signature">
+                DEPARTAMENTO DE <br>
+                TECNOLOGÍA E INNOVACIÓN
+            </div>
+        </div>
+
+        <div class="seal">
+            SELLO DE <br> VALIDEZ CLOUD <br> 2026/VLS
+        </div>
+        
+        <div style="position: absolute; bottom: 20px; left: 40px; font-size: 0.6rem; color: #94a3b8;">
+            ID CERTIFICADO: PRNDS-2026-D1-001 <br>
+            VERIFICACIÓN DISPONIBLE EN WWW.PRENDES.CL
+        </div>
+    </div>
+
+    <script>
+        // Obtener datos dinámicos del almacenamiento local o URL
+        const currentUser = JSON.parse(localStorage.getItem('prendes_user'));
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseName = urlParams.get('course') || "ENGLISH FAST-TRACK";
+
+        if (currentUser) {
+            document.getElementById('display-name').innerText = currentUser.name.toUpperCase();
+        }
+        document.getElementById('display-course').innerText = courseName.toUpperCase();
+    </script>
+</body>
+</html>

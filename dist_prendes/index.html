@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PRENDES | Educación Smart</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b82f6; /* Azul Eléctrico */
+            --accent: #fbbf24;  /* Oro VLS */
+            --bg: #020617;      /* Sky Dark */
+            --glass: rgba(15, 23, 42, 0.8);
+            --text: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .halo {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+            filter: blur(80px);
+            z-index: -1;
+            animation: pulse 10s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            max-width: 800px;
+            animation: fadeIn 2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: clamp(3rem, 10vw, 6rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        p {
+            font-size: 1.25rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin-bottom: 3rem;
+        }
+
+        .cta-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 10px 20px -10px var(--primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px -10px var(--primary);
+        }
+
+        .btn-outline {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        footer {
+            margin-top: 5rem;
+            font-size: 0.8rem;
+            color: #475569;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .sparkle {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="halo"></div>
+    
+    <div class="container">
+        <div class="badge">Aprendes • Comprendes • Emprendes</div>
+        <!-- LOGO 3D PRENDES -->
+        <div style="display:flex; justify-content:center; align-items:center; margin-bottom:1.5rem;">
+          <model-viewer
+            src="images/logo3d_prendes.glb"
+            alt="Logo 3D PRENDES"
+            auto-rotate
+            camera-controls
+            disable-zoom
+            rotation-per-second="30deg"
+            background-color="transparent"
+            style="width:320px; height:220px; background:transparent;"
+            shadow-intensity="0"
+            exposure="1.2">
+          </model-viewer>
+        </div>
+        <p>Potenciando el futuro de la educación. El ecosistema inteligente diseñado para colegios, universidades, docentes y mentes inquietas.</p>
+        
+        <div class="cta-container">
+            <a href="academia.html" class="btn btn-primary">Academia Digital</a>
+            <a href="https://www.vecinoslaserena.cl" class="btn btn-outline" target="_blank">Ecosistema VLS</a>
+        </div>
+
+        <!-- RADIO PRENDES MASTER PLAYER -->
+        <div id="radio-prendes" style="margin-top: 4rem; background: var(--glass); border: 2px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 2rem; max-width: 500px; margin-left: auto; margin-right: auto; backdrop-filter: blur(20px); box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
+                <div style="font-weight: 800; color: var(--accent); letter-spacing: 2px; font-size: 0.8rem;">RADIO PRENDES 99.9</div>
+                <div id="led-blink" style="width: 10px; height: 10px; background: #ff0000; border-radius: 50%; box-shadow: 0 0 10px #ff0000;"></div>
+            </div>
+
+            <!-- PANTALLA LED -->
+            <div class="led-display" style="background: #000; border: 3px solid #1e293b; border-radius: 10px; padding: 15px; margin-bottom: 20px; overflow: hidden; position: relative;">
+                <div id="track-info" style="color: #00e5ff; font-family: 'Courier New', Courier, monospace; font-size: 1rem; font-weight: bold; white-space: nowrap; text-transform: uppercase; text-shadow: 0 0 8px #00e5ff;">
+                    SINTONIZANDO: APRENDES COMPRENDES EMPRENDES...
+                </div>
+            </div>
+
+            <audio id="main-audio" src="audio/prendes aprendes control.mp3"></audio>
+
+            <!-- CONTROLES -->
+            <div style="display: flex; align-items: center; gap: 1.5rem; justify-content: center;">
+                <button onclick="prevTrack()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem;">⏮️</button>
+                <button id="play-btn" onclick="togglePlay()" style="width: 60px; height: 60px; background: var(--primary); border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 1.5rem; box-shadow: 0 0 20px var(--primary);">▶️</button>
+                <button onclick="nextTrack()" style="background: none; border: none; color: white; cursor: pointer; font-size: 1.5rem;">⏭️</button>
+            </div>
+
+            <!-- VOLUMEN -->
+            <div style="margin-top: 2rem; display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 0.8rem; color: #94a3b8;">VOL</span>
+                <input type="range" id="volume-control" min="0" max="1" step="0.1" value="0.5" style="flex: 1; accent-color: var(--accent);">
+            </div>
+        </div>
+
+        <script>
+            const audio = document.getElementById('main-audio');
+            const playBtn = document.getElementById('play-btn');
+            const trackInfo = document.getElementById('track-info');
+            const ledBlink = document.getElementById('led-blink');
+            const volControl = document.getElementById('volume-control');
+
+            const playlist = [
+                { name: "Prendes Aprendes Control", file: "audio/prendes aprendes control.mp3" },
+                { name: "Sorprendes", file: "audio/sorprendes.mp3" },
+                { name: "Reggae Prendes", file: "audio/reggaeprendes.cl.mp3" },
+                { name: "Prendes.cl Reggae", file: "audio/prendes.cl reggae.mp3" },
+                { name: "Prendes Aprendes (Remastered)", file: "audio/prendes aprendes (Remastered).mp3" },
+                { name: "Prende Sorprende (Remastered)", file: "audio/prende sorprende (Remastered).mp3" }
+            ];
+
+            let currentTrack = 0;
+
+            function togglePlay() {
+                if (audio.paused) {
+                    audio.play();
+                    playBtn.innerText = "⏸️";
+                    ledBlink.style.background = "#00ff00";
+                    ledBlink.style.boxShadow = "0 0 10px #00ff00";
+                } else {
+                    audio.pause();
+                    playBtn.innerText = "▶️";
+                    ledBlink.style.background = "#ff0000";
+                    ledBlink.style.boxShadow = "0 0 10px #ff0000";
+                }
+            }
+
+            function nextTrack() {
+                currentTrack = (currentTrack + 1) % playlist.length;
+                loadTrack();
+            }
+
+            function prevTrack() {
+                currentTrack = (currentTrack - 1 + playlist.length) % playlist.length;
+                loadTrack();
+            }
+
+            function loadTrack() {
+                audio.src = playlist[currentTrack].file;
+                trackInfo.innerText = "SINTONIZANDO: " + playlist[currentTrack].name;
+                if (!audio.paused || playBtn.innerText === "⏸️") audio.play();
+            }
+
+            volControl.oninput = (e) => {
+                audio.volume = e.target.value;
+            };
+
+            audio.addEventListener('ended', nextTrack);
+        </script>
+
+        <!-- PRENDES MERCHANDISING SECTION -->
+        <section id="merch-prendes" style="margin-top: 5rem; padding: 3rem; background: var(--glass); border-radius: 30px; text-align: center; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(20px);">
+            <div style="display: inline-block; padding: 0.5rem 1.5rem; background: var(--primary); border-radius: 50px; font-weight: 800; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 1.5rem; color: #fff;">EMPRENDE CON NOSOTROS</div>
+            <h2 style="font-size: 2.5rem; background: linear-gradient(to right, #fff, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1.5rem;">Identidad que Inspira</h2>
+            <p style="color: #94a3b8; max-width: 600px; margin: 0 auto 3rem auto; line-height: 1.6;">Lleva el espíritu de **Prendes** a todas partes. Nuestra línea oficial de merchandising está diseñada para estudiantes y docentes que buscan destacar.</p>
+            
+            <div style="position: relative; overflow: hidden; border-radius: 25px; box-shadow: 0 30px 60px rgba(0,0,0,0.5);">
+                <img src="images/polera_llavero_gorro_lapiz_prendes.png" alt="Merchandising Oficial PRENDES" style="width: 100%; transition: transform 0.5s ease;">
+                <div style="position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; background: linear-gradient(transparent, rgba(0,0,0,0.8)); text-align: left;">
+                    <button class="btn btn-primary">Ver Catálogo Completo</button>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <img src="images/logo_prendes.png" alt="PRENDES.cl" style="max-height:40px; width:auto; opacity:0.6; margin-bottom:0.5rem; display:block; margin-left:auto; margin-right:auto;">
+            Un proyecto de <a href="https://www.comunasmart.cl" style="color:var(--accent);text-decoration:none;font-weight:700;">comunasmart.cl</a> &amp; <a href="https://www.vecinosmart.cl" style="color:var(--primary);text-decoration:none;font-weight:700;">vecinosmart.cl</a> &copy; 2026
+        </footer>
+    </div>
+</body>
+</html>

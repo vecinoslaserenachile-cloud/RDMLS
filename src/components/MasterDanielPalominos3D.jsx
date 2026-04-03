@@ -8,47 +8,19 @@ import HolographicFigure from './HolographicFigure';
 // ============================================================
 // SERENITO 3D – El Guía Humanizado
 // ============================================================
-function SerenitoGuide({ avatarRef, headRef, isMoving }) {
-  const { scene, animations } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
-  const { actions } = useAnimations(animations, avatarRef);
+import UniversalSerenito from './UniversalSerenito';
 
-  useEffect(() => {
-    if (!actions) return;
-    const walkAnims = ['Walk', 'Run', 'Walking', 'Sprint'];
-    const idleAnims = ['Idle', 'Standing_Idle', 'Stay'];
-    
-    const playAnim = (list) => {
-      for (const name of list) {
-        if (actions[name]) {
-          actions[name].reset().fadeIn(0.5).play();
-          return name;
-        }
-      }
-      return null;
-    };
-
-    if (isMoving) {
-      const active = playAnim(walkAnims);
-      return () => { if(active) actions[active]?.fadeOut(0.5); };
-    } else {
-      const active = playAnim(idleAnims);
-      return () => { if(active) actions[active]?.fadeOut(0.5); };
-    }
-  }, [isMoving, actions]);
-
-  useEffect(() => {
-    if (scene) {
-      scene.traverse(node => {
-        if (node.isBone && (node.name.toLowerCase().includes('head') || node.name.toLowerCase().includes('neck'))) {
-          headRef.current = node;
-        }
-      });
-    }
-  }, [scene, headRef]);
-
+// ============================================================
+// SERENITO 3D – El Guía Humanizado (38 Movimientos)
+// ============================================================
+function SerenitoGuide({ avatarRef, isMoving }) {
   return (
     <group ref={avatarRef}>
-      <primitive object={scene} scale={1.8} castShadow />
+      <UniversalSerenito 
+        animation={isMoving ? "Walking" : "Wave"} 
+        scale={0.06} 
+        position={[0, 0, 0]} 
+      />
     </group>
   );
 }

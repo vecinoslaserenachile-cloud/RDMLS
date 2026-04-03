@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso Reservado | Alta Cordillera</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <style>
+    :root {
+      --bg: #020617;
+      --surface: #0f172a;
+      --surface2: #1e293b;
+      --primary: #38bdf8;
+      --accent: #f59e0b;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --border: rgba(56,189,248,0.15);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Outfit',sans-serif; }
+    body { background:var(--bg); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1rem; }
+    
+    /* ── ACCESS GATE ── */
+    #access-screen {
+      width:100%; max-width:480px; padding:2rem;
+      animation: fadeUp 0.6s ease;
+    }
+    .gate-card {
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:24px; padding:2.5rem; text-align:center;
+      box-shadow:0 40px 80px rgba(0,0,0,0.6);
+    }
+    .gate-flag { font-size:4rem; margin-bottom:1rem; display:block; }
+    .gate-title { font-size:1.6rem; font-weight:800; margin-bottom:0.4rem; }
+    .gate-sub { color:var(--muted); font-size:0.8rem; margin-bottom:1.5rem; letter-spacing:1px; text-transform:uppercase; line-height:1.4; }
+    .gate-input {
+      width:100%; padding:0.8rem 1rem; background:rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.1); border-radius:10px;
+      color:var(--text); font-size:0.95rem; outline:none; margin-bottom:1rem;
+      transition: all 0.3s;
+    }
+    .gate-input:focus { border-color:var(--primary); background:rgba(255,255,255,0.08); }
+    .gate-btn {
+      width:100%; padding:1rem; background:var(--primary); color:#020617;
+      border:none; border-radius:12px; font-weight:800; font-size:1rem;
+      cursor:pointer; transition: all 0.3s; letter-spacing:1px; margin-top:0.5rem;
+    }
+    .gate-btn:hover { transform:translateY(-2px); box-shadow:0 10px 30px rgba(56,189,248,0.4); }
+    #gate-error { color:var(--red); font-size:0.8rem; margin-bottom:1rem; min-height:1.2rem; }
+
+    /* ── LOGS VIEW ── */
+    #logs-screen { display:none; width:100%; max-width:900px; background:var(--surface); border-radius:20px; padding:2rem; border:1px solid var(--border); max-height:80vh; overflow-y:auto; }
+    .log-entry { font-size:0.8rem; padding:10px; border-bottom:1px solid rgba(255,255,255,0.05); display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:10px; }
+    .log-header { font-weight:bold; color:var(--primary); text-transform:uppercase; font-size:0.7rem; letter-spacing:1px; }
+
+    /* ── DASHBOARD ── */
+    #dashboard-screen { display:none; width:100%; max-width:960px; padding:2rem; animation: fadeUp 0.6s ease; }
+    .dash-header { 
+      text-align:center; 
+      margin-bottom:2.5rem; 
+      position:relative; 
+      background: linear-gradient(135deg, rgba(56,189,248,0.1), rgba(15,23,42,0.8)); 
+      padding: 2.5rem 1.5rem; 
+      border-radius: 25px; 
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .logout-btn { position:absolute; top:15px; right:20px; background:rgba(255,50,50,0.1); border:1px solid rgba(255,50,50,0.2); padding: 5px 12px; border-radius: 20px; color:var(--red); font-size:0.7rem; cursor:pointer; font-weight:800; transition: all 0.3s; }
+    .logout-btn:hover { background:var(--red); color:white; }
+    .dash-logo { 
+        height: 120px; 
+        width: auto; 
+        object-fit: contain; 
+        filter: drop-shadow(0 0 20px rgba(56,189,248,0.4));
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        margin: 0 auto 15px auto;
+        display: block;
+    }
+    .dash-logo:hover { transform: scale(1.1) rotate(2deg); }
+    .dash-title { font-size:2.2rem; font-weight:950; letter-spacing: -1px; color: #fff; line-height: 1; text-shadow: 0 5px 15px rgba(0,0,0,0.5); text-align: center; }
+    .dash-sub { color:var(--primary); font-size:0.9rem; margin-top:0.5rem; letter-spacing:4px; text-transform:uppercase; font-weight: 800; opacity: 0.9; text-align: center; }
+
+    .panel-title { font-size:1.3rem; font-weight:800; margin-bottom:1.5rem; color:var(--primary); }
+    .media-frame { background:var(--surface2); border-radius:16px; padding:1.5rem; border:1px solid var(--border); margin-bottom: 2rem; position:relative; }
+    .audio-player { width:100%; margin-top:1rem; accent-color:var(--primary); }
+    
+    .anim-btn {
+      padding: 10px 18px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 800;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      backdrop-filter: blur(5px);
+    }
+    .anim-btn:hover {
+      background: var(--primary); color: var(--bg);
+      box-shadow: 0 0 25px var(--primary); transform: scale(1.05);
+    }
+    .anim-btn.active { background: var(--primary); color: var(--bg); box-shadow: 0 0 15px var(--primary); }
+
+    #anim-status {
+      position: absolute; top: 15px; left: 15px; background: rgba(15, 23, 42, 0.9);
+      padding: 8px 15px; border-radius: 12px; border: 1px solid var(--primary);
+      color: var(--primary); font-weight: bold; font-size: 0.75rem; pointer-events: none; z-index: 20;
+    }
+    .anim-reload {
+      position: absolute; top: 15px; right: 15px;
+      background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white; padding: 5px 10px; border-radius: 8px; font-size: 0.65rem; cursor: pointer; z-index: 20;
+    }
+
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ GATE (CONTROL DE ACCESO) ══════════════ -->
+<div id="access-screen">
+  <div class="gate-card">
+    <img src="logo_altacordillera.png" alt="Alta Cordillera" style="height: 120px; width: auto; margin-bottom: 1.5rem; filter: drop-shadow(0 0 10px rgba(56,189,248,0.3));">
+    <div class="gate-title">Acceso Reservado</div>
+    <div class="gate-sub">Dossier Institucional: Alta Cordillera<br><small>Uso restringido — Registro Obligatorio</small></div>
+    
+    <div id="gate-error"></div>
+    
+    <input type="text" id="user-name" class="gate-input" placeholder="Nombre Completo">
+    <input type="text" id="user-inst" class="gate-input" placeholder="Institución / Medio">
+    <input type="email" id="user-email" class="gate-input" placeholder="Correo Electrónico">
+    <input type="password" id="user-pass" class="gate-input" placeholder="Clave de Acceso">
+    
+    <button class="gate-btn" onclick="validateAccess()">SOLICITAR ACCESO</button>
+    <p style="margin-top:1.5rem; color:var(--muted); font-size:0.65rem; opacity:0.6;">🔒 Documento de circulación interna restringida. Su entrada quedará registrada.</p>
+  </div>
+</div>
+
+<!-- ══════════════ LOGS (VISTA MAESTRA) ══════════════ -->
+<div id="logs-screen">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; border-bottom:1px solid var(--border); padding-bottom:1rem;">
+    <h2 style="color:var(--accent);">🕵️ Bitácora de Accesos: Alta Cordillera</h2>
+    <button onclick="location.reload()" style="background:none; border:1px solid var(--muted); color:var(--muted); padding:5px 15px; border-radius:5px; cursor:pointer;">Cerrar</button>
+  </div>
+  <div class="log-entry log-header">
+    <div>Fecha/Hora</div>
+    <div>Nombre</div>
+    <div>Institución</div>
+    <div>Email</div>
+  </div>
+  <div id="logs-content"></div>
+</div>
+
+<!-- ══════════════ DASHBOARD (CONTENIDO) ══════════════ -->
+<div id="dashboard-screen">
+  <div class="dash-header">
+    <button class="logout-btn" onclick="sessionStorage.clear(); location.reload();">⏻ Cerrar Sesión</button>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; margin-bottom: 10px;">
+        <img src="logo_altacordillera.png" alt="Alta Cordillera" class="dash-logo" style="height: 120px; object-fit: contain; filter: drop-shadow(0 0 20px rgba(56,189,248,0.5));">
+    </div>
+    <h2 class="dash-title">Dossier: Alta Cordillera</h2>
+    <div class="dash-sub">Vialidad y Tránsito Escolar</div>
+  </div>
+
+  <!-- SECCION ANFITRIONA / IA -->
+  <div id="ai-section" style="display: flex; flex-wrap: wrap; gap: 20px; align-items: stretch; margin-bottom: 2rem;">
+      
+      <!-- 3D VIEWER CONTAINER -->
+      <div style="flex: 1.2; min-width: 320px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 1.5rem; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 1rem;">
+              <span style="font-size: 1.2rem;">👤</span>
+              <div style="text-align: left;">
+                  <h2 style="font-size: 1.4rem; margin: 0; font-weight:800;">Anfitriona Virtual</h2>
+                  <p style="color: var(--primary); font-size: 0.75rem; margin: 0; text-transform:uppercase; letter-spacing:1px;">Directora Corporativa - Alta Cordillera</p>
+              </div>
+          </div>
+
+          <div style="position: relative; height: 400px; background: radial-gradient(circle, rgba(56,189,248,0.05) 0%, transparent 70%); border-radius: 16px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05);">
+              <div id="anim-status">⚙️ Iniciando articulaciones...</div>
+              <button class="anim-reload" onclick="detectAnimations()">🔄 Recargar</button>
+              <model-viewer 
+                  id="director-model"
+                  src="directora_altacordillera.glb?v=ULTIMATE_V5"
+                  alt="Directora Colegio Alta Cordillera"
+                  auto-rotate
+                  camera-controls
+                  camera-orbit="0deg 85deg 105%"
+                  field-of-view="35deg"
+                  shadow-intensity="1"
+                  environment-image="neutral"
+                  exposure="1.2"
+                  autoplay
+                  style="width: 100%; height: 100%; background: transparent;">
+                  <div id="controls" style="position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; flex-wrap: wrap; z-index: 10; width: 95%; justify-content: center;">
+                    <!-- Dinámico -->
+                  </div>
+              </model-viewer>
+          </div>
+      </div>
+
+      <!-- CHAT IA CONTAINER -->
+      <div id="chat-container" style="flex: 1; min-width: 320px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 1.5rem; display: flex; flex-direction: column; height: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px;">
+              <div style="font-weight: 800; color: var(--accent); letter-spacing: 2px; font-size: 0.7rem; text-transform:uppercase;">CENTINEL IA - SISTEMA ACTIVO</div>
+              <div id="ia-blink" style="width: 8px; height: 8px; background: #00ff00; border-radius: 50%; box-shadow: 0 0 10px #00ff00; animation: blink 2s infinite;"></div>
+          </div>
+
+          <div id="chat-messages" style="flex: 1; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 12px; padding: 15px; margin-bottom: 15px; scroll-behavior: smooth; border: 1px solid rgba(255,255,255,0.05);">
+              <div class="msg-bot">Hola, soy la Directora en versión IA. He analizado el decreto vial, los informes PDF y el audio MP3. ¿En qué puedo ayudarte hoy? <br><small><i>Escribe sobre 'vialidad', 'decreto' o 'audios'.</i></small></div>
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+              <input type="text" id="chat-input" placeholder="Pregunta sobre el dossier..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 10px; color: white; outline: none; font-size:0.9rem;">
+              <button onclick="sendChat()" style="background: var(--primary); border: none; border-radius: 10px; width: 40px; cursor: pointer; color: #000; font-size:1.2rem;">🚀</button>
+              <button onclick="startVoice()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; width: 40px; cursor: pointer; color: white;">🎤</button>
+          </div>
+      </div>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">🎬 Video Institucional: Alta Cordillera</div>
+    <video controls style="width:100%; border-radius:10px; background:#000;">
+      <source src="video-altacordillera.mp4" type="video/mp4">
+      Tu navegador no soporta video.
+    </video>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">🎙️ Podcast: Medidas de Tránsito en Colegio Alta Cordillera</div>
+    <p style="color:var(--muted);margin-bottom:1rem;">Audio informativo sobre el nuevo sentido único en calle Cardenal Oviedo.</p>
+    <audio controls class="audio-player">
+      <source src="Sentido_unico_AltaCordillera.mp3" type="audio/mpeg">
+      Tu navegador no soporta el audio.
+    </audio>
+  </div>
+
+  <div class="media-frame">
+    <div class="panel-title">📄 Minuta de Vialidad Escolar</div>
+    <p style="color:var(--muted);margin-bottom:1rem;">Documento técnico y plano de la nueva disposición.</p>
+    <iframe src="Vialidad_Escolar_AltaCordillera.pdf" width="100%" height="600px"></iframe>
+  </div>
+</div>
+
+<script>
+  const CLAVE_ACCESO = 'laserena2026';
+  const CLAVE_MAESTRA = 'vlsadmin2026';
+
+  function validateAccess() {
+    const name = document.getElementById('user-name').value;
+    const inst = document.getElementById('user-inst').value;
+    const email = document.getElementById('user-email').value;
+    const pass = document.getElementById('user-pass').value;
+    const error = document.getElementById('gate-error');
+
+    if (pass === CLAVE_MAESTRA) { showLogs(); return; }
+    if (!name || !inst || !email || !pass) { error.innerText = "⚠️ Todos los campos son obligatorios."; return; }
+    if (pass !== CLAVE_ACCESO) { error.innerText = "❌ Clave de acceso incorrecta."; return; }
+
+    const logs = JSON.parse(localStorage.getItem('vls_access_logs_altacordillera') || '[]');
+    logs.push({ date: new Date().toLocaleString(), name, inst, email });
+    localStorage.setItem('vls_access_logs_altacordillera', JSON.stringify(logs));
+
+    sessionStorage.setItem('unlocked_altacordillera', 'true');
+    showDashboard();
+  }
+
+  // IA CHAT LOGIC (Expanded Knowledge Base)
+  const knowledgeBase = {
+    "vialidad": "La propuesta de vialidad escolar para Coquimbo implementa perímetros seguros en el Colegio Alta Cordillera mediante sentidos únicos y señalética inteligente.",
+    "decreto": "El decreto vial establece la reducción de velocidad a 30km/h en zonas escolares y la reglamentación de los flujos de buses institucionales.",
+    "audio": "En el podcast analizamos cómo estas medidas impactan positivamente en el sector del Culebrón y la calidad de vida de los vecinos de La Serena y Coquimbo.",
+    "pdf": "El informe PDF contiene los mapas de tráfico y la justificación técnica de la nueva disposición vial.",
+    "educacion": "El sistema educativo chileno se fortalece con estas alianzas entre municipios y colegios para garantizar entornos protegidos para los alumnos.",
+    "historia": "Tanto La Serena como Coquimbo poseen una rica historia republicana y colonial que hoy se proyecta hacia el futuro mediante ciudades inteligentes (Smart City).",
+    "coquimbo": "Coquimbo es una zona estratégica para este piloto de Smart City, comenzando con la seguridad vial en el Colegio Alta Cordillera.",
+    "serena": "La Serena y Coquimbo trabajan en conjunto por una movilidad más sustentable y segura para toda la provincia de Elqui.",
+    "chile": "Este proyecto posiciona a Chile como líder regional en la integración de IA y 3D en la gestión de servicios municipales y atención ciudadana.",
+    "noticias": "En las últimas noticias, se destaca el avance del 90% en la implementación de la nueva señalética para el inicio del año escolar.",
+    "hola": "¡Bienvenido! Soy la inteligencia artificial de Alta Cordillera. ¿Deseas consultar sobre vialidad, decretos, historia de la zona o actualidad educativa?",
+    "default": "Entendido. Según el dossier, Alta Cordillera está liderando la implementación de perímetros escolares seguros. ¿Deseas más detalles sobre la vialidad o una respuesta sobre la historia de Coquimbo?"
+  };
+
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+
+  function speak(text) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
+    // Prioritize a Spanish female voice for the Director
+    const femaleVoice = voices.find(v => v.lang.includes('es') && (v.name.includes('Monica') || v.name.includes('Lucia') || v.name.includes('Female') || v.name.includes('Google')));
+    if (femaleVoice) utterance.voice = femaleVoice;
+    utterance.lang = 'es-CL';
+    utterance.rate = 1.0;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function sendChat() {
+    const text = chatInput.value.toLowerCase().trim();
+    if (!text) return;
+    chatMessages.innerHTML += `<div class="msg-user">${chatInput.value}</div>`;
+    chatInput.value = "";
+    setTimeout(() => {
+      let response = knowledgeBase["default"];
+      for (let key in knowledgeBase) { if (text.includes(key)) { response = knowledgeBase[key]; break; } }
+      chatMessages.innerHTML += `<div class="msg-bot">${response}</div>`;
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      speak(response);
+    }, 400);
+  }
+
+  function startVoice() { speak("Sistema de escucha activo. Por favor, escribe tu pregunta."); chatInput.focus(); }
+
+  chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') sendChat(); });
+
+  const modelViewer = document.querySelector("#director-model");
+  const animationMap = {
+    "NLATRACK": "👋 Saludo Cordial",
+    "NLATRACK.001": "🗣️ Presentación Dossier",
+    "NLATRACK.002": "📏 Medidas Viales",
+    "NLATRACK.003": "👣 Recorrido Seguro"
+  };
+
+  function detectAnimations() {
+    const animations = modelViewer.availableAnimations;
+    const status = document.getElementById('anim-status');
+    const controls = document.getElementById('controls');
+    if (animations && animations.length > 0) {
+      status.innerHTML = `✅ INTERACTUAR (${animations.length})`;
+      controls.innerHTML = ""; 
+      animations.forEach((animName, index) => {
+        const btn = document.createElement("button");
+        const cleanKey = animName.trim().toUpperCase();
+        
+        let label = animationMap[cleanKey];
+        if (!label) {
+            // Precise matching for tracks with numbers or dots
+            const raw = animName.toUpperCase().trim();
+            if (raw.includes("NLATRACK")) {
+                if (raw.includes(".001")) label = "🗣️ Presentación Dossier";
+                else if (raw.includes(".002")) label = "📏 Medidas Viales";
+                else if (raw.includes(".003")) label = "👣 Recorrido Seguro";
+                else label = "👋 Saludo Cordial";
+            }
+            else if (raw.includes("SALUDO")) label = "👋 SALUDO";
+            else if (raw.includes("TALK") || raw.includes("PRESENTA")) label = "🗣️ EXPLICAR";
+            else if (raw.includes("WALK") || raw.includes("CAMINA")) label = "🚶 CAMINAR";
+            else label = animName.replace(/_/g, ' ').replace('Armature|', '').replace('Mixamo.com|', '').toUpperCase();
+        }
+        
+        btn.innerText = label;
+        btn.className = "anim-btn"; btn.style.margin = "3px";
+        btn.onclick = () => { 
+          document.querySelectorAll(".anim-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active"); modelViewer.animationName = animName; modelViewer.play();
+        };
+        controls.appendChild(btn);
+        if (index === 0 && !modelViewer.animationName) { btn.classList.add("active"); modelViewer.animationName = animName; modelViewer.play(); }
+      });
+    }
+  }
+
+  function showDashboard() {
+    document.getElementById('access-screen').style.display = 'none';
+    document.getElementById('dashboard-screen').style.display = 'block';
+    document.body.style.alignItems = 'flex-start';
+    setTimeout(detectAnimations, 1000);
+  }
+  modelViewer.addEventListener("load", () => { detectAnimations(); setTimeout(detectAnimations, 1000); });
+
+  if (sessionStorage.getItem('unlocked_altacordillera') === 'true') { showDashboard(); }
+</script>
+</body>
+</html>

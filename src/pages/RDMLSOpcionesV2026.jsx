@@ -12,13 +12,13 @@ import { OrbitControls, useGLTF, Environment, ContactShadows, Float } from '@rea
 import { db, storage } from '../utils/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
+import UniversalSerenito from '../components/UniversalSerenito';
+
 /* --- 3D AVATAR (Serenito Humanized) --- */
 function SerenitoAdmin() {
-    // Reusing the draco-optimized avatar for consistency and stability
-    const { scene } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     return (
-        <group scale={2.8} position={[0, -2, 0]} rotation={[0, -0.4, 0]}>
-            <primitive object={scene} />
+        <group scale={0.08} position={[0, -2, 0]} rotation={[0, -0.4, 0]}>
+            <UniversalSerenito animation="Idle" />
         </group>
     );
 }

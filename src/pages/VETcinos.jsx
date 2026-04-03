@@ -12,12 +12,13 @@ import { OrbitControls, useGLTF, Float, Environment, ContactShadows } from '@rea
 import { db } from '../utils/firebase';
 import { collection, addDoc, serverTimestamp, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
 
+import UniversalSerenito from '../components/UniversalSerenito';
+
 /* --- 3D AVATAR (Serenito & Pandilla) --- */
 function SerenitoEdu() {
-    const { scene } = useGLTF('/serenito_draco.glb', 'https://www.gstatic.com/draco/versioned/decoders/1.5.7/');
     return (
-        <group scale={2.8} position={[0, -2, 0]}>
-            <primitive object={scene} />
+        <group scale={0.08} position={[0, -2, 0]}>
+            <UniversalSerenito animation="Talking" />
         </group>
     );
 }

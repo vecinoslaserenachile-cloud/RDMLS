@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { MessageSquare, Send, User, ShieldCheck, Flag, ThumbsUp, Paperclip } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function CommentSection({ themeColor = '#ef4444', reportTitle = "Investigación" }) {
-    const [comments, setComments] = useState([
+export default function CommentSection({ themeColor = '#ef4444', reportTitle = "Investigación", initialComments = [] }) {
+    const defaultComments = [
         { id: 1, user: "Juan Manuel Lagos", text: "He notado que los precios en Puerta del Mar han subido un 15% a pesar de la baja de ventas. ¿Cómo se explica eso?", status: 'vecino-verificado', date: 'Hace 2 horas', likes: 12 },
         { id: 2, user: "Dra. Eliana Soto", text: "Excelente análisis. Como economista regional, veo que el factor de riesgo legislativo es real. Se requiere una ley corta ahora.", status: 'experto', date: 'Hace 5 horas', likes: 45 },
         { id: 3, user: "Vecina San Joaquín", text: "Nosotros frenamos la compra de nuestro departamento en El Milagro esperando este cambio. El artículo es 100% real.", status: 'vecino', date: 'Hace 8 horas', likes: 28 }
-    ]);
+    ];
+
+    const [comments, setComments] = useState(initialComments.length > 0 ? initialComments : defaultComments);
 
     const [newComment, setNewComment] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);

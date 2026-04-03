@@ -7,7 +7,8 @@ import {
     Search, Map, Bell, Wifi, Activity,
     Music, Share2, ShieldCheck,
     Twitter, Facebook, Instagram,
-    Calendar, Rocket, Shirt, Award
+    Calendar, Rocket, Shirt, Award, 
+    PencilLine as StickyIcon
 } from 'lucide-react';
 
 
@@ -29,6 +30,14 @@ export default function SmartToolbox() {
             event: 'toggle-radio-visibility',
             color: '#38bdf8',
             bgColor: 'rgba(56, 189, 248, 0.2)'
+        },
+        {
+            id: 'sticky-note',
+            icon: StickyIcon,
+            label: 'Papelito Amarillo',
+            event: 'open-sticky-note',
+            color: '#fbbf24',
+            bgColor: 'rgba(251, 191, 36, 0.2)'
         },
         { 
             id: 'vecinity-pay', 

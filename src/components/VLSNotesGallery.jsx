@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Play, BookOpen, User, Calendar, ExternalLink, X, MessageSquare, Share2, Quote, Music, Video, Newspaper, Users, Award, Heart, Globe, Mic, Image as ImageIcon, Bird, Waves, ShieldCheck, Home, Thermometer, Sparkles, Building2, Landmark, Palette, Mountain, CloudRain, Wind, Beef, Apple, Moon, Stars, Baby, Briefcase, Shovel, Hammer, Sprout, FileSearch, Scale, Zap, Volume2, Activity, LayoutGrid, Droplets, Eye, Brain, Clock, Box } from 'lucide-react';
+import { Search, Filter, Play, BookOpen, User, Calendar, ExternalLink, X, MessageSquare, Share2, Quote, Music, Video, Newspaper, Users, Award, Heart, Globe, Mic, Image as ImageIcon, Bird, Waves, ShieldCheck, Home, Thermometer, Sparkles, Building2, Landmark, Palette, Mountain, CloudRain, Wind, Beef, Apple, Moon, Stars, Baby, Briefcase, Shovel, Hammer, Sprout, FileSearch, Scale, Zap, Volume2, Heart as Activity, LayoutGrid, Droplets, Eye, Brain, Clock, Box } from 'lucide-react';
 
 const LEGACY_NOTES = [
     { 
@@ -200,6 +200,9 @@ const LEGACY_NOTES = [
             { icon: Landmark, label: 'Política Rural', color: '#38bdf8', desc: 'Identidad Elqui' }
         ]
     },
+];
+
+const PRIVATE_NOTES = [
     { 
         id: "FBI_LIARS_VLS", type: "INTELIGENCIA", cat: "INTELIGENCIA", title: "Centinel Faro: Señales de Mentira", 
         titular: "12 Señales del FBI para detectar un mentiroso", 
@@ -234,20 +237,29 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [selectedNote, setSelectedNote] = useState(null);
 
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener('resize', handleResize);
-    
-    // Auto-open via URL parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    const noteId = urlParams.get('note');
-    if (noteId) {
-       const noteFound = LEGACY_NOTES.find(n => n.id === noteId);
-       if (noteFound) setSelectedNote(noteFound);
-    }
-
-    return () => window.removeEventListener('resize', handleResize);
+  const handleResize = useCallback(() => {
+    setIsMobile(window.innerWidth < 1024);
   }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    const handleOpenExternal = (e) => {
+      const noteId = e.detail;
+      if (noteId) {
+        const noteFound = LEGACY_NOTES.find(n => n.id === noteId);
+        if (noteFound) {
+            setSelectedNote(noteFound);
+        }
+      }
+    };
+    window.addEventListener('open-vls-note', handleOpenExternal);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('open-vls-note', handleOpenExternal);
+    };
+  }, [handleResize]);
 
   const categories = ['ALL', 'Sesiones Musicales', 'EntreVecinas', 'Hemeroteca', 'INTELIGENCIA', 'HUMOR'];
 
