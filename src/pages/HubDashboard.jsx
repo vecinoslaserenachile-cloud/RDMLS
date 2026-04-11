@@ -14,7 +14,7 @@ const PLAYLIST_INSTITUTIONAL = [
 ];
 
 const PLAYLIST_LUDIC = [
-    { url: 'https://vimeo.com/712520/embed', title: 'DOC: CALETA SAN PEDRO', platform: 'TVLS' },
+    { url: '/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg', title: 'Marea Humana: 4.000 Personas en la Av. del Mar', isPoster: true },
     { url: '/serenito_security_guard_close_up_1773392164475.png', title: 'PROMO: Seguridad Ciudadana VLS', isPoster: true },
     { url: '/portada_vls_trivia.jpg', title: 'PROMO: VLSabes - ¡Juega & Gana!', isPoster: true },
     { url: '/kiosko_3d_la_serena.png', title: 'PROMO: Kiosko Inteligente VLS', isPoster: true },
@@ -23,14 +23,14 @@ const PLAYLIST_LUDIC = [
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
     VolumeX, ChevronUp, ChevronDown, Heart as ActivityIcon,
-    Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock,
+    Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock, Clock,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2
 } from 'lucide-react';
 import {
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf, Droplets,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves, Construction, Hammer, Gem
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -39,7 +39,7 @@ import GoreDashboard from './GoreDashboard';
 import MarketplaceVecinal from '../components/MarketplaceVecinal';
 import BitacoraC5 from '../components/BitacoraC5';
 import PolideportivoVecinal from '../components/PolideportivoVecinal';
-import SportsDataStrip from '../components/SportsDataStrip';
+// import SportsDataStrip from '../components/SportsDataStrip';
 import VecnityPay from '../components/VecnityPay';
 import TuercaVecinos from '../components/TuercaVecinos';
 import VeciCat from '../components/VeciCat';
@@ -84,6 +84,10 @@ const VLSNewsBencinazo = lazy(() => import('../components/VLSNewsBencinazo'));
 const VLSNewsSentinel = lazy(() => import('../components/VLSNewsSentinel'));
 const VLSNewsPoduje = lazy(() => import('../components/VLSNewsPoduje'));
 const VLSNewsAguasValle = lazy(() => import('../components/VLSNewsAguasValle'));
+const VLSNewsArtemis = lazy(() => import('../components/VLSNewsArtemis'));
+const VLSNewsChequia = lazy(() => import('../components/VLSNewsChequia'));
+const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
+const VLSNewsAvalancha = lazy(() => import('../components/VLSNewsAvalancha'));
 const VLSNotesGallery = lazy(() => import('../components/VLSNotesGallery'));
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
@@ -95,12 +99,12 @@ const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion
 const DistancesMap = lazy(() => import('../components/DistancesMap'));
 import QuickEmergencyBar from '../components/QuickEmergencyBar';
 import EmergencyDirectory from '../components/EmergencyDirectory';
-
+import NewsDataStrip from '../components/NewsDataStrip';
 
 export default function HubDashboard() {
     // 1. Context & Routing
     const navigate = useNavigate();
-    const { weather, isAuthorized, isGuest, isRegistered, currentUser } = useOutletContext();
+    const { weather, isAuthorized, isGuest, isRegistered, currentUser, handleLogin, handleLogout } = useOutletContext();
     const { lang, setLang, t: translate } = useTranslation();
 
     // 2. Environmental Constants & Storage
@@ -143,6 +147,114 @@ export default function HubDashboard() {
     const [deviceType, setDeviceType] = useState('Escritorio');
     const [DeviceIcon, setDeviceIcon] = useState(() => Monitor);
     const [vlsStats, setVlsStats] = useState({ liveUsers: 14228, totalServed: 2453.44, growth: '+284%' });
+    
+    // ── GESTIÓN DE HANDLERS GLOBALES (Component Scope) ──
+    const closeAllPopups = () => {
+        setShowPoll(false); setShowGalaxia(false); setShowRoadmap(false); setShowManifesto(false);
+        setShowPrecolombino(false); setShowAmbientMode(false); setShowCentralDifusion(false);
+        setShowVirtualAssistant(false); setShowVLSMotors(false); setShowOrientacionLegal(false);
+        setShowSerenaMetAdmin(false); setShowVLSpeak(false); setShowSafeRoute(false);
+        setShowSocialVision(false); setShowAnalyticsApp(false); setShowSmartAdminPortal(false);
+        setShowInvestigacion(false); setShowSemanaSanta(false); setShowBencinazo(false);
+        setShowSentinelNote(false); setShowAirportMonitor(false); setShowPortMonitor(false);
+        setShowParliamentary(false); setShowAlcaldes(false); setShowMemorialHijos(false);
+        setShowTuerca(false); setShowVeciCat(false); setShowTiendaPoleras(false); setShowVecnityPay(false);
+        setShowDirectory(false); setShowVLSNewsIan(false); setShowVialNews(false); setShowSeguridadVecinal(false);
+        setShowRequestPortal(false); setShowBackofficeMovil(false); setShowAjedrez(false);
+        setShowEstudio(false); setShowVLSNewsArtemis(false); setShowChequia(false); setShowIglesias(false);
+        setShowVLSNewsTimeChange(false);
+        setShowArquiartista(false);
+        setReportInitialCategory(null);
+    };
+
+    const handleDecision = () => { closeAllPopups(); setShowPoll(true); };
+    const handleGalaxia = () => { closeAllPopups(); setShowGalaxia(true); };
+    const handleRoadmap = () => { closeAllPopups(); setShowRoadmap(true); };
+    const handleManifesto = () => { closeAllPopups(); setShowManifesto(true); };
+    const handlePrecolombino = () => { closeAllPopups(); setShowPrecolombino(true); };
+    const handleAmbient = () => { closeAllPopups(); setShowAmbientMode(true); };
+    const handleDifusion = () => { closeAllPopups(); setShowCentralDifusion(true); };
+    const handleFaroIA = () => { closeAllPopups(); setShowVirtualAssistant(true); };
+    const handleArtemis = () => { 
+        closeAllPopups(); 
+        navigate('/artemisa'); 
+        window.dispatchEvent(new CustomEvent('open-vls-artemis', { detail: { routed: true } })); 
+    };
+    const handleUcen = () => { 
+        closeAllPopups(); 
+        navigate('/ucen'); 
+        window.dispatchEvent(new CustomEvent('open-vls-ucen', { detail: { routed: true } })); 
+    };
+    const handleMotors = () => { closeAllPopups(); setShowVLSMotors(true); };
+    const handleLegal = () => { closeAllPopups(); setShowOrientacionLegal(true); };
+    const handleMetAdmin = () => { closeAllPopups(); setShowSerenaMetAdmin(true); };
+    const handleVLSpeak = () => { closeAllPopups(); setShowVLSpeak(true); setActiveTutorial('vlspeak'); };
+    const handleSafeRoute = () => { closeAllPopups(); setShowSafeRoute(true); setActiveTutorial('safe-route'); };
+    const handleSocialVision = () => { closeAllPopups(); setShowSocialVision(true); setActiveTutorial('radar'); };
+    const handleAnalytics = () => { closeAllPopups(); setShowAnalyticsApp(true); };
+    const handleSmartAdmin = () => { closeAllPopups(); setShowSmartAdminPortal(true); };
+    const handleInvestigacion = () => { closeAllPopups(); setShowInvestigacion(true); };
+    const handleSemanaSanta = () => { closeAllPopups(); setShowSemanaSanta(true); };
+    const handleBencinazo = () => { closeAllPopups(); setShowBencinazo(true); };
+    const handleSentinelNote = () => { closeAllPopups(); setShowSentinelNote(true); };
+    const handleAirport = () => { closeAllPopups(); setShowAirportMonitor(true); };
+    const handlePort = () => { closeAllPopups(); setShowPortMonitor(true); };
+    const handleParliamentary = () => { closeAllPopups(); setShowParliamentary(true); };
+    const handleAlcaldes = () => { closeAllPopups(); setShowAlcaldes(true); };
+    const handleHubDirectory = () => { closeAllPopups(); setShowDirectory(true); };
+    const handleSmartReport = (e) => { 
+        closeAllPopups(); 
+        setReportInitialCategory(e?.detail?.category || null);
+        setShowRequestPortal(true); 
+    };
+    const handleEstudio = () => { closeAllPopups(); setShowEstudio(true); };
+    const handleAndacollo = () => { closeAllPopups(); navigate('/andacollo'); };
+    const handleVallenar = () => { closeAllPopups(); navigate('/vallenar'); };
+    const handleMemorial = () => { closeAllPopups(); setShowMemorialHijos(true); };
+    const handleTuerca = () => { closeAllPopups(); setShowTuerca(true); };
+    const handleVeciCat = () => { closeAllPopups(); setShowVeciCat(true); };
+    const handleTienda = () => { closeAllPopups(); setShowTiendaPoleras(true); };
+    const handleVecnityPay = (e) => {
+        closeAllPopups();
+        if (e && e.detail) setInitialOrder(e.detail);
+        else setInitialOrder(null);
+        setShowVecnityPay(true);
+    };
+    const handleRequestPortal = () => { closeAllPopups(); setShowRequestPortal(true); };
+    const handleBackofficeMovil = () => { closeAllPopups(); setShowBackofficeMovil(true); };
+    const handleAjedrez = () => { closeAllPopups(); setShowAjedrez(true); };
+    const handleIan = () => { closeAllPopups(); setShowVLSNewsIan(true); };
+    const handleSeguridad = () => { closeAllPopups(); setShowSeguridadVecinal(true); };
+    const handleJuanSoldado = () => { 
+        closeAllPopups();
+        navigate('/juansoldado');
+    };
+    const handleChequia = () => { closeAllPopups(); setShowChequia(true); };
+    const handleIglesias = () => { closeAllPopups(); setShowIglesias(true); };
+    const handleAvalancha = () => { closeAllPopups(); setShowNewsAvalancha(true); };
+    const handleHorario = () => { closeAllPopups(); setShowVLSNewsTimeChange(true); };
+    const handleArquiartista = () => { closeAllPopups(); setShowArquiartista(true); };
+    
+    const handleShareNews = (news) => {
+        if (!news) return;
+        const baseUrl = window.location.origin;
+        let path = '/';
+        // Deep linking mapping
+        if (news.eventId === 'open-vls-alcaldesa') path = '/alcaldesa';
+        else if (news.eventId === 'open-vls-horario') path = '/horario';
+        else if (news.eventId === 'open-vls-ucen') path = '/ucen';
+        else if (news.eventId === 'open-vls-artemis') path = '/artemis';
+        
+        const slug = news.id || news.title.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        const shareUrl = `${baseUrl}${path}${path === '/' ? '?news=' : '?news='}${slug}`;
+
+        if (navigator.share) {
+            navigator.share({ title: news.title, url: shareUrl }).catch(() => {});
+        } else {
+            navigator.clipboard.writeText(shareUrl);
+            alert('¡Enlace de noticia copiado al portapapeles!');
+        }
+    };
 
     // UI State Toggles
     const [showOmnibox, setShowOmnibox] = useState(false);
@@ -181,8 +293,17 @@ export default function HubDashboard() {
     const [showSentinelNote, setShowSentinelNote] = useState(false);
     const [showPoduje, setShowPoduje] = useState(false);
     const [showVLSNewsIan, setShowVLSNewsIan] = useState(false);
+    const [showVialNews, setShowVialNews] = useState(false);
+    const [showVLSNewsTimeChange, setShowVLSNewsTimeChange] = useState(false);
+    const [showArquiartista, setShowArquiartista] = useState(false);
+    const [showVLSNewsArtemis, setShowVLSNewsArtemis] = useState(location.pathname.toLowerCase().includes('/artemis') || location.pathname.toLowerCase().includes('/artemisa'));
+    const [showVLSNewsUcen, setShowVLSNewsUcen] = useState(location.pathname.toLowerCase().includes('/ucen'));
     const [showAguasValle, setShowAguasValle] = useState(false);
     const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
+    const [showChequia, setShowChequia] = useState(false);
+    const [showIglesias, setShowIglesias] = useState(false);
+    const [showNewsAvalancha, setShowNewsAvalancha] = useState(false);
+    const [showJuanSoldado, setShowJuanSoldado] = useState(false);
     const [showParliamentary, setShowParliamentary] = useState(false);
     const [showRequestPortal, setShowRequestPortal] = useState(false);
     const [activeTutorial, setActiveTutorial] = useState(null);
@@ -442,72 +563,10 @@ export default function HubDashboard() {
     }, [videoSelected, currentPlaylist, TVLS_VIDEOS.length]);
 
 
-    const closeAllPopups = () => {
-        setShowPoll(false); setShowGalaxia(false); setShowRoadmap(false); setShowManifesto(false);
-        setShowPrecolombino(false); setShowAmbientMode(false); setShowCentralDifusion(false);
-        setShowVirtualAssistant(false); setShowVLSMotors(false); setShowOrientacionLegal(false);
-        setShowSerenaMetAdmin(false); setShowVLSpeak(false); setShowSafeRoute(false);
-        setShowSocialVision(false); setShowAnalyticsApp(false); setShowSmartAdminPortal(false);
-        setShowInvestigacion(false); setShowSemanaSanta(false); setShowBencinazo(false);
-        setShowSentinelNote(false); setShowAirportMonitor(false); setShowPortMonitor(false);
-        setShowParliamentary(false); setShowAlcaldes(false); setShowMemorialHijos(false);
-        setShowTuerca(false); setShowVeciCat(false); setShowTiendaPoleras(false); setShowVecnityPay(false);
-        setShowDirectory(false); setShowVLSNewsIan(false); setShowSeguridadVecinal(false);
-        setShowRequestPortal(false); setShowBackofficeMovil(false); setShowAjedrez(false);
-        setShowEstudio(false); setReportInitialCategory(null);
-    };
-
     useEffect(() => {
         const handleStorage = () => { };
         handleStorage();
         window.addEventListener('storage', handleStorage);
-
-        const handleDecision = () => { closeAllPopups(); setShowPoll(true); };
-        const handleGalaxia = () => { closeAllPopups(); setShowGalaxia(true); };
-        const handleRoadmap = () => { closeAllPopups(); setShowRoadmap(true); };
-        const handleManifesto = () => { closeAllPopups(); setShowManifesto(true); };
-        const handlePrecolombino = () => { closeAllPopups(); setShowPrecolombino(true); };
-        const handleAmbient = () => { closeAllPopups(); setShowAmbientMode(true); };
-        const handleDifusion = () => { closeAllPopups(); setShowCentralDifusion(true); };
-        const handleFaroIA = () => { closeAllPopups(); setShowVirtualAssistant(true); };
-
-        const handleMotors = () => { closeAllPopups(); setShowVLSMotors(true); };
-        const handleLegal = () => { closeAllPopups(); setShowOrientacionLegal(true); };
-        const handleMetAdmin = () => { closeAllPopups(); setShowSerenaMetAdmin(true); };
-        const handleVLSpeak = () => { closeAllPopups(); setShowVLSpeak(true); setActiveTutorial('vlspeak'); };
-        const handleSafeRoute = () => { closeAllPopups(); setShowSafeRoute(true); setActiveTutorial('safe-route'); };
-        const handleSocialVision = () => { closeAllPopups(); setShowSocialVision(true); setActiveTutorial('radar'); };
-        const handleAnalytics = () => { closeAllPopups(); setShowAnalyticsApp(true); };
-        const handleSmartAdmin = () => { closeAllPopups(); setShowSmartAdminPortal(true); };
-        const handleInvestigacion = () => { closeAllPopups(); setShowInvestigacion(true); };
-        const handleSemanaSanta = () => { closeAllPopups(); setShowSemanaSanta(true); };
-        const handleBencinazo = () => { closeAllPopups(); setShowBencinazo(true); };
-        const handleSentinelNote = () => { closeAllPopups(); setShowSentinelNote(true); };
-        const handleAirport = () => { closeAllPopups(); setShowAirportMonitor(true); };
-        const handlePort = () => { closeAllPopups(); setShowPortMonitor(true); };
-        const handleParliamentary = () => { closeAllPopups(); setShowParliamentary(true); };
-        const handleAlcaldes = () => { closeAllPopups(); setShowAlcaldes(true); };
-        const handleHubDirectory = () => { closeAllPopups(); setShowDirectory(true); };
-        const handleSmartReport = (e) => { 
-            closeAllPopups(); 
-            setReportInitialCategory(e.detail?.category || null);
-            setShowRequestPortal(true); 
-        };
-        const handleEstudio = () => { closeAllPopups(); setShowEstudio(true); };
-        const handleMemorial = () => { closeAllPopups(); setShowMemorialHijos(true); };
-        const handleTuerca = () => { closeAllPopups(); setShowTuerca(true); };
-        const handleVeciCat = () => { closeAllPopups(); setShowVeciCat(true); };
-        const handleTienda = () => { closeAllPopups(); setShowTiendaPoleras(true); };
-        const handleVecnityPay = (e) => {
-            closeAllPopups();
-            if (e && e.detail) setInitialOrder(e.detail);
-            else setInitialOrder(null);
-            setShowVecnityPay(true);
-        };
-        const handleRequestPortal = () => { closeAllPopups(); setShowRequestPortal(true); };
-        const handleBackofficeMovil = () => { closeAllPopups(); setShowBackofficeMovil(true); };
-        const handleAjedrez = () => { closeAllPopups(); setShowAjedrez(true); };
-
 
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
@@ -518,6 +577,21 @@ export default function HubDashboard() {
         window.addEventListener('open-central-difusion', handleDifusion);
         window.addEventListener('open-faro-ia', handleFaroIA);
         window.addEventListener('open-hub-directory', handleHubDirectory);
+        window.addEventListener('open-vls-artemis', (e) => { 
+            if (e.detail?.routed) return;
+            closeAllPopups(); 
+            navigate('/artemisa'); 
+        });
+        window.addEventListener('open-vls-ucen', (e) => { 
+            if (e.detail?.routed) return;
+            closeAllPopups(); 
+            navigate('/ucen'); 
+        });
+        window.addEventListener('open-vls-juansoldado', handleJuanSoldado);
+        window.addEventListener('open-vls-andacollo', handleAndacollo);
+        window.addEventListener('open-vls-vallenar', handleVallenar);
+        window.addEventListener('open-vls-chequia', handleChequia);
+        window.addEventListener('open-vls-avalancha', handleAvalancha);
 
         window.addEventListener('open-vls-motors', handleMotors);
         window.addEventListener('open-orientacion-legal', handleLegal);
@@ -551,17 +625,17 @@ export default function HubDashboard() {
         window.addEventListener('open-vecinity-pay', handleVecnityPay);
         window.addEventListener('open-smart-business', handleRequestPortal);
         window.addEventListener('open-backoffice-movil', handleBackofficeMovil);
-        const handleIan = () => { closeAllPopups(); setShowVLSNewsIan(true); };
-        const handleSeguridad = () => { closeAllPopups(); setShowSeguridadVecinal(true); };
 
         window.addEventListener('open-vls-ian', handleIan);
         window.addEventListener('open-vls-seguridad', handleSeguridad);
+        window.addEventListener('open-vls-iglesias', handleIglesias);
         window.addEventListener('open-ajedrez-patrimonial', handleAjedrez);
+        window.addEventListener('open-vls-horario', handleHorario);
+        window.addEventListener('open-arquiartista', handleArquiartista);
 
         // URL Parameter Routing (Deep Linking)
         const urlParams = new URLSearchParams(window.location.search);
         const newsParam = urlParams.get('news');
-        const noteParam = urlParams.get('note');
 
         if (newsParam) {
             switch(newsParam) {
@@ -572,15 +646,26 @@ export default function HubDashboard() {
                 case 'aguasvalle': setShowAguasValle(true); break;
                 case 'poduje': setShowPoduje(true); break;
                 case 'ian': handleIan(); break;
+                case 'artemis': handleArtemis(); break;
                 case 'seguridad': handleSeguridad(); break;
+                case 'iglesias': handleIglesias(); break;
+                case 'merced': handleIglesias(); break;
+                case 'juansoldado': handleJuanSoldado(); break;
+                case 'andacollo': handleAndacollo(); break;
+                case 'vallenar': handleVallenar(); break;
+                case 'avalancha': handleAvalancha(); break;
+                case 'horario': handleHorario(); break;
                 default: break;
             }
         }
 
         const pageParam = urlParams.get('page');
         if (pageParam === 'seguridad') handleSeguridad();
+        if (pageParam === 'chequia') handleChequia();
         if (pageParam === 'ian') handleIan();
-
+        if (pageParam === 'artemis') handleArtemis();
+        if (pageParam === 'iglesias' || pageParam === 'merced') handleIglesias();
+        if (pageParam === 'horario' || pageParam === 'cambio-de-hora') handleHorario();
 
         return () => {
             window.removeEventListener('storage', handleStorage);
@@ -593,7 +678,11 @@ export default function HubDashboard() {
             window.removeEventListener('open-central-difusion', handleDifusion);
             window.removeEventListener('open-faro-ia', handleFaroIA);
             window.removeEventListener('open-hub-directory', handleHubDirectory);
-
+            window.removeEventListener('open-vls-artemis', handleArtemis);
+            window.removeEventListener('open-vls-juansoldado', handleJuanSoldado);
+            window.removeEventListener('open-vls-andacollo', handleAndacollo);
+            window.removeEventListener('open-vls-vallenar', handleVallenar);
+            window.removeEventListener('open-vls-chequia', handleChequia);
             window.removeEventListener('open-vls-motors', handleMotors);
             window.removeEventListener('open-orientacion-legal', handleLegal);
             window.removeEventListener('open-serenamet-admin', handleMetAdmin);
@@ -620,25 +709,44 @@ export default function HubDashboard() {
             window.removeEventListener('open-smart-business', handleRequestPortal);
             window.removeEventListener('open-backoffice-movil', handleBackofficeMovil);
             window.removeEventListener('open-ajedrez-patrimonial', handleAjedrez);
-
+            window.removeEventListener('open-vls-ian', handleIan);
+            window.removeEventListener('open-vls-seguridad', handleSeguridad);
+            window.removeEventListener('open-vls-avalancha', handleAvalancha);
+            window.removeEventListener('open-arquiartista', handleArquiartista);
         };
     }, []);
 
     useEffect(() => {
         const handleNews = () => {
             const stored = localStorage.getItem('laserena_official_news');
+            let newsList = [];
+            const defaultNews = [
+                { title: "Marea Humana en la Avenida del Mar", date: "Hoy", category: "DEPORTE", desc: "Más de 4.000 personas celebran el Día del Deporte lideradas por la alcaldesa.", iconStr: "Activity", color: "#ec4899", eventId: "open-vls-alcaldesa", image: "/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg" },
+                { title: "INVESTIGACIÓN: Cambio de Hora 2026", date: "Hoy", category: "HEMEROTECA", desc: "Chile atrasa sus relojes: Historia, ciencia y consejos para asimilar el cambio.", iconStr: "Activity", color: "#fbbf24", eventId: "open-vls-horario" },
+                { title: "HITOS 2026: Gestión Municipal Daniela Norambuena", date: "09 de Abril, 2026", category: "GESTIÓN", desc: "Balance detallado del primer trimestre: Seguridad, Inversión y Plan Serena 2.0.", iconStr: "Star", color: "#38bdf8", eventId: "open-vls-alcaldesa" },
+                { title: "INVESTIGACIÓN: Ojo con tu Boleta (Efecto Avalancha)", date: "09 de Abril, 2026", category: "VLS INVESTIGA", desc: "El sobrecargo invisible de las sanitarias y el abandono de Los Perales.", iconStr: "Droplets", color: "#3b82f6", eventId: "open-vls-avalancha" },
+                { title: "INVESTIGACIÓN: El Futuro de los Negocios (UCEN)", date: "Hoy", category: "ACADEMIA", desc: "42° Congreso ASFAE: El impacto de la IA y la descentralización en Chile.", iconStr: "GraduationCap", color: "#00F0FF", eventId: "open-vls-ucen" },
+                { title: "Misión Artemis II: Rumbo a la Luna", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis" }
+            ];
+
             if (stored) {
                 try {
                     let parsed = JSON.parse(stored);
-                    setOfficialNews(parsed.filter(n => n.state === 'Publicado').slice(0, 3));
+                    newsList = parsed.filter(n => n.state === 'Publicado');
                 } catch (e) { }
-            } else if (window.innerWidth > 1024) {
-                setOfficialNews([
-                    { title: "El Punto Ciego del Retail: Caso Ian", date: "01 de Abril, 2026", category: "VLS INVESTIGA", desc: "El impactante caso de negligencia que cambió la seguridad en supermercados.", iconStr: "ShieldAlert", color: "#ef4444", eventId: "open-vls-ian" },
-                    { title: "Semana Santa 2026: Historia y Tradición", date: "26 de Marzo, 2026", category: "INVESTIGACIÓN ESPECIAL", desc: "Más allá de la fe: Un viaje por las tradiciones globales y chilenas.", iconStr: "Church", color: "#7c3aed", eventId: "open-vls-semanasanta" },
-                    { title: "Centinel Faro: El Ojo Social Predictivo", date: "24 de Marzo, 2026", category: "INTELIGENCIA", desc: "Cómo la IA de VLS detecta crisis antes de que ocurran.", iconStr: "Brain", color: "#38bdf8", eventId: "open-vls-sentinel" }
-                ]);
+            } else {
+                newsList = defaultNews;
             }
+            
+            // Priorizar Marea Humana si es el día del evento
+            if (!newsList.some(n => n.title.includes('Marea Humana'))) {
+                newsList = [defaultNews[0], ...newsList];
+            } else {
+                // Mover al principio si ya existe
+                newsList.sort((a, b) => a.title.includes('Marea Humana') ? -1 : 1);
+            }
+            
+            setOfficialNews(newsList.slice(0, 3));
         };
         handleNews();
         window.addEventListener('storage', handleNews);
@@ -770,7 +878,7 @@ export default function HubDashboard() {
         'escuela-musica', 'escuela-artes', 'tribunales',
         'ecumenico', 'laico', 'farito-browser', 'glosario-vls',
         'stickers-portal', 'difundir-app', 'legacy-vls', 'red-social',
-        'vls-investigacion-2026'
+        'vls-investigacion-2026', 'vls-juansoldado', 'vls-andacollo', 'vls-vallenar', 'vls-domeyko'
     ];
 
     const isRestrictedModule = (id) => {
@@ -796,8 +904,44 @@ export default function HubDashboard() {
 
     const servicios = [
         {
+            id: 'vls-domeyko', title: 'IGNACIO DOMEYKO: SABIO DE CHILE', subtitle: 'Portal 3D · Mineralogía · Cronología · Juego Expedición',
+            icon: Gem, color: '#a78bfa', isEvent: 'open-domeyko-portal', active: true, badge: 'PATRIMONIO', category: 'citizens'
+        },
+        {
+            id: 'lite-portal-access', title: 'CLON DE RESPALDO (Lite Portal)', subtitle: 'Soberanía de Acceso: Versión liviana para datos bajos',
+            icon: ShieldCheck, color: '#10b981', isEvent: 'open-lite-portal', active: true, badge: 'FAILOVER', category: 'citizens'
+        },
+        {
+            id: 'vls-migra', title: 'MIGRA: SEGUNDA FUNDACIÓN', subtitle: 'Investigación: El futuro de la gestión y la migración',
+            icon: MapPin, color: '#ef4444', isEvent: 'open-vls-migra', active: isRDMLS, badge: 'VLS INVESTIGA', category: 'citizens'
+        },
+        {
+            id: 'vls-juansoldado', title: 'JUAN SOLDADO: LA MEMORIA', subtitle: 'Investigación: Orígenes, bruma y justicia popular',
+            icon: Newspaper, color: '#f59e0b', isEvent: 'open-vls-juansoldado', active: true, badge: 'VLS INVESTIGA', category: 'citizens'
+        },
+        {
+            id: 'vls-andacollo', title: 'ANDACOLLO: CIUDAD MONTAÑA', subtitle: 'Investigación: Oro, Fe y Tradición Minera',
+            icon: Church, color: '#10b981', isEvent: 'open-vls-andacollo', active: true, badge: 'VLS INVESTIGA', category: 'citizens'
+        },
+        {
+            id: 'vls-vallenar', title: 'VALLENAR: EL DESIERTO FLORIDO', subtitle: 'Investigación: Embalse Santa Juana y El Valle del Huasco',
+            icon: Waves, color: '#a78bfa', isEvent: 'open-vls-vallenar', active: true, badge: 'VLS INVESTIGA', category: 'citizens'
+        },
+        {
             id: 'vls-ian', title: 'EL PUNTO CIEGO: Caso Ian', subtitle: 'Reportaje: La trampa de los 100 y el abismo del retail',
             icon: ShieldAlert, color: '#ef4444', isEvent: 'open-vls-ian', active: true, badge: 'VLS INVESTIGA'
+        },
+        {
+            id: 'vls-artemis', title: 'Misión Artemis II', subtitle: 'Simulador 3D Orion Spacecraft (NASA High-Fidelity)',
+            icon: Zap, color: '#312e81', isEvent: 'open-vls-artemis', active: true, badge: 'SPACE TECH'
+        },
+        {
+            id: 'vls-chequia', title: 'Chequia: El Corazón de Europa', subtitle: 'Cooperación Internacional y Tecnología de Agua',
+            icon: Globe, color: '#3b82f6', isEvent: 'open-vls-chequia', active: true, badge: 'INTELIGENCIA'
+        },
+        {
+            id: 'vls-ucen', title: 'UCEN: Congreso ASFAE 42', subtitle: 'Investigación: IA, Negocios y Descentralización 2026',
+            icon: GraduationCap, color: '#00F0FF', isEvent: 'open-vls-ucen', active: true, badge: 'ACADEMIA'
         },
         {
             id: 'vls-seguridad', title: 'PORTAL SEGURIDAD VECINAL', subtitle: 'Consejos, Contactos de Emergencia y Red de Protección',
@@ -816,7 +960,7 @@ export default function HubDashboard() {
             icon: Heart, color: '#ec4899', isEvent: 'open-vecicat', active: true, badge: 'NUEVO'
         },
         {
-            id: 'plaza-vecinal', title: 'Plaza Vecinal AI', subtitle: 'Espacio de encuentro ciudadano moderado por IA.', icon: Users, color: '#ec4899', path: 'https://ais-dev-m2dndpdv73k2izyiea7mef-41245370989.us-east5.run.app', isExternal: true, active: true },
+            id: 'plaza-vecinal-ai', title: 'Plaza Vecinal AI', subtitle: 'Espacio de encuentro ciudadano moderado por IA.', icon: Users, color: '#ec4899', path: 'https://ais-dev-m2dndpdv73k2izyiea7mef-41245370989.us-east5.run.app', isExternal: true, active: true },
         {
             id: 'ajedrez-patrimonial', title: 'Ajedrez Patrimonial 3D', subtitle: 'Desafía tu mente en el casco histórico',
             icon: Gamepad2, color: '#fcd34d', isEvent: 'open-ajedrez-patrimonial', active: true, badge: 'SABERES'
@@ -828,6 +972,10 @@ export default function HubDashboard() {
         {
             id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
             icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
+        },
+        {
+            id: 'memorias-unicornio', title: 'Memorias de un Unicornio', subtitle: 'Bitácora Técnica & Legado de Soberanía Digital',
+            icon: Book, color: '#fcd34d', isEvent: 'open-unicorn', active: true, badge: 'BIBLIOTECA'
         },
         {
             id: 'vls-pyme-builder', title: 'Comercio Local Smart (PYME)', subtitle: 'Sitio Web, Radio Local y Pasarela VLS para anunciantes y compraventas',
@@ -843,7 +991,7 @@ export default function HubDashboard() {
         },
         {
             id: 'serenamet-admin', title: 'Serena Met (Admin)', subtitle: 'Inyectora de Locución y Reporte Móvil Terreno',
-            icon: ShieldCheck, color: '#38bdf8', isEvent: 'open-serenamet-admin', active: true, badge: 'STAFF SMART'
+            icon: ShieldCheck, color: '#38bdf8', isEvent: 'open-serenamet-admin', active: false, badge: 'STAFF SMART'
         },
         {
             id: 'vlspeak', title: 'VLSpeak', subtitle: 'Traductor Simultáneo Transversal (Creole/English)',
@@ -888,11 +1036,11 @@ export default function HubDashboard() {
         },
         {
             id: 'vecinojos', title: 'Visión Vecinal (Reportes)', subtitle: 'Georreferenciación de Casos en Comunidad',
-            icon: Eye, color: '#38bdf8', isEvent: 'open-vecinojos', active: true, badge: 'NUEVO'
+            icon: Eye, color: '#38bdf8', isEvent: 'open-vecinojos', active: true, badge: 'EN DESARROLLO'
         },
         {
             id: 'camaras-faro', title: 'Cámaras del Faro (C5)', subtitle: 'Monitoreo Urbano y Estado de las Playas',
-            icon: Camera, color: '#38bdf8', isEvent: 'open-retro-tv', active: true, badge: 'EN VIVO'
+            icon: Camera, color: '#38bdf8', isEvent: 'open-retro-tv', active: false, badge: 'EN VIVO'
         },
         {
             id: 'tornamesa-digital', title: 'Música: El Tornamesa', subtitle: 'Selección de Vinilos y Éxitos Comunales',
@@ -1066,6 +1214,10 @@ export default function HubDashboard() {
         {
             id: 'backoffice-movil', title: 'Backoffice Móvil (C5)', subtitle: 'Registro In Situ, Monitoreo y RRHH',
             icon: Camera, color: '#38bdf8', isEvent: 'open-backoffice-movil', active: true, badge: 'MÓVIL'
+        },
+        {
+            id: 'vls-vial-back', title: 'Reporte Vial Directo', subtitle: 'Capture evidencias de baches en terreno',
+            icon: Construction, color: '#f59e0b', isEvent: 'open-vial-news', active: true, badge: 'DENUNCIA'
         }
     ];
 
@@ -1083,7 +1235,7 @@ export default function HubDashboard() {
             icon: Globe, color: '#10b981', isEvent: 'open-secular', active: true
         },
         {
-            id: 'almanaque-2026', title: 'Vecinos del Mundo', subtitle: 'Embajadas, Consulados y Relaciones Internacionales Smart',
+            id: 'almanaque-mundial', title: 'Portal Vecinos del Mundo', subtitle: 'Embajadas, Consulados y Relaciones Internacionales Smart',
             icon: Globe, color: '#60a5fa', isEvent: 'open-embajadas', active: true
         },
         {
@@ -1093,6 +1245,10 @@ export default function HubDashboard() {
         {
             id: 'parlamento-regional', title: 'Observatorio Parlamentario', subtitle: 'Transparencia y Auditoría de Representantes Regionales',
             icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: false, badge: 'NUEVO'
+        },
+        {
+            id: 'vls-vial', title: 'Crisis Vial: El Laberinto', subtitle: 'Expediente VLS-2026-VIAL: Denuncia baches y rutas críticas',
+            icon: Construction, color: '#f59e0b', isEvent: 'open-vial-news', active: true, badge: 'TACTICO'
         },
         {
             id: 'alcaldes-history', title: 'Archivo Alcaldes Regionales', subtitle: 'Hemeroteca y Cronología de Liderazgo Comunal',
@@ -1142,7 +1298,16 @@ export default function HubDashboard() {
             description: 'Registro digital de accesos, portal georreferenciado para reportes vecinales, monitoreo urbano/ambiental (baches, luminarias, playas, humedales) y Radio Digital Municipal.',
             icon: Users,
             color: '#ef4444',
-            modules: ['vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 'vecicat', 'sticky-note']
+            modules: [
+                'vls-domeyko', 'vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 
+                'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 
+                'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 
+                'vecicat', 'sticky-note', 'historic-3d', 'busdeltiempo', 'kiosko-diarios', 
+                'memorial-hijos', 'memory-portal', 'tornamesa-digital', 'personal-stereo', 
+                'vhs-tv', 'operacion-ls', 'stickers-portal', 'glosario-vls', 'ambient-mode', 
+                'vls-motors', 'cdls-club', 'pincha', 'gym-3d', 'retro-gamer-room', 
+                'legacy-game', 'serenito-1945', 'galaxia-disco', 'vls-andacollo', 'vls-vallenar', 'vls-juansoldado'
+            ]
         },
         {
             id: 'admin',
@@ -1150,7 +1315,12 @@ export default function HubDashboard() {
             description: 'Portal de inducción E-learning (entrega de diplomas) y digitalización de informes para trabajadores (Honorarios) con firma digital.',
             icon: Briefcase,
             color: '#10b981',
-            modules: ['smart-learning', 'smart-admin-internal', 'vls-trivia', 'legal', 'vls-pyme-builder', 'smart-architecture', 'smart-real-estate', 'vlspeak', 'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales']
+            modules: [
+                'smart-learning', 'smart-admin-internal', 'vls-trivia', 'legal', 
+                'vls-pyme-builder', 'smart-architecture', 'smart-real-estate', 'vlspeak', 
+                'escuela-musica', 'escuela-artes', 'laboratorio-criticas', 'tribunales', 
+                'tienda-poleras', 'estudio-musical'
+            ]
         },
         {
             id: 'events',
@@ -1166,15 +1336,11 @@ export default function HubDashboard() {
             description: 'Centinel Faro (Social Listening, monitoreo de redes y videos mediante IA).',
             icon: Radio,
             color: '#38bdf8',
-            modules: ['vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 'central-difusion', 'plaza-vecinal', 'parlamento-regional']
-        },
-        {
-            id: 'patrimonio',
-            name: isRDMLS ? 'Digitalización Patrimonial & Multimedia' : 'Experiencias 3D, Juegos y Memoria Histórica',
-            description: isRDMLS ? 'Recorridos digitales interactivos del Casco Histórico y archivos visuales.' : 'Disfruta con Serenito, juegos Retro, y archivos nostálgicos.',
-            icon: Sparkles,
-            color: '#c084fc',
-            modules: ['historic-3d', 'busdeltiempo', 'tienda-poleras', 'kiosko-diarios', 'tornamesa-digital', 'memorial-hijos', 'memory-portal', 'gym-3d', 'retro-gamer-room', 'personal-stereo', 'faro-ia', 'legacy-game', 'serenito-1945', 'galaxia-disco', 'vls-precolombino', 'estudio-musical', 'vhs-tv', 'operacion-ls', 'stickers-portal', 'glosario-vls', 'ambient-mode', 'vls-motors', 'cdls-club', 'pincha']
+            modules: [
+                'vls-domeyko', 'vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 
+                'vls-artemis', 'vls-chequia', 'central-difusion', 'plaza-vecinal', 
+                'parlamento-regional', 'faro-ia', 'vls-andacollo', 'vls-vallenar', 'vls-juansoldado'
+            ]
         }
     ];
 
@@ -1205,15 +1371,20 @@ export default function HubDashboard() {
                 style={{
                     display: 'flex', flexDirection: 'column', padding: '1.5rem',
                     border: locked ? '1px solid rgba(255,50,50,0.2)' : `1px solid ${app?.color}40`,
-                    background: locked ? 'rgba(0,0,0,0.6)' : `linear-gradient(135deg, ${app?.color}15 0%, rgba(0,0,0,0.6) 100%)`,
+                    background: locked ? 'rgba(0,0,0,0.6)' : `linear-gradient(135deg, ${app?.color}25 0%, rgba(0,0,0,0.6) 100%)`,
                     borderRadius: '20px', position: 'relative', overflow: 'hidden', textAlign: 'left',
-                    transition: 'border 0.3s, background 0.3s, transform 0.1s', // Smoother feel
+                    transition: 'border 0.3s, background 0.3s, transform 0.1s', 
                     filter: locked ? 'grayscale(1) opacity(0.6)' : 'none',
                     height: '100%',
                     touchAction: 'none',
-                    cursor: locked ? 'not-allowed' : 'grab'
+                    cursor: locked ? 'not-allowed' : 'grab',
+                    animation: app?.id === 'vls-artemis' ? 'vls-stardust-pulse 3s infinite alternate' : 'none'
                 }}
             >
+                {/* Visual Flair for Artemis */}
+                {app?.id === 'vls-artemis' && (
+                    <div style={{ position: 'absolute', top: 0, right: 0, width: '100px', height: '100px', background: 'radial-gradient(circle, rgba(56, 189, 248, 0.2) 0%, transparent 70%)', filter: 'blur(20px)', pointerEvents: 'none' }} />
+                )}
                 <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '5px', zIndex: 10 }}>
                     <button
                         onClick={(e) => { e.stopPropagation(); togglePin(app?.id); }}
@@ -1257,12 +1428,12 @@ export default function HubDashboard() {
     ]);
 
     const guardianes = [
-        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/Serenito_polera_blancacuerpo_entero.glb', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
-        { id: 'tata-rojas', name: 'Tata Rojas', role: 'Gran Patriarca VLS', model: '/models/tata_rojas_3d.glb', bio: 'El sabio del Valle. Custodio de las tradiciones y la memoria histórica de nuestra región.' },
-        { id: 'alpino-tech', name: 'Alpino 3D', role: 'Élite Tecnológica VLS', model: '/models/alpino3d.glb', bio: 'Experto en infraestructura crítica y sistemas inteligentes. El puente entre el cerro y la nube.' },
-        { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', model: '/models/Serenito_polera_blancacuerpo_entero.glb', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
-        { id: 'pampita-huertera', name: 'Pampita', role: 'Humizales & Parques', model: '/models/Serenito_polera_blancacuerpo_entero.glb', bio: 'Guardiana de flora y fauna regional. Sabiduría de la tierra y biodiversidad.' },
-        { id: 'ancestro-bisabuelo', name: 'Ancestral Serenito (Bisabuelo)', role: 'Historia & Tradición', model: '/models/faro_3d_modelo.glb', bio: 'Guardián original de la ciudad con su farol de la verdad. Sabiduría de los fundadores.' }
+        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/serenito_v3.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
+        { id: 'tata-rojas', name: 'Tata Rojas', role: 'Gran Patriarca VLS', model: '/models/tata_rojas_3d.glb', img: '/avatars/tio_pedro.png', bio: 'El sabio del Valle. Custodio de las tradiciones y la memoria histórica de nuestra región.' },
+        { id: 'alpino-tech', name: 'Alpino 3D', role: 'Élite Tecnológica VLS', model: '/models/alpino3d.glb', img: '/avatars/alpino.png', bio: 'Experto en infraestructura crítica y sistemas inteligentes. El puente entre el cerro y la nube.' },
+        { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/avatars/don_joako_guardian.png', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
+        { id: 'pampita-huertera', name: 'Pampita', role: 'Humizales & Parques', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/pampita_v3.png', bio: 'Guardiana de flora y fauna regional. Sabiduría de la tierra y biodiversidad.' },
+        { id: 'ancestro-bisabuelo', name: 'Ancestral Serenito (Bisabuelo)', role: 'Historia & Tradición', model: '/models/faro_3d_modelo.glb', img: '/ancestral_serenito.png', bio: 'Guardián original de la ciudad con su farol de la verdad. Sabiduría de los fundadores.' }
     ];
 
     const [msgIndex, setMsgIndex] = useState(0);
@@ -1332,6 +1503,8 @@ export default function HubDashboard() {
             navigate('/arquitectura');
         } else if (lowerTerm.includes('salud') || lowerTerm.includes('médico') || lowerTerm.includes('doctor')) {
             navigate('/smart-salud');
+        } else if (lowerTerm.includes('artemis') || lowerTerm.includes('luna') || lowerTerm.includes('espacio') || lowerTerm.includes('nasa')) {
+            handleArtemis();
         } else {
             // Si no es un atajo, scrollear suavemente a los resultados filtrados
             const resultsSection = document.getElementById('search-results-anchor');
@@ -1439,6 +1612,10 @@ export default function HubDashboard() {
                 .btn-vls-action-yellow { background: #fbbf24; color: #000; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
                 .btn-vls-action-white { background: #fff; color: #ef4444; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
                 .btn-vls-action-light:hover, .btn-vls-action-yellow:hover, .btn-vls-action-white:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+                @keyframes vls-stardust-pulse {
+                    0% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); border-color: rgba(56, 189, 248, 0.3); }
+                    100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.6); border-color: rgba(56, 189, 248, 0.8); }
+                }
             `}</style>
             <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
@@ -1449,16 +1626,22 @@ export default function HubDashboard() {
                     borderBottom: '2px solid #ef4444',
                     padding: '0.4rem 1.5rem',
                     display: 'flex',
-                    flexDirection: window.innerWidth < 1200 ? 'column' : 'row',
+                    flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'flex-start',
                     color: 'white',
                     fontSize: '0.85rem',
-                    zIndex: 990, // LOWERED: Prevent bleeding over modals (like VecnityPay zIndex: 100001)
+                    zIndex: 990,
                     position: 'relative',
-                    gap: '1.5rem',
+                    gap: '10px',
                     minHeight: '65px',
-                    overflowX: 'hidden'
+                    overflowX: 'auto',
+                    overflowY: 'hidden',
+                    flexWrap: 'nowrap',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                    WebkitOverflowScrolling: 'touch',
+                    paddingBottom: '2px'
                 }}>
                     {/* Mensaje Informativo (Izquierda/Centro) */}
                     <div key={msgIndex} className="animate-slide-up" style={{
@@ -1466,8 +1649,9 @@ export default function HubDashboard() {
                         alignItems: 'center',
                         gap: '1rem',
                         textAlign: 'left',
-                        flex: 1,
-                        minWidth: 0,
+                        flex: '0 0 auto',
+                        maxWidth: '340px',
+                        minWidth: '200px',
                         padding: '0.2rem 0',
                         overflow: 'hidden'
                     }}>
@@ -1489,9 +1673,58 @@ export default function HubDashboard() {
                         alignItems: 'center',
                         gap: '12px',
                         flexShrink: 0,
-                        flexWrap: 'wrap',
-                        justifyContent: 'center'
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        whiteSpace: 'nowrap',
+                        padding: '0.5rem 0',
+                        maxWidth: '100%',
+                        msOverflowStyle: 'none',
+                        scrollbarWidth: 'none',
+                        WebkitOverflowScrolling: 'touch',
+                        justifyContent: 'flex-start'
                     }}>
+                        {/* BOTÓN DE ACCESO DINÁMICO */}
+                        {!currentUser ? (
+                            <button
+                                onClick={handleLogin}
+                                className="btn-glass pulse"
+                                style={{
+                                    background: 'rgba(16, 185, 129, 0.2)',
+                                    border: '1px solid rgba(16, 185, 129, 0.5)',
+                                    borderRadius: '50px',
+                                    padding: '0.4rem 1rem',
+                                    color: '#10b981',
+                                    fontWeight: '900',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px',
+                                    boxShadow: '0 0 15px rgba(16, 185, 129, 0.2)'
+                                }}
+                            >
+                                <UserIcon size={14} /> INGRESAR
+                            </button>
+                        ) : (
+                            <button
+                                onClick={handleLogout}
+                                className="btn-glass"
+                                style={{
+                                    background: 'rgba(239, 68, 68, 0.2)',
+                                    border: '1px solid rgba(239, 68, 68, 0.5)',
+                                    borderRadius: '50px',
+                                    padding: '0.4rem 1rem',
+                                    color: '#ef4444',
+                                    fontWeight: '900',
+                                    fontSize: '0.75rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '6px'
+                                }}
+                            >
+                                <LogOut size={14} /> SALIR
+                            </button>
+                        )}
+
                         <button
                             onClick={() => navigate('/glosario')}
                             className="btn-glass"
@@ -1544,73 +1777,133 @@ export default function HubDashboard() {
                             </div>
                         )}
 
-                    {!isRDMLS && (
-                        <div style={{
-                            display: 'flex',
-                            gap: '10px'
-                        }}>
-                            <button
-                                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
-                                className="btn-glass animate-pulse-slow"
-                                style={{
-                                    background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                                    border: '1px solid rgba(255,255,255,0.3)',
-                                    borderRadius: '50px',
-                                    padding: '0.4rem 1rem',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    fontSize: '0.75rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
-                            </button>
-                            <button
-                                onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
-                                className="btn-glass animate-pulse-slow"
-                                style={{
-                                    background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
-                                    border: '1px solid rgba(255,255,255,0.3)',
-                                    borderRadius: '50px',
-                                    padding: '0.4rem 1rem',
-                                    color: 'white',
-                                    fontWeight: 'bold',
-                                    fontSize: '0.75rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
-                            </button>
-                            <button
-                                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
-                                className="btn-glass animate-pulse-slow"
-                                style={{
-                                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                    border: '1px solid rgba(255,255,255,0.4)',
-                                    borderRadius: '50px',
-                                    padding: '0.4rem 1rem',
-                                    color: 'white',
-                                    fontWeight: '950',
-                                    fontSize: '0.75rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: '6px',
-                                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
-                                    whiteSpace: 'nowrap'
-                                }}
-                            >
-                                <ShieldAlert size={14} /> SEGURIDAD VECINAL
-                            </button>
-                        </div>
-                    )}
+                    <div style={{ display: 'flex', gap: '10px', flexShrink: 0, minWidth: 'max-content', alignItems: 'center' }}>
+                        {/* BOTONES UNIVERSALES (VLS & RDMLS) - Este div ya existe, revisamos abajo */}
+                             <button
+                                 onClick={() => window.dispatchEvent(new CustomEvent('open-vls-juansoldado'))}
+                                 className="btn-glass"
+                                 style={{
+                                     background: 'rgba(245,158,11,0.1)',
+                                     border: '1px solid rgba(245,158,11,0.4)',
+                                     borderRadius: '50px',
+                                     padding: '0.4rem 1rem',
+                                     color: 'white',
+                                     fontWeight: 'bold',
+                                     fontSize: '0.75rem',
+                                     display: 'flex',
+                                     alignItems: 'center',
+                                     gap: '6px',
+                                     boxShadow: '0 0 15px rgba(245,158,11,0.2)'
+                                 }}
+                             >
+                                 <Newspaper size={14} color="#f59e0b" /> JUAN SOLDADO
+                             </button>
+                             <button
+                                 onClick={() => window.dispatchEvent(new CustomEvent('open-vls-artemis'))}
+                                 className="btn-glass animate-pulse-slow"
+                            style={{
+                                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+                                border: '1px solid rgba(56,189,248,0.4)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: 'white',
+                                fontWeight: '950',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            <Rocket size={14} color="#38bdf8" /> ARTEMIS II MISSION
+                        </button>
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
+                            className="btn-glass animate-pulse-slow"
+                            style={{
+                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                                border: '1px solid rgba(255,255,255,0.4)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: 'white',
+                                fontWeight: '950',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            <ShieldAlert size={14} /> SEGURIDAD
+                        </button>
+
+                        {!isRDMLS && (
+                            <>
+                                <button
+                                    onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
+                                    className="btn-glass"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        borderRadius: '50px',
+                                        padding: '0.4rem 1rem',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        fontSize: '0.75rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                >
+                                    <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
+                                </button>
+                                <button
+                                    onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
+                                    className="btn-glass"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        borderRadius: '50px',
+                                        padding: '0.4rem 1rem',
+                                        color: 'white',
+                                        fontWeight: 'bold',
+                                        fontSize: '0.75rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                >
+                                    <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
+                                </button>
+                                <button
+                                    onClick={() => window.dispatchEvent(new CustomEvent('open-tienda-poleras'))}
+                                    className="btn-glass"
+                                    style={{
+                                        background: 'linear-gradient(135deg, #facc15 0%, #ca8a04 100%)',
+                                        border: '1px solid rgba(255,255,255,0.3)',
+                                        borderRadius: '50px',
+                                        padding: '0.4rem 1rem',
+                                        color: '#000',
+                                        fontWeight: '950',
+                                        fontSize: '0.75rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                >
+                                    <ShoppingBag size={14} /> TIENDA 3D
+                                </button>
+                            </>
+                        )}
+                    </div>
                     
                     {host.includes('quimbo') && (
                         <button
@@ -1643,59 +1936,223 @@ export default function HubDashboard() {
                 <QuickEmergencyBar />
 
                 {/* ══════════════════════════════════════════════════════════ */}
-                {/* HEADLINE: INVESTIGACIÓN ESPECIAL VLS (IAN) - HIGH VISIBILITY   */}
+                {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Marea Humana & Alcaldesa) */}
                 {/* ══════════════════════════════════════════════════════════ */}
-                {!isRDMLS && (
-                    <div style={{ padding: '2rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                <div style={{ padding: '2rem 1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1.5fr 1fr', gap: '2rem' }}>
+                        
+                        {/* CARD 1: CORRIDA FAMILIAR - MAREA HUMANA */}
+                        <div 
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'corrida_familiar' } }))}
+                            style={{ 
+                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
+                                border: '2px solid #ef4444', boxShadow: '0 20px 50px rgba(239, 68, 68, 0.3)',
+                                cursor: 'pointer', transition: 'transform 0.3s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.01)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <img src="/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Marea Humana" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, transparent 60%)' }} />
+                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#ef4444', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>EVENTO MASIVO</div>
+                            <div style={{ position: 'absolute', bottom: 40, left: 40, right: 40 }}>
+                                <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>MAREA HUMANA:<br/><span style={{ color: '#ef4444' }}>4.000 PERSONAS </span><br/> EN LA AV. DEL MAR</h2>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Éxito rotundo en la Corrida Familiar de hoy. La Serena se mueve con soberanía.</p>
+                                <button className="btn-vls-action-white" style={{ marginTop: '1.5rem', background: 'white', color: '#ef4444' }}>VER NOTA DEL EVENTO</button>
+                            </div>
+                        </div>
+
+                        {/* CARD 2: ALCALDESA GESTIÓN */}
+                        <div 
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa'))}
+                            style={{ 
+                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
+                                border: '2px solid #38bdf8', boxShadow: '0 20px 50px rgba(56, 189, 248, 0.3)',
+                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.01)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <img src="/alcaldesa_daniela_norambuena.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} alt="Alcaldesa" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, transparent 70%)' }} />
+                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#38bdf8', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>GESTIÓN MUNICIPAL</div>
+                            <div style={{ position: 'absolute', bottom: 40, left: 40, right: 40 }}>
+                                <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>AVANCE Y SOBERANÍA:<br/><span style={{ color: '#38bdf8' }}>PORTAL DE LA ALCALDESA</span></h2>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', marginTop: '1rem', fontWeight: 500 }}>Conoce los pilares de la gestión actual y el compromiso de la Alcaldesa Daniela Norambuena con cada vecino.</p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem' }}>ENTRAR AL PORTAL</button>
+                            </div>
+                        </div>
+
+                        {/* CARD 3: AVIVA EDUCAP - NIVELACIÓN DE ESTUDIOS */}
+                        <div 
+                            onClick={() => window.location.href = '/aviva'}
+                            style={{ 
+                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
+                                border: '2px solid #10b981', boxShadow: '0 20px 50px rgba(16, 185, 129, 0.3)',
+                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 2'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.005)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <img src="/aviva/Promo AVIVA.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} alt="AVIVA EDUCAP" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 20%, transparent 80%)' }} />
+                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#10b981', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>OPORTUNIDAD EDUCATIVA</div>
+                            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 40, right: window.innerWidth < 1024 ? 40 : '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <h2 style={{ color: 'white', fontSize: window.innerWidth < 768 ? '1.8rem' : '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>AVIVA EDUCAP:<br/><span style={{ color: '#10b981' }}>TERMINA TUS ESTUDIOS GRATIS</span></h2>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Nivelación de enseñanza básica y media en La Serena y Vicuña. Modalidad flexible para adultos.</p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem', background: '#10b981', color: 'white', border: 'none' }}>INICIAR POSTULACIÓN</button>
+                            </div>
+                        </div>
+
+                        {/* CARD 4: ARTE & ARQUITECTURA (EDUARDO GARDELLA) */}
+                        <div 
+                            onClick={() => navigate('/gardella')}
+                            style={{ 
+                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
+                                border: '2px solid #a855f7', boxShadow: '0 20px 50px rgba(168, 85, 247, 0.3)',
+                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 2'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.005)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <img src="/media/arquiartista/Eduardo_Auto.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} alt="Ilustración Eduardo Gardella" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 30%, transparent 80%)' }} />
+                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#a855f7', padding: '0.4rem 1.2rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>TALENTO LOCAL</div>
+                            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 40, right: window.innerWidth < 1024 ? 40 : '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <h2 style={{ color: 'white', fontSize: window.innerWidth < 768 ? '1.8rem' : '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>GALERÍA PREMIUM:<br/><span style={{ color: '#d8b4fe' }}>EDUARDO GARDELLA</span></h2>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Explora las ilustraciones hiperrealistas en grafito de este maravilloso artista nacional.</p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem', background: '#a855f7', color: 'white', border: 'none' }}>VER PORTAFOLIO COMPLETO</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════ */}
+                {/* HEADLINE: INVESTIGACIÓN ESPECIAL VLS (IAN & ARTEMIS)        */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                <div style={{ padding: '2rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1fr 1fr 1fr', gap: '1.5rem' }}>
+                        {/* CASO IAN */}
                         <div 
                             onClick={() => window.dispatchEvent(new CustomEvent('open-vls-ian'))}
-                            className="glass-panel animate-pulse-slow" 
+                            className="glass-panel" 
                             style={{ 
                                 background: 'linear-gradient(135deg, #450a0a 0%, #1e1b4b 100%)',
-                                padding: '1.5rem 2rem',
+                                padding: '1.5rem',
                                 borderRadius: '24px',
                                 border: '2px solid #ef4444',
                                 display: 'flex',
-                                flexDirection: window.innerWidth < 768 ? 'column' : 'row',
                                 alignItems: 'center',
-                                gap: '1.5rem',
+                                gap: '1.2rem',
                                 cursor: 'pointer',
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
-                                transition: 'all 0.3s',
-                                borderLeft: '8px solid #ef4444'
+                                boxShadow: '0 15px 35px rgba(239, 68, 68, 0.2)',
+                                borderLeft: '8px solid #ef4444',
+                                transition: 'transform 0.3s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <ShieldAlert size={28} color="#ef4444" />
+                            <div>
+                                <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900 }}>CASO IAN: PUNTO CIEGO</h3>
+                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Investigación sobre seguridad retail.</p>
+                            </div>
+                        </div>
+
+                        {/* ARTEMIS II */}
+                        <div 
+                            onClick={() => navigate('/artemisa')}
+                            className="glass-panel animate-pulse-slow" 
+                            style={{ 
+                                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+                                padding: '1.5rem',
+                                borderRadius: '24px',
+                                border: '2px solid #38bdf8',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1.2rem',
+                                cursor: 'pointer',
+                                boxShadow: '0 15px 35px rgba(56, 189, 248, 0.2)',
+                                borderLeft: '8px solid #38bdf8',
+                                transition: 'transform 0.3s'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.02)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                        >
+                            <Rocket size={28} color="#38bdf8" />
+                            <div>
+                                <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900 }}>MISIÓN ARTEMIS II: LA LUNA</h3>
+                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Expediciones y tecnología espacial 2026.</p>
+                            </div>
+                        </div>
+
+                        {/* UES: UNIVERSIDAD CENTRAL - REDISEÑO GRÁFICO PREMIUM */}
+                        <div 
+                            onClick={() => {
+                                closeAllPopups();
+                                navigate('/ucen');
+                                window.dispatchEvent(new CustomEvent('open-vls-ucen', { detail: { routed: true } }));
+                            }}
+                            className="glass-panel group" 
+                            id="ucen-portal-trigger"                            style={{ 
+                                background: 'url(/img/ucen_asfae_1.jpg)',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                padding: '0',
+                                borderRadius: '24px',
+                                border: '2px solid #00F0FF',
+                                height: 'auto',
+                                cursor: 'pointer',
+                                boxShadow: '0 15px 35px rgba(0, 240, 255, 0.2)',
+                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
+                                e.currentTarget.style.boxShadow = '0 30px 60px rgba(0, 240, 255, 0.4)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                e.currentTarget.style.boxShadow = '0 15px 35px rgba(0, 240, 255, 0.2)';
                             }}
                         >
-                            <div style={{ background: '#ef4444', padding: '15px', borderRadius: '18px', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                                <ShieldAlert size={32} />
-                                {/* Serenito Badge */}
-                                <img 
-                                    src="/serenito_v3.png" 
-                                    alt="Serenito Investigador" 
-                                    style={{ 
-                                        position: 'absolute', 
-                                        bottom: '-10px', 
-                                        right: '-10px', 
-                                        width: '45px', 
-                                        height: '45px', 
-                                        filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))',
-                                        zIndex: 2
-                                    }} 
-                                />
-                            </div>
-                            <div style={{ flex: 1, textAlign: window.innerWidth < 768 ? 'center' : 'left' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: window.innerWidth < 768 ? 'center' : 'flex-start', marginBottom: '0.4rem' }}>
-                                    <span style={{ background: '#ef4444', color: 'white', padding: '2px 8px', borderRadius: '10px', fontSize: '0.65rem', fontWeight: '900', letterSpacing: '1px' }}>BREAKING NEWS</span>
-                                    <span style={{ color: '#ef4444', fontWeight: '900', fontSize: '0.75rem', letterSpacing: '2px' }}>VLS SALA DE INTELIGENCIA</span>
+                            {/* Overlay de cristal dinámico */}
+                            <div style={{ 
+                                position: 'absolute', inset: 0, 
+                                background: 'linear-gradient(to bottom, transparent 30%, rgba(2, 6, 23, 0.9) 100%)',
+                                zIndex: 1
+                            }} />
+                            <div style={{ 
+                                position: 'absolute', inset: 0, 
+                                background: 'rgba(0, 240, 255, 0.05)',
+                                backdropFilter: 'blur(2px)',
+                                zIndex: 0
+                            }} />
+
+                            <div style={{ position: 'relative', zIndex: 2, padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
+                                <div style={{ 
+                                    background: 'white', padding: '8px', borderRadius: '15px', 
+                                    boxShadow: '0 10px 20px rgba(0,0,0,0.5)', width: '60px', height: '60px',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    border: '2px solid #00F0FF', cursor: 'pointer'
+                                }}>
+                                    <img src="/img/logo_ucen.jpg" style={{ width: '100%', height: 'auto', objectFit: 'contain' }} alt="UCEN" />
                                 </div>
-                                <h2 style={{ color: 'white', margin: 0, fontSize: '1.4rem', fontWeight: '950', lineHeight: 1.2 }}>EL PUNTO CIEGO DEL RETAIL: CASO IAN</h2>
-                                <p style={{ color: '#94a3b8', margin: '4px 0 0 0', fontSize: '0.85rem', fontWeight: 'bold' }}>Buscamos contribuir para mejorar la seguridad de los vecinos y trabajadores.</p>
+                                <div style={{ flex: 1 }}>
+                                    <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>UCEN: 42° CONGRESO ASFAE</h3>
+                                    <p style={{ margin: 0, color: 'rgba(0, 240, 255, 0.9)', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '0.5px' }}>Epicentro de Ciencias Empresariales</p>
+                                    <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
+                                        <span style={{ fontSize: '0.6rem', color: 'white', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '50px' }}>IA / NOV 2026</span>
+                                    </div>
+                                </div>
                             </div>
-                            <button className="btn btn-primary" style={{ padding: '0.8rem 2rem', background: '#ef4444', border: 'none', borderRadius: '12px', fontWeight: '900' }}>
-                                LEER INVESTIGACIÓN →
-                            </button>
                         </div>
                     </div>
-                )}
+                </div>
 
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* NODO MAESTRO: RED REGIONAL UNIFICADA - EL NUEVO CEREBRO     */}
@@ -1957,21 +2414,21 @@ export default function HubDashboard() {
 
                                     {isVLS && (
                                         <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center', marginTop: '0.75rem' }}>
-                                            {greetings.map((g, idx) => (
+                                            {greetings.map((g, gIdx) => (
                                                 <button
-                                                    key={idx}
-                                                    onClick={() => setGreetingIdx(idx)}
+                                                    key={`greeting-btn-${g.id || gIdx}`}
+                                                    onClick={() => setGreetingIdx(gIdx)}
                                                     title={g.text}
                                                     style={{
-                                                        background: greetingIdx === idx ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
-                                                        border: greetingIdx === idx ? `1.5px solid ${g.color}` : '1.5px solid rgba(255,255,255,0.15)',
+                                                        background: greetingIdx === gIdx ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.08)',
+                                                        border: greetingIdx === gIdx ? `1.5px solid ${g.color}` : '1.5px solid rgba(255,255,255,0.15)',
                                                         borderRadius: '50px',
                                                         padding: '4px 10px',
                                                         cursor: 'pointer',
                                                         fontSize: '1.1rem',
                                                         transition: 'all 0.25s ease',
-                                                        boxShadow: greetingIdx === idx ? `0 0 10px ${g.color}50` : 'none',
-                                                        transform: greetingIdx === idx ? 'scale(1.15)' : 'scale(1)'
+                                                        boxShadow: greetingIdx === gIdx ? `0 0 10px ${g.color}50` : 'none',
+                                                        transform: greetingIdx === gIdx ? 'scale(1.15)' : 'scale(1)'
                                                     }}
                                                 >{g.flag}</button>
                                             ))}
@@ -2091,12 +2548,12 @@ export default function HubDashboard() {
                                 gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
                                 gap: '12px'
                             }}>
-                                {pinnedApps.map(id => {
+                                {pinnedApps.map((id, pIdx) => {
                                     const app = allApps.find(a => a?.id === id);
                                     if (!app) return null;
                                     return (
                                         <div
-                                            key={id}
+                                            key={`pinned-app-${id}-${pIdx}`}
                                             onClick={() => {
                                                 if (app?.id === 'premium') { setShowPremiumClub(true); return; }
                                                 if (app?.id === 'galaxia-disco') { setShowGalaxia(true); return; }
@@ -2140,51 +2597,108 @@ export default function HubDashboard() {
                             <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #38bdf8, transparent)' }}></div>
                          </div>
                          
-                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '2rem', width: '100%', boxSizing: 'border-box' }}>
+                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2.5rem', width: '100%', marginBottom: '4rem' }}>
+                            {/* TRIPLE_SIGNAL_DECODING_VLS */}
+                            <div style={{ gridColumn: '1 / -1', background: 'rgba(0,0,0,0.4)', borderRadius: '40px', padding: isMobile ? '1.5rem' : '3rem', border: '1px solid rgba(255,255,255,0.05)', position: 'relative', overflow: 'hidden' }}>
+                                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, #38bdf8, transparent)', opacity: 0.5 }}></div>
+                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                                        <div style={{ background: '#ef4444', padding: '10px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 0 20px rgba(239,68,68,0.3)' }}>
+                                            <Radar size={24} color="white" className="animate-spin-slow" />
+                                        </div>
+                                        <div>
+                                            <h3 style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '4px', margin: 0, textTransform: 'uppercase' }}>DECODIFICANDO <span style={{ color: '#ef4444' }}>TRIPLE SEÑAL LIVE</span></h3>
+                                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontWeight: 'bold', margin: '5px 0 0 0', letterSpacing: '2px' }}>CENTINEL FARO : MASTER SIGNAL MONITORING SATELLITE 2026</p>
+                                        </div>
+                                    </div>
+                                    <div className="hide-on-mobile" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                                        <div style={{ width: '80px', height: '40px', background: 'rgba(239,68,68,0.1)', borderRadius: '10px', border: '1px solid #ef444430', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <span style={{ fontSize: '0.6rem', color: '#ef4444', fontWeight: 900 }}>DPI_ACTIVE</span>
+                                        </div>
+                                        <div style={{ width: '120px', height: '40px', background: 'rgba(56,189,248,0.1)', borderRadius: '10px', border: '1px solid #38bdf830', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <span style={{ fontSize: '0.6rem', color: '#38bdf8', fontWeight: 900 }}>VLS_ENCRYPTION_SAFE</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', gap: '2rem' }}>
+                                    {[
+                                        { title: 'OFICIAL NASA LIVE', id: 'GVWXfFfDWBM', color: '#38bdf8', label: 'SPACE ENGINE' },
+                                        { title: 'VLS NEWS REUTERS', id: 'YUG1BGFRwDM', color: '#8b5cf6', label: 'WORLD NEWS' },
+                                        { title: 'VLS VIA CBS/NEWS', id: '9Hr_9VHCbSE', color: '#ef4444', label: 'NETWORK LINK' }
+                                    ].map((feed, idx) => (
+                                        <div key={idx} style={{ background: 'rgba(15,23,42,0.8)', border: `1px solid ${feed.color}30`, borderRadius: '25px', padding: '1rem', position: 'relative', overflow: 'hidden', boxShadow: '0 15px 35px rgba(0,0,0,0.5)', display: 'flex', flexDirection: 'column' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', padding: '0 0.5rem' }}>
+                                               <span style={{ fontSize: '0.6rem', fontWeight: 900, color: feed.color, letterSpacing: '2px' }}>{feed.title}</span>
+                                               <span style={{ fontSize: '0.5rem', background: feed.color, color: 'black', padding: '2px 8px', borderRadius: '4px', fontWeight: 900 }}>{feed.label}</span>
+                                            </div>
+                                            <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: '15px', overflow: 'hidden', background: '#000', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <iframe 
+                                                    width="100%" height="100%" 
+                                                    src={`https://www.youtube.com/embed/${feed.id}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${feed.id}`}
+                                                    frameBorder="0" allowFullScreen style={{ pointerEvents: 'none' }} 
+                                                />
+                                                <div style={{ position: 'absolute', top: '10px', right: '10px', display: 'flex', gap: '5px' }}>
+                                                    <div style={{ width: '6px', height: '6px', background: '#ef4444', borderRadius: '50%', boxShadow: '0 0 10px #ef4444', animation: 'pulse 1s infinite' }}></div>
+                                                </div>
+                                                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                    <div style={{ display: 'flex', gap: '2px' }}>
+                                                        {[...Array(5)].map((_, b) => (
+                                                            <div key={b} style={{ width: '2px', height: `${Math.random()*15+5}px`, background: feed.color, borderRadius: '1px', animation: 'vls-vu-simple 0.5s infinite alternate' }} />
+                                                        ))}
+                                                    </div>
+                                                    <span style={{ fontSize: '0.5rem', color: 'rgba(255,255,255,0.5)', fontWeight: 'bold' }}>AUTO_SYNCING...</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+                                                <button onClick={() => window.open(`https://youtube.com/watch?v=${feed.id}`, '_blank')} style={{ background: 'rgba(255,255,255,0.05)', border: 'none', color: 'rgba(255,255,255,0.6)', padding: '0.5rem 1rem', borderRadius: '12px', fontSize: '0.65rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                                                    <Maximize size={12} /> EXPANDIR MASTER SIGNAL
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                            </div>
+                        </div>
+
+                         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '4rem', width: '100%', boxSizing: 'border-box' }}>
                             {/* VLS NEWS IAN - BREAKING INVESTIGACIÓN - FULL WIDTH ARRIBA DE SEMANA SANTA */}
-                            <div
-                                onClick={() => window.location.href = '/media/ian'}
-                                className="glass-panel hover-lift animate-fade-in"
-                                style={{
+                            <div 
+                                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-ian'))}
+                                className="glass-panel hover-lift animate-fade-in" 
+                                style={{ 
                                     gridColumn: '1 / -1',
-                                    background: 'linear-gradient(135deg, #1a0000 0%, #3b0000 40%, #1e0a0a 100%)',
-                                    padding: isMobile ? '1.2rem 1.5rem' : '1.8rem 2.5rem',
-                                    borderRadius: '20px',
-                                    cursor: 'pointer',
-                                    border: '1px solid rgba(239,68,68,0.5)',
-                                    position: 'relative',
-                                    overflow: 'hidden',
-                                    boxShadow: '0 10px 40px rgba(239,68,68,0.15)',
+                                    background: 'linear-gradient(135deg, #450a0a 0%, #1e1b4b 100%)',
+                                    padding: '2rem',
+                                    borderRadius: '24px',
+                                    border: '1px solid rgba(239, 68, 68, 0.4)',
                                     display: 'flex',
                                     alignItems: 'center',
-                                    gap: isMobile ? '1rem' : '2rem',
-                                    flexWrap: isMobile ? 'wrap' : 'nowrap',
+                                    gap: '1.5rem',
+                                    cursor: 'pointer',
+                                    boxShadow: '0 15px 40px rgba(0, 0, 0, 0.3)',
+                                    borderLeft: '8px solid #ef4444',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                 }}
-                                onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 15px 50px rgba(239,68,68,0.3)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
-                                onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 10px 40px rgba(239,68,68,0.15)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.5)'; }}
+                                onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.8)'; }}
+                                onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.4)'; }}
                             >
-                                <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 0% 50%, rgba(239,68,68,0.12) 0%, transparent 60%)', pointerEvents: 'none' }} />
-                                <div style={{ flexShrink: 0, background: 'linear-gradient(135deg, #ef4444, #7f1d1d)', padding: isMobile ? '0.8rem' : '1.2rem', borderRadius: '16px', boxShadow: '0 8px 20px rgba(239,68,68,0.4)' }}>
-                                    <ShieldAlert size={isMobile ? 28 : 36} color="white" />
+                                <div style={{ flexShrink: 0 }}>
+                                    <ShieldAlert size={36} color="#ef4444" />
                                 </div>
-                                <div style={{ flex: 1, minWidth: 0, position: 'relative', zIndex: 1 }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem', flexWrap: 'wrap' }}>
-                                        <span style={{ background: '#ef4444', color: 'white', padding: '0.2rem 0.9rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '2px' }}>VLS INVESTIGA</span>
-                                        <span style={{ color: 'rgba(255,255,255,0.45)', fontSize: '0.75rem' }}>01 de Abril, 2026</span>
-                                        <span style={{ background: 'rgba(239,68,68,0.15)', color: '#fca5a5', padding: '0.15rem 0.6rem', borderRadius: '6px', fontSize: '0.65rem', fontWeight: 700, border: '1px solid rgba(239,68,68,0.3)' }}>EXCLUSIVO</span>
+                                <div style={{ flex: 1 }}>
+                                    <div style={{ display: 'flex', gap: '8px', marginBottom: '0.5rem', alignItems: 'center' }}>
+                                        <span style={{ background: '#ef4444', color: 'white', padding: '0.2rem 0.8rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '1px' }}>VLS INVESTIGA</span>
+                                        <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600 }}>01 de Abril, 2026</span>
                                     </div>
-                                    <h3 style={{ color: 'white', margin: '0 0 0.4rem', fontSize: isMobile ? '1.2rem' : '1.6rem', fontWeight: 900, lineHeight: 1.2, fontFamily: '"Outfit", sans-serif' }}>
-                                        El Punto Ciego del Retail: <span style={{ color: '#fca5a5' }}>Caso Ian</span>
-                                    </h3>
-                                    <p style={{ color: 'rgba(255,255,255,0.65)', margin: 0, fontSize: isMobile ? '0.82rem' : '0.95rem', lineHeight: 1.5 }}>
-                                        Buscamos contribuir para mejorar la seguridad de los vecinos y trabajadores.
-                                    </p>
+                                    <h3 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.5px' }}>CASO IAN: PUNTO CIEGO DEL RETAIL</h3>
+                                    <p style={{ margin: '0.5rem 0 0', color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.5' }}>La investigación sobre negligencia e infraestructura que busca transformar para siempre las normativas de seguridad al interior de los supermercados.</p>
                                 </div>
-                                <div style={{ flexShrink: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-                                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', color: 'white', padding: '0.7rem 1.5rem', borderRadius: '50px', fontWeight: 900, fontSize: '0.85rem', whiteSpace: 'nowrap', boxShadow: '0 6px 15px rgba(239,68,68,0.4)' }}>
-                                        LEER AHORA →
+                                <div style={{ display: window.innerWidth > 768 ? 'flex' : 'none', flexShrink: 0, paddingLeft: '1rem' }}>
+                                     <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: 900, fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                                        LEER REPORTE <ChevronRight size={16} />
                                     </div>
-                                    <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.7rem' }}>vecinoslaserena.cl/media/ian</span>
                                 </div>
                             </div>
 
@@ -2307,42 +2821,268 @@ export default function HubDashboard() {
                                 </div>
                             </div>
 
-                            {/* SENTINEL PREDICTIVE REPORT */}
+                            {/* JUAN SOLDADO SUPREME GRAPHICAL CARD (16:9) */}
                             <div 
-                                 onClick={() => setShowSentinelNote(true)}
+                                 onClick={() => navigate('/juansoldado')}
+                                 className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                 style={{ 
+                                     gridColumn: isMobile ? 'span 1' : 'span 2',
+                                     aspectRatio: isMobile ? 'auto' : '16 / 7',
+                                     borderRadius: '45px', 
+                                     cursor: 'pointer',
+                                     border: '1px solid rgba(245,158,11,0.4)',
+                                     position: 'relative',
+                                     overflow: 'hidden',
+                                     display: 'flex',
+                                     flexDirection: 'column',
+                                     boxShadow: '0 30px 60px -12px rgba(0,0,0,0.6)',
+                                     marginBottom: '2.5rem',
+                                     background: 'rgb(2, 6, 23)'
+                                 }}
+                            >
+                                <img 
+                                    src="/media/juansoldado/juansoldadoavisa.jpg" 
+                                    style={{ 
+                                        position: 'absolute', inset: 0, width: '100%', height: '100%', 
+                                        objectFit: 'cover', opacity: 0.4,
+                                        transition: 'transform 0.8s cubic-bezier(0.4, 0, 0.2, 1)' 
+                                    }} 
+                                    className="hover-scale-img"
+                                    alt="Juan Soldado Background"
+                                />
+                                {/* Personaje Juan Soldado en la derecha */}
+                                <motion.img 
+                                    initial={{ x: 100, opacity: 0 }}
+                                    animate={{ x: 0, opacity: 1 }}
+                                    transition={{ duration: 1, delay: 0.5 }}
+                                    src="/media/juansoldado/JuanSoldado3dplano.png"
+                                    style={{ 
+                                        position: 'absolute', 
+                                        right: isMobile ? '-10%' : '5%', 
+                                        bottom: 0, 
+                                        height: isMobile ? '70%' : '110%', 
+                                        objectFit: 'contain',
+                                        zIndex: 2,
+                                        pointerEvents: 'none',
+                                        filter: 'drop-shadow(0 0 30px rgba(245,158,11,0.3))'
+                                    }}
+                                />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, rgba(2,6,23,1) 0%, rgba(2,6,23,0.8) 40%, transparent 100%)', zIndex: 1 }} />
+                                <div style={{ position: 'relative', zIndex: 10, height: '100%', width: isMobile ? '100%' : '50%', padding: isMobile ? '1.5rem' : '3.5rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '0.5rem' }}>
+                                        <div style={{ padding: '6px 15px', background: 'rgba(245,158,11,0.2)', border: '1px solid #f59e0b', borderRadius: '50px', color: '#f59e0b', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '2px' }}>VLS PREMIERE</div>
+                                        <div style={{ padding: '6px 15px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50px', color: 'white', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '2px' }}>HISTORIA VIVA</div>
+                                    </div>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '2rem' : '3rem', fontWeight: 950, lineHeight: 1, margin: 0, fontFamily: '"Outfit", sans-serif', textTransform: 'uppercase', letterSpacing: '-1px' }}>
+                                        JUAN SOLDADO <br/>
+                                        <span style={{ color: '#f59e0b' }}>EL REGRESO</span>
+                                    </h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', fontWeight: 400, lineHeight: 1.6, maxWidth: '450px' }}>
+                                        Explora la investigación más ambiciosa sobre la leyenda que marcó a una región. Documentos inéditos, radio digital y testimonios vecinales.
+                                    </p>
+                                    <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                        <button onClick={(e) => { e.stopPropagation(); navigate('/juansoldado'); }} style={{ padding: '1rem 2.5rem', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '18px', fontWeight: 950, fontSize: '0.9rem', boxShadow: '0 10px 30px rgba(245,158,11,0.5)', cursor: 'pointer', transition: 'all 0.3s' }}>ENTRAR AL PORTAL</button>
+                                        <span style={{ color: 'white', fontSize: '0.7rem', fontWeight: 900, opacity: 0.6, letterSpacing: '3px' }}>100% SOBERANO</span>
+                                    </div>
+                                </div>
+                                <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '4px', background: 'linear-gradient(to right, #f59e0b, transparent)', zIndex: 5 }} />
+                            </div>
+
+                            {/* ANDACOLLO & VALLENAR REGIONAL DUO (SIDE BY SIDE) */}
+                            <div style={{ 
+                                gridColumn: '1 / -1', 
+                                display: 'grid', 
+                                gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', 
+                                gap: '2rem',
+                                marginBottom: '2.5rem'
+                            }}>
+                                {/* ANDACOLLO CARD */}
+                                <div 
+                                    onClick={() => navigate('/andacollo')}
+                                    className="glass-panel hover-lift group"
+                                    style={{
+                                        aspectRatio: '16/9', borderRadius: '35px', overflow: 'hidden', cursor: 'pointer',
+                                        position: 'relative', border: '1px solid rgba(16, 185, 129, 0.4)',
+                                        background: '#022c22'
+                                    }}
+                                >
+                                    <img src="/media/andacollo/Andacollo_vls.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7, transform: 'scale(1.1)' }} alt="Andacollo Background" />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)', zIndex: 1 }} />
+                                    
+                                    {/* 3D Character Decorator (Andacollo Minero) */}
+                                    {!isMobile && (
+                                        <motion.img 
+                                            initial={{ x: 50, opacity: 0 }}
+                                            whileInView={{ x: 0, opacity: 1 }}
+                                            src="/media/andacollo/Minero.png"
+                                            style={{ position: 'absolute', bottom: -20, right: 0, height: '110%', objectFit: 'contain', zIndex: 4, filter: 'drop-shadow(0 10px 40px rgba(0,0,0,0.8))' }}
+                                        />
+                                    )}
+
+                                    <div style={{ position: 'relative', zIndex: 10, padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                                        <div style={{ display: 'flex', gap: '8px', marginBottom: '0.8rem' }}>
+                                            <span style={{ background: '#10b981', color: 'white', padding: '4px 14px', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 950, letterSpacing: '2px' }}>VLS LEGEND</span>
+                                            <span style={{ background: 'rgba(255,255,255,0.1)', color: 'white', padding: '4px 14px', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 950 }}>CIUDAD MONTAÑA</span>
+                                        </div>
+                                        <h3 style={{ margin: 0, color: 'white', fontSize: '1.8rem', fontWeight: 950, letterSpacing: '-1px' }}>ANDACOLLO: ORO Y FE</h3>
+                                        <p style={{ margin: '8px 0 0', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', maxWidth: '70%', lineHeight: 1.4 }}>Investigación territorial sobre la minería y religiosidad regional.</p>
+                                    </div>
+                                </div>
+
+                                {/* VALLENAR CARD */}
+                                <div 
+                                    onClick={() => navigate('/vallenar')}
+                                    className="glass-panel hover-lift group"
+                                    style={{
+                                        aspectRatio: '16/9', borderRadius: '35px', overflow: 'hidden', cursor: 'pointer',
+                                        position: 'relative', border: '1px solid rgba(168, 85, 247, 0.4)',
+                                        background: '#1e1b4b'
+                                    }}
+                                >
+                                    <img src="/media/vallenar/VallenarMíticoImagen.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} alt="Vallenar Background" />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(46,16,101,0.95), transparent)', zIndex: 1 }} />
+                                    
+                                    {/* 3D Character Decorator (Vallenar Inti) */}
+                                    {!isMobile && (
+                                        <motion.img 
+                                            initial={{ x: 50, opacity: 0 }}
+                                            whileInView={{ x: 0, opacity: 1 }}
+                                            src="/media/vallenar/characters/inti.png"
+                                            style={{ position: 'absolute', bottom: -10, right: 10, height: '95%', objectFit: 'contain', zIndex: 4, filter: 'drop-shadow(0 0 30px rgba(168,85,247,0.5))' }}
+                                        />
+                                    )}
+
+                                    <div style={{ position: 'relative', zIndex: 10, padding: '2.5rem', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
+                                        <div style={{ display: 'flex', gap: '8px', marginBottom: '0.8rem' }}>
+                                            <span style={{ background: '#a855f7', color: 'white', padding: '4px 14px', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 950, letterSpacing: '2px' }}>VLS PREMIERE</span>
+                                            <span style={{ background: 'rgba(255,255,255,0.1)', color: 'white', padding: '4px 14px', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 950 }}>PERLA DEL HUASCO</span>
+                                        </div>
+                                        <h3 style={{ margin: 0, color: 'white', fontSize: '1.8rem', fontWeight: 950, letterSpacing: '-1px' }}>VALLENAR: MITOLOGÍA</h3>
+                                        <p style={{ margin: '8px 0 0', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', maxWidth: '70%', lineHeight: 1.4 }}>Exploración digital sobre el embalse Santa Juana y su biodiversidad.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* TARJETAS RÁPIDAS: CLASICA, PERALES, VIAL */}
+                            <div style={{ 
+                                gridColumn: '1 / -1', 
+                                display: 'grid', 
+                                gridTemplateColumns: isMobile ? '1fr' : 'repeat(3, 1fr)', 
+                                gap: '2rem',
+                                marginBottom: '2.5rem'
+                            }}>
+                                {/* RADIO CLASICA */}
+                                <div 
+                                    onClick={() => navigate('/clasica')}
+                                    className="glass-panel hover-lift"
+                                    style={{ padding: '2.5rem', background: 'linear-gradient(135deg, rgba(153, 27, 27, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%)', borderRadius: '30px', border: '1px solid rgba(239, 68, 68, 0.3)', display: 'flex', flexDirection: 'column', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                >
+                                    <h4 style={{ color: '#ef4444', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px', marginBottom: '10px' }}>RADIO VLS</h4>
+                                    <h3 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 950, marginBottom: '15px' }}>CLÁSICA</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>El proyecto Alma Eterna de streaming lossless y curaduría audiovisual.</p>
+                                </div>
+
+                                {/* LOS PERALES */}
+                                <div 
+                                    onClick={() => navigate('/perales')}
+                                    className="glass-panel hover-lift"
+                                    style={{ padding: '2.5rem', background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%)', borderRadius: '30px', border: '1px solid rgba(249, 115, 22, 0.3)', display: 'flex', flexDirection: 'column', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                >
+                                    <h4 style={{ color: '#f97316', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px', marginBottom: '10px' }}>DENUNCIA VLS</h4>
+                                    <h3 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 950, marginBottom: '15px' }}>LOS PERALES</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Investigación sobre la emergencia sanitaria y el estado de los ductos.</p>
+                                </div>
+
+                                {/* SEGURIDAD VIAL */}
+                                <div 
+                                    onClick={() => navigate('/vial')}
+                                    className="glass-panel hover-lift"
+                                    style={{ padding: '2.5rem', background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%)', borderRadius: '30px', border: '1px solid rgba(45, 212, 191, 0.3)', display: 'flex', flexDirection: 'column', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                >
+                                    <h4 style={{ color: '#2dd4bf', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px', marginBottom: '10px' }}>REPORTAJE VLS</h4>
+                                    <h3 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 950, marginBottom: '15px' }}>EDICIÓN VIAL</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Análisis de la ruta 5, congestión, lomos de toros y medidas estructurales.</p>
+                                </div>
+                            </div>
+
+                             {/* CAMBIO DE HORA 2026 PREMIUM CARD */}
+                             <div 
+                                  onClick={handleHorario}
+                                  className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                  style={{ 
+                                      background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)', 
+                                      padding: isMobile ? '1.5rem' : '2.5rem', 
+                                      borderRadius: '35px', 
+                                      cursor: 'pointer',
+                                      border: '1px solid rgba(251,191,36,0.6)',
+                                      position: 'relative',
+                                      overflow: 'hidden',
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      marginBottom: '2.5rem',
+                                      boxShadow: '0 25px 50px -12px rgba(251, 191, 36, 0.2)'
+                                  }}
+                             >
+                                 <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.1, zIndex: 0 }}>
+                                     <Clock size={isMobile ? 150 : 220} color="#fbbf24" />
+                                 </div>
+                                 <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                             <span style={{ background: '#fbbf24', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>HEMEROTECA / VLS INVESTIGA</span>
+                                         </div>
+                                         <div style={{ display: 'flex', gap: '8px', color: '#fbbf24', opacity: 1 }}>
+                                             <HistoryIcon size={18} className="animate-spin-slow" />
+                                         </div>
+                                     </div>
+                                     <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>EL GRAN CAMBIO DE HORA 2026</h2>
+                                     <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                         Chile atrasa sus relojes este 5 de abril. Investigamos el origen de esta medida, sus efectos en el organismo y cómo asimilarlo con éxito desde La Serena.
+                                     </p>
+                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                         <button className="btn-vls-action-light" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem', background: '#fbbf24', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900' }}>REVISAR INVESTIGACIÓN</button>
+                                         <span style={{ color: '#fbbf24', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>ESTADO: GMT-4 ACTIVO</span>
+                                     </div>
+                                 </div>
+                             </div>
+
+                            {/* ARTEMIS II PREMIUM REPORT */}
+                            <div 
+                                 onClick={() => setShowVLSNewsArtemis(true)}
                                  className="glass-panel gaudi-curves hover-lift animate-fade-in" 
                                  style={{ 
                                      background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', 
                                      padding: isMobile ? '1.5rem' : '2.5rem', 
                                      borderRadius: '35px', 
                                      cursor: 'pointer',
-                                     border: '1px solid rgba(56,189,248,0.4)',
+                                     border: '1px solid rgba(56,189,248,0.6)',
                                      position: 'relative',
                                      overflow: 'hidden',
                                      display: 'flex',
                                      flexDirection: 'column',
-                                     boxShadow: '0 20px 40px rgba(0,0,0,0.5)'
+                                     boxShadow: '0 25px 50px -12px rgba(56, 189, 248, 0.3)',
+                                     animation: 'vls-stardust-pulse 3s infinite alternate'
                                  }}
                             >
-                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.08, zIndex: 0 }}>
-                                    <Radar size={isMobile ? 150 : 220} color="#38bdf8" />
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.12, zIndex: 0 }}>
+                                    <Rocket size={isMobile ? 150 : 220} color="#38bdf8" />
                                 </div>
                                 <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>INTELIGENCIA IA</span>
+                                            <span style={{ background: '#38bdf8', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>NASA / VLS</span>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '8px', color: '#38bdf8', opacity: 0.8 }}>
-                                            <TrendingUp size={18} />
+                                        <div style={{ display: 'flex', gap: '8px', color: '#38bdf8', opacity: 1 }}>
+                                            <Sparkles size={18} className="animate-pulse" />
                                         </div>
                                     </div>
-                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>CENTINEL FARO 2026</h2>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>ARTEMIS II: RUMBO A LA LUNA</h2>
                                     <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
-                                        Ojo Social Predictivo: El sistema que está detectando las crisis antes de que ocurran en la Serena mediante Social Listening.
+                                        Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad. El futuro de la exploración espacial desde La Serena.
                                     </p>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
-                                        <button className="btn-vls-action-light" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem' }}>ANALIZAR DATOS</button>
-                                        <span style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>RADAR ACTIVO</span>
+                                        <button className="btn-vls-action-light" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem', background: '#38bdf8', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900' }}>INICIAR MISIÓN</button>
+                                        <span style={{ color: '#38bdf8', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>ESTADO: EN ÓRBITA</span>
                                     </div>
                                 </div>
                             </div>
@@ -2509,6 +3249,46 @@ export default function HubDashboard() {
                                 </div>
                             </div>
 
+                            {/* IGLESIAS DE PIEDRA REPORT */}
+                            <div 
+                                onClick={() => setShowIglesias(true)}
+                                className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                style={{ 
+                                    background: 'linear-gradient(135deg, #451a03 0%, #7d201c 100%)', 
+                                    padding: isMobile ? '1.5rem' : '2.5rem', 
+                                    borderRadius: '35px', 
+                                    cursor: 'pointer',
+                                    border: '1px solid rgba(245,158,11,0.4)',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    boxShadow: '0 25px 50px -12px rgba(125, 32, 28, 0.4)'
+                                }}
+                            >
+                                <div style={{ position: 'absolute', top: '-5%', right: '-5%', opacity: 0.12, zIndex: 0 }}>
+                                    <Church size={isMobile ? 150 : 220} color="#f59e0b" />
+                                </div>
+                                <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ background: '#f59e0b', color: '#000', padding: '0.4rem 1.2rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900 }}>PATRIMONIO VLS</span>
+                                        </div>
+                                        <div style={{ display: 'flex', gap: '8px', color: '#f59e0b', opacity: 1 }}>
+                                            <HistoryIcon size={18} className="animate-pulse" />
+                                        </div>
+                                    </div>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>IGLESIAS DE PIEDRA</h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
+                                        Investigación: Los secretos de La Merced y la arquitectura de piedra caliza que define el alma de La Serena Colonial.
+                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'auto' }}>
+                                        <button className="btn-vls-action-light" style={{ padding: '0.6rem 1.5rem', fontSize: '0.8rem', background: '#f59e0b', color: '#000', border: 'none', borderRadius: '12px', fontWeight: '900' }}>EXPLORAR RUTA</button>
+                                        <span style={{ color: '#f59e0b', fontWeight: 'bold', fontSize: '0.7rem', letterSpacing: '1px' }}>VLS PATRIMONIAL</span>
+                                    </div>
+                                </div>
+                            </div>
+
                             {/* CULEBRON REPORT */}
                             <div 
                                 onClick={() => {
@@ -2558,7 +3338,6 @@ export default function HubDashboard() {
                     )}
 
                     {/* VOCES VECINALES & HEMEROTECA SECTION */}
-                    {!isRDMLS && (
                     <div style={{ maxWidth: '1400px', margin: '6rem auto 4rem auto', width: '100%', padding: '0 2rem' }}>
                          <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '3rem' }}>
                             <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
@@ -2572,9 +3351,10 @@ export default function HubDashboard() {
                          </div>
 
                          <div id="search-results-anchor" />
-                         <VLSNotesGallery />
+                         <Suspense fallback={<div />}>
+                            <VLSNotesGallery />
+                         </Suspense>
                     </div>
-                    )}
 
                     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
                         {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
@@ -2675,26 +3455,44 @@ export default function HubDashboard() {
                                         if (news?.eventId) window.dispatchEvent(new CustomEvent(news.eventId));
                                         else if (news?.url) window.open(news.url, '_blank');
                                     }}
-                                    style={{ display: 'flex', flexDirection: 'column', padding: '1.5rem', border: `1px solid ${news?.color || '#333'}30`, background: `linear-gradient(135deg, ${news?.color || '#333'}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer' }}
+                                    style={{ display: 'flex', flexDirection: 'column', padding: '0', border: `1px solid ${news?.color || '#333'}30`, background: `linear-gradient(135deg, ${news?.color || '#333'}15 0%, rgba(0,0,0,0.4) 100%)`, cursor: 'pointer', overflow: 'hidden' }}
                                 >
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
-                                            <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news?.color || '#333', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
-                                                {news?.category || 'INFO'}
-                                            </span>
-                                            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news?.date || ''}</span>
-                                        </div>
-                                        <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news?.title || ''}</h4>
-                                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news?.desc || ''}</p>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news?.color || '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
-                                            {IconCmp ? <IconCmp size={16} /> : <BookOpen size={16} />}
-                                            Leer Nota Completa <SkipForward size={14} style={{ marginLeft: 'auto' }} />
+                                        {news.image && (
+                                            <div style={{ height: '140px', width: '100%', overflow: 'hidden', position: 'relative' }}>
+                                                <img src={news.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={news.title} />
+                                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.6))' }}></div>
+                                            </div>
+                                        )}
+                                        <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1rem' }}>
+                                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'black', background: news?.color || '#333', padding: '0.2rem 0.6rem', borderRadius: '20px' }}>
+                                                    {news?.category || 'INFO'}
+                                                </span>
+                                                <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{news?.date || ''}</span>
+                                            </div>
+                                            <h4 style={{ color: 'white', margin: '0 0 0.5rem 0', fontSize: '1.2rem', lineHeight: '1.4' }}>{news?.title || ''}</h4>
+                                            <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', lineHeight: '1.5', margin: '0 0 1rem 0', flex: 1 }}>{news?.desc || ''}</p>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: news?.color || '#38bdf8', fontSize: '0.9rem', fontWeight: 'bold', marginTop: 'auto' }}>
+                                                {IconCmp ? <IconCmp size={16} /> : <BookOpen size={16} />}
+                                                Leer Nota Completa
+                                                <div style={{ marginLeft: 'auto', display: 'flex', gap: '10px' }}>
+                                                    <button 
+                                                        onClick={(e) => { e.stopPropagation(); handleShareNews(news); }}
+                                                        style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                                                        title="Compartir Noticia"
+                                                    >
+                                                        <Share2 size={16} />
+                                                    </button>
+                                                    <SkipForward size={14} />
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 );
                             })}
                         </div>
                         <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-                            <button onClick={() => window.open('https://laserena.cl/noticias', '_blank')} className="btn-glass" style={{ fontSize: '0.9rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}>Ver Archivo de Noticias (laserena.cl) <Globe size={14} style={{ marginLeft: '5px' }} /></button>
+                            <button onClick={() => navigate('/noticias')} className="btn-glass" style={{ fontSize: '0.9rem', padding: '0.5rem 1.5rem', borderRadius: '30px' }}>Ver Archivo de Noticias (RDMLS) <Globe size={14} style={{ marginLeft: '5px' }} /></button>
                         </div>
                     </div>
                     )}
@@ -2731,7 +3529,8 @@ export default function HubDashboard() {
                                 <LaFloridaAirport isMini={true} />
                             </div>
                             <MusicRanking />
-                            <SportsDataStrip />
+                            <NewsDataStrip />
+                            {/* SportsDataStrip eliminado por inconsistencia de datos */}
                             
                             {/* TUERCA VECINOS - REFACTORIZADO A CTA COMPACTO */}
                             <div className="glass-panel gaudi-curves hover-scale" style={{ 
@@ -2805,7 +3604,7 @@ export default function HubDashboard() {
                                         }}>
                                             {/* Fallback a Imagen si el modelo no carga o para preview rápido, pero con estilo 3D */}
                                             <div style={{ fontSize: '0.6rem', position: 'absolute', top: 10, left: 10, color: '#38bdf8', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>VLS BIOMETRIC SCAN</div>
-                                            <img src={(char.model && char.model.includes('Serenito')) ? '/serenito_v3.png' : ((char.model && char.model.includes('tata')) ? '/avatars/tata_rojas_sticker.png' : char.img)} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} />
+                                            <img src={char.img} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} />
                                             <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '10px', background: 'linear-gradient(90deg, #38bdf8, transparent, #38bdf8)', opacity: 0.3 }}></div>
                                         </div>
 
@@ -2826,7 +3625,6 @@ export default function HubDashboard() {
                     </div>
 
                     {/* NUEVA SECCIÓN CÁMARAS EN VIVO C5 */}
-                    {!isRDMLS && (
                     <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5))' }}></div>
@@ -2847,6 +3645,7 @@ export default function HubDashboard() {
                                         <video
                                             src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compa%c3%b1ias.mp4"
                                             autoPlay loop muted playsInline
+                                            onCanPlay={e => e.target.play().catch(() => {})}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
                                         <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (C5)</div>
@@ -2855,6 +3654,7 @@ export default function HubDashboard() {
                                         <video
                                             src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4"
                                             autoPlay loop muted playsInline
+                                            onCanPlay={e => e.target.play().catch(() => {})}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
                                         <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (C5)</div>
@@ -2864,6 +3664,7 @@ export default function HubDashboard() {
                                     <video
                                         src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4"
                                         autoPlay loop muted playsInline
+                                        onCanPlay={e => e.target.play().catch(() => {})}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
                                     <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
@@ -2880,10 +3681,9 @@ export default function HubDashboard() {
                             </div>
                         </div>
                     </div>
-                    )}
                 </div>
             </div>
-
+            {showVeciCat && <VeciCat onClose={() => setShowVeciCat(false)} />}
             {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
             {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
             {showSerenaMetAdmin && <SerenaMetAdmin onClose={() => setShowSerenaMetAdmin(false)} />}
@@ -2936,7 +3736,14 @@ export default function HubDashboard() {
                 {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
                 {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
                 {showAguasValle && <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />}
+                {showChequia && <VLSNewsChequia onClose={() => setShowChequia(false)} />}
+                {showIglesias && <VLSNewsIglesiasPiedra onClose={() => setShowIglesias(false)} />}
+                {showNewsAvalancha && <VLSNewsAvalancha onClose={() => setShowNewsAvalancha(false)} />}
             </Suspense>
+            
+            {/* MODALS RENDERED IN APP.JSX (GLOBAL EVENT BUS) */}
+            {/* Redundant portals removed here to avoid z-index conflicts v5.5 */}
+            
             {showSmartAdminPortal && <SmartAdminPortal onClose={() => setShowSmartAdminPortal(false)} currentUser={currentUser} />}
             {showAirportMonitor && <LaFloridaAirport onClose={() => setShowAirportMonitor(false)} />}
             {showPortMonitor && (
@@ -2994,8 +3801,18 @@ export default function HubDashboard() {
                 <AjedrezPatrimonialVLS onClose={() => setShowAjedrez(false)} />
             )}
             
+            {showVLSNewsTimeChange && (
+                <Suspense fallback={<LoadingScreen />}>
+                    <VLSNewsTimeChange onClose={() => setShowVLSNewsTimeChange(false)} />
+                </Suspense>
+            )}
+            
             {showVLSNewsIan && (
                 <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+            )}
+            
+            {showVialNews && (
+                <VLSNewsVial onClose={() => setShowVialNews(false)} />
             )}
             
             {showSeguridadVecinal && (
