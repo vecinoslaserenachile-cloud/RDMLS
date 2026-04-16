@@ -2267,7 +2267,7 @@ export default function HubDashboard() {
 
                 {/* Tarjeta 5: TORNAMESA DIGITAL */}
                 <div
-                    onClick={() => { window.dispatchEvent(new CustomEvent('open-personal-stereo')); }}
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-music-ranking')); }}
                     style={{
                         background: 'linear-gradient(135deg, #0b1120 0%, #1e1b4b 100%)',
                         border: '1px solid rgba(168, 85, 247, 0.6)',

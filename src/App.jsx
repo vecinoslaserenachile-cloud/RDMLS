@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import StickyNoteWidget from './components/StickyNoteWidget';
+// StickyNoteWidget removido por solicitud institucional (MEMO no autorizado)
+
 import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
@@ -22,6 +23,13 @@ if (typeof window !== 'undefined') {
   }, true);
 
   window.addEventListener('unhandledrejection', (e) => {
+    // 1. SILENCIO_OPERATIVO: Interrupciones de carga de medios (AbortError) - SILVER BULLET FIX
+    if (e.reason && (e.reason.name === 'AbortError' || (e.reason.message && e.reason.message.includes('play() request was interrupted')))) {
+      e.preventDefault();
+      return; 
+    }
+
+    // 2. RECUPERACIÓN_DE_SEÑAL: Chunks o Módulos fallidos
     if (e.reason && e.reason.message && (e.reason.message.includes('Failed to fetch dynamically imported module') || e.reason.message.includes('chunk'))) {
       console.warn('VLS_C5: Promesa de módulo fallida. Re-sincronizando portal...');
       window.location.reload();
@@ -93,12 +101,15 @@ const DeBonoThinkingHats = lazy(() => import('./components/DeBonoThinkingHats.js
 const VLSConsoleSound = lazy(() => import('./components/VLSConsoleSound.jsx'));
 const DronDrigo = lazy(() => import('./components/DronDrigo.jsx'));
 const VLSQuantumWatch = lazy(() => import('./components/VLSQuantumWatch.jsx'));
+const HoraSerena = lazy(() => import('./components/HoraSerena.jsx'));
 const TribunalesVecinales = lazy(() => import('./components/TribunalesVecinales.jsx'));
 const DonRadios = lazy(() => import('./components/DonRadios.jsx'));
 const SmartAdministration = lazy(() => import('./components/SmartAdministration.jsx'));
 const EmbajadasConsulados = lazy(() => import('./components/EmbajadasConsulados.jsx'));
 const SismicCenter = lazy(() => import('./components/SismicCenter.jsx'));
 const SmartTheater = lazy(() => import('./components/SmartTheater.jsx'));
+const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
+const VLSNewsIglesiasPiedra = React.lazy(() => import('./components/VLSNewsIglesiasPiedra.jsx'));
 const SmartHub3D = lazy(() => import('./components/SmartHub3D'));
 const SocialVision = lazy(() => import('./components/SocialVision'));
 const RadioIntercom = lazy(() => import('./components/RadioIntercom'));
@@ -150,8 +161,25 @@ const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
 const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
 const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
 const VLSNewsIan = lazy(() => import('./components/VLSNewsIan'));
+const VLSNewsArtemis = lazy(() => import('./components/VLSNewsArtemis'));
+const VLSNewsAlcaldesa = lazy(() => import('./components/VLSNewsAlcaldesa'));
+const VLSNewsAcciona = lazy(() => import('./components/VLSNewsAcciona'));
+const VLSNewsSalud = lazy(() => import('./components/VLSNewsSalud'));
+const VLSNewsChequia = lazy(() => import('./components/VLSNewsChequia'));
 const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
+const VLSNewsTimeChange = lazy(() => import('./components/VLSNewsTimeChange'));
 const BackofficeMovilVLS = lazy(() => import('./components/BackofficeMovilVLS'));
+const VLSNewsAvalancha = lazy(() => import('./components/VLSNewsAvalancha'));
+const DomeykoPortal = lazy(() => import('./pages/DomeykoPortal'));
+const RDMLSNewsMigra = lazy(() => import('./components/RDMLSNewsMigra'));
+const SonicevPortal = lazy(() => import('./pages/SonicevPortal'));
+const NuevoPeregrinoPortal = lazy(() => import('./pages/NuevoPeregrinoPortal'));
+const SmartComunaOS = lazy(() => import('./components/SmartComunaOS'));
+const VLSNewsChoapa = lazy(() => import('./components/VLSNewsChoapa'));
+const VLSNotesGallery = lazy(() => import('./components/VLSNotesGallery'));
+const MusicRanking = lazy(() => import('./components/MusicRanking'));
+
+
 
 const SOVEREIGN_NAMES = [
   "vecinoslaserena.cl",
@@ -382,20 +410,36 @@ class ErrorBoundary extends React.Component {
 function App() {
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showCoquiSmartCRM, setShowCoquiSmartCRM] = useState(false);
+  const location = useLocation();
+
   const host = window.location.host.toLowerCase();
-  const isRDMLS = host.includes('rdmls') || host.includes('imls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos')) || host.includes('prendes-vls') || location.pathname.includes('/radio');
 
   // Limpiar flag de mantenimiento al montar — evita bloqueo post-deploy
   useEffect(() => {
     localStorage.removeItem('vls_maintenance_active');
   }, []);
 
+  const isSonicev = host.includes('sonicev');
+
   return (
-    <Suspense fallback={<div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingScreen /></div>}>
+    <Suspense fallback={
+      isSonicev ? (
+        <div style={{ background: '#050505', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ color: '#ff4d4d', fontSize: '1.5rem', fontWeight: 900, fontFamily: 'system-ui, sans-serif', letterSpacing: '8px', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+            SONICEV
+          </div>
+        </div>
+      ) : (
+        <div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><LoadingScreen /></div>
+      )
+    }>
       <ErrorBoundary>
         <AppContent setShowCoquiSmartCRM={setShowCoquiSmartCRM} />
       </ErrorBoundary>
-      {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !isRDMLS) && <VLSQuantumWatch isRDMLS={isRDMLS} />}
+      {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !window.location.host.includes('sonicev') && window.location.pathname !== '/sonicev') && (
+        isRDMLS ? <HoraSerena /> : <VLSQuantumWatch isRDMLS={isRDMLS} />
+      )}
       <MaintenanceNotice />
       {showCoquiSmartCRM && (
         <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: '#070707', zIndex: 200000, overflowY: 'auto' }}>
@@ -411,7 +455,8 @@ function App() {
           </Suspense>
         </div>
       )}
-      <StickyNoteWidget />
+
+
     </Suspense>
   );
 }
@@ -420,17 +465,20 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const navigate = useNavigate();
   const location = useLocation();
   const host = window.location.host.toLowerCase();
-  const isRDMLS = host.includes('rdmls') || host.includes('imls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
-  const isAcademy = host.includes('vecinosmart.cl'); // Entorno Comercial de Venta de Know-how
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos')) || host.includes('prendes-vls') || location.pathname.includes('/radio');
+  const isAcademy = host.includes('vecinosmart.cl') || host.includes('prendes.cl'); // Entorno Comercial de Venta de Know-how
   const isVLS = !isRDMLS && !isAcademy && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
-  const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl');
+  const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl') || host.includes('prendes.cl');
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('pages.dev');
   const isChile = host.includes('vecinoschile.cl');
   const isNational = isChile;
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
   const isVLSabes = location.pathname.includes('/vlsabes');
   const isTribute = location.pathname.includes('/agua');
-  const isZeroDistraction = isInduccion || isVLSabes || isRDMLS || isTribute;
+  const isArtemis = location.pathname.toLowerCase().includes('/artemis');
+  const isCordillera = location.pathname.toLowerCase().includes('/altacordillera') || location.pathname.toLowerCase().includes('/cordillera');
+  const isClasica = location.pathname.toLowerCase().includes('/clasica');
+  const isZeroDistraction = isInduccion || isVLSabes || isRDMLS || isTribute || isClasica || isArtemis || isCordillera;
   const isCommercial = isAcademy;
 
   const { t, lang, setLang } = useTranslation();
@@ -440,10 +488,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const stratParam = searchParams.get('strategy');
   const mKey = searchParams.get('vls_master');
   const appId = searchParams.get('app');
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
-  // VLS Media Extractor v5.0: Direct Vanity URLs support (e.g., /paradoja, /bencinazo)
-  const mediaMatch = location.pathname.match(/^\/(paradoja|bencinazo|colapso|batik|semanasanta|semana-santa|aguasvalle|poduje|sentinel|investigacion)$/i) || location.pathname.match(/^\/media\/([^/]+)/);
-  const newsId = searchParams.get('news') || (mediaMatch ? mediaMatch[1] : null);
+  // VLS Media Extractor v5.0: Direct Vanity URLs support (e.g., /paradoja, /artemis, /artemisa)
+  const mediaMatch = location.pathname.match(/^\/(paradoja|horario|cambio-de-hora|bencinazo|colapso|batik|semanasanta|semana-santa|aguasvalle|poduje|sentinel|investigacion|chequia|efe|peregrino|juansoldado|juan-soldado|vallenar|retail|artemisa|artemis|artemis2|clasica|avalancha|ojo|domeyko|migra|ucen|sonicev|acciona)(\/|$)/i) || location.pathname.match(/^\/media\/([^/]+)/) || location.pathname.match(/^\/mundo\/([^/]+)/);
+
+  const newsId = searchParams.get('news') || searchParams.get('note') || (mediaMatch ? (mediaMatch[1] || mediaMatch[0].replace('/','')) : null);
   
   const [currentUser, setCurrentUser] = useState(null);
   const [isGuest, setIsGuest] = useState(false);
@@ -455,6 +511,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showRadio, setShowRadio] = useState(true);
   const [showChat, setShowChat] = useState(false);
   const [showDistances, setShowDistances] = useState(false);
+  const [distancesTarget, setDistancesTarget] = useState(null);
+  const [showSocialVision, setShowSocialVision] = useState(false);
+
   const [showProjectInfo, setShowProjectInfo] = useState(false);
   const [showRadioMaster, setShowRadioMaster] = useState(false);
   const [showHub3D, setShowHub3D] = useState(false);
@@ -486,7 +545,17 @@ function AppContent({ setShowCoquiSmartCRM }) {
       setSystemHealth('polishing');
       setShowMaintenanceNotice(true);
     });
+
+    const handleOpenDistances = (e) => {
+      setDistancesTarget(e.detail || null);
+      setShowDistances(true);
+    };
+    window.addEventListener('vls-open-distances', handleOpenDistances);
+    return () => {
+      window.removeEventListener('vls-open-distances', handleOpenDistances);
+    };
   }, []);
+
   const [showAuditoria, setShowAuditoria] = useState(false);
   const [showParlamento, setShowParlamento] = useState(false);
   const [showGym3D, setShowGym3D] = useState(false);
@@ -563,6 +632,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
   }, [vlsTokens, currentUser]);
   const [showPrecolombino, setShowPrecolombino] = useState(false);
   const [showEntreVecinas, setShowEntreVecinas] = useState(host.includes('entrevecinas'));
+  const [showMusicRanking, setShowMusicRanking] = useState(false);
+
 
   // States for modals
   const [showCouncil, setShowCouncil] = useState(false);
@@ -616,11 +687,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
   useEffect(() => {
     const host = window.location.hostname;
     if (host.includes('entrevecinas.cl') && location.pathname === '/') {
-      navigate('/legacy');
+      // Sostener en Hub sin redirección legacy
     } else if (host.includes('farito.cl') && location.pathname === '/') {
       navigate('/inversores');
     } else if (host.includes('puertasmart.cl') && location.pathname === '/') {
       navigate('/puerta');
+    } else if (host.includes('sonicev.cl') && location.pathname === '/') {
+      navigate('/sonicev');
     } else if (host.includes('radiovecinos.cl') && location.pathname === '/') {
       // Opcional: Redirigir a un hub de radios si existiera
     }
@@ -670,6 +743,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showSkyGuide, setShowSkyGuide] = useState(false);
   const [showVecnityPay, setShowVecnityPay] = useState(false);
   const [showMemoriasUnicornio, setShowMemoriasUnicornio] = useState(false);
+  const [showVLSNewsArtemis, setShowVLSNewsArtemis] = useState(location.pathname.toLowerCase().match(/\/(artemis|artemisa|artemis2)/i));
+  const [showVLSNewsUcen, setShowVLSNewsUcen] = useState(location.pathname.toLowerCase().match(/\/ucen(\/|$)/i));
+  const [showNewsAlcaldesa, setShowNewsAlcaldesa] = useState(false);
+  const [alcaldesaNoteId, setAlcaldesaNoteId] = useState(null);
+  const [showErrorCollector, setShowErrorCollector] = useState(false);
   const [showAguasValle, setShowAguasValle] = useState(false);
   const [showTiendaPoleras, setShowTiendaPoleras] = useState(false);
   const [showNewsBencinazo, setShowNewsBencinazo] = useState(false);
@@ -678,8 +756,22 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showNewsInvestigacion, setShowNewsInvestigacion] = useState(false);
   const [showNewsSemanaSanta, setShowNewsSemanaSanta] = useState(false);
   const [showVLSNewsIan, setShowVLSNewsIan] = useState(false);
+  const [showVLSNewsChequia, setShowVLSNewsChequia] = useState(false);
   const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
+  const [showVLSNewsTimeChange, setShowVLSNewsTimeChange] = useState(false);
+  const [showNewsAvalancha, setShowNewsAvalancha] = useState(false);
   const [showBackofficeMovil, setShowBackofficeMovil] = useState(false);
+  const [showRDMLSNewsMigra, setShowRDMLSNewsMigra] = useState(location.pathname.toLowerCase().match(/^\/migra/i) || searchParams.get('news') === 'migra' || searchParams.get('note') === 'migra');
+  const [showAcciona, setShowAcciona] = useState(location.pathname.toLowerCase().match(/^\/acciona/i));
+  const [showSalud, setShowSalud] = useState(location.pathname.toLowerCase().match(/^\/salud/i));
+  const [showDomeyko, setShowDomeyko] = useState(location.pathname.toLowerCase().match(/^\/domeyko/i));
+  const [showSonicev, setShowSonicev] = useState(location.pathname.toLowerCase().match(/^\/sonicev/i) || searchParams.get('news') === 'sonicev' || searchParams.get('note') === 'sonicev');
+  const [showSmartOS, setShowSmartOS] = useState(searchParams.get('app') === 'os' || searchParams.get('os') === 'true');
+  const [showNewsChoapa, setShowNewsChoapa] = useState(location.pathname.toLowerCase().match(/^\/choapa/i));
+  const [showNewsRedCine, setShowNewsRedCine] = useState(location.pathname.toLowerCase().match(/^\/redcine/i));
+
+
+
   const [showSoveranix, setShowSoveranix] = useState(false);
   const [showAlcaldes, setShowAlcaldes] = useState(false);
   const [showVLSpeak, setShowVLSpeak] = useState(false);
@@ -704,24 +796,37 @@ function AppContent({ setShowCoquiSmartCRM }) {
       favIconUrl = '/vls-logo-3d.png';
     } else if (isRDMLS) {
       pageTitle = 'RDMLS - Radio Digital Municipal';
-      favIconUrl = '/escudo.png';
+      favIconUrl = '/rdmls_favicon.png';
     } else if (host.includes('entrevecinas')) {
       pageTitle = 'Entre Vecinas - VLS Network';
       favIconUrl = '/entrevecinas_icon.png';
     } else if (host.includes('vecinoschile')) {
       pageTitle = 'Vecinos Chile - Red Republicana 2026';
       favIconUrl = '/chile_icon.png';
+    } else if (host.includes('sonicev')) {
+      pageTitle = 'Sonicev - Producción & Estudio Soberano';
+      favIconUrl = '/sonicev_favicon.png';
+    } else if (host.includes('nuevoperegrino')) {
+      pageTitle = 'Nuevo Peregrino - Soberanía Digital';
+      favIconUrl = '/peregrino_favicon.png';
     }
 
     document.title = pageTitle;
     const links = document.querySelectorAll("link[rel~='icon']");
     links.forEach(link => { link.href = favIconUrl; });
 
-    if (location.pathname === '/radios' || location.pathname.includes('/radios')) {
+    if (location.pathname === '/radios' || location.pathname.includes('/radios') || location.pathname === '/distancias' || location.pathname === '/DISTANCIAS') {
       if (!showRadioMaster) setShowRadioMaster(true);
     }
 
-    if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !isRDMLS && !host.includes('localhost') && !host.includes('127.0.0.1')) {
+    // VLS_DEEP_DOMAIN_BYPASS v5.2: Prendes.cl users NEVER get /welcome (they have their own branding)
+    const isPrendesHost = host.includes('prendes.cl') || host.includes('prendes-vls');
+
+    const isPeregrinoHost = host.includes('nuevoperegrino.cl');
+    const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2026|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine)/i);
+
+
+    if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !isRDMLS && !isPrendesHost && !isMediaPortal && !isPeregrinoHost && !host.includes('sonicev') && !host.includes('localhost') && !host.includes('127.0.0.1')) {
       if (location.pathname !== '/welcome') {
         // Preservar parámetros durante la redirección (Deep Linking Mundial)
         navigate('/welcome' + location.search);
@@ -737,9 +842,61 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const saved = localStorage.getItem('smart_notifications');
     if (saved) setNotifications(JSON.parse(saved));
 
-    // Force scroll to top on every route transition
-    window.scrollTo({ top: 0, behavior: 'instant' });
-  }, [navigate, location.pathname]);
+      const handleHorario = () => setShowVLSNewsTimeChange(true);
+      const handleArtemisEvent = () => setShowVLSNewsArtemis(true);
+      const handleUcenEvent = () => setShowVLSNewsUcen(true);
+      const handleChequiaEvent = () => setShowVLSNewsChequia(true);
+
+      if (newsId && newsId.toLowerCase().includes('horario')) handleHorario();
+      if (newsId && newsId.toLowerCase().includes('cambio-de-hora')) handleHorario();
+      
+      // Automatic Modal Activation based on Direct URL (Vanity URLs v5.5)
+      if (newsId && (newsId.toLowerCase() === 'artemisa' || newsId.toLowerCase() === 'artemis' || newsId.toLowerCase() === 'artemis2')) handleArtemisEvent();
+      if (newsId && newsId.toLowerCase() === 'ucen') handleUcenEvent();
+      if (newsId && newsId.toLowerCase() === 'chequia') handleChequiaEvent();
+      if (newsId && newsId.toLowerCase() === 'domeyko') setShowDomeyko(true);
+      if (newsId && newsId.toLowerCase() === 'migra') setShowRDMLSNewsMigra(true);
+      if (newsId && newsId.toLowerCase() === 'fred') setShowNewsInvestigacion(true);
+      if (newsId && (newsId.toLowerCase() === 'juansoldado' || newsId.toLowerCase() === 'juan-soldado')) setShowNewsInvestigacion(true); 
+      if (newsId && newsId.toLowerCase() === 'sonicev') setShowSonicev(true);
+      if (newsId && newsId.toLowerCase() === 'acciona') setShowAcciona(true);
+      if (newsId && newsId.toLowerCase() === 'salud') setShowSalud(true);
+      if (newsId && newsId.toLowerCase() === 'choapa') setShowNewsChoapa(true);
+      if (newsId && newsId.toLowerCase() === 'redcine') setShowNewsRedCine(true);
+      if (location.pathname.toLowerCase().match(/\/migra(\/|$)/i)) setShowRDMLSNewsMigra(true);
+      if (location.pathname.toLowerCase().match(/\/acciona(\/|$)/i)) setShowAcciona(true);
+      if (location.pathname.toLowerCase().match(/\/salud(\/|$)/i)) setShowSalud(true);
+      if (location.pathname.toLowerCase().match(/\/choapa(\/|$)/i)) setShowNewsChoapa(true);
+      if (location.pathname.toLowerCase().match(/\/redcine(\/|$)/i)) setShowNewsRedCine(true);
+      
+      const handleMigra = () => setShowRDMLSNewsMigra(true);
+      const handleAcciona = () => setShowAcciona(true);
+      const handleChoapa = () => setShowNewsChoapa(true);
+      const handleRedCine = () => setShowNewsRedCine(true);
+      const handleDomeyko = () => setShowDomeyko(true);
+
+      window.addEventListener('open-vls-horario', handleHorario);
+      window.addEventListener('open-vls-artemis', handleArtemisEvent);
+      window.addEventListener('open-vls-ucen', handleUcenEvent);
+      window.addEventListener('open-vls-chequia', handleChequiaEvent);
+      window.addEventListener('open-vls-acciona', handleAcciona);
+      window.addEventListener('open-vls-choapa', handleChoapa);
+      window.addEventListener('open-vls-redcine', handleRedCine);
+      window.addEventListener('open-rdmls-migra', handleMigra);
+      window.addEventListener('open-domeyko-portal', handleDomeyko);
+
+      // Force scroll to top on every route transition
+      window.scrollTo({ top: 0, behavior: 'instant' });
+      
+      return () => {
+        window.removeEventListener('open-vls-horario', handleHorario);
+        window.removeEventListener('open-vls-artemis', handleArtemisEvent);
+        window.removeEventListener('open-vls-ucen', handleUcenEvent);
+        window.removeEventListener('open-vls-chequia', handleChequiaEvent);
+        window.removeEventListener('open-rdmls-migra', handleMigra);
+        window.removeEventListener('open-domeyko-portal', handleDomeyko);
+      };
+    }, [navigate, location.pathname, newsId]);
 
   // ── Efecto de auto-invitado: corre SOLO al montar (una vez) ──
   // Si ya hay currentUser (logueo real), NUNCA activar modo invitado.
@@ -870,6 +1027,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const handleInduccionFixed = () => setShowVLSInduccion(true);
     const handleSeguridad = () => setShowSeguridadVecinal(true);
     const handleVlsIan = () => setShowVLSNewsIan(true);
+    const handleVlsChequia = () => setShowVLSNewsChequia(true);
+    const handleVlsAvalancha = () => setShowNewsAvalancha(true);
+    const handleDomeyko = () => setShowDomeyko(true);
 
     window.addEventListener('open-vlspeak', handleSpeak);
     window.addEventListener('open-alcaldes-history', handleAlcaldes);
@@ -879,6 +1039,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-smart-admin-fixed', handleInduccionFixed);
     window.addEventListener('open-vls-seguridad', handleSeguridad);
     window.addEventListener('open-vls-ian', handleVlsIan);
+    window.addEventListener('open-vls-chequia', handleVlsChequia);
+    window.addEventListener('open-vls-avalancha', handleVlsAvalancha);
+    window.addEventListener('open-domeyko-portal', handleDomeyko);
 
     return () => {
       comSocket.off('receive_push_notification');
@@ -891,6 +1054,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-smart-admin-fixed', handleInduccionFixed);
       window.removeEventListener('open-vls-seguridad', handleSeguridad);
       window.removeEventListener('open-vls-ian', handleVlsIan);
+      window.removeEventListener('open-vls-chequia', handleVlsChequia);
+      window.removeEventListener('open-vls-avalancha', handleVlsAvalancha);
+      window.removeEventListener('open-domeyko-portal', handleDomeyko);
     };
   }, []);
 
@@ -974,6 +1140,27 @@ function AppContent({ setShowCoquiSmartCRM }) {
         console.error("Auth Error:", error.message);
       }
     });
+  };
+
+  const handleLogout = () => {
+    const doLogout = () => {
+      setIsGuest(false);
+      setCurrentUser(null);
+      setGuestTimeLeft(0);
+      localStorage.removeItem('smart_is_guest');
+      localStorage.removeItem('master_bypass');
+      localStorage.setItem('smart_logout', 'true');
+      setShowUserProfile(false);
+      window.location.href = '/';
+    };
+    if (currentUser) {
+      signOut(auth).then(doLogout).catch(err => {
+        console.error("Logout error:", err);
+        doLogout();
+      });
+    } else {
+      doLogout();
+    }
   };
 
   const handleSaveKPI = () => {
@@ -1071,6 +1258,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const handleOpenPropiedades = () => navigate('/propiedades');
   const handleOpenIdentityGate = () => setShowIdentityGate(true);
   const handleOpenGym = () => setShowGym3D(true);
+  const handleOpenAvalancha = () => setShowNewsAvalancha(true);
 
   const handleToggleRadio = () => {
     if (!showRadio) window.dispatchEvent(new CustomEvent('stop-all-audio'));
@@ -1122,7 +1310,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (appId === 'sentinel') setShowSentinelApex(true);
         if (appId === 'analytics') setShowAnalyticsApp(true);
         if (appId === 'seguridad') setShowSeguridadVecinal(true);
-        if (appId === 'ian') setShowVLSNewsIan(true);
+        if (appId === 'ian' || appId === 'retail') setShowVLSNewsIan(true);
+        if (appId === 'camaras' || appId === 'vecinojos') setShowVecinojos(true);
+        if (appId === 'ojo' || appId === 'avalancha') setShowNewsAvalancha(true);
         if (appId === 'backoffice') setShowBackofficeMovil(true);
         if (appId === 'radio') setShowRadioMaster(true);
       }, 1000);
@@ -1136,7 +1326,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (newsId === 'sentinel') setShowNewsSentinel(true);
         if (newsId === 'investigacion' || newsId === 'paradoja') setShowNewsInvestigacion(true);
         if (newsId === 'aguasvalle') setShowAguasValle(true);
-        if (newsId === 'ian') setShowVLSNewsIan(true);
+        if (newsId === 'ian' || newsId === 'retail') setShowVLSNewsIan(true);
+        if (newsId === 'artemisa') setShowVLSNewsArtemis(true);
+        if (newsId === 'chequia') setShowVLSNewsChequia(true);
+        if (newsId === 'ojo' || newsId === 'avalancha') setShowNewsAvalancha(true);
+        if (newsId === 'alcaldesa') setShowNewsAlcaldesa(true);
+        if (newsId === 'camaras') setShowVecinojos(true);
       }, 1200);
     }
   }, [searchParams, location.pathname]);
@@ -1250,6 +1445,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-memory-portal', handleOpenMemoryPortal);
     window.addEventListener('open-vlsmastercharts', handleOpenVlsMasterCharts);
     window.addEventListener('open-appendix', handleOpenAppendix);
+    window.addEventListener('open-music-ranking', () => setShowMusicRanking(true));
+
     window.addEventListener('open-farito-browser', handleOpenFaritoBrowser);
     window.addEventListener('open-kiosko-diarios', handleOpenKiosko);
     window.addEventListener('open-airport', handleOpenAirport);
@@ -1309,8 +1506,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-plaza-vecinal', handleOpenPlazaVecinal);
     window.addEventListener('open-safe-route', handleOpenSafeRoute);
     window.addEventListener('open-vls-ian', () => setShowVLSNewsIan(true));
+    window.addEventListener('open-vls-chequia', () => setShowVLSNewsChequia(true));
     window.addEventListener('open-vls-seguridad', () => setShowSeguridadVecinal(true));
+    window.addEventListener('open-vls-avalancha', () => setShowNewsAvalancha(true));
+    window.addEventListener('open-vls-alcaldesa', (e) => {
+      if (e.detail?.noteId) setAlcaldesaNoteId(e.detail.noteId);
+      else setAlcaldesaNoteId(null);
+      setShowNewsAlcaldesa(true);
+    });
     window.addEventListener('open-backoffice-movil', () => setShowBackofficeMovil(true));
+    window.addEventListener('open-smart-os', () => setShowSmartOS(true));
     window.addEventListener('open-smart-salud', handleOpenSmartSalud);
     window.addEventListener('open-arquitectura', handleOpenArquitectura);
     window.addEventListener('open-propiedades', handleOpenPropiedades);
@@ -1322,6 +1527,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-tienda-poleras', handleOpenTienda);
     window.addEventListener('open-roadmap-vls', handleOpenRoadmap);
     window.addEventListener('open-decision-vecinal', handleOpenCouncil);
+    window.addEventListener('open-vls-artemis', () => setShowVLSNewsArtemis(true));
+    window.addEventListener('open-vls-ucen', () => setShowVLSNewsUcen(true));
+    window.addEventListener('open-vls-migra', () => setShowRDMLSNewsMigra(true));
     window.addEventListener('open-project-info', () => setShowProjectInfo(true));
     window.addEventListener('vls-notification', (e) => {
       if (e.detail) {
@@ -1363,6 +1571,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('close-all-floating', () => {
       setShowRadio(false);
       setShowChat(false);
+      setShowNewsAvalancha(false);
       setShowDistances(false);
       setShowHub3D(false);
       setShowAuditoria(false);
@@ -1510,17 +1719,84 @@ function AppContent({ setShowCoquiSmartCRM }) {
   }, []);
 
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
-  // Un usuario de Google no-admin también puede acceder (como vecino registrado)
-  const isGoogleUser = currentUser && !isAuthorized;
-
-  // ELIMINADO: Bloqueo Maestro Passport que impedía acceso a pagos
-  const showMasterLock = false;
 
   // VLS_C5: NEVER return null. Return LoadingScreen to avoid "black screen" confusion.
-  if (!authInitialized && !isRDMLS) {
+  // Bypass loading screen for direct media portals to ensure immediate visual feedback
+  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2026|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas)/i);
+
+  if (!authInitialized && !isRDMLS && !isMediaPortal) {
     return (
       <div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <LoadingScreen />
+      </div>
+    );
+  }
+
+  const isSonicevHost = host.includes('sonicev.cl') || location.pathname.match(/^\/sonicev/i);
+  if (isSonicevHost) {
+    return (
+      <div style={{ background: '#050505', minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
+        <Suspense fallback={
+          <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ color: '#ff4d4d', fontSize: '1.5rem', fontWeight: 900, fontFamily: 'system-ui, sans-serif', letterSpacing: '8px', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+              SONICEV
+            </div>
+          </div>
+        }>
+          <SonicevPortal onClose={() => {
+            if (host.includes('sonicev.cl')) {
+              window.location.reload();
+            } else {
+              navigate('/');
+            }
+          }} />
+        </Suspense>
+      </div>
+    );
+  }
+
+  const isNuevoPeregrinoHost = host.includes('nuevoperegrino.cl') || location.pathname.match(/^\/nuevoperegrino/i);
+  if (isNuevoPeregrinoHost) {
+    return (
+      <div style={{ background: '#0c0a09', minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
+        <Suspense fallback={
+          <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ color: '#fbbf24', fontSize: '1.5rem', fontWeight: 900, fontFamily: 'system-ui, sans-serif', letterSpacing: '8px', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+              PEREGRINO
+            </div>
+          </div>
+        }>
+          <NuevoPeregrinoPortal onClose={() => {
+            if (host.includes('nuevoperegrino.cl')) {
+              window.location.reload();
+            } else {
+              navigate('/');
+            }
+          }} />
+        </Suspense>
+      </div>
+    );
+  }
+
+  const isEntreVecinasHost = host.includes('entrevecinas.cl') || location.pathname.match(/^\/entrevecinas/i);
+  if (isEntreVecinasHost) {
+    return (
+      <div style={{ background: '#07010a', minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
+        <Suspense fallback={
+          <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ color: '#ec4899', fontSize: '1.5rem', fontWeight: 900, fontFamily: 'system-ui, sans-serif', letterSpacing: '8px', animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
+              ENTREVECINAS
+            </div>
+          </div>
+        }>
+          <EntreVecinasHub onClose={() => {
+            if (host.includes('entrevecinas.cl')) {
+              window.location.reload();
+            } else {
+              navigate('/');
+            }
+          }} />
+        </Suspense>
       </div>
     );
   }
@@ -1537,9 +1813,33 @@ function AppContent({ setShowCoquiSmartCRM }) {
             <RadioMasterEngine host="rdmls.cl" onClose={() => setShowRadioMaster(false)} />
           </Suspense>
         )}
+        {showVLSNewsTimeChange && (
+          <Suspense fallback={<div className="fixed inset-0 z-[2147483647] bg-slate-950 flex items-center justify-center text-white font-bold">Investigando Ciclos...</div>}>
+            <VLSNewsTimeChange onClose={() => setShowVLSNewsTimeChange(false)} />
+          </Suspense>
+        )}
+        {(showVLSNewsArtemis || location.pathname.toLowerCase().match(/^\/(artemis|artemisa|artemis2)/i)) && (
+          <Suspense fallback={<LoadingScreen />}>
+            <VLSNewsArtemis onClose={() => {
+              setShowVLSNewsArtemis(false);
+              if (location.pathname.match(/^\/(artemis|artemisa|artemis2)/i)) navigate('/');
+            }} />
+          </Suspense>
+        )}
+        {(showVLSNewsUcen || location.pathname.toLowerCase().match(/^\/ucen/i)) && (
+          <Suspense fallback={<LoadingScreen />}>
+            <VLSNewsUcen onClose={() => {
+              setShowVLSNewsUcen(false);
+              if (location.pathname.match(/^\/ucen/i)) navigate('/');
+            }} />
+          </Suspense>
+        )}
         {showVLSNewsIan && (
           <Suspense fallback={<LoadingScreen />}>
-            <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+            <VLSNewsIan onClose={() => {
+              setShowVLSNewsIan(false);
+              if (location.pathname.match(/^\/ian/i)) navigate('/');
+            }} />
           </Suspense>
         )}
         {showSeguridadVecinal && (
@@ -1557,6 +1857,23 @@ function AppContent({ setShowCoquiSmartCRM }) {
             <VLSVisionModal onClose={() => setShowRoadmap(false)} />
           </Suspense>
         )}
+        {showRDMLSNewsMigra && (
+          <Suspense fallback={<LoadingScreen />}>
+            <RDMLSNewsMigra onClose={() => {
+              setShowRDMLSNewsMigra(false);
+              if (location.pathname.match(/^\/migra/i)) navigate('/');
+            }} />
+          </Suspense>
+        )}
+        {showSonicev && (
+          <Suspense fallback={<LoadingScreen />}>
+            <SonicevPortal onClose={() => {
+              setShowSonicev(false);
+              if (location.pathname.match(/^\/sonicev/i)) navigate('/');
+            }} />
+          </Suspense>
+        )}
+
       </div>
     );
   }
@@ -1572,9 +1889,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
   return (
     <div className="app-layout animate-fade-in">
       <Suspense fallback={null}>
-        <MartinSecurityShield />
+        {!isMediaPortal && <MartinSecurityShield />}
         {!isZeroDistraction && !isRDMLS && <NetSpeedMonitor />}
-        {!showVLSNewsIan && <SerenitoSecurityGuard />}
+        {!showVLSNewsIan && !isMediaPortal && <SerenitoSecurityGuard />}
         <SecurityHoneypot />
         <SmartShare renderAsHiddenObserver={true} />
         {!isZeroDistraction && !isRDMLS && <FloatingActionPanel />}
@@ -1668,7 +1985,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
             <span className="text-gradient animate-fade-in" style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 'bold', fontSize: 'clamp(0.85rem, 3.5vw, 1.2rem)', whiteWhiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {isRDMLS ? (
                 <>
-                  <img src="/escudo.png" style={{ height: '24px', marginRight: '6px' }} alt="RDMLS" />
+                  <img src="/rdmls_pwa_icon.png" style={{ height: '24px', marginRight: '6px' }} alt="RDMLS" />
                   RADIO DIGITAL MUNICIPAL LA SERENA
                 </>
               ) : (
@@ -1728,7 +2045,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0, pointerEvents: 'auto' }}>
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '0.5rem', 
+            flexShrink: 1, 
+            pointerEvents: 'auto',
+            overflowX: isMobile ? 'auto' : 'visible',
+            WebkitOverflowScrolling: 'touch',
+            paddingRight: isMobile ? '10px' : '0',
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none'
+          }} className="vls-header-actions">
             {weather !== null && (
               <span className="glass-panel desktop-only" style={{ padding: '0.3rem 0.6rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 'bold', color: '#fcd34d', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '4px' }}>
                 {(() => {
@@ -1780,118 +2108,107 @@ function AppContent({ setShowCoquiSmartCRM }) {
             </button>
 
             {(isVLS || isRDMLS) && (
-              <>
-                {!currentUser ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {(!currentUser && !isGuest) ? (
                   <button
                     onClick={handleLogin}
                     className="glass-panel animate-pulse"
-                    style={{ padding: '0.35rem 0.8rem', borderRadius: '20px', fontWeight: '900', fontSize: '0.75rem', background: '#3b82f6', border: '2px solid rgba(255,255,255,0.3)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 15px rgba(59,130,246,0.5)' }}
+                    style={{ padding: '0.35rem 0.8rem', borderRadius: '20px', fontWeight: '900', fontSize: '0.75rem', background: '#3b82f6', border: '2px solid rgba(255,255,255,0.3)', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', boxShadow: '0 0 15px rgba(59,130,246,0.5)', flexShrink: 0 }}
                   >
                     <LogIn size={14} /> <span className="hide-on-small-mobile">CONECTAR</span>
                   </button>
                 ) : (
-                  <button
-                    onClick={() => setShowUserProfile(true)}
-                    className="user-badge glass-panel animate-pulse-slow"
-                    style={{
-                      padding: '0.35rem 0.8rem',
-                      fontSize: '0.75rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.4rem',
-                      background: 'rgba(16, 185, 129, 0.2)',
-                      border: '1px solid #10b981',
-                      color: '#10b981',
-                      fontWeight: '900',
-                      borderRadius: '20px'
-                    }}
-                  >
-                    <UserCircle size={14} />
-                    {currentUser?.displayName ? currentUser.displayName.split(' ')[0] : (currentUser?.email ? currentUser.email.split('@')[0] : 'Vecino')}
-                  </button>
-                )}
+                  <>
+                    {currentUser ? (
+                      <button
+                        onClick={() => setShowUserProfile(true)}
+                        className="user-badge glass-panel animate-pulse-slow"
+                        style={{
+                          padding: '0.35rem 0.8rem',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          background: 'rgba(16, 185, 129, 0.2)',
+                          border: '1px solid #10b981',
+                          color: '#10b981',
+                          fontWeight: '900',
+                          borderRadius: '20px',
+                          flexShrink: 0
+                        }}
+                      >
+                        <UserCircle size={14} />
+                        {currentUser?.displayName ? currentUser.displayName.split(' ')[0] : (currentUser?.email ? currentUser.email.split('@')[0] : 'Vecino')}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => setShowUserProfile(true)}
+                        className="user-badge glass-panel"
+                        style={{
+                          padding: '0.35rem 0.8rem',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          background: 'rgba(56, 189, 248, 0.1)',
+                          border: '1px solid #38bdf8',
+                          color: '#38bdf8',
+                          fontWeight: '900',
+                          borderRadius: '20px',
+                          flexShrink: 0
+                        }}
+                      >
+                        <UserCircle size={14} /> INVITADO
+                      </button>
+                    )}
 
-                {/* Billetera VLS: Visible Token Economy */}
-                <button
-                  onClick={() => { setShowNotificationsMenu(false); setShowVecnityPay(true); }}
-                  className="glass-panel animate-pulse-slow"
-                  style={{
-                    padding: '0.35rem 0.6rem',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    background: 'rgba(245, 158, 11, 0.1)',
-                    border: '1px solid rgba(245, 158, 11, 0.4)',
-                    color: '#f59e0b',
-                    fontWeight: '900',
-                    borderRadius: '20px'
-                  }}
-                >
-                  <Ticket size={14} />
-                  {vlsTokens} FICHAS
-                  <span style={{ fontSize: '0.6rem', background: '#f59e0b', color: '#0f172a', padding: '1px 4px', borderRadius: '4px' }}>CARGAR</span>
-                </button>
-                <button
-                  onClick={() => setShowTiendaPoleras(true)}
-                  className="glass-panel hover-lift"
-                  style={{
-                    padding: '0.35rem 0.8rem',
-                    fontSize: '0.75rem',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    background: 'rgba(251, 191, 36, 0.15)',
-                    border: '1px solid rgba(251, 191, 36, 0.5)',
-                    color: '#fbbf24',
-                    fontWeight: '900',
-                    borderRadius: '20px'
-                  }}
-                  title="Tienda de Poleras 3D"
-                >
-                  <Shirt size={14} /> TIENDA
-                </button>
-                <button
-                  onClick={() => {
-                    const doLogout = () => {
-                      setIsGuest(false);
-                      setCurrentUser(null);
-                      setGuestTimeLeft(0);
-                      localStorage.removeItem('smart_is_guest');
-                      localStorage.removeItem('master_bypass');
-                      localStorage.setItem('smart_logout', 'true');
-                      setShowUserProfile(false);
-                      window.location.href = '/';
-                    };
-                    if (currentUser) {
-                      signOut(auth).then(doLogout).catch(err => {
-                        console.error("Logout error:", err);
-                        doLogout();
-                      });
-                    } else {
-                      doLogout();
-                    }
-                  }}
-                  className="btn-glass pulse"
-                  style={{
-                    padding: '0.6rem 1.2rem',
-                    borderRadius: '50px',
-                    background: 'rgba(239, 68, 68, 0.4)',
-                    border: '2px solid #ef4444',
-                    color: 'white',
-                    fontWeight: '900',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <CloseIcon size={20} color="white" />
-                  <span style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>SALIR</span>
-                </button>
-              </>
+                    {/* Billetera VLS: Visible Token Economy */}
+                    <button
+                      onClick={() => { setShowNotificationsMenu(false); setShowVecnityPay(true); }}
+                      className="glass-panel animate-pulse-slow"
+                      style={{
+                        padding: '0.35rem 0.6rem',
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        background: 'rgba(245, 158, 11, 0.1)',
+                        border: '1px solid rgba(245, 158, 11, 0.4)',
+                        color: '#f59e0b',
+                        fontWeight: '900',
+                        borderRadius: '20px',
+                        flexShrink: 0
+                      }}
+                    >
+                      <Ticket size={14} />
+                      {vlsTokens} FICHAS
+                    </button>
+
+                    <button
+                      onClick={handleLogout}
+                      className="btn-glass pulse"
+                      style={{
+                        padding: '0.4rem 0.8rem',
+                        borderRadius: '50px',
+                        background: 'rgba(239, 68, 68, 0.4)',
+                        border: '2px solid #ef4444',
+                        color: 'white',
+                        fontWeight: '900',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        flexShrink: 0
+                      }}
+                    >
+                      <CloseIcon size={16} color="white" />
+                      <span style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>SALIR</span>
+                    </button>
+                  </>
+                )}
+              </div>
             )}
           </div>
 
@@ -1989,7 +2306,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       )}
 
       <main className={`page-content ${location.pathname === '/dev' ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : 'var(--nav-height)' }}>
-        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS }} />
+        <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS, handleLogin, handleLogout }} />
         {!isZeroDistraction && (
           <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
             <p>© 2026 {isRDMLS ? 'ILUSTRE MUNICIPALIDAD DE LA SERENA · GESTIÓN INSTITUCIONAL' : 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA'}</p>
@@ -2031,9 +2348,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {/* Modal Distancias */}
       {showDistances && (
         <Suspense fallback={<div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 100060, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>Cargando Mapa Distancias...</div>}>
-          <DistancesMap onClose={() => setShowDistances(false)} />
+          <DistancesMap onClose={() => { setShowDistances(false); setDistancesTarget(null); }} initialDestination={distancesTarget} />
         </Suspense>
       )}
+
 
       {/* Paseo 3D a pantalla completa */}
       {show3DWalk && (
@@ -2155,7 +2473,71 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showMarketplace && <MarketplaceVecinal onClose={() => setShowMarketplace(false)} />}
 
       {/* Sentinel Mini Búsqueda Inteligente */}
-      {showSentinelMini && <SentinelMini onClose={() => setShowSentinelMini(false)} />}
+      {showSentinelApex && <VLSNewsSentinel onClose={() => setShowSentinelApex(false)} />}
+      {showSocialVision && (
+        <Suspense fallback={<LoadingScreen />}>
+          <SocialVision onClose={() => setShowSocialVision(false)} />
+        </Suspense>
+      )}
+      {showNewsAlcaldesa && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsAlcaldesa onClose={() => { setShowNewsAlcaldesa(false); setAlcaldesaNoteId(null); }} initialId={alcaldesaNoteId} />
+        </Suspense>
+      )}
+
+      {(showAcciona || location.pathname.toLowerCase().match(/^\/acciona(\/|$)/i)) && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsAcciona onClose={() => {
+            setShowAcciona(false);
+            if (location.pathname.match(/^\/acciona/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+
+      {(showSalud || location.pathname.toLowerCase().match(/^\/salud(\/|$)/i)) && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsSalud onClose={() => {
+            setShowSalud(false);
+            if (location.pathname.match(/^\/salud/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      
+      {showVLSNewsUcen && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsUcen onClose={() => {
+            setShowVLSNewsUcen(false);
+            if (location.pathname.match(/^\/ucen/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+
+      {showVLSNewsArtemis && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsArtemis onClose={() => {
+            setShowVLSNewsArtemis(false);
+            if (location.pathname.match(/^\/(artemis|artemisa|artemis2)/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+
+      {(showNewsChoapa || location.pathname.toLowerCase().match(/^\/choapa(\/|$)/i)) && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsChoapa onClose={() => {
+            setShowNewsChoapa(false);
+            if (location.pathname.match(/^\/choapa/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+
+      {(showNewsRedCine || location.pathname.toLowerCase().match(/^\/redcine(\/|$)/i)) && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsRedCine onClose={() => {
+            setShowNewsRedCine(false);
+            if (location.pathname.match(/^\/redcine/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
 
       {/* Encuentro Ciudadano: Fe y Civismo */}
       {showEcumenical && <EcumenicalPortalModal onClose={() => setShowEcumenical(false)} />}
@@ -2167,7 +2549,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       {showOperacionLS && <OperacionLaSerena onClose={() => setShowOperacionLS(false)} />}
-      {showIdentityGate && <IdentityGate onClose={() => setShowIdentityGate(false)} onVerified={(type) => console.log('Verified as:', type)} />}
+      {showIdentityGate && !isMediaPortal && <IdentityGate onClose={() => setShowIdentityGate(false)} onVerified={(type) => console.log('Verified as:', type)} />}
 
       {/* Retrov TVs y Portales */}
       {showRetroTV && <OldTVModal onClose={() => setShowRetroTV(false)} />}
@@ -2185,6 +2567,19 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       {showPersonalStereo && <PersonalStereo onClose={() => setShowPersonalStereo(false)} />}
+      {showMusicRanking && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 60000, background: 'rgba(2,6,23,0.95)', backdropFilter: 'blur(15px)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '2rem', overflowY: 'auto' }}>
+            <div style={{ width: '100%', maxWidth: '1200px', position: 'relative' }}>
+                <button 
+                  onClick={() => setShowMusicRanking(false)} 
+                  style={{ position: 'absolute', top: '-10px', right: '0', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', cursor: 'pointer', padding: '10px 20px', borderRadius: '10px', fontWeight: 'bold', zIndex: 10, fontSize: '0.8rem' }}
+                >
+                  X CERRAR TORNAMESA
+                </button>
+                <MusicRanking insideModal={true} />
+            </div>
+        </div>
+      )}
       {showSismicCenter && <SismicCenter onClose={() => setShowSismicCenter(false)} />}
       {showSmartTheater && <SmartTheater onClose={() => setShowSmartTheater(false)} />}
       {showObservatory && <ObservatorioSmart onClose={() => setShowObservatory(false)} />}
@@ -2272,9 +2667,30 @@ function AppContent({ setShowCoquiSmartCRM }) {
           <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />
         </Suspense>
       )}
+      {showNewsAvalancha && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsAvalancha onClose={() => {
+            setShowNewsAvalancha(false);
+            if (location.pathname.match(/^\/avalancha/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
       {showVLSNewsIan && (
         <Suspense fallback={<LoadingScreen />}>
           <VLSNewsIan onClose={() => setShowVLSNewsIan(false)} />
+        </Suspense>
+      )}
+      {showVLSNewsArtemis && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsArtemis onClose={() => {
+            setShowVLSNewsArtemis(false);
+            if (location.pathname.match(/^\/(artemis|artemisa|artemis2)/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showVLSNewsChequia && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsChequia onClose={() => setShowVLSNewsChequia(false)} />
         </Suspense>
       )}
       {showSeguridadVecinal && (
@@ -2573,6 +2989,68 @@ function AppContent({ setShowCoquiSmartCRM }) {
             currentUser={currentUser} 
             initialOrder={pendingPayment}
           />
+        </Suspense>
+      )}
+
+      {showVLSNewsArtemis && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsArtemis onClose={() => {
+            setShowVLSNewsArtemis(false);
+            if (location.pathname.match(/^\/(artemis|artemisa|artemis2)/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showVLSNewsIan && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsIan onClose={() => {
+            setShowVLSNewsIan(false);
+            if (location.pathname.match(/^\/ian/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showVLSNewsChequia && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsChequia onClose={() => {
+            setShowVLSNewsChequia(false);
+            if (location.pathname.match(/^\/chequia/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showVLSNewsTimeChange && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsTimeChange onClose={() => {
+            setShowVLSNewsTimeChange(false);
+            if (location.pathname.match(/^\/(horario|cambio-de-hora)/i) || searchParams.get('note') === 'VLS_HORARIO_2026') navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showDomeyko && (
+        <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 9999999, background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38bdf8', fontFamily: 'Outfit, sans-serif', fontWeight: 900 }}>Cargando Portal Domeyko...</div>}>
+          <DomeykoPortal onClose={() => {
+            setShowDomeyko(false);
+            if (location.pathname.match(/^\/domeyko/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showRDMLSNewsMigra && (
+        <Suspense fallback={<LoadingScreen />}>
+          <RDMLSNewsMigra onClose={() => {
+            setShowRDMLSNewsMigra(false);
+            if (location.pathname.match(/^\/migra/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showAcciona && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsAcciona onClose={() => {
+            setShowAcciona(false);
+            if (location.pathname.match(/^\/acciona/i)) navigate('/');
+          }} />
+        </Suspense>
+      )}
+      {showSmartOS && (
+        <Suspense fallback={<LoadingScreen />}>
+          <SmartComunaOS onLogout={() => setShowSmartOS(false)} />
         </Suspense>
       )}
     </div>
