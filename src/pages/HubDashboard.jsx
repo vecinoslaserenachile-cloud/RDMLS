@@ -17,20 +17,20 @@ const PLAYLIST_LUDIC = [
     { url: '/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg', title: 'Marea Humana: 4.000 Personas en la Av. del Mar', isPoster: true },
     { url: '/serenito_security_guard_close_up_1773392164475.png', title: 'PROMO: Seguridad Ciudadana VLS', isPoster: true },
     { url: '/portada_vls_trivia.jpg', title: 'PROMO: VLSabes - ¡Juega & Gana!', isPoster: true },
-    { url: '/kiosko_3d_la_serena.png', title: 'PROMO: Kiosko Inteligente VLS', isPoster: true },
-    { url: '/vls_motors_spot_premium.png', title: 'PROMO: VLS Motors Eléctrico', isPoster: true }
+    { url: '/kiosko_3d_la_serena.png', title: 'PROMO: Kiosko Inteligente VLS', isPoster: true }
 ];
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
-    VolumeX, ChevronUp, ChevronDown, Heart as ActivityIcon,
+    VolumeX, ChevronUp, ChevronDown, Activity,
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock, Clock,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
-    Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2
+    Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
+    ArrowRight, Building2, UserCheck, Pill, Bell
 } from 'lucide-react';
 import {
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf, Droplets,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves, Construction, Hammer, Gem
+    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves, Construction, Hammer, Gem, HardHat, Joystick
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -94,6 +94,7 @@ import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
 import SmartFloatingTV from '../components/SmartFloatingTV';
 import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
+import FeaturedBook from '../components/FeaturedBook';
 import LoadingScreen from '../components/LoadingScreen';
 const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion'));
 const DistancesMap = lazy(() => import('../components/DistancesMap'));
@@ -602,6 +603,10 @@ export default function HubDashboard() {
         window.addEventListener('open-analytics', handleAnalytics);
         window.addEventListener('open-plaza-vecinal', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
+        window.addEventListener('open-vls-acciona', () => {
+            closeAllPopups();
+            window.dispatchEvent(new CustomEvent('open-vls-acciona')); // App.jsx will handle the modal
+        });
         window.addEventListener('open-distances', () => {
             closeAllPopups();
             setShowDistancias(true);
@@ -691,6 +696,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-social-vision', handleSocialVision);
             window.removeEventListener('open-analytics', handleAnalytics);
             window.removeEventListener('open-smart-admin', handleSmartAdmin);
+            window.removeEventListener('open-vls-acciona', () => {});
             window.removeEventListener('open-vls-investigacion', handleInvestigacion);
             window.removeEventListener('open-vls-semanasanta', handleSemanaSanta);
             window.removeEventListener('open-vls-bencinazo', handleBencinazo);
@@ -721,12 +727,11 @@ export default function HubDashboard() {
             const stored = localStorage.getItem('laserena_official_news');
             let newsList = [];
             const defaultNews = [
-                { title: "Marea Humana en la Avenida del Mar", date: "Hoy", category: "DEPORTE", desc: "Más de 4.000 personas celebran el Día del Deporte lideradas por la alcaldesa.", iconStr: "Activity", color: "#ec4899", eventId: "open-vls-alcaldesa", image: "/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg" },
-                { title: "INVESTIGACIÓN: Cambio de Hora 2026", date: "Hoy", category: "HEMEROTECA", desc: "Chile atrasa sus relojes: Historia, ciencia y consejos para asimilar el cambio.", iconStr: "Activity", color: "#fbbf24", eventId: "open-vls-horario" },
-                { title: "HITOS 2026: Gestión Municipal Daniela Norambuena", date: "09 de Abril, 2026", category: "GESTIÓN", desc: "Balance detallado del primer trimestre: Seguridad, Inversión y Plan Serena 2.0.", iconStr: "Star", color: "#38bdf8", eventId: "open-vls-alcaldesa" },
-                { title: "INVESTIGACIÓN: Ojo con tu Boleta (Efecto Avalancha)", date: "09 de Abril, 2026", category: "VLS INVESTIGA", desc: "El sobrecargo invisible de las sanitarias y el abandono de Los Perales.", iconStr: "Droplets", color: "#3b82f6", eventId: "open-vls-avalancha" },
+                { title: "OPORTUNIDAD: Capacitaciones Acciona para Mujeres", date: "Hoy", category: "EMPLEO", desc: "Curso gratuito de terminaciones en construcción para las vecinas de La Serena.", iconStr: "UserCheck", color: "#f87171", eventId: "open-vls-acciona", image: "/acciona/afiche_real.png" },
+                { title: "INVESTIGACIÓN: Misión Artemis II", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis", image: "/artemis_teaser.png" },
                 { title: "INVESTIGACIÓN: El Futuro de los Negocios (UCEN)", date: "Hoy", category: "ACADEMIA", desc: "42° Congreso ASFAE: El impacto de la IA y la descentralización en Chile.", iconStr: "GraduationCap", color: "#00F0FF", eventId: "open-vls-ucen" },
-                { title: "Misión Artemis II: Rumbo a la Luna", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis" }
+                { title: "RESTAURACIÓN: Monumento Francisco de Aguirre", date: "Hoy", category: "PATRIMONIO", desc: "La alcaldesa Daniela Norambuena impulsa la recuperación del símbolo histórico de la ciudad.", iconStr: "Landmark", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/aguirre_real.png" },
+                { title: "GESTIÓN: Recursos en Santiago (DIPRES)", date: "Hoy", category: "GESTIÓN", desc: "La alcaldesa Daniela Norambuena destraba proyectos clave en Hacienda y Salud.", iconStr: "Building2", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/dipres_real.png" },
             ];
 
             if (stored) {
@@ -738,13 +743,16 @@ export default function HubDashboard() {
                 newsList = defaultNews;
             }
             
-            // Priorizar Marea Humana si es el día del evento
-            if (!newsList.some(n => n.title.includes('Marea Humana'))) {
-                newsList = [defaultNews[0], ...newsList];
-            } else {
-                // Mover al principio si ya existe
-                newsList.sort((a, b) => a.title.includes('Marea Humana') ? -1 : 1);
-            }
+            // Priorizar Acciona, Monumento Aguirre y Marea Humana
+            newsList.sort((a, b) => {
+                if (a.title.includes('Acciona')) return -1;
+                if (b.title.includes('Acciona')) return 1;
+                if (a.title.includes('Francisco de Aguirre')) return -1;
+                if (b.title.includes('Francisco de Aguirre')) return 1;
+                if (a.title.includes('Marea Humana')) return -1;
+                if (b.title.includes('Marea Humana')) return 1;
+                return 0;
+            });
             
             setOfficialNews(newsList.slice(0, 3));
         };
@@ -878,7 +886,7 @@ export default function HubDashboard() {
         'escuela-musica', 'escuela-artes', 'tribunales',
         'ecumenico', 'laico', 'farito-browser', 'glosario-vls',
         'stickers-portal', 'difundir-app', 'legacy-vls', 'red-social',
-        'vls-investigacion-2026', 'vls-juansoldado', 'vls-andacollo', 'vls-vallenar', 'vls-domeyko'
+        'vls-investigacion-2026', 'memorias-unicornio', 'vls-juansoldado', 'vls-andacollo', 'vls-vallenar', 'vls-domeyko'
     ];
 
     const isRestrictedModule = (id) => {
@@ -903,6 +911,10 @@ export default function HubDashboard() {
     }, []);
 
     const servicios = [
+        {
+            id: 'vls-acciona', title: 'ACCIONA: CAPACITACIÓN MUJERES', subtitle: 'Curso Terminaciones · Nuevo Hospital La Serena · Inscripción Online',
+            icon: HardHat, color: '#ff0000', isEvent: 'open-vls-acciona', active: true, badge: 'EMPLEO', category: 'citizens'
+        },
         {
             id: 'vls-domeyko', title: 'IGNACIO DOMEYKO: SABIO DE CHILE', subtitle: 'Portal 3D · Mineralogía · Cronología · Juego Expedición',
             icon: Gem, color: '#a78bfa', isEvent: 'open-domeyko-portal', active: true, badge: 'PATRIMONIO', category: 'citizens'
@@ -983,7 +995,7 @@ export default function HubDashboard() {
         },
         {
             id: 'vls-motors', title: 'VLS Motors', subtitle: 'Flota Smart Eléctrica y Catálogo Premium',
-            icon: Zap, color: '#38bdf8', isEvent: 'open-vls-motors', active: true, badge: 'MOVILIDAD'
+            icon: Zap, color: '#38bdf8', isEvent: 'open-vls-motors', active: false, badge: 'MOVILIDAD'
         },
         {
             id: 'legal', title: 'Orientación Legal BCN', subtitle: 'Asesoría certificada para vecinos y Portal Abogados',
@@ -1540,6 +1552,225 @@ export default function HubDashboard() {
     };
 
     // Tenant guards (después de todos los hooks, válido por reglas de React)
+    const huinchaButtonsJSX = (
+        <div style={{ display: 'flex', gap: '20px', flexShrink: 0, minWidth: 'max-content', alignItems: 'center', paddingRight: '20px' }}>
+            {/* BOTÓN MAGNO: EL UNICORNIO TECNOLÓGICO (MÁXIMA VISIBILIDAD) */}
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-unicorn'))}
+                className="btn-glass animate-pulse"
+                id="btn-unicornio-maestro"
+                style={{
+                    background: '#fbbf24',
+                    border: 'none',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1.4rem',
+                    color: 'black',
+                    fontWeight: '950',
+                    fontSize: '0.8rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    boxShadow: '0 0 30px rgba(251, 191, 36, 0.7)',
+                    cursor: 'pointer',
+                    zIndex: 1000,
+                    letterSpacing: '1px'
+                }}
+            >
+                <Book size={18} color="black" fill="black" /> EL UNICORNIO
+            </button>
+
+            {/* BOTONES UNIVERSALES (VLS & RDMLS) */}
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-juansoldado'))}
+                className="btn-glass"
+                style={{
+                    background: 'rgba(245,158,11,0.1)',
+                    border: '1px solid rgba(245,158,11,0.4)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 15px rgba(245,158,11,0.2)'
+                }}
+            >
+                <Newspaper size={14} color="#f59e0b" /> JUAN SOLDADO
+            </button>
+
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-artemis'))}
+                className="btn-glass animate-pulse-slow"
+                style={{
+                    background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
+                    border: '1px solid rgba(56,189,248,0.4)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: 'white',
+                    fontWeight: '950',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
+                    whiteSpace: 'nowrap'
+                }}
+            >
+                <Rocket size={14} color="#38bdf8" /> ARTEMIS II
+            </button>
+
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
+                className="btn-glass animate-pulse-slow"
+                style={{
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    border: '1px solid rgba(255,255,255,0.4)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: 'white',
+                    fontWeight: '950',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
+                    whiteSpace: 'nowrap'
+                }}
+            >
+                <ShieldAlert size={14} /> SEGURIDAD
+            </button>
+
+            {!isRDMLS && (
+                <>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
+                        className="btn-glass"
+                        style={{
+                            background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            borderRadius: '50px',
+                            padding: '0.4rem 1rem',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
+                        className="btn-glass"
+                        style={{
+                            background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            borderRadius: '50px',
+                            padding: '0.4rem 1rem',
+                            color: 'white',
+                            fontWeight: 'bold',
+                            fontSize: '0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
+                    </button>
+                    <button
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-tienda-poleras'))}
+                        className="btn-glass"
+                        style={{
+                            background: 'linear-gradient(135deg, #facc15 0%, #ca8a04 100%)',
+                            border: '1px solid rgba(255,255,255,0.3)',
+                            borderRadius: '50px',
+                            padding: '0.4rem 1rem',
+                            color: '#000',
+                            fontWeight: '950',
+                            fontSize: '0.75rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
+                            whiteSpace: 'nowrap'
+                        }}
+                    >
+                        <ShoppingBag size={14} /> TIENDA 3D
+                    </button>
+                </>
+            )}
+
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
+                className="btn-glass animate-pulse-slow"
+                style={{
+                    background: 'rgba(168, 85, 247, 0.2)',
+                    border: '1px solid rgba(168, 85, 247, 0.5)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: '#c084fc',
+                    fontWeight: '900',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 15px rgba(168, 85, 247, 0.3)',
+                    whiteSpace: 'nowrap'
+                }}
+            >
+                <Joystick size={14} /> ARCADE
+            </button>
+
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('vls-notification', { detail: { title: 'POTENCIA GRÁFICA OPTIMIZADA', body: 'El núcleo de renderizado VLS está operando al 100%. Experiencia de alta fidelidad activa.', type: 'success' } }))}
+                className="btn-glass animate-float"
+                style={{
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    border: '1px solid rgba(34, 197, 94, 0.5)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: '#22c55e',
+                    fontWeight: '950',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)',
+                    whiteSpace: 'nowrap'
+                }}
+            >
+                <Activity size={14} /> GPU ACTIVE
+            </button>
+
+            <button
+                onClick={() => window.dispatchEvent(new CustomEvent('open-memorial-hijos'))}
+                className="btn-glass animate-pulse-slow"
+                style={{
+                    background: 'rgba(244, 114, 182, 0.2)',
+                    border: '1px solid rgba(244, 114, 182, 0.5)',
+                    borderRadius: '50px',
+                    padding: '0.4rem 1rem',
+                    color: '#f472b6',
+                    fontWeight: '900',
+                    fontSize: '0.75rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    boxShadow: '0 0 15px rgba(244, 114, 182, 0.3)',
+                    whiteSpace: 'nowrap'
+                }}
+            >
+                <Heart size={14} /> ALTAR
+            </button>
+        </div>
+    );
     if (videoSelected) return null; 
     if (curTenant === 'gore-coquimbo') return <GoreDashboard />;
     if (curTenant === 'vecino-portal-only') return <Navigate to="/vecinos" />;
@@ -1573,9 +1804,80 @@ export default function HubDashboard() {
                 </div>
 
                 <div style={{ padding: '2rem 1rem', width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
-                    {/* 2. Radio Dial */}
+                    {/* 2. Módulos Destacados (RDMLS View) - MOVED UP */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                        gap: '1rem',
+                        width: '100%',
+                        maxWidth: '850px',
+                        zIndex: 100
+                    }}>
+                        {/* Tarjeta ARCADE */}
+                        <div
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
+                            style={{
+                                background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+                                border: '1px solid rgba(168, 85, 247, 0.5)',
+                                borderRadius: '20px',
+                                padding: '1.2rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.5)'; }}
+                        >
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/portada_vls_trivia.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.15, mixBlendMode: 'overlay', pointerEvents: 'none' }} />
+                            <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
+                                <Joystick size={24} color="white" />
+                            </div>
+                            <div style={{ flex: 1, zIndex: 1 }}>
+                                <div style={{ fontSize: '1.2rem', fontWeight: '900', color: '#c084fc', marginBottom: '2px' }}>SALÓN ARCADE</div>
+                                <div style={{ color: 'rgba(192, 132, 252, 0.8)', fontSize: '0.85rem', fontWeight: '500' }}>Gaming Retro y Desafíos VLS</div>
+                            </div>
+                        </div>
+
+                        {/* Tarjeta ALTAR */}
+                        <div
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-memorial-hijos'))}
+                            style={{
+                                background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+                                border: '1px solid rgba(244, 114, 182, 0.5)',
+                                borderRadius: '20px',
+                                padding: '1.2rem',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                transition: 'all 0.3s ease',
+                                boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.9)'; }}
+                            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.5)'; }}
+                        >
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/memorial-mistral.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.15, mixBlendMode: 'luminosity', pointerEvents: 'none' }} />
+                            <div style={{ background: 'linear-gradient(135deg, #f472b6, #db2777)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(244, 114, 182, 0.4)', flexShrink: 0 }}>
+                                <Heart size={24} color="white" />
+                            </div>
+                            <div style={{ flex: 1, zIndex: 1 }}>
+                                <div style={{ fontSize: '1.2rem', fontWeight: '900', color: '#f472b6', marginBottom: '2px' }}>ALTAR REGIONAL</div>
+                                <div style={{ color: 'rgba(244, 114, 182, 0.8)', fontSize: '0.85rem', fontWeight: '500' }}>Homenaje Póstumo Digital</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 3. Radio Dial */}
                     <div style={{ width: '100%', position: 'relative', zIndex: 100 }}>
                         <RDMLSRadioDial />
+                        <FeaturedBook isRDMLS={true} />
                     </div>
 
                     {/* 3. Cartel Burdeo Municipal */}
@@ -1591,7 +1893,7 @@ export default function HubDashboard() {
                         <p style={{ color: '#fcd34d', fontWeight: '900', fontSize: '1.2rem', letterSpacing: '3px', textTransform: 'uppercase', margin: 0 }}>Radio Digital Municipal RDMLS.cl</p>
                     </div>
 
-                    {/* 4. Footer Institucional RDMLS */}
+                    {/* 5. Footer Institucional RDMLS */}
                     <footer style={{ 
                         marginTop: '2rem', padding: '2rem', textAlign: 'center', 
                         width: '100%', color: 'rgba(255,255,255,0.6)', fontSize: '1rem',
@@ -1616,8 +1918,23 @@ export default function HubDashboard() {
                     0% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.2); border-color: rgba(56, 189, 248, 0.3); }
                     100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.6); border-color: rgba(56, 189, 248, 0.8); }
                 }
+                @keyframes vls-ticker-marquee {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .vls-ticker-wrapper { 
+                    display: flex; 
+                    width: max-content; 
+                    flex-shrink: 0;
+                    animation: vls-ticker-marquee 45s linear infinite; 
+                }
+                .vls-ticker-wrapper:hover { 
+                    animation-play-state: paused; 
+                }
             `}</style>
             <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+
+                {/* Acceso Nuclear In-line eliminado para priorizar inserción en Huincha Superior */}
 
                 {/* Huincha Superior Optimizada para no tapar contenido en móviles */}
                 <div style={{
@@ -1628,20 +1945,13 @@ export default function HubDashboard() {
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
-                    justifyContent: 'flex-start',
                     color: 'white',
                     fontSize: '0.85rem',
                     zIndex: 990,
                     position: 'relative',
-                    gap: '10px',
-                    minHeight: '65px',
-                    overflowX: 'auto',
-                    overflowY: 'hidden',
-                    flexWrap: 'nowrap',
-                    scrollbarWidth: 'none',
-                    msOverflowStyle: 'none',
-                    WebkitOverflowScrolling: 'touch',
-                    paddingBottom: '2px'
+                    gap: '20px',
+                    minHeight: '70px',
+                    overflowX: 'hidden'
                 }}>
                     {/* Mensaje Informativo (Izquierda/Centro) */}
                     <div key={msgIndex} className="animate-slide-up" style={{
@@ -1650,6 +1960,7 @@ export default function HubDashboard() {
                         gap: '1rem',
                         textAlign: 'left',
                         flex: '0 0 auto',
+                        flexShrink: 0,
                         maxWidth: '340px',
                         minWidth: '200px',
                         padding: '0.2rem 0',
@@ -1673,14 +1984,7 @@ export default function HubDashboard() {
                         alignItems: 'center',
                         gap: '12px',
                         flexShrink: 0,
-                        overflowX: 'auto',
-                        overflowY: 'hidden',
-                        whiteSpace: 'nowrap',
                         padding: '0.5rem 0',
-                        maxWidth: '100%',
-                        msOverflowStyle: 'none',
-                        scrollbarWidth: 'none',
-                        WebkitOverflowScrolling: 'touch',
                         justifyContent: 'flex-start'
                     }}>
                         {/* BOTÓN DE ACCESO DINÁMICO */}
@@ -1777,133 +2081,22 @@ export default function HubDashboard() {
                             </div>
                         )}
 
-                    <div style={{ display: 'flex', gap: '10px', flexShrink: 0, minWidth: 'max-content', alignItems: 'center' }}>
-                        {/* BOTONES UNIVERSALES (VLS & RDMLS) - Este div ya existe, revisamos abajo */}
-                             <button
-                                 onClick={() => window.dispatchEvent(new CustomEvent('open-vls-juansoldado'))}
-                                 className="btn-glass"
-                                 style={{
-                                     background: 'rgba(245,158,11,0.1)',
-                                     border: '1px solid rgba(245,158,11,0.4)',
-                                     borderRadius: '50px',
-                                     padding: '0.4rem 1rem',
-                                     color: 'white',
-                                     fontWeight: 'bold',
-                                     fontSize: '0.75rem',
-                                     display: 'flex',
-                                     alignItems: 'center',
-                                     gap: '6px',
-                                     boxShadow: '0 0 15px rgba(245,158,11,0.2)'
-                                 }}
-                             >
-                                 <Newspaper size={14} color="#f59e0b" /> JUAN SOLDADO
-                             </button>
-                             <button
-                                 onClick={() => window.dispatchEvent(new CustomEvent('open-vls-artemis'))}
-                                 className="btn-glass animate-pulse-slow"
-                            style={{
-                                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
-                                border: '1px solid rgba(56,189,248,0.4)',
-                                borderRadius: '50px',
-                                padding: '0.4rem 1rem',
-                                color: 'white',
-                                fontWeight: '950',
-                                fontSize: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            <Rocket size={14} color="#38bdf8" /> ARTEMIS II MISSION
-                        </button>
-                        <button
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
-                            className="btn-glass animate-pulse-slow"
-                            style={{
-                                background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                                border: '1px solid rgba(255,255,255,0.4)',
-                                borderRadius: '50px',
-                                padding: '0.4rem 1rem',
-                                color: 'white',
-                                fontWeight: '950',
-                                fontSize: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
-                                whiteSpace: 'nowrap'
-                            }}
-                        >
-                            <ShieldAlert size={14} /> SEGURIDAD
-                        </button>
+                        {/* AMERICAN TICKER (MARQUEE) - ISOLATED CONTAINER */}
+                        <div style={{ 
+                            flexGrow: 1, 
+                            overflow: 'hidden', 
+                            position: 'relative', 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            marginLeft: '20px',
+                            maskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)'
+                        }}>
+                            <div className="vls-ticker-wrapper">
+                                {huinchaButtonsJSX}
+                                {huinchaButtonsJSX}
+                            </div>
+                        </div>
 
-                        {!isRDMLS && (
-                            <>
-                                <button
-                                    onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
-                                    className="btn-glass"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                                        border: '1px solid rgba(255,255,255,0.3)',
-                                        borderRadius: '50px',
-                                        padding: '0.4rem 1rem',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        fontSize: '0.75rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                                        whiteSpace: 'nowrap'
-                                    }}
-                                >
-                                    <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
-                                </button>
-                                <button
-                                    onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
-                                    className="btn-glass"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
-                                        border: '1px solid rgba(255,255,255,0.3)',
-                                        borderRadius: '50px',
-                                        padding: '0.4rem 1rem',
-                                        color: 'white',
-                                        fontWeight: 'bold',
-                                        fontSize: '0.75rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
-                                        whiteSpace: 'nowrap'
-                                    }}
-                                >
-                                    <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
-                                </button>
-                                <button
-                                    onClick={() => window.dispatchEvent(new CustomEvent('open-tienda-poleras'))}
-                                    className="btn-glass"
-                                    style={{
-                                        background: 'linear-gradient(135deg, #facc15 0%, #ca8a04 100%)',
-                                        border: '1px solid rgba(255,255,255,0.3)',
-                                        borderRadius: '50px',
-                                        padding: '0.4rem 1rem',
-                                        color: '#000',
-                                        fontWeight: '950',
-                                        fontSize: '0.75rem',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
-                                        whiteSpace: 'nowrap'
-                                    }}
-                                >
-                                    <ShoppingBag size={14} /> TIENDA 3D
-                                </button>
-                            </>
-                        )}
-                    </div>
                     
                     {host.includes('quimbo') && (
                         <button
@@ -1916,125 +2109,561 @@ export default function HubDashboard() {
                                 padding: '0.4rem 1rem',
                                 color: '#f59e0b',
                                 fontWeight: '900',
-                                fontSize: '0.75rem',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                boxShadow: '0 0 10px rgba(245, 158, 11, 0.2)',
-                                cursor: 'pointer'
+                                pointerEvents: 'auto'
                             }}
                         >
-                            <Skull size={14} /> QUIMBO SMART
+                            EN VIVO
                         </button>
                     )}
+                </div>
+            </div>
+
+            {/* ═════════════════════════════════════════════════════════════ */}
+            {/* PORTALES MAESTROS (ARRIBA): ARCADE, ALTAR & JUEGOS           */}
+            {/* ═════════════════════════════════════════════════════════════ */}
+            {!isRDMLS && (
+            <div style={{
+                width: '100%',
+                background: '#050d1a',
+                borderBottom: '2px solid rgba(255,215,0,0.4)',
+                padding: '1.5rem',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '1rem',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+                zIndex: 100,
+                position: 'relative'
+            }}>
+                {/* Tarjeta 1: SALÓN ARCADE */}
+                <div
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
+                    style={{
+                        background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
+                        border: '1px solid rgba(168, 85, 247, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/images/arcade_gpu.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.4, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)', flexShrink: 0 }}>
+                        <Joystick size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#c084fc', textShadow: '0 0 15px rgba(168, 85, 247, 0.6)' }}>SALÓN ARCADE</span>
+                            <span style={{ background: '#ec4899', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RETRO</span>
+                        </div>
+                        <p style={{ color: 'rgba(192, 132, 252, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Gaming Legendario La Serena</p>
                     </div>
                 </div>
 
-                {/* ══════════════════════════════════════════════════════════ */}
-                {/* BARRA DE REPORTES RÁPIDOS (Agua, Luz, Emergencias)        */}
-                {/* ══════════════════════════════════════════════════════════ */}
-                <QuickEmergencyBar />
+                {/* Tarjeta 2: ALTAR REGIONAL */}
+                <div
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-memorial-hijos'))}
+                    style={{
+                        background: 'linear-gradient(135deg, #020617 0%, #171717 100%)',
+                        border: '1px solid rgba(244, 114, 182, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(244, 114, 182, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/memorial-mistral.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.2, mixBlendMode: 'luminosity', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #f472b6, #db2777)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(244, 114, 182, 0.5)', flexShrink: 0 }}>
+                        <Heart size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#f472b6', textShadow: '0 0 15px rgba(244, 114, 182, 0.6)' }}>ALTAR REGIONAL</span>
+                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>MEMORIA</span>
+                        </div>
+                        <p style={{ color: 'rgba(244, 114, 182, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Homenaje Póstumo Digital</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 3: ENTREVECINAS */}
+                <div
+                    onClick={() => window.location.href = "https://entrevecinas.cl"}
+                    style={{
+                        background: 'linear-gradient(135deg, #07010a 0%, #1a0514 100%)',
+                        border: '1px solid rgba(236, 72, 153, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(236, 72, 153, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(236, 72, 153, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(236, 72, 153, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/images/entrevecinas_vision.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'luminosity', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #ec4899, #8b5cf6)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(236, 72, 153, 0.5)', flexShrink: 0 }}>
+                        <Heart size={26} color="white" fill="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#f472b6', textShadow: '0 0 15px rgba(236, 72, 153, 0.6)' }}>ENTREVECINAS</span>
+                            <span style={{ background: '#ec4899', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>FEM</span>
+                        </div>
+                        <p style={{ color: 'rgba(244, 114, 182, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Voz & Liderazgo Femenino</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 4: SMART JUEGAPRENDE */}
+                <div
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
+                    style={{
+                        background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
+                        border: '1px solid rgba(255, 215, 0, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(255, 215, 0, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.6)'; }}
+                >
+                    <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)', flexShrink: 0 }}>
+                        <Award size={26} color="black" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#FFD700', textShadow: '0 0 15px rgba(255, 215, 0, 0.6)' }}>JUEGAPRENDE</span>
+                            <span style={{ background: '#10b981', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>GANÁ FICHAS</span>
+                        </div>
+                        <p style={{ color: 'rgba(255, 215, 0, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cultura y Trivia La Serena</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 5: TORNAMESA DIGITAL */}
+                <div
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-personal-stereo')); }}
+                    style={{
+                        background: 'linear-gradient(135deg, #0b1120 0%, #1e1b4b 100%)',
+                        border: '1px solid rgba(168, 85, 247, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'; }}
+                >
+                    <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)', flexShrink: 0 }}>
+                        <Music size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#a855f7', textShadow: '0 0 15px rgba(168, 85, 247, 0.6)' }}>TORNAMESA</span>
+                            <span style={{ background: '#a855f7', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RETRO</span>
+                        </div>
+                        <p style={{ color: 'rgba(168, 85, 247, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Éxitos de los 70, 80 & 90</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 6: TEATRO TV & RECUERDOS */}
+                <div
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-vhs-tv')); }}
+                    style={{
+                        background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
+                        border: '1px solid rgba(239, 68, 68, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(239, 68, 68, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)'; }}
+                >
+                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #7f1d1d)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)', flexShrink: 0 }}>
+                        <Tv size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#ef4444', textShadow: '0 0 15px rgba(239, 68, 68, 0.6)' }}>TEATRO TV</span>
+                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>80s/90s</span>
+                        </div>
+                        <p style={{ color: 'rgba(239, 68, 68, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cine & Recuerdos VLS 📼</p>
+                    </div>
+                </div>
+            </div>
+            )}
+
 
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Marea Humana & Alcaldesa) */}
                 {/* ══════════════════════════════════════════════════════════ */}
-                <div style={{ padding: '2rem 1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1.5fr 1fr', gap: '2rem' }}>
+                <div style={{ padding: '3rem 1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
                         
-                        {/* CARD 1: CORRIDA FAMILIAR - MAREA HUMANA */}
-                        <div 
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'corrida_familiar' } }))}
+                        {/* CARD 0: SALUD LA SERENA (TOP HIGHLIGHT) */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            onClick={() => navigate('/salud')}
                             style={{ 
-                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
-                                border: '2px solid #ef4444', boxShadow: '0 20px 50px rgba(239, 68, 68, 0.3)',
-                                cursor: 'pointer', transition: 'transform 0.3s'
+                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(239, 68, 68, 0.4)', boxShadow: '0 30px 60px rgba(239, 68, 68, 0.2)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: '1 / -1' // SPANS THE ENTIRE FIRST ROW!
                             }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.01)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
                         >
-                            <img src="/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Marea Humana" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, transparent 60%)' }} />
-                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#ef4444', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>EVENTO MASIVO</div>
-                            <div style={{ position: 'absolute', bottom: 40, left: 40, right: 40 }}>
-                                <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>MAREA HUMANA:<br/><span style={{ color: '#ef4444' }}>4.000 PERSONAS </span><br/> EN LA AV. DEL MAR</h2>
-                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Éxito rotundo en la Corrida Familiar de hoy. La Serena se mueve con soberanía.</p>
-                                <button className="btn-vls-action-white" style={{ marginTop: '1.5rem', background: 'white', color: '#ef4444' }}>VER NOTA DEL EVENTO</button>
+                            <img src="/salud/VLS_Nueva_Salud_La_Serena.jpg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.6 }} alt="Salud La Serena" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.8) 40%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, right: window.innerWidth < 768 ? 15 : 30, 
+                                background: '#ef4444', padding: window.innerWidth < 768 ? '0.4rem 1rem' : '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.65rem, 2vw, 0.9rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '2px', 
+                                zIndex: 20, boxShadow: '0 10px 20px rgba(239, 68, 68, 0.5)' 
+                            }}>
+                                🎙️ NUEVO REPORTAJE VLS
                             </div>
-                        </div>
-
-                        {/* CARD 2: ALCALDESA GESTIÓN */}
-                        <div 
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa'))}
-                            style={{ 
-                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
-                                border: '2px solid #38bdf8', boxShadow: '0 20px 50px rgba(56, 189, 248, 0.3)',
-                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.01)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                        >
-                            <img src="/alcaldesa_daniela_norambuena.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.9 }} alt="Alcaldesa" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, transparent 70%)' }} />
-                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#38bdf8', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>GESTIÓN MUNICIPAL</div>
-                            <div style={{ position: 'absolute', bottom: 40, left: 40, right: 40 }}>
-                                <h2 style={{ color: 'white', fontSize: '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>AVANCE Y SOBERANÍA:<br/><span style={{ color: '#38bdf8' }}>PORTAL DE LA ALCALDESA</span></h2>
-                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', marginTop: '1rem', fontWeight: 500 }}>Conoce los pilares de la gestión actual y el compromiso de la Alcaldesa Daniela Norambuena con cada vecino.</p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem' }}>ENTRAR AL PORTAL</button>
+ 
+                            <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '1.5rem' : '3rem', zIndex: 10, maxWidth: '1000px', paddingTop: window.innerWidth < 768 ? '4rem' : '3rem' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.5rem, 5.5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
+                                   CRUZADA MUNICIPAL:<br/>
+                                   <span style={{ color: '#ef4444' }}>AL RESCATE DE LA SALUD<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> EN LA SERENA</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(0.95rem, 2vw, 1.4rem)', marginTop: '1rem', fontWeight: 400, maxWidth: '800px', lineHeight: 1.4 }}>
+                                   El "Plan Norambuena" busca extirpar el déficit histórico y rescatar la atención primaria. Descubre en exclusiva el plan de acción, estadísticas clave, podcast inmersivo y respaldos oficiales.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: window.innerWidth < 768 ? '1.5rem' : '2rem', background: '#ef4444', color: 'white', border: 'none', padding: window.innerWidth < 768 ? '0.8rem 1.5rem' : '1rem 2rem', fontSize: window.innerWidth < 768 ? '0.9rem' : '1rem' }}>
+                                   ENTRAR A LA NOTA CENTRAL
+                                </button>
                             </div>
-                        </div>
+                        </motion.div>
+                        
+ 
 
-                        {/* CARD 3: AVIVA EDUCAP - NIVELACIÓN DE ESTUDIOS */}
-                        <div 
-                            onClick={() => window.location.href = '/aviva'}
-                            style={{ 
-                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
-                                border: '2px solid #10b981', boxShadow: '0 20px 50px rgba(16, 185, 129, 0.3)',
-                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s',
-                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 2'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.005)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
-                        >
-                            <img src="/aviva/Promo AVIVA.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }} alt="AVIVA EDUCAP" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 20%, transparent 80%)' }} />
-                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#10b981', padding: '0.5rem 1.5rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>OPORTUNIDAD EDUCATIVA</div>
-                            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 40, right: window.innerWidth < 1024 ? 40 : '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                <h2 style={{ color: 'white', fontSize: window.innerWidth < 768 ? '1.8rem' : '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>AVIVA EDUCAP:<br/><span style={{ color: '#10b981' }}>TERMINA TUS ESTUDIOS GRATIS</span></h2>
-                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Nivelación de enseñanza básica y media en La Serena y Vicuña. Modalidad flexible para adultos.</p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem', background: '#10b981', color: 'white', border: 'none' }}>INICIAR POSTULACIÓN</button>
-                            </div>
-                        </div>
-
-                        {/* CARD 4: ARTE & ARQUITECTURA (EDUARDO GARDELLA) */}
-                        <div 
+                          {/* CARD 4: ARTE & ARQUITECTURA (EDUARDO GARDELLA) */}
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 }}
                             onClick={() => navigate('/gardella')}
                             style={{ 
-                                position: 'relative', height: '400px', borderRadius: '32px', overflow: 'hidden', 
-                                border: '2px solid #a855f7', boxShadow: '0 20px 50px rgba(168, 85, 247, 0.3)',
-                                cursor: 'pointer', background: '#020617', transition: 'transform 0.3s',
-                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 2'
+                                position: 'relative', minHeight: '480px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(168, 85, 247, 0.4)', boxShadow: '0 30px 60px rgba(168, 85, 247, 0.2)',
+                                cursor: 'pointer', background: '#020617',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 2',
+                                display: 'flex', flexDirection: 'column', justifyContent: 'center'
                             }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.005)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                            whileHover={{ scale: 1.005 }}
                         >
-                            <img src="/media/arquiartista/Eduardo_Auto.png" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} alt="Ilustración Eduardo Gardella" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 30%, transparent 80%)' }} />
-                            <div style={{ position: 'absolute', top: 30, left: 30, background: '#a855f7', padding: '0.4rem 1.2rem', borderRadius: '20px', color: 'white', fontWeight: 950, fontSize: '0.8rem', letterSpacing: '2px' }}>TALENTO LOCAL</div>
-                            <div style={{ position: 'absolute', top: 0, bottom: 0, left: 40, right: window.innerWidth < 1024 ? 40 : '40%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                                <h2 style={{ color: 'white', fontSize: window.innerWidth < 768 ? '1.8rem' : '2.5rem', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>GALERÍA PREMIUM:<br/><span style={{ color: '#d8b4fe' }}>EDUARDO GARDELLA</span></h2>
-                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginTop: '1rem', fontWeight: 500 }}>Explora las ilustraciones hiperrealistas en grafito de este maravilloso artista nacional.</p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '1.5rem', background: '#a855f7', color: 'white', border: 'none' }}>VER PORTAFOLIO COMPLETO</button>
+                            <img src="/media/arquiartista/Eduardo_Auto.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} alt="Ilustración Eduardo Gardella" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 35%, rgba(2, 6, 23, 0.5) 75%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 35, right: 30, 
+                                background: '#a855f7', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px',
+                                zIndex: 10
+                            }}>
+                                TALENTO LOCAL
                             </div>
-                        </div>
+ 
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10, maxWidth: '850px' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 1 }}>
+                                    GALERÍA PREMIUM:<br/>
+                                    <span style={{ color: '#d8b4fe' }}>EDUARDO GARDELLA</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,1)', fontSize: 'clamp(1.1rem, 2.5vw, 1.5rem)', marginTop: '1.5rem', fontWeight: 300, lineHeight: 1.4, fontStyle: 'italic' }}>
+                                    "El trazo que captura el alma de la Región." Explora ilustraciones hiperrealistas en grafito de este artista vallenarino.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '2.5rem', background: '#a855f7', color: 'white', border: 'none', padding: '1rem 3rem', borderRadius: '50px' }}>
+                                    EXPLORAR PORTAFOLIO COMPLETO
+                                </button>
+                            </div>
+                        </motion.div>
 
+                        {/* CARD 1: CORRIDA FAMILIAR - MAREA HUMANA (MOVED DOWN) */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'corrida_familiar' } }))}
+                            style={{ 
+                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(239, 68, 68, 0.4)', boxShadow: '0 30px 60px rgba(239, 68, 68, 0.2)',
+                                cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                        >
+                            <img src="/alcaldesa_corrida/Foto corrida avenida del mar la serena 110426.jpeg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} alt="Marea Humana" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, rgba(2, 6, 23, 0.8) 40%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#ef4444', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 10, boxShadow: '0 10px 20px rgba(239, 68, 68, 0.5)' 
+                            }}>
+                                EVENTO MASIVO
+                            </div>
+
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
+                                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+                                    <h2 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 0.95 }}>
+                                        MAREA HUMANA:<br/>
+                                        <span style={{ color: '#ef4444' }}>4.000 PERSONAS </span><br/> 
+                                        EN LA AV. DEL MAR
+                                    </h2>
+                                    <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(1rem, 3vw, 1.25rem)', marginTop: '1.2rem', fontWeight: 500, maxWidth: '550px', lineHeight: 1.4 }}>
+                                        Éxito rotundo en la Corrida Familiar. La Serena se mueve con soberanía y deporte vecinal.
+                                    </p>
+                                    <div className="flex flex-wrap gap-4 mt-8">
+                                        <button className="btn-vls-action-light" style={{ background: '#ef4444', color: 'white', border: 'none', padding: '1rem 2rem' }}>
+                                            LEER CRÓNICA
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </div>
+                        </motion.div>
+
+                        {/* CARD 2: ALCALDESA GESTIÓN (MOVED DOWN) */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa'))}
+                            style={{ 
+                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(56, 189, 248, 0.4)', boxShadow: '0 30px 60px rgba(56, 189, 248, 0.2)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                        >
+                            <img src="/alcaldesa_daniela_norambuena.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', opacity: 0.9 }} alt="Alcaldesa" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, rgba(2, 6, 23, 0.8) 40%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#38bdf8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 20, boxShadow: '0 10px 20px rgba(56, 189, 248, 0.5)' 
+                            }}>
+                                GESTIÓN MUNICIPAL
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 0.95 }}>
+                                   AVANCE Y SOBERANÍA:<br/>
+                                   <span style={{ color: '#38bdf8' }}>PORTAL GESTIÓN</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(0.9rem, 2.5vw, 1.25rem)', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
+                                   Conoce los pilares de la gestión actual y el compromiso de la Alcaldesa Daniela Norambuena con la comuna.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#38bdf8', color: 'white', border: 'none', padding: '1rem 2rem' }}>
+                                   ENTRAR AL PORTAL
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* CARD 5: JVRCH - ELECCIONES COMUNIDADES DE AGUAS */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            onClick={() => {
+                                navigate('/choapa');
+                                window.dispatchEvent(new CustomEvent('open-vls-choapa'));
+                            }}
+                            style={{ 
+                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(59, 130, 246, 0.4)', boxShadow: '0 30px 60px rgba(59, 130, 246, 0.2)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                        >
+                            <img src="/jvrch/foto_referencial_choapa.jpg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} alt="JVRCH" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a1628 0%, rgba(10, 22, 40, 0.8) 40%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#1d4ed8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 20
+                            }}>
+                                AGUAS SOBERANAS
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1.5px', lineHeight: 1 }}>
+                                   CHOAPA: ELECCIONES<br/>
+                                   <span style={{ color: '#60a5fa' }}>COMUNIDADES DE AGUAS</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1rem', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
+                                   Llamado a regularizar procesos de renovación de directorios. Seguridad jurídica para la cuenca.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#1d4ed8', color: 'white', border: 'none', padding: '0.8rem 1.8rem', borderRadius: '50px' }}>
+                                   VER COMUNICADO
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* CARD 6: RED SALAS DE CINE - TALLERES GRATUITOS */}
+                        <motion.div 
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            onClick={() => {
+                                navigate('/redcine');
+                                window.dispatchEvent(new CustomEvent('open-vls-redcine'));
+                            }}
+                            style={{ 
+                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(244, 63, 94, 0.4)', boxShadow: '0 30px 60px rgba(244, 63, 94, 0.2)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                        >
+                            <img src="/redcine/taller1.jpg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} alt="Red Cine" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0f172a 0%, rgba(15, 23, 42, 0.8) 40%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#f43f5e', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 20
+                            }}>
+                                FORMACIÓN CULTURAL
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1.5px', lineHeight: 1 }}>
+                                   RED SALAS DE CINE:<br/>
+                                   <span style={{ color: '#fb7185' }}>TALLERES GRATUITOS</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1rem', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
+                                   Cineclubismo y curatoría. Convocatoria abierta para gestores y amantes del séptimo arte.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#f43f5e', color: 'white', border: 'none', padding: '0.8rem 1.8rem', borderRadius: '50px' }}>
+                                   INSCRIBIRSE AHORA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* CARD 3: AVIVA EDUCAP - NIVELACIÓN DE ESTUDIOS (MOVED TO BOTTOM MIDDLE) */}
+                        <motion.div 
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 }}
+                            onClick={() => window.location.href = '/aviva'}
+                            style={{ 
+                                position: 'relative', minHeight: '480px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(16, 185, 129, 0.4)', boxShadow: '0 30px 60px rgba(16, 185, 129, 0.2)',
+                                cursor: 'pointer', background: '#020617',
+                                gridColumn: '1 / -1', // ALWAYS FULL WIDTH AT THE BOTTOM
+                                display: 'flex', flexDirection: 'column', justifyContent: 'center'
+                            }}
+                            whileHover={{ scale: 1.005 }}
+                        >
+                            <img src="/aviva/Promo AVIVA.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }} alt="AVIVA EDUCAP" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 35%, rgba(2, 6, 23, 0.6) 70%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#10b981', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 10, boxShadow: '0 10px 20px rgba(16, 185, 129, 0.5)' 
+                            }}>
+                                OPORTUNIDAD EDUCATIVA
+                            </div>
+                            
+                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10, maxWidth: '800px' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 1 }}>
+                                    AVIVA EDUCAP:<br/>
+                                    <span style={{ color: '#10b981' }}>TERMINA TUS ESTUDIOS GRATIS</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', marginTop: '1.5rem', fontWeight: 300, lineHeight: 1.4 }}>
+                                    Nivelación de enseñanza básica y media en La Serena y Vicuña. <br/><strong style={{ fontWeight: 900, color: '#10b981' }}>Inscríbete hoy y cambia tu futuro.</strong>
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: '2.5rem', background: '#10b981', color: 'white', border: 'none', padding: '1rem 3rem', borderRadius: '50px' }}>
+                                    INICIAR POSTULACIÓN AHORA
+                                </button>
+                            </div>
+                        </motion.div>
                     </div>
+                </div>
+
+                {/* VOCES VECINALES & HEMEROTECA SECTION (PROMOTED FOR VISIBILITY) */}
+                <div style={{ maxWidth: '1400px', margin: '4rem auto 2rem auto', width: '100%', padding: '0 2rem' }}>
+                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2rem' }}>
+                        <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
+                            <Mic size={28} />
+                        </div>
+                        <div>
+                            <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>VOCES Y ARCHIVOS</h2>
+                            <p style={{ color: '#f59e0b', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>HEMEROTECA DIGITAL · PORTAL DE LA MEMORIA VLS</p>
+                        </div>
+                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #f59e0b, transparent)' }}></div>
+                     </div>
+
+                     <div id="search-results-anchor" />
+                     <Suspense fallback={<div />}>
+                        <VLSNotesGallery />
+                     </Suspense>
                 </div>
 
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* HEADLINE: INVESTIGACIÓN ESPECIAL VLS (IAN & ARTEMIS)        */}
                 {/* ══════════════════════════════════════════════════════════ */}
                 <div style={{ padding: '2rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1fr 1fr 1fr', gap: '1.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : '1fr 1fr', gap: '1.5rem' }}>
                         {/* CASO IAN */}
                         <div 
                             onClick={() => window.dispatchEvent(new CustomEvent('open-vls-ian'))}
@@ -2059,6 +2688,50 @@ export default function HubDashboard() {
                             <div>
                                 <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900 }}>CASO IAN: PUNTO CIEGO</h3>
                                 <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Investigación sobre seguridad retail.</p>
+                            </div>
+                        </div>
+
+
+
+
+                        {/* PLAZA DE LOS POETAS (NUEVO PATRIMONIO) */}
+                        <div 
+                            onClick={() => {
+                                closeAllPopups();
+                                navigate('/plazapoetas');
+                            }}
+                            className="glass-panel group" 
+                            style={{ 
+                                background: 'linear-gradient(135deg, rgba(217, 119, 6, 0.9) 0%, rgba(15, 23, 42, 0.9) 100%), url(/patrimonio/magallanes_portrait.png)',
+                                backgroundBlendMode: 'overlay',
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                padding: '1.5rem',
+                                borderRadius: '24px',
+                                border: '2px solid #f59e0b',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1.2rem',
+                                cursor: 'pointer',
+                                boxShadow: '0 15px 35px rgba(245, 158, 11, 0.2)',
+                                borderLeft: '8px solid #f59e0b',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            }}
+                            onMouseEnter={e => {
+                                e.currentTarget.style.transform = 'translateY(-4px) scale(1.02)';
+                                e.currentTarget.style.boxShadow = '0 20px 40px rgba(245, 158, 11, 0.4)';
+                            }}
+                            onMouseLeave={e => {
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                                e.currentTarget.style.boxShadow = '0 15px 35px rgba(245, 158, 11, 0.2)';
+                            }}
+                        >
+                            <div className="bg-amber-900/50 p-2 rounded-xl backdrop-blur-md">
+                                <Landmark size={28} color="#fbbf24" />
+                            </div>
+                            <div>
+                                <h3 style={{ margin: 0, color: '#fbbf24', fontSize: '1.1rem', fontWeight: 900, textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>PLAZA DE LOS POETAS</h3>
+                                <p style={{ margin: 0, color: '#fef3c7', fontSize: '0.8rem', fontWeight: 600, textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Patrimonio Serenense Renovado</p>
                             </div>
                         </div>
 
@@ -2148,9 +2821,65 @@ export default function HubDashboard() {
                                     <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
                                         <span style={{ fontSize: '0.6rem', color: 'white', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '50px' }}>IA / NOV 2026</span>
                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* ══════════════════════════════════════════════════════════ */}
+                {/* HIGHLIGHTS: ACCIONA, DIPRES & AGUIRRE (REORDENADO)         */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                <div style={{ padding: '0 1.5rem', maxWidth: '1400px', margin: '2rem auto 0', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                        {/* ACCIONA MUJERES */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-acciona'))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #ef4444', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#ef444420', color: '#ef4444', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #ef4444' }}>OPORTUNIDADES</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Acciona Mujeres</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Capacitación exclusiva en construcción para el nuevo hospital.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontWeight: 900, fontSize: '0.75rem' }}>POSTULAR ONLINE <ArrowRight size={14} /></div>
+                        </motion.div>
+
+                        {/* GESTIÓN DIPRES */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'dipres_gestion' } }))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #38bdf8', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(56, 189, 248, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#38bdf820', color: '#38bdf8', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #38bdf8' }}>HITOS MUNICIPALES</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Gestión DIPRES</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Reunión en Santiago para destrabar recursos históricos.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 900, fontSize: '0.75rem' }}>VER GESTIÓN <ArrowRight size={14} /></div>
+                        </motion.div>
+
+                        {/* MONUMENTO AGUIRRE */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'aguirre' } }))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #f59e0b', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(245, 158, 11, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#f59e0b20', color: '#f59e0b', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #f59e0b' }}>IDENTIDAD</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Restauración Aguirre</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Plan maestro para recuperar el Museo al Aire Libre.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', fontWeight: 900, fontSize: '0.75rem' }}>CONOCE EL PLAN <ArrowRight size={14} /></div>
+                        </motion.div>
                     </div>
                 </div>
 
@@ -2196,132 +2925,6 @@ export default function HubDashboard() {
                 </div>
                 )}
 
-                {/* ══════════════════════════════════════════════════ */}
-                {/* BANNER DUAL: SMART JUEGAPRENDE + SERENITO 1945    */}
-                {/* ══════════════════════════════════════════════════ */}
-                {!isRDMLS && (
-                <div style={{
-                    width: '100%',
-                    background: '#050d1a',
-                    borderTop: '1px solid rgba(255,215,0,0.2)',
-                    borderBottom: '2px solid rgba(255,215,0,0.4)',
-                    padding: '0.75rem 1rem',
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(3, 1fr)',
-                    gap: '0.75rem',
-                    boxShadow: '0 4px 30px rgba(0,0,0,0.5)',
-                }}>
-
-                    {/* Tarjeta 1: SMART JUEGAPRENDE */}
-                    <div
-                        onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
-                        style={{
-                            background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
-                            border: '1px solid rgba(255,215,0,0.4)',
-                            borderRadius: '16px',
-                            padding: '0.9rem 1rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            transition: 'all 0.25s ease',
-                            boxShadow: '0 0 20px rgba(255,215,0,0.1)',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(255,215,0,0.35)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.8)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(255,215,0,0.1)'; e.currentTarget.style.borderColor = 'rgba(255,215,0,0.4)'; }}
-                    >
-                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(255,215,0,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
-                        <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(255,215,0,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
-                            <Award size={22} color="#0f172a" />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#FFD700', textShadow: '0 0 12px rgba(255,215,0,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>{isRDMLS ? 'SABERES REGIONALES' : 'SMART JUEGAPRENDE'}</span>
-                                <span style={{ background: 'linear-gradient(90deg,#ef4444,#f97316)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>{isRDMLS ? 'INSTITUCIONAL' : 'NUEVO'}</span>
-                            </div>
-                            <p style={{ color: 'rgba(255,215,0,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                {isRDMLS ? 'Historia y Cultura de La Serena' : 'Trivia La Serena · Gana Fichas VLS'}
-                            </p>
-                        </div>
-                        <div style={{ background: 'linear-gradient(135deg,#FFD700,#FF8C00)', color: '#0f172a', padding: '0.4rem 0.8rem', borderRadius: '50px', fontWeight: '900', fontSize: 'clamp(0.6rem,1.5vw,0.75rem)', display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap', flexShrink: 0, zIndex: 1 }}>
-                            <Gamepad2 size={14} /> JUGAR ▶
-                        </div>
-                    </div>
-
-                    {/* Tarjeta 2: SERENITO 1945 */}
-                    <div
-                        onClick={() => window.open('/minijuegos/serenito-1945/', '_blank')}
-                        style={{
-                            background: 'linear-gradient(135deg, #1a0a00 0%, #0f172a 100%)',
-                            border: '1px solid rgba(239,68,68,0.4)',
-                            borderRadius: '16px',
-                            padding: '0.9rem 1rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            transition: 'all 0.25s ease',
-                            boxShadow: '0 0 20px rgba(239,68,68,0.1)',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(239,68,68,0.35)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.8)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(239,68,68,0.1)'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.4)'; }}
-                    >
-                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(239,68,68,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
-                        <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(239,68,68,0.5)', flexShrink: 0, animation: 'pulse 2s infinite' }}>
-                            <Rocket size={22} color="white" />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#f87171', textShadow: '0 0 12px rgba(239,68,68,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>SERENITO 1945</span>
-                                <span style={{ background: 'linear-gradient(90deg,#7c3aed,#4f46e5)', color: 'white', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px' }}>ARCADE</span>
-                            </div>
-                            <p style={{ color: 'rgba(248,113,113,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                Vuela, dispara y defiende La Serena
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Tarjeta 3: AJEDREZ PATRIMONIAL 3D */}
-                    <div
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-ajedrez-patrimonial'))}
-                        style={{
-                            background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
-                            border: '1px solid rgba(252,211,77,0.4)',
-                            borderRadius: '16px',
-                            padding: '0.9rem 1rem',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.75rem',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            transition: 'all 0.25s ease',
-                            boxShadow: '0 0 20px rgba(252,211,77,0.1)',
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(252,211,77,0.35)'; e.currentTarget.style.borderColor = 'rgba(252,211,77,0.8)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 20px rgba(252,211,77,0.1)'; e.currentTarget.style.borderColor = 'rgba(252,211,77,0.4)'; }}
-                    >
-                        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'radial-gradient(circle, rgba(252,211,77,0.05) 1px, transparent 1px)', backgroundSize: '15px 15px', pointerEvents: 'none' }} />
-                        <div style={{ background: 'linear-gradient(135deg, #fcd34d, #b45309)', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(252,211,77,0.5)', flexShrink: 0 }}>
-                            <Gamepad2 size={22} color="#0f172a" />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0, zIndex: 1 }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-                                <span style={{ fontSize: 'clamp(0.8rem, 2.5vw, 1.1rem)', fontWeight: '900', color: '#fcd34d', textShadow: '0 0 12px rgba(252,211,77,0.6)', letterSpacing: '-0.3px', lineHeight: 1 }}>AJEDREZ 3D</span>
-                                <span style={{ background: 'rgba(252,211,77,0.2)', color: '#fcd34d', fontSize: '0.55rem', fontWeight: '900', padding: '1px 6px', borderRadius: '20px', letterSpacing: '1px', border: '1px solid rgba(252,211,77,0.3)' }}>SANDBOX</span>
-                            </div>
-                            <p style={{ color: 'rgba(252,211,77,0.6)', fontSize: 'clamp(0.6rem, 1.5vw, 0.75rem)', margin: '2px 0 0 0', lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                Casco Histórico en Tres Dimensiones
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                )}
-
 
                 <div style={{ padding: '0 1rem 2rem 1rem' }}>
 
@@ -2332,6 +2935,7 @@ export default function HubDashboard() {
                             <div style={{ width: '100%', position: 'relative', zIndex: 100001 }}>
                                 {isVLS ? <RadioHomeWidget /> : <RDMLSRadioDial />}
                             </div>
+                             {/* El libro se ha movido a la sección principal de contenido arriba del QuickEmergencyBar para máxima visibilidad */}
 
                             {/* BANNER DINÁMICO SEGÚN DOMINIO */}
                             {isRDMLS ? (
@@ -2375,7 +2979,7 @@ export default function HubDashboard() {
                                                     </svg>
                                                 </div>
                                                 <div style={{ position: 'relative', zIndex: 1, width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)', margin: '10px' }}>
-                                                    <img src="/serenito_v3.png" alt="Serenito 3D" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                    <img src="/serenito_v3.png" alt="Serenito 3D" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
                                                 </div>
                                             </div>
                                             <div style={{ textAlign: 'left', maxWidth: '400px' }}>
@@ -3005,6 +3609,41 @@ export default function HubDashboard() {
                                 </div>
                             </div>
 
+                             {/* SALUD LA SERENA PREMIUM CARD */}
+                             <div 
+                                  onClick={() => navigate('/salud')}
+                                  className="glass-panel gaudi-curves hover-lift animate-fade-in" 
+                                  style={{ 
+                                      background: 'linear-gradient(135deg, rgba(220, 38, 38, 0.7) 0%, rgba(2, 6, 23, 0.95) 100%)', 
+                                      padding: isMobile ? '1.5rem' : '2.5rem', 
+                                      borderRadius: '35px', 
+                                      cursor: 'pointer',
+                                      border: '1px solid rgba(239, 68, 68, 0.5)',
+                                      position: 'relative',
+                                      overflow: 'hidden',
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      marginBottom: '2.5rem',
+                                      boxShadow: '0 25px 50px -12px rgba(239, 68, 68, 0.2)'
+                                  }}
+                             >
+                                 <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundImage: 'url("/salud/VLS_Nueva_Salud_La_Serena.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.35, zIndex: 0 }}></div>
+                                 <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column' }}>
+                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.2rem' }}>
+                                         <div style={{ background: '#ef4444', color: 'white', padding: '5px 15px', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 5px 15px rgba(239,68,68,0.5)' }}>
+                                             🎙️ ANÁLISIS EDITORIAL
+                                         </div>
+                                     </div>
+                                     <h3 style={{ color: 'white', fontSize: isMobile ? '1.8rem' : '2.5rem', fontWeight: 950, marginBottom: '1rem', lineHeight: 1.1, textShadow: '0 5px 15px rgba(0,0,0,0.5)' }}>CRUZADA POR LA SALUD MUNICIPAL</h3>
+                                     <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1.1rem', lineHeight: 1.6, maxWidth: '800px', margin: 0, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                                         El "Plan Norambuena" busca extirpar el déficit histórico y rescatar la atención primaria en La Serena desde la "UCI" a la dignidad. <b>Incluye podcast inmersivo y respaldos oficiales.</b>
+                                     </p>
+                                     <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px', color: '#fca5a5', fontWeight: 700, fontSize: '0.95rem', letterSpacing: '1px' }}>
+                                         ESCUCHAR REPORTAJE Y VER CIFRAS ➔
+                                     </div>
+                                 </div>
+                             </div>
+
                              {/* CAMBIO DE HORA 2026 PREMIUM CARD */}
                              <div 
                                   onClick={handleHorario}
@@ -3337,24 +3976,6 @@ export default function HubDashboard() {
                     </div>
                     )}
 
-                    {/* VOCES VECINALES & HEMEROTECA SECTION */}
-                    <div style={{ maxWidth: '1400px', margin: '6rem auto 4rem auto', width: '100%', padding: '0 2rem' }}>
-                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '3rem' }}>
-                            <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
-                                <Mic size={28} />
-                            </div>
-                            <div>
-                                <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>VOCES Y ARCHIVOS</h2>
-                                <p style={{ color: '#f59e0b', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>HEMEROTECA DIGITAL · PORTAL DE LA MEMORIA VLS</p>
-                            </div>
-                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #f59e0b, transparent)' }}></div>
-                         </div>
-
-                         <div id="search-results-anchor" />
-                         <Suspense fallback={<div />}>
-                            <VLSNotesGallery />
-                         </Suspense>
-                    </div>
 
                     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
                         {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
@@ -3497,8 +4118,9 @@ export default function HubDashboard() {
                     </div>
                     )}
 
-                    {/* Featured Business Spotlight - VLS MOTORS */}
-                    {!isRDMLS && <VLSMotorsSpot />}
+                    {/* VLS MOTORS (HIDDEN PER USER REQUEST)
+                    {!isRDMLS && <VLSMotorsSpot />} 
+                    */}
 
                     {/* GRID PLANO ELIMINADO PARA MANTENER LA VISTA "MASTER CEO" (BENTO GRID POR CATEGRÍAS FUNCIONANDO ARRIBA) */}
 
@@ -3682,7 +4304,6 @@ export default function HubDashboard() {
                         </div>
                     </div>
                 </div>
-            </div>
             {showVeciCat && <VeciCat onClose={() => setShowVeciCat(false)} />}
             {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
             {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
@@ -3845,7 +4466,6 @@ export default function HubDashboard() {
                 }}
               />
             )}
-
             {/* FOOTER SOBERANO */}
             <HechoEnChile dark={true} />
         </>
