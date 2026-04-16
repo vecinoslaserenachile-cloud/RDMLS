@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Music, Disc, Volume2, Volume1, VolumeX, FastForward, Rewind, Heart, ExternalLink, Headphones, Radio, Share2, Megaphone } from 'lucide-react';
+import { X, Home, Play, Pause, Music, Disc, Volume2, Volume1, VolumeX, FastForward, Rewind, Heart, ExternalLink, Headphones, Radio, Share2, Megaphone } from 'lucide-react';
+
 import PublicUtilityService from '../services/PublicUtilityService';
 
 const ImageFallback = ({ src, alt, style, className }) => {
@@ -35,7 +36,7 @@ const INITIAL_PLAYLIST = [
     { id: 10, title: "Serenito Invita", artist: "Campaña Serenito", cover: "/music/portada_serenitoinvita.png", audio: "/music/serenitoinvita.MP3", likes: 1 }
 ].sort((a, b) => b.likes - a.likes);
 
-export default function MusicRanking({ insideModal = false }) {
+export default function MusicRanking({ insideModal = false, onClose }) {
     const [currentTrack, setCurrentTrack] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -126,6 +127,34 @@ export default function MusicRanking({ insideModal = false }) {
                 const currentIndex = playlist.findIndex(trackItem => trackItem.id === currentTrack.id);
                 handlePlayTrack(playlist[(currentIndex + 1) % playlist.length]);
             }} style={{ display: 'none' }} />
+
+            {insideModal && onClose && (
+                <div style={{ position: 'fixed', top: '15px', right: '15px', zIndex: 70000, display: 'flex', gap: '10px' }}>
+                    <button 
+                        onClick={onClose}
+                        style={{
+                            background: 'rgba(239, 68, 68, 0.9)',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: '12px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            fontWeight: 'bold',
+                            boxShadow: '0 4px 15px rgba(239, 68, 68, 0.4)',
+                            transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.05)'; e.currentTarget.style.background = '#ef4444'; }}
+                        onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.background = 'rgba(239, 68, 68, 0.9)'; }}
+                    >
+                        <Home size={18} />
+                        VOLVER AL INICIO
+                        <X size={18} />
+                    </button>
+                </div>
+            )}
 
             {/* MARQUESINA DE UTILIDAD PÚBLICA (GRATIS) */}
             <div style={{ 
@@ -299,7 +328,18 @@ export default function MusicRanking({ insideModal = false }) {
                                     <div style={{ position: 'absolute', left: `${volume * 100}%`, top: '-5px', width: '10px', height: '20px', background: '#1e293b', borderRadius: '2px', cursor: 'pointer' }} />
                                 </div>
                             </div>
-                            <button onClick={() => setIsPlaying(!isPlaying)} style={{ background: isPlaying ? 'linear-gradient(to bottom, #ef4444, #991b1b)' : 'linear-gradient(to bottom, #10b981, #065f46)', color: 'white', border: 'none', padding: '0.8rem 2.5rem', borderRadius: '8px', fontWeight: '900', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 0 #000', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>{isPlaying ? 'PAUSE' : 'PLAY'}</button>
+                            <button 
+                                onClick={() => {
+                                    if (!currentTrack && playlist.length > 0) {
+                                        handlePlayTrack(playlist[0]);
+                                    } else {
+                                        setIsPlaying(!isPlaying);
+                                    }
+                                }} 
+                                style={{ background: isPlaying ? 'linear-gradient(to bottom, #ef4444, #991b1b)' : 'linear-gradient(to bottom, #10b981, #065f46)', color: 'white', border: 'none', padding: '0.8rem 2.5rem', borderRadius: '8px', fontWeight: '900', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 4px 0 #000', textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
+                            >
+                                {isPlaying ? 'PAUSE' : 'PLAY'}
+                            </button>
                          </div>
                     </div>
                 </div>
