@@ -22,15 +22,15 @@ const PLAYLIST_LUDIC = [
 import {
     Search, Mic, CloudSun, Radio, Sliders, Volume2,
     VolumeX, ChevronUp, ChevronDown, Activity,
-    Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock, Clock,
+    Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock, Clock, Calendar,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
-    ArrowRight, Building2, UserCheck, Pill, Bell
+    ArrowRight, Building2, UserCheck, Pill, Bell, CircuitBoard, Cpu, BarChart3
 } from 'lucide-react';
 import {
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
     Stethoscope, AlertTriangle, Image as ImageIcon, GraduationCap, Gavel, Brain, SmilePlus, Vote, Rocket, ListChecks, PartyPopper, ShoppingBag, Leaf, Droplets,
-    Gamepad2, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves, Construction, Hammer, Gem, HardHat, Joystick
+    Joystick, Palette, Watch, Tablet, Smartphone, ShieldAlert, Building, FileSignature, LayoutGrid, Scale, Languages, Radar, Fuel, Church, Skull, Waves, Construction, Hammer, Gem, HardHat, Bot, Trophy
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
@@ -43,7 +43,10 @@ import PolideportivoVecinal from '../components/PolideportivoVecinal';
 import VecnityPay from '../components/VecnityPay';
 import TuercaVecinos from '../components/TuercaVecinos';
 import VeciCat from '../components/VeciCat';
-import AlcaldesHistory3D from '../components/AlcaldesHistory3D';
+import AlcaldesHistory from '../pages/AlcaldesHistory';
+import UniversalSerenito from '../components/UniversalSerenito';
+import { Canvas } from '@react-three/fiber';
+import { Environment, OrbitControls } from '@react-three/drei';
 import EstudioVLS from '../components/EstudioVLS';
 import AzuraCastSync from '../components/AzuraCastSync';
 import VLSRequestPortal from '../components/VLSRequestPortal';
@@ -89,6 +92,7 @@ const VLSNewsChequia = lazy(() => import('../components/VLSNewsChequia'));
 const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
 const VLSNewsAvalancha = lazy(() => import('../components/VLSNewsAvalancha'));
 const VLSNotesGallery = lazy(() => import('../components/VLSNotesGallery'));
+const SerenitoVLS = lazy(() => import('../components/SerenitoVLS'));
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
@@ -99,13 +103,18 @@ import LoadingScreen from '../components/LoadingScreen';
 const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion'));
 const DistancesMap = lazy(() => import('../components/DistancesMap'));
 import QuickEmergencyBar from '../components/QuickEmergencyBar';
-import EmergencyDirectory from '../components/EmergencyDirectory';
+import VLSCommunityDirectory from '../components/EmergencyDirectory';
 import NewsDataStrip from '../components/NewsDataStrip';
+import { useMasterEditor, MasterEditorToggle, MasterEditorBanner, EditorWrapper } from '../components/MasterEditorOverlay';
+import WorldNewsTablets from '../components/WorldNewsTablets';
 
 export default function HubDashboard() {
     // 1. Context & Routing
     const navigate = useNavigate();
     const { weather, isAuthorized, isGuest, isRegistered, currentUser, handleLogin, handleLogout } = useOutletContext();
+
+    // ── MASTER EDITOR MODE (solo vecinoslaserenachile@gmail.com) ─────────────
+    const { isMaster, editorActive, toggleEditor, hiddenModules, hideModule, restoreAll, isHidden } = useMasterEditor(currentUser);
     const { lang, setLang, t: translate } = useTranslation();
 
     // 2. Environmental Constants & Storage
@@ -168,6 +177,7 @@ export default function HubDashboard() {
         setReportInitialCategory(null);
     };
 
+    const handleAkichip = () => { console.log("Firing Akichip Portal..."); closeAllPopups(); navigate('/akichip'); };
     const handleDecision = () => { closeAllPopups(); setShowPoll(true); };
     const handleGalaxia = () => { closeAllPopups(); setShowGalaxia(true); };
     const handleRoadmap = () => { closeAllPopups(); setShowRoadmap(true); };
@@ -201,7 +211,7 @@ export default function HubDashboard() {
     const handleAirport = () => { closeAllPopups(); setShowAirportMonitor(true); };
     const handlePort = () => { closeAllPopups(); setShowPortMonitor(true); };
     const handleParliamentary = () => { closeAllPopups(); setShowParliamentary(true); };
-    const handleAlcaldes = () => { closeAllPopups(); setShowAlcaldes(true); };
+    const handleAlcaldes = () => { closeAllPopups(); navigate('/alcaldes'); };
     const handleHubDirectory = () => { closeAllPopups(); setShowDirectory(true); };
     const handleSmartReport = (e) => { 
         closeAllPopups(); 
@@ -569,6 +579,7 @@ export default function HubDashboard() {
         handleStorage();
         window.addEventListener('storage', handleStorage);
 
+        window.addEventListener('open-akichip', handleAkichip);
         window.addEventListener('open-decision-vecinal', handleDecision);
         window.addEventListener('open-galaxia-disco', handleGalaxia);
         window.addEventListener('open-vls-roadmap', handleRoadmap);
@@ -591,9 +602,9 @@ export default function HubDashboard() {
         window.addEventListener('open-vls-juansoldado', handleJuanSoldado);
         window.addEventListener('open-vls-andacollo', handleAndacollo);
         window.addEventListener('open-vls-vallenar', handleVallenar);
+        window.addEventListener('open-vls-domeyko', (e) => handleDomeyko(e.detail?.tab));
         window.addEventListener('open-vls-chequia', handleChequia);
         window.addEventListener('open-vls-avalancha', handleAvalancha);
-
         window.addEventListener('open-vls-motors', handleMotors);
         window.addEventListener('open-orientacion-legal', handleLegal);
         window.addEventListener('open-serenamet-admin', handleMetAdmin);
@@ -636,9 +647,10 @@ export default function HubDashboard() {
         window.addEventListener('open-vls-iglesias', handleIglesias);
         window.addEventListener('open-ajedrez-patrimonial', handleAjedrez);
         window.addEventListener('open-vls-horario', handleHorario);
+        window.addEventListener('open-vls-stella', () => { closeAllPopups(); navigate('/stella'); });
         window.addEventListener('open-arquiartista', handleArquiartista);
 
-        // URL Parameter Routing (Deep Linking)
+
         const urlParams = new URLSearchParams(window.location.search);
         const newsParam = urlParams.get('news');
 
@@ -718,6 +730,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-vls-ian', handleIan);
             window.removeEventListener('open-vls-seguridad', handleSeguridad);
             window.removeEventListener('open-vls-avalancha', handleAvalancha);
+            window.removeEventListener('open-vls-stella', () => {});
             window.removeEventListener('open-arquiartista', handleArquiartista);
         };
     }, []);
@@ -728,6 +741,7 @@ export default function HubDashboard() {
             let newsList = [];
             const defaultNews = [
                 { title: "OPORTUNIDAD: Capacitaciones Acciona para Mujeres", date: "Hoy", category: "EMPLEO", desc: "Curso gratuito de terminaciones en construcción para las vecinas de La Serena.", iconStr: "UserCheck", color: "#f87171", eventId: "open-vls-acciona", image: "/acciona/afiche_real.png" },
+                { title: "INVESTIGACIÓN: Stella Díaz Varín «La Colorina»", date: "Hoy", category: "LITERATURA", desc: "Explora la vida y obra de la poeta más indómita de La Serena en su nuevo archivo digital.", iconStr: "BookOpen", color: "#ef4444", eventId: "open-vls-stella", image: "/stella/Stella Díaz Varín.png" },
                 { title: "INVESTIGACIÓN: Misión Artemis II", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis", image: "/artemis_teaser.png" },
                 { title: "INVESTIGACIÓN: El Futuro de los Negocios (UCEN)", date: "Hoy", category: "ACADEMIA", desc: "42° Congreso ASFAE: El impacto de la IA y la descentralización en Chile.", iconStr: "GraduationCap", color: "#00F0FF", eventId: "open-vls-ucen" },
                 { title: "RESTAURACIÓN: Monumento Francisco de Aguirre", date: "Hoy", category: "PATRIMONIO", desc: "La alcaldesa Daniela Norambuena impulsa la recuperación del símbolo histórico de la ciudad.", iconStr: "Landmark", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/aguirre_real.png" },
@@ -920,7 +934,7 @@ export default function HubDashboard() {
             icon: Gem, color: '#a78bfa', isEvent: 'open-domeyko-portal', active: true, badge: 'PATRIMONIO', category: 'citizens'
         },
         {
-            id: 'lite-portal-access', title: 'CLON DE RESPALDO (Lite Portal)', subtitle: 'Soberanía de Acceso: Versión liviana para datos bajos',
+            id: 'low-data-access', title: 'CLON DE RESPALDO (Lite Portal)', subtitle: 'Soberanía de Acceso: Versión liviana para datos bajos',
             icon: ShieldCheck, color: '#10b981', isEvent: 'open-lite-portal', active: true, badge: 'FAILOVER', category: 'citizens'
         },
         {
@@ -975,11 +989,11 @@ export default function HubDashboard() {
             id: 'plaza-vecinal-ai', title: 'Plaza Vecinal AI', subtitle: 'Espacio de encuentro ciudadano moderado por IA.', icon: Users, color: '#ec4899', path: 'https://ais-dev-m2dndpdv73k2izyiea7mef-41245370989.us-east5.run.app', isExternal: true, active: true },
         {
             id: 'ajedrez-patrimonial', title: 'Ajedrez Patrimonial 3D', subtitle: 'Desafía tu mente en el casco histórico',
-            icon: Gamepad2, color: '#fcd34d', isEvent: 'open-ajedrez-patrimonial', active: true, badge: 'SABERES'
+            icon: Joystick, color: '#fcd34d', isEvent: 'open-ajedrez-patrimonial', active: true, badge: 'SABERES'
         },
         {
             id: 'vls-trivia', title: isRDMLS ? 'Saberes: Gestión del Conocimiento' : 'VLSabes: Juegaprende', subtitle: isRDMLS ? 'Pilar #2: Saberes, Historia y Soberanía' : 'Pilar #2: Trivia Educativa y Soberanía Comunicacional',
-            icon: Gamepad2, color: '#FFD700', path: '/vlsabes', active: true, badge: isRDMLS ? 'SABERES' : 'TRIVIA'
+            icon: Joystick, color: '#FFD700', path: '/vlsabes', active: true, badge: isRDMLS ? 'SABERES' : 'TRIVIA'
         },
         {
             id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
@@ -1072,7 +1086,7 @@ export default function HubDashboard() {
         },
         {
             id: 'retro-gamer-room', title: 'Altar Gamer 1985', subtitle: 'Arcade Inmersivo y Clásicos de los 80/90',
-            icon: Gamepad2, color: '#f97316', isEvent: 'open-retro-room', active: true
+            icon: Joystick, color: '#f97316', isEvent: 'open-retro-room', active: true
         },
         {
             id: 'personal-stereo', title: 'Personal Stereo VLS', subtitle: 'Tu música nostálgica siempre contigo',
@@ -1096,11 +1110,11 @@ export default function HubDashboard() {
         },
         {
             id: 'legacy-game', title: 'Salón Arcade Retro', subtitle: 'Desafía el Record y gana Papayas',
-            icon: Gamepad2, color: '#ef4444', isEvent: 'open-game', active: true
+            icon: Joystick, color: '#ef4444', isEvent: 'open-game', active: true
         },
         {
             id: 'serenito-1945', title: 'Serenito 1945 Arcade', subtitle: 'Vuela, dispara y defiende nuestra ciudad',
-            icon: Gamepad2, color: '#f43f5e', isExternal: true, path: '/minijuegos/serenito-1945/', active: true, badge: 'NUEVO'
+            icon: Joystick, color: '#f43f5e', isExternal: true, path: '/minijuegos/serenito-1945/', active: true, badge: 'NUEVO'
         },
         {
             id: 'galaxia-disco', title: 'Galaxia Discoteque', subtitle: 'Burbuja, Sundance, BCool & Fiestas de Colegio',
@@ -1115,7 +1129,7 @@ export default function HubDashboard() {
             icon: Rocket, color: '#c084fc', isEvent: 'open-project-info', active: true, badge: 'Dossier 2030'
         },
         {
-            id: 'lite-portal-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
+            id: 'low-data-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
             icon: Zap, color: '#fbbf24', path: '/lite', active: true, badge: 'LITE'
         },
         {
@@ -1235,6 +1249,10 @@ export default function HubDashboard() {
 
     const participacionCiudadana = [
         {
+            id: 'pulso-ciudadano', title: 'Pulso Ciudadano VLS', subtitle: 'Reportes de Opinión Pública y Percepción Social',
+            icon: BarChart3, color: '#38bdf8', isEvent: 'open-pulso-ciudadano', active: true, badge: 'PERIODIC'
+        },
+        {
             id: 'ecumenico', title: 'Portal Ecuménico y Espiritual', subtitle: 'Encuentro Interreligioso de Fe (Iglesias, Cultos y Templos)',
             icon: Heart, color: '#fcd34d', isEvent: 'open-ecumenical', active: true
         },
@@ -1264,7 +1282,7 @@ export default function HubDashboard() {
         },
         {
             id: 'alcaldes-history', title: 'Archivo Alcaldes Regionales', subtitle: 'Hemeroteca y Cronología de Liderazgo Comunal',
-            icon: HistoryIcon, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: false, badge: 'HISTORIAL'
+            icon: HistoryIcon, color: '#38bdf8', isEvent: 'open-alcaldes-history', active: true, badge: 'HISTORIAL'
         }
     ];
 
@@ -1313,7 +1331,7 @@ export default function HubDashboard() {
             modules: [
                 'vls-domeyko', 'vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 
                 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 
-                'lite-portal-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 
+                'low-data-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 
                 'vecicat', 'sticky-note', 'historic-3d', 'busdeltiempo', 'kiosko-diarios', 
                 'memorial-hijos', 'memory-portal', 'tornamesa-digital', 'personal-stereo', 
                 'vhs-tv', 'operacion-ls', 'stickers-portal', 'glosario-vls', 'ambient-mode', 
@@ -1351,7 +1369,7 @@ export default function HubDashboard() {
             modules: [
                 'vls-domeyko', 'vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 
                 'vls-artemis', 'vls-chequia', 'central-difusion', 'plaza-vecinal', 
-                'parlamento-regional', 'faro-ia', 'vls-andacollo', 'vls-vallenar', 'vls-juansoldado'
+                'parlamento-regional', 'faro-ia', 'pulso-ciudadano', 'vls-andacollo', 'vls-vallenar', 'vls-juansoldado'
             ]
         }
     ];
@@ -1368,10 +1386,12 @@ export default function HubDashboard() {
 
     const AppCard = ({ app }) => {
         if (!app || !app?.id) return null; // ← Guardia crítica contra undefined
+        // ── MASTER EDITOR: ocultar módulos marcados (fuera de modo editor)
+        if (!editorActive && isHidden(app?.id)) return null;
         const locked = isRestrictedModule(app?.id);
         const isPinned = pinnedApps.includes(app?.id);
 
-        return (
+        const cardContent = (
             <motion.div
                 drag
                 dragMomentum={false}
@@ -1388,7 +1408,7 @@ export default function HubDashboard() {
                     transition: 'border 0.3s, background 0.3s, transform 0.1s', 
                     filter: locked ? 'grayscale(1) opacity(0.6)' : 'none',
                     height: '100%',
-                    touchAction: 'none',
+                    touchAction: 'pan-y', // Allow vertical scrolling
                     cursor: locked ? 'not-allowed' : 'grab',
                     animation: app?.id === 'vls-artemis' ? 'vls-stardust-pulse 3s infinite alternate' : 'none'
                 }}
@@ -1428,6 +1448,22 @@ export default function HubDashboard() {
                 </div>
             </motion.div>
         );
+
+        // En modo editor, envolver con EditorWrapper para mostrar botón ✕
+        if (isMaster) {
+            return (
+                <EditorWrapper
+                    id={app.id}
+                    label={app.title}
+                    editorActive={editorActive}
+                    isHidden={isHidden(app.id)}
+                    onToggleHide={hideModule}
+                >
+                    {cardContent}
+                </EditorWrapper>
+            );
+        }
+        return cardContent;
     };
     const [impactMessages, setImpactMessages] = useState([
         { icon: Award, color: '#fbbf24', text: "[VLSABES]: ¿Cuánto sabes de tu comuna? Juega la trivia oficial y gana fichas para el portal." },
@@ -1440,7 +1476,7 @@ export default function HubDashboard() {
     ]);
 
     const guardianes = [
-        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/serenito_v3.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
+        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/serenito_38.glb', img: '/serenito_3d_humanized_2026_1774875415876.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
         { id: 'tata-rojas', name: 'Tata Rojas', role: 'Gran Patriarca VLS', model: '/models/tata_rojas_3d.glb', img: '/avatars/tio_pedro.png', bio: 'El sabio del Valle. Custodio de las tradiciones y la memoria histórica de nuestra región.' },
         { id: 'alpino-tech', name: 'Alpino 3D', role: 'Élite Tecnológica VLS', model: '/models/alpino3d.glb', img: '/avatars/alpino.png', bio: 'Experto en infraestructura crítica y sistemas inteligentes. El puente entre el cerro y la nube.' },
         { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/avatars/don_joako_guardian.png', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
@@ -1554,220 +1590,33 @@ export default function HubDashboard() {
     // Tenant guards (después de todos los hooks, válido por reglas de React)
     const huinchaButtonsJSX = (
         <div style={{ display: 'flex', gap: '20px', flexShrink: 0, minWidth: 'max-content', alignItems: 'center', paddingRight: '20px' }}>
-            {/* BOTÓN MAGNO: EL UNICORNIO TECNOLÓGICO (MÁXIMA VISIBILIDAD) */}
             <button
                 onClick={() => window.dispatchEvent(new CustomEvent('open-unicorn'))}
                 className="btn-glass animate-pulse"
-                id="btn-unicornio-maestro"
                 style={{
-                    background: '#fbbf24',
-                    border: 'none',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1.4rem',
-                    color: 'black',
-                    fontWeight: '950',
-                    fontSize: '0.8rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    boxShadow: '0 0 30px rgba(251, 191, 36, 0.7)',
-                    cursor: 'pointer',
-                    zIndex: 1000,
-                    letterSpacing: '1px'
+                    background: '#fbbf24', border: 'none', borderRadius: '50px', padding: '0.4rem 1.4rem',
+                    color: 'black', fontWeight: '950', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '10px',
+                    boxShadow: '0 0 30px rgba(251, 191, 36, 0.7)', cursor: 'pointer', zIndex: 1000, letterSpacing: '1px'
                 }}
             >
                 <Book size={18} color="black" fill="black" /> EL UNICORNIO
             </button>
 
-            {/* BOTONES UNIVERSALES (VLS & RDMLS) */}
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-juansoldado'))}
-                className="btn-glass"
-                style={{
-                    background: 'rgba(245,158,11,0.1)',
-                    border: '1px solid rgba(245,158,11,0.4)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: 'white',
-                    fontWeight: 'bold',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 15px rgba(245,158,11,0.2)'
-                }}
-            >
-                <Newspaper size={14} color="#f59e0b" /> JUAN SOLDADO
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-chat'))} className="huincha-btn premium-citizens" style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid #38bdf8', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(56, 189, 248, 0.3)' }}>
+                <Users size={14} color="#38bdf8" /> SMART CITIZENS
+            </button>
+            <button onClick={() => navigate('/induccion')} className="huincha-btn premium-admin" style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)' }}>
+                <Shield size={14} color="#10b981" /> SMART ADMINISTRATION
+            </button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-eventos'))} className="huincha-btn premium-events" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(239, 68, 68, 0.3)' }}>
+                <Calendar size={14} color="#ef4444" /> SMART EVENTS
+            </button>
+            <button onClick={() => navigate('/centinel')} className="huincha-btn premium-listening" style={{ background: 'rgba(168, 85, 247, 0.15)', border: '1px solid #a855f7', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(168, 85, 247, 0.3)' }}>
+                <Zap size={14} color="#a855f7" /> SMART LISTENING
             </button>
 
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-artemis'))}
-                className="btn-glass animate-pulse-slow"
-                style={{
-                    background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)',
-                    border: '1px solid rgba(56,189,248,0.4)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: 'white',
-                    fontWeight: '950',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 20px rgba(56, 189, 248, 0.4)',
-                    whiteSpace: 'nowrap'
-                }}
-            >
-                <Rocket size={14} color="#38bdf8" /> ARTEMIS II
-            </button>
-
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-vls-seguridad'))}
-                className="btn-glass animate-pulse-slow"
-                style={{
-                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                    border: '1px solid rgba(255,255,255,0.4)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: 'white',
-                    fontWeight: '950',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.6)',
-                    whiteSpace: 'nowrap'
-                }}
-            >
-                <ShieldAlert size={14} /> SEGURIDAD
-            </button>
-
-            {!isRDMLS && (
-                <>
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-vls-feed'))}
-                        className="btn-glass"
-                        style={{
-                            background: 'linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: '0 0 15px rgba(236, 72, 153, 0.4)',
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
-                        <Zap size={14} /> {tHub.smartFeed || 'SMART FEED'}
-                    </button>
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-city-3d'))}
-                        className="btn-glass"
-                        style={{
-                            background: 'linear-gradient(135deg, #ef4444 0%, #991b1b 100%)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: 'white',
-                            fontWeight: 'bold',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)',
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
-                        <Sparkles size={14} /> {tHub.city3d || 'CIUDAD 3D'}
-                    </button>
-                    <button
-                        onClick={() => window.dispatchEvent(new CustomEvent('open-tienda-poleras'))}
-                        className="btn-glass"
-                        style={{
-                            background: 'linear-gradient(135deg, #facc15 0%, #ca8a04 100%)',
-                            border: '1px solid rgba(255,255,255,0.3)',
-                            borderRadius: '50px',
-                            padding: '0.4rem 1rem',
-                            color: '#000',
-                            fontWeight: '950',
-                            fontSize: '0.75rem',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            boxShadow: '0 0 15px rgba(250, 204, 21, 0.4)',
-                            whiteSpace: 'nowrap'
-                        }}
-                    >
-                        <ShoppingBag size={14} /> TIENDA 3D
-                    </button>
-                </>
-            )}
-
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
-                className="btn-glass animate-pulse-slow"
-                style={{
-                    background: 'rgba(168, 85, 247, 0.2)',
-                    border: '1px solid rgba(168, 85, 247, 0.5)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: '#c084fc',
-                    fontWeight: '900',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 15px rgba(168, 85, 247, 0.3)',
-                    whiteSpace: 'nowrap'
-                }}
-            >
-                <Joystick size={14} /> ARCADE
-            </button>
-
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('vls-notification', { detail: { title: 'POTENCIA GRÁFICA OPTIMIZADA', body: 'El núcleo de renderizado VLS está operando al 100%. Experiencia de alta fidelidad activa.', type: 'success' } }))}
-                className="btn-glass animate-float"
-                style={{
-                    background: 'rgba(34, 197, 94, 0.15)',
-                    border: '1px solid rgba(34, 197, 94, 0.5)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: '#22c55e',
-                    fontWeight: '950',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 20px rgba(34, 197, 94, 0.3)',
-                    whiteSpace: 'nowrap'
-                }}
-            >
-                <Activity size={14} /> GPU ACTIVE
-            </button>
-
-            <button
-                onClick={() => window.dispatchEvent(new CustomEvent('open-memorial-hijos'))}
-                className="btn-glass animate-pulse-slow"
-                style={{
-                    background: 'rgba(244, 114, 182, 0.2)',
-                    border: '1px solid rgba(244, 114, 182, 0.5)',
-                    borderRadius: '50px',
-                    padding: '0.4rem 1rem',
-                    color: '#f472b6',
-                    fontWeight: '900',
-                    fontSize: '0.75rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    boxShadow: '0 0 15px rgba(244, 114, 182, 0.3)',
-                    whiteSpace: 'nowrap'
-                }}
-            >
-                <Heart size={14} /> ALTAR
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-radio'))} className="huincha-btn" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50px', padding: '0.4rem 1rem', color: 'white', fontSize: '0.7rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Radio size={14} /> RADIO VLS
             </button>
         </div>
     );
@@ -1813,25 +1662,34 @@ export default function HubDashboard() {
                         maxWidth: '850px',
                         zIndex: 100
                     }}>
-                        {/* Tarjeta ARCADE */}
+                        {/* Tarjeta ARCADE - PREMIUM DESIGN RESTORED */}
                         <div
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
+                            onClick={() => { if (window.openArcade) window.openArcade(); else window.dispatchEvent(new CustomEvent('open-game')); }}
                             style={{
-                                background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
-                                border: '1px solid rgba(168, 85, 247, 0.5)',
-                                borderRadius: '20px',
-                                padding: '1.2rem',
+                                background: 'linear-gradient(135deg, rgba(88, 28, 135, 0.4) 0%, rgba(15, 23, 42, 0.4) 100%)',
+                                border: '1px solid rgba(168, 85, 247, 0.7)',
+                                borderRadius: '24px',
+                                padding: '1.5rem',
                                 cursor: 'pointer',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '1rem',
+                                gap: '1.2rem',
                                 position: 'relative',
                                 overflow: 'hidden',
-                                transition: 'all 0.3s ease',
-                                boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                                boxShadow: '0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(168, 85, 247, 0.1)',
+                                backdropFilter: 'blur(12px)'
                             }}
-                            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.5)'; }}
+                            onMouseEnter={e => { 
+                                e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                                e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 1)';
+                                e.currentTarget.style.boxShadow = '0 25px 50px rgba(168, 85, 247, 0.3)';
+                            }}
+                            onMouseLeave={e => { 
+                                e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                                e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.7)';
+                                e.currentTarget.style.boxShadow = '0 15px 35px rgba(0,0,0,0.4)';
+                            }}
                         >
                             <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/portada_vls_trivia.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.15, mixBlendMode: 'overlay', pointerEvents: 'none' }} />
                             <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.4)', flexShrink: 0 }}>
@@ -1908,7 +1766,19 @@ export default function HubDashboard() {
     }
 
     return (
-        <>
+        <React.Fragment>
+            {/* ── MASTER EDITOR MODE UI (solo vecinoslaserenachile@gmail.com) ── */}
+            {isMaster && (
+                <MasterEditorToggle
+                    editorActive={editorActive}
+                    toggleEditor={toggleEditor}
+                    hiddenCount={hiddenModules.length}
+                    onRestore={restoreAll}
+                />
+            )}
+            {isMaster && editorActive && (
+                <MasterEditorBanner hiddenCount={hiddenModules.length} />
+            )}
             <style>{`
                 .btn-vls-action-light { background: #38bdf8; color: #000; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
                 .btn-vls-action-yellow { background: #fbbf24; color: #000; padding: 0.8rem 1.5rem; border: none; font-weight: 900; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
@@ -1919,14 +1789,16 @@ export default function HubDashboard() {
                     100% { box-shadow: 0 0 50px rgba(56, 189, 248, 0.6); border-color: rgba(56, 189, 248, 0.8); }
                 }
                 @keyframes vls-ticker-marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
+                    0% { transform: translate3d(0, 0, 0); }
+                    100% { transform: translate3d(-50%, 0, 0); }
                 }
                 .vls-ticker-wrapper { 
                     display: flex; 
                     width: max-content; 
                     flex-shrink: 0;
-                    animation: vls-ticker-marquee 45s linear infinite; 
+                    animation: vls-ticker-marquee 60s linear infinite; 
+                    will-change: transform;
+                    backface-visibility: hidden;
                 }
                 .vls-ticker-wrapper:hover { 
                     animation-play-state: paused; 
@@ -1978,8 +1850,25 @@ export default function HubDashboard() {
                         </span>
                     </div>
 
-                    {/* Botones de Acción (Derecha) */}
-                    <div style={{
+                        {/* AMERICAN TICKER (MARQUEE) - ISOLATED CONTAINER */}
+                        <div style={{ 
+                            flexGrow: 1, 
+                            overflow: 'hidden', 
+                            position: 'relative', 
+                            display: 'flex', 
+                            alignItems: 'center',
+                            marginLeft: '5px',
+                            maskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)',
+                            WebkitMaskImage: 'linear-gradient(to right, transparent, black 20px, black calc(100% - 20px), transparent)'
+                        }}>
+                            <div className="vls-ticker-wrapper">
+                                {huinchaButtonsJSX}
+                                {huinchaButtonsJSX}
+                            </div>
+                        </div>
+
+                        {/* Botones de Acción (Derecha) */}
+                        <div style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: '12px',
@@ -2081,21 +1970,7 @@ export default function HubDashboard() {
                             </div>
                         )}
 
-                        {/* AMERICAN TICKER (MARQUEE) - ISOLATED CONTAINER */}
-                        <div style={{ 
-                            flexGrow: 1, 
-                            overflow: 'hidden', 
-                            position: 'relative', 
-                            display: 'flex', 
-                            alignItems: 'center',
-                            marginLeft: '20px',
-                            maskImage: 'linear-gradient(to right, transparent, black 40px, black calc(100% - 40px), transparent)'
-                        }}>
-                            <div className="vls-ticker-wrapper">
-                                {huinchaButtonsJSX}
-                                {huinchaButtonsJSX}
-                            </div>
-                        </div>
+
 
                     
                     {host.includes('quimbo') && (
@@ -2118,6 +1993,186 @@ export default function HubDashboard() {
                 </div>
             </div>
 
+
+                <main className="flex-1 overflow-y-auto overflow-x-hidden relative" style={{ padding: '0 0 100px 0' }}>
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {/* RADAR MUNDIAL: NOTICIAS INTERNACIONALES (SIEMPRE VISIBLE)  */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    <div style={{ width: '100%', maxWidth: '1200px', margin: '1rem auto 0', padding: '0 2rem' }}>
+                        <WorldNewsTablets />
+                    </div>
+                    
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {/* NODO DE BIENVENIDA (ABS-TOP)                                 */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {isVLS && (
+                        <div className="animate-fade-in" style={{
+                            width: '100%',
+                            background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
+                            borderBottom: '4px solid #fbbf24',
+                            padding: '3rem 2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            boxSizing: 'border-box'
+                        }}>
+                             {/* Personaje 3D (Humanized Serenito) - REGLA ESTRICTA (Actualmente en producción) */}
+                            <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle at 50% 50%, #38bdf8 0%, transparent 60%)' }}></div>
+                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}>
+                                <div style={{ background: '#38bdf8', padding: '10px 25px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 0 30px rgba(56,189,248,0.3)' }}>
+                                    <Rocket size={20} color="white" />
+                                    <span style={{ color: 'white', fontWeight: '900', fontSize: '0.85rem', letterSpacing: '2px' }}>{isRDMLS ? 'HUB DE INTELIGENCIA' : 'COMUNIDAD DIGITAL'}</span>
+                                </div>
+                                <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', fontWeight: '900', margin: 0, color: 'white', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
+                                    {isRDMLS ? 'BIENVENIDOS AL ECOSISTEMA ' : 'BIENVENIDO A '} <br/> <span style={{ color: '#38bdf8' }}>{isRDMLS ? 'RDMLS' : 'VECINOS LA SERENA'}</span>
+                                </h2>
+                                <p style={{ maxWidth: '900px', fontSize: '1.15rem', color: '#94a3b8', margin: '0.5rem 0', lineHeight: '1.6' }}>
+                                    {tHub.heroDescription}
+                                </p>
+                                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                    {!isRDMLS && (
+                                        <button className="btn-vls-action-blue" onClick={() => setShowDirectory(true)} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>EXPLORAR SERVICIOS</button>
+                                    )}
+                                    {isRDMLS && (
+                                        <button className="btn-vls-action-light" onClick={() => navigate('/induccion')} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>CENTRO DE FORMACIÓN</button>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {/* SUPER BANNER: PULSO CIUDADANO (PRINCIPAL ABAJO DE WELCOME) */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {isVLS && (
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-pulso-ciudadano'))}
+                            style={{ 
+                                margin: '2rem',
+                                minHeight: '400px',
+                                background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
+                                borderRadius: '40px',
+                                border: '1px solid rgba(56, 189, 248, 0.3)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+                            }}
+                            whileHover={{ scale: 1.01, borderColor: '#38bdf8' }}
+                        >
+                            <div style={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'url("/grid_bg.png")' }}></div>
+                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', maxWidth: '1200px', textAlign: 'center' }}>
+                                <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', padding: '8px 20px', borderRadius: '50px', color: '#38bdf8', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '3px' }}>REPORTE EXTERNO · ACTIVA RESEARCH</div>
+                                <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 950, margin: 0, color: 'white', letterSpacing: '-3px', lineHeight: '0.9' }}>
+                                    PULSO CIUDADANO
+                                </h1>
+                                
+                                <div style={{ display: 'flex', gap: '2.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#ef4444' }}>53.3%</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Desaprobación Presidencial</div>
+                                    </div>
+                                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#38bdf8' }}>27.0%</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación Gabinete</div>
+                                    </div>
+                                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
+                                    <div style={{ textAlign: 'center' }}>
+                                        <div style={{ fontSize: '2.5rem', fontWeight: 950, color: '#38bdf8' }}>Iván Poduje</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Líder Gestión (46.4%)</div>
+                                    </div>
+                                </div>
+
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    style={{ background: 'linear-gradient(90deg, #38bdf8, #1d4ed8)', color: 'white', padding: '15px 50px', borderRadius: '50px', border: 'none', fontWeight: 950, fontSize: '1rem', marginTop: '1rem', boxShadow: '0 10px 30px rgba(58, 190, 248, 0.4)' }}
+                                >
+                                    EXPLORAR ANÁLISIS COMPLETO
+                                </motion.button>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {/* TARJETÓN GRÁFICO: STELLA DÍAZ VARÍN (LA COLORINA)          */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {isVLS && (
+                        <motion.div 
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            onClick={() => {
+                                navigate('/stella');
+                                window.dispatchEvent(new CustomEvent('open-vls-stella'));
+                                window.dispatchEvent(new CustomEvent('stella-force-maximize'));
+                            }}
+                            style={{ 
+                                margin: '0 2rem 2rem 2rem',
+                                minHeight: '300px',
+                                background: 'linear-gradient(135deg, #450a0a 0%, #020617 100%)',
+                                borderRadius: '40px',
+                                border: '1px solid rgba(239, 68, 68, 0.4)',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '2rem',
+                                overflow: 'hidden',
+                                position: 'relative',
+                                boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
+                                padding: '2rem'
+                            }}
+                            whileHover={{ scale: 1.01, borderColor: '#ef4444' }}
+                        >
+                            <div style={{ position: 'absolute', right: '-50px', top: '0', bottom: '0', width: '50%', opacity: 0.4, maskImage: 'linear-gradient(to left, black, transparent)' }}>
+                                <img src="/stella/stella_bg.png" alt="Stella" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </div>
+                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '600px' }}>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', padding: '5px 15px', borderRadius: '50px', color: '#ef4444', fontWeight: 900, fontSize: '0.7rem', letterSpacing: '2px' }}>NUEVO ARCHIVO VLS</div>
+                                    <div style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255,255,255,0.2)', padding: '5px 15px', borderRadius: '50px', color: 'white', fontWeight: 900, fontSize: '0.7rem', letterSpacing: '2px' }}>RADIO EN VIVO</div>
+                                </div>
+                                <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 950, margin: 0, color: 'white', letterSpacing: '-2px', lineHeight: '1' }}>
+                                    STELLA DÍAZ VARÍN <br/> <span style={{ color: '#ef4444' }}>«LA COLORINA»</span>
+                                </h2>
+                                <p style={{ fontSize: '1.1rem', color: '#cbd5e1', margin: 0, lineHeight: '1.5' }}>
+                                    Descubre el legado indómito de la poeta que estremeció la lírica chilena. Escucha su voz, recorre su historia y descarga su obra completa.
+                                </p>
+                                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                                    <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            window.dispatchEvent(new CustomEvent('open-vls-stella'));
+                                            window.dispatchEvent(new CustomEvent('stella-force-maximize'));
+                                        }}
+                                        style={{ background: '#ef4444', color: 'white', padding: '12px 30px', borderRadius: '50px', border: 'none', fontWeight: 950, cursor: 'pointer', boxShadow: '0 10px 20px rgba(239, 68, 68, 0.3)' }}
+                                    >
+                                        INGRESAR AL ESTUDIO
+                                    </button>
+                                    <button 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            navigator.clipboard.writeText('https://www.vecinoslaserena.cl/stella');
+                                            alert('¡Enlace de Stella copiado!');
+                                        }}
+                                        style={{ background: 'rgba(255,255,255,0.05)', color: 'white', padding: '12px 20px', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 950, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                                    >
+                                        <Share2 size={18} /> COMPARTE
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
             {/* ═════════════════════════════════════════════════════════════ */}
             {/* PORTALES MAESTROS (ARRIBA): ARCADE, ALTAR & JUEGOS           */}
             {/* ═════════════════════════════════════════════════════════════ */}
@@ -2134,175 +2189,342 @@ export default function HubDashboard() {
                 zIndex: 100,
                 position: 'relative'
             }}>
-                {/* Tarjeta 1: SALÓN ARCADE */}
                 <div
-                    onClick={() => window.dispatchEvent(new CustomEvent('open-game'))}
+                    onClick={() => navigate('/arcade')}
                     style={{
-                        background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
-                        border: '1px solid rgba(168, 85, 247, 0.6)',
-                        borderRadius: '20px',
-                        padding: '1.2rem',
+                        background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(239, 68, 68, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '1rem',
+                        gap: '1.2rem',
                         position: 'relative',
                         overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'; }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(239, 68, 68, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
                 >
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/images/arcade_gpu.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.4, mixBlendMode: 'screen', pointerEvents: 'none' }} />
-                    <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)', flexShrink: 0 }}>
-                        <Joystick size={26} color="white" />
+                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(239, 68, 68, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <Joystick size={28} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#c084fc', textShadow: '0 0 15px rgba(168, 85, 247, 0.6)' }}>SALÓN ARCADE</span>
-                            <span style={{ background: '#ec4899', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RETRO</span>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#fca5a5', textShadow: '0 0 15px rgba(239, 68, 68, 0.6)' }}>ARCADE ZONE</span>
+                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>PLAY CENTER</span>
                         </div>
-                        <p style={{ color: 'rgba(192, 132, 252, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Gaming Legendario La Serena</p>
+                        <p style={{ color: 'rgba(252, 165, 165, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Pinball, Juegos 3D y Desafíos</p>
                     </div>
                 </div>
 
-                {/* Tarjeta 2: ALTAR REGIONAL */}
+                {/* Tarjeta 2: SMART CITIZENS (ATENCIÓN CIUDADANA) */}
                 <div
-                    onClick={() => window.dispatchEvent(new CustomEvent('open-memorial-hijos'))}
+                    onClick={() => navigate('/citizens')}
                     style={{
-                        background: 'linear-gradient(135deg, #020617 0%, #171717 100%)',
-                        border: '1px solid rgba(244, 114, 182, 0.6)',
-                        borderRadius: '20px',
-                        padding: '1.2rem',
+                        background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(14, 165, 233, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '1rem',
+                        gap: '1.2rem',
                         position: 'relative',
                         overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(244, 114, 182, 0.15)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.6)'; }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(14, 165, 233, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(14, 165, 233, 0.6)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
                 >
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/memorial-mistral.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.2, mixBlendMode: 'luminosity', pointerEvents: 'none' }} />
-                    <div style={{ background: 'linear-gradient(135deg, #f472b6, #db2777)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(244, 114, 182, 0.5)', flexShrink: 0 }}>
-                        <Heart size={26} color="white" />
+                    <div style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(14, 165, 233, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <Users size={28} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#f472b6', textShadow: '0 0 15px rgba(244, 114, 182, 0.6)' }}>ALTAR REGIONAL</span>
-                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>MEMORIA</span>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#38bdf8', textShadow: '0 0 15px rgba(56, 189, 248, 0.6)' }}>SMART CITIZENS</span>
+                            <span style={{ background: '#0ea5e9', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>ATENCIÓN</span>
                         </div>
-                        <p style={{ color: 'rgba(244, 114, 182, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Homenaje Póstumo Digital</p>
+                        <p style={{ color: 'rgba(125, 211, 252, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Reportes Vecinales y Monitoreo</p>
                     </div>
                 </div>
 
-                {/* Tarjeta 3: ENTREVECINAS */}
+                {/* Tarjeta 3: SMART ADMINISTRATION (GESTIÓN INTERNA) - OCULTO EN VECINOS POR REGLA DE SEGURIDAD */}
+                {isRDMLS && (
+                    <div
+                        onClick={() => navigate('/honorarios')}
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                            border: '1px solid rgba(34, 197, 94, 0.6)',
+                            borderRadius: '24px',
+                            padding: '1.5rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1.2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                            backdropFilter: 'blur(10px)'
+                        }}
+                        onMouseEnter={e => { 
+                            e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                            e.currentTarget.style.borderColor = 'rgba(34, 197, 94, 1)';
+                            e.currentTarget.style.boxShadow = '0 25px 60px rgba(34, 197, 94, 0.25)';
+                        }}
+                        onMouseLeave={e => { 
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                            e.currentTarget.style.borderColor = 'rgba(34, 197, 94, 0.6)';
+                            e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                        }}
+                    >
+                        <div style={{ background: 'linear-gradient(135deg, #22c55e, #15803d)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(34, 197, 94, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                            <Database size={28} color="white" />
+                        </div>
+                        <div style={{ flex: 1, zIndex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#4ade80', textShadow: '0 0 15px rgba(74, 222, 128, 0.6)' }}>SMART ADMIN</span>
+                                <span style={{ background: '#16a34a', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>GESTIÓN</span>
+                            </div>
+                            <p style={{ color: 'rgba(187, 247, 208, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Informes RRHH & E-learning</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Tarjeta 4: SMART EVENTS (PROTOCOLO) - OCULTO EN VECINOS POR REGLA DE PROTOCOLO MUNICIPAL */}
+                {isRDMLS && (
+                    <div
+                        onClick={() => navigate('/protocolo')}
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                            border: '1px solid rgba(245, 158, 11, 0.6)',
+                            borderRadius: '24px',
+                            padding: '1.5rem',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '1.2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                            backdropFilter: 'blur(10px)'
+                        }}
+                        onMouseEnter={e => { 
+                            e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                            e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 1)';
+                            e.currentTarget.style.boxShadow = '0 25px 60px rgba(245, 158, 11, 0.25)';
+                        }}
+                        onMouseLeave={e => { 
+                            e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                            e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.6)';
+                            e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                        }}
+                    >
+                        <div style={{ background: 'linear-gradient(135deg, #f59e0b, #b45309)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(245, 158, 11, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                            <Users size={28} color="white" />
+                        </div>
+                        <div style={{ flex: 1, zIndex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#fbbf24', textShadow: '0 0 15px rgba(245, 158, 11, 0.6)' }}>SMART EVENTS</span>
+                                <span style={{ background: '#f59e0b', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>PROTOCOLO</span>
+                            </div>
+                            <p style={{ color: 'rgba(251, 191, 36, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Monitor de Precedencias</p>
+                        </div>
+                    </div>
+                )}
+
+                {/* NUEVA TARJETA: ARCHIVO DE ALCALDES 3D - VISIBLE PARA TODOS (Soberanía Cultural VLS) */}
                 <div
-                    onClick={() => window.location.href = "https://entrevecinas.cl"}
+                    onClick={handleAlcaldes}
                     style={{
-                        background: 'linear-gradient(135deg, #07010a 0%, #1a0514 100%)',
-                        border: '1px solid rgba(236, 72, 153, 0.6)',
-                        borderRadius: '20px',
-                        padding: '1.2rem',
+                        background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(56, 189, 248, 0.4)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '1rem',
+                        gap: '1.2rem',
                         position: 'relative',
                         overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(236, 72, 153, 0.15)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(236, 72, 153, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(236, 72, 153, 0.6)'; }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(56, 189, 248, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
                 >
-                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/images/entrevecinas_vision.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'luminosity', pointerEvents: 'none' }} />
-                    <div style={{ background: 'linear-gradient(135deg, #ec4899, #8b5cf6)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(236, 72, 153, 0.5)', flexShrink: 0 }}>
-                        <Heart size={26} color="white" fill="white" />
+                    <div style={{ background: 'linear-gradient(135deg, #38bdf8, #1e40af)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(56, 189, 248, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <Landmark size={28} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#f472b6', textShadow: '0 0 15px rgba(236, 72, 153, 0.6)' }}>ENTREVECINAS</span>
-                            <span style={{ background: '#ec4899', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>FEM</span>
+                            <span style={{ fontSize: '1.1rem', fontWeight: '950', color: '#7dd3fc', textShadow: '0 0 15px rgba(58, 189, 248, 0.6)' }}>ARCHIVO HISTÓRICO</span>
+                            <span style={{ background: '#0ea5e9', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>ALCALDES</span>
                         </div>
-                        <p style={{ color: 'rgba(244, 114, 182, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Voz & Liderazgo Femenino</p>
+                        <p style={{ color: 'rgba(186, 230, 253, 0.9)', fontSize: '0.8rem', margin: '4px 0 0 0', fontWeight: '500' }}>Línea de Tiempo 1944-2028</p>
                     </div>
                 </div>
 
-                {/* Tarjeta 4: SMART JUEGAPRENDE */}
+                {/* Tarjeta 5: SMART LISTENING (CENTINEL FARO IA) */}
+                <div
+                    onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(16, 185, 129, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1.2rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
+                    }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(16, 185, 129, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.6)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
+                >
+                    <div style={{ background: 'linear-gradient(135deg, #10b981, #064e3b)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(16, 185, 129, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <Bot size={28} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#10b981', textShadow: '0 0 15px rgba(16, 185, 129, 0.6)' }}>SMART LISTENING</span>
+                            <span style={{ background: '#10b981', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>FARO IA</span>
+                        </div>
+                        <p style={{ color: 'rgba(167, 243, 208, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Inteligencia y Social Listening</p>
+                    </div>
+                </div>
+                {/* Tarjeta 6: SMART JUEGAPRENDE (VALSABES) */}
                 <div
                     onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
                     style={{
-                        background: 'linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)',
-                        border: '1px solid rgba(255, 215, 0, 0.6)',
-                        borderRadius: '20px',
-                        padding: '1.2rem',
+                        background: 'linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(250, 204, 21, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '1rem',
+                        gap: '1.2rem',
                         position: 'relative',
                         overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(255, 215, 0, 0.15)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.6)'; }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(250, 204, 21, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(250, 204, 21, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(250, 204, 21, 0.6)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
                 >
-                    <div style={{ background: 'linear-gradient(135deg, #FFD700, #FF8C00)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(255, 215, 0, 0.5)', flexShrink: 0 }}>
-                        <Award size={26} color="black" />
+                    <div style={{ background: 'linear-gradient(135deg, #facc15, #854d0e)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(250, 204, 21, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <Trophy size={28} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#FFD700', textShadow: '0 0 15px rgba(255, 215, 0, 0.6)' }}>JUEGAPRENDE</span>
-                            <span style={{ background: '#10b981', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>GANÁ FICHAS</span>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#facc15', textShadow: '0 0 15px rgba(234, 179, 8, 0.4)' }}>VLSabes?</span>
+                            <span style={{ background: '#ca8a04', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>EDUCATIVO</span>
                         </div>
-                        <p style={{ color: 'rgba(255, 215, 0, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cultura y Trivia La Serena</p>
+                        <p style={{ color: 'rgba(250, 204, 21, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cultura, Historia y Desafíos</p>
                     </div>
                 </div>
 
-                {/* Tarjeta 5: TORNAMESA DIGITAL */}
+                {/* Tarjeta 7: CUADRO DE DISTANCIAS RADAR */}
                 <div
-                    onClick={() => { window.dispatchEvent(new CustomEvent('open-music-ranking')); }}
+                    onClick={() => navigate('/distancias')}
                     style={{
-                        background: 'linear-gradient(135deg, #0b1120 0%, #1e1b4b 100%)',
-                        border: '1px solid rgba(168, 85, 247, 0.6)',
-                        borderRadius: '20px',
-                        padding: '1.2rem',
+                        background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%)',
+                        border: '1px solid rgba(56, 189, 248, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '1rem',
+                        gap: '1.2rem',
                         position: 'relative',
                         overflow: 'hidden',
-                        transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(168, 85, 247, 0.15)'
+                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        backdropFilter: 'blur(10px)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(168, 85, 247, 0.6)'; }}
+                    onMouseEnter={e => { 
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 1)';
+                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(56, 189, 248, 0.25)';
+                    }}
+                    onMouseLeave={e => { 
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
+                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)';
+                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
+                    }}
                 >
-                    <div style={{ background: 'linear-gradient(135deg, #a855f7, #6b21a8)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(168, 85, 247, 0.5)', flexShrink: 0 }}>
-                        <Music size={26} color="white" />
+                    <div style={{ background: 'linear-gradient(135deg, #38bdf8, #1d4ed8)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(58, 190, 248, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
+                        <MapPin size={28} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#a855f7', textShadow: '0 0 15px rgba(168, 85, 247, 0.6)' }}>TORNAMESA</span>
-                            <span style={{ background: '#a855f7', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RETRO</span>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#38bdf8', textShadow: '0 0 15px rgba(58, 190, 248, 0.6)' }}>RADAR VLS</span>
+                            <span style={{ background: '#38bdf8', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>MAPA</span>
                         </div>
-                        <p style={{ color: 'rgba(168, 85, 247, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Éxitos de los 70, 80 & 90</p>
+                        <p style={{ color: 'rgba(125, 211, 252, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cuadro de Distancias Interactivo</p>
                     </div>
                 </div>
 
-                {/* Tarjeta 6: TEATRO TV & RECUERDOS */}
+                {/* Tarjeta 8: PORTAL DOMEYKO */}
                 <div
-                    onClick={() => { window.dispatchEvent(new CustomEvent('open-vhs-tv')); }}
+                    onClick={() => navigate('/domeyko')}
                     style={{
-                        background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
-                        border: '1px solid rgba(239, 68, 68, 0.6)',
+                        background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
+                        border: '1px solid rgba(56, 189, 248, 0.6)',
                         borderRadius: '20px',
                         padding: '1.2rem',
                         cursor: 'pointer',
@@ -2312,42 +2534,132 @@ export default function HubDashboard() {
                         position: 'relative',
                         overflow: 'hidden',
                         transition: 'all 0.3s ease',
-                        boxShadow: '0 0 30px rgba(239, 68, 68, 0.15)'
+                        boxShadow: '0 0 30px rgba(56, 189, 248, 0.15)'
                     }}
-                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.9)'; }}
-                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)'; }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.6)'; }}
                 >
-                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #7f1d1d)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)', flexShrink: 0 }}>
-                        <Tv size={26} color="white" />
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/domeyko/VLSinfographic_DOMEYKO.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #0ea5e9, #6366f1)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(56, 189, 248, 0.5)', flexShrink: 0 }}>
+                        <GraduationCap size={26} color="white" />
                     </div>
                     <div style={{ flex: 1, zIndex: 1 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#ef4444', textShadow: '0 0 15px rgba(239, 68, 68, 0.6)' }}>TEATRO TV</span>
-                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>80s/90s</span>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#38bdf8', textShadow: '0 0 15px rgba(56, 189, 248, 0.6)' }}>DOMEYKO</span>
+                            <span style={{ background: '#38bdf8', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>CIENCIA</span>
                         </div>
-                        <p style={{ color: 'rgba(239, 68, 68, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Cine & Recuerdos VLS 📼</p>
+                        <p style={{ color: 'rgba(56, 189, 248, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Legado Naturalista en Chile</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 9: PORTAL LAMBERT */}
+                <div
+                    onClick={() => navigate('/lambert')}
+                    style={{
+                        background: 'linear-gradient(135deg, #0f172a 0%, #451a03 100%)',
+                        border: '1px solid rgba(245, 158, 11, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(245, 158, 11, 0.15)'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(245, 158, 11, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/lambert/infographic_clean_unnamed (68).png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #f59e0b, #451a03)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(245, 158, 11, 0.5)', flexShrink: 0 }}>
+                        <Zap size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#f59e0b', textShadow: '0 0 15px rgba(245, 158, 11, 0.6)' }}>LAMBERT</span>
+                            <span style={{ background: '#f59e0b', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>INDUSTRIA</span>
+                        </div>
+                        <p style={{ color: 'rgba(245, 158, 11, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Revolución del Cobre en Coquimbo</p>
                     </div>
                 </div>
             </div>
             )}
 
 
+
+                {/* ══════════════════════════════════════════════════════════ */}
+                {/* HIGHLIGHTS: ACCIONA, DIPRES & PULSO (PERIODISMO DE DATOS)   */}
+                {/* ══════════════════════════════════════════════════════════ */}
+                <div style={{ padding: '0 1.5rem 3rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                        {/* ACCIONA MUJERES */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-acciona'))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #ef4444', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#ef444420', color: '#ef4444', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #ef4444' }}>OPORTUNIDADES</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Acciona Mujeres</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Capacitación exclusiva en construcción para el nuevo hospital.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontWeight: 900, fontSize: '0.75rem' }}>POSTULAR ONLINE <ArrowRight size={14} /></div>
+                        </motion.div>
+
+                        {/* PULSO CIUDADANO NEW REPORT */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-pulso-ciudadano'))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #38bdf8', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(56, 189, 248, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#38bdf820', color: '#38bdf8', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #38bdf8' }}>NUEVO REPORTE</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Pulso Ciudadano Abril</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Análisis de percepción social y opinión pública Q1-2026.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 900, fontSize: '0.75rem' }}>VER ESTUDIO <BarChart3 size={14} /></div>
+                        </motion.div>
+
+                        {/* GESTIÓN DIPRES */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'dipres_gestion' } }))}
+                            style={{ 
+                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #38bdf8', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(56, 189, 248, 0.1)'
+                            }}
+                        >
+                            <div style={{ background: '#38bdf820', color: '#38bdf8', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #38bdf8' }}>HITOS VECINALES</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Gestión DIPRES</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Reunión en Santiago para destrabar recursos históricos.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 900, fontSize: '0.75rem' }}>VER GESTIÓN <ArrowRight size={14} /></div>
+                        </motion.div>
+                    </div>
+                </div>
+
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Marea Humana & Alcaldesa) */}
                 {/* ══════════════════════════════════════════════════════════ */}
                 <div style={{ padding: '3rem 1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
+                    <div className="vls-perf-section" style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
                         
                         {/* CARD 0: SALUD LA SERENA (TOP HIGHLIGHT) */}
                         <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
+                            initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                            whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
                             transition={{ delay: 0.1 }}
                             onClick={() => navigate('/salud')}
                             style={{ 
-                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
                                 border: '2px solid rgba(239, 68, 68, 0.4)', boxShadow: '0 30px 60px rgba(239, 68, 68, 0.2)',
                                 cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                                 gridColumn: '1 / -1' // SPANS THE ENTIRE FIRST ROW!
@@ -2368,7 +2680,7 @@ export default function HubDashboard() {
  
                             <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '1.5rem' : '3rem', zIndex: 10, maxWidth: '1000px', paddingTop: window.innerWidth < 768 ? '4rem' : '3rem' }}>
                                 <h2 style={{ color: 'white', fontSize: 'clamp(1.5rem, 5.5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
-                                   CRUZADA MUNICIPAL:<br/>
+                                   CRUZADA VECINAL:<br/>
                                    <span style={{ color: '#ef4444' }}>AL RESCATE DE LA SALUD<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> EN LA SERENA</span>
                                 </h2>
                                 <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(0.95rem, 2vw, 1.4rem)', marginTop: '1rem', fontWeight: 400, maxWidth: '800px', lineHeight: 1.4 }}>
@@ -2431,7 +2743,7 @@ export default function HubDashboard() {
                             viewport={{ once: true }}
                             onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'corrida_familiar' } }))}
                             style={{ 
-                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
                                 border: '2px solid rgba(239, 68, 68, 0.4)', boxShadow: '0 30px 60px rgba(239, 68, 68, 0.2)',
                                 cursor: 'pointer', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                                 gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
@@ -2464,10 +2776,10 @@ export default function HubDashboard() {
                                         <button className="btn-vls-action-light" style={{ background: '#ef4444', color: 'white', border: 'none', padding: '1rem 2rem' }}>
                                             LEER CRÓNICA
                                         </button>
-                                    </div>
-                                </motion.div>
-                            </div>
-                        </motion.div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </motion.div>
 
                         {/* CARD 2: ALCALDESA GESTIÓN (MOVED DOWN) */}
                         <motion.div 
@@ -2477,7 +2789,7 @@ export default function HubDashboard() {
                             transition={{ delay: 0.2 }}
                             onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa'))}
                             style={{ 
-                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
                                 border: '2px solid rgba(56, 189, 248, 0.4)', boxShadow: '0 30px 60px rgba(56, 189, 248, 0.2)',
                                 cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                                 gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
@@ -2487,14 +2799,14 @@ export default function HubDashboard() {
                             <img src="/alcaldesa_daniela_norambuena.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', opacity: 0.9 }} alt="Alcaldesa" />
                             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, rgba(2, 6, 23, 0.8) 40%, transparent 100%)' }} />
                             
-                            <div style={{ 
-                                position: 'absolute', top: 30, right: 30, 
-                                background: '#38bdf8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
-                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
-                                zIndex: 20, boxShadow: '0 10px 20px rgba(56, 189, 248, 0.5)' 
-                            }}>
-                                GESTIÓN MUNICIPAL
-                            </div>
+                                <div style={{ 
+                                    position: 'absolute', top: 30, right: 30, 
+                                    background: '#38bdf8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                    color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                    zIndex: 20, boxShadow: '0 10px 20px rgba(56, 189, 248, 0.5)' 
+                                }}>
+                                    GESTIÓN ESTRATÉGICA
+                                </div>
  
                             <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
                                 <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 0.95 }}>
@@ -2520,7 +2832,7 @@ export default function HubDashboard() {
                                 window.dispatchEvent(new CustomEvent('open-vls-choapa'));
                             }}
                             style={{ 
-                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
                                 border: '2px solid rgba(59, 130, 246, 0.4)', boxShadow: '0 30px 60px rgba(59, 130, 246, 0.2)',
                                 cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                                 gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
@@ -2563,7 +2875,7 @@ export default function HubDashboard() {
                                 window.dispatchEvent(new CustomEvent('open-vls-redcine'));
                             }}
                             style={{ 
-                                position: 'relative', minHeight: '520px', borderRadius: '40px', overflow: 'hidden', 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
                                 border: '2px solid rgba(244, 63, 94, 0.4)', boxShadow: '0 30px 60px rgba(244, 63, 94, 0.2)',
                                 cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
                                 gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
@@ -2596,68 +2908,81 @@ export default function HubDashboard() {
                             </div>
                         </motion.div>
 
-                        {/* CARD 3: AVIVA EDUCAP - NIVELACIÓN DE ESTUDIOS (MOVED TO BOTTOM MIDDLE) */}
+                        {/* CARD AKICHIP MASTER (GRAND TARJETÓN CENTRAL - REPLACING EDUCATIVO) */}
                         <motion.div 
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.3 }}
-                            onClick={() => window.location.href = '/aviva'}
+                            transition={{ duration: 0.8 }}
+                            onClick={() => navigate('/akichip')}
                             style={{ 
-                                position: 'relative', minHeight: '480px', borderRadius: '40px', overflow: 'hidden', 
-                                border: '2px solid rgba(16, 185, 129, 0.4)', boxShadow: '0 30px 60px rgba(16, 185, 129, 0.2)',
-                                cursor: 'pointer', background: '#020617',
-                                gridColumn: '1 / -1', // ALWAYS FULL WIDTH AT THE BOTTOM
-                                display: 'flex', flexDirection: 'column', justifyContent: 'center'
+                                position: 'relative', 
+                                minHeight: '600px', 
+                                borderRadius: '40px', 
+                                overflow: 'hidden', 
+                                border: '3px solid rgba(153, 27, 27, 0.6)', 
+                                boxShadow: '0 50px 100px -20px rgba(153, 27, 27, 0.4)',
+                                cursor: 'pointer', 
+                                background: '#020617',
+                                gridColumn: '1 / -1', 
+                                display: 'flex', 
+                                flexDirection: 'column', 
+                                justifyContent: 'center',
+                                margin: '2rem 0'
                             }}
                             whileHover={{ scale: 1.005 }}
                         >
-                            <img src="/aviva/Promo AVIVA.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.5 }} alt="AVIVA EDUCAP" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #020617 35%, rgba(2, 6, 23, 0.6) 70%, transparent 100%)' }} />
+                            <img src="/akichip_edificio_circular_concept_1776467838982.png" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.4 }} alt="AKICHIP" />
+                            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/akichip_motherboard_granate_1776467862884.png)', backgroundSize: '700px', opacity: 0.2, mixBlendMode: 'overlay' }} />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, #450a0a 35%, rgba(69, 10, 10, 0.6) 70%, transparent 100%)' }} />
                             
                             <div style={{ 
                                 position: 'absolute', top: 30, right: 30, 
-                                background: '#10b981', padding: '0.6rem 1.8rem', borderRadius: '30px', 
-                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
-                                zIndex: 10, boxShadow: '0 10px 20px rgba(16, 185, 129, 0.5)' 
+                                background: 'rgba(239, 68, 68, 0.2)', backdropFilter: 'blur(10px)', border: '1px solid #ef4444',
+                                padding: '0.6rem 2.22rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: '1rem', letterSpacing: '4px', 
+                                zIndex: 10, boxShadow: '0 0 30px rgba(239, 68, 68, 0.4)' 
                             }}>
-                                OPORTUNIDAD EDUCATIVA
+                                🚀 PORTAL EMPRESARIAL MASTER
                             </div>
                             
-                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10, maxWidth: '800px' }}>
-                                <h2 style={{ color: 'white', fontSize: 'clamp(2rem, 5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 1 }}>
-                                    AVIVA EDUCAP:<br/>
-                                    <span style={{ color: '#10b981' }}>TERMINA TUS ESTUDIOS GRATIS</span>
+                            <div style={{ position: 'relative', padding: '5rem', zIndex: 10, maxWidth: '1000px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '25px', marginBottom: '2.5rem' }}>
+                                    <div style={{ width: '90px', height: '90px', background: '#991b1b', borderRadius: '25px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 40px rgba(153, 27, 27, 0.6)', border: '2px solid rgba(239, 68, 68, 0.5)' }}>
+                                        <Cpu size={50} color="white" />
+                                    </div>
+                                    <h4 style={{ color: '#ef4444', fontWeight: '900', margin: 0, fontSize: '1.5rem', letterSpacing: '3px' }}>VLS COMERCIO</h4>
+                                </div>
+
+                                <h2 style={{ color: 'white', fontSize: 'clamp(2.5rem, 8vw, 5.5rem)', fontWeight: 950, margin: 0, letterSpacing: '-3px', lineHeight: 0.85 }}>
+                                    AKICHIP:<br/>
+                                    <span style={{ color: '#ef4444' }}>EL CORAZÓN TECNOLÓGICO</span>
                                 </h2>
-                                <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(1rem, 2.5vw, 1.4rem)', marginTop: '1.5rem', fontWeight: 300, lineHeight: 1.4 }}>
-                                    Nivelación de enseñanza básica y media en La Serena y Vicuña. <br/><strong style={{ fontWeight: 900, color: '#10b981' }}>Inscríbete hoy y cambia tu futuro.</strong>
+                                <p style={{ color: 'rgba(255,255,255,1)', fontSize: 'clamp(1.2rem, 2.5vw, 1.8rem)', marginTop: '2.5rem', fontWeight: 300, lineHeight: 1.3, maxWidth: '900px' }}>
+                                    Explora el portal interactivo del Local 204. Microsoldadura, Hardware Maestro y la pasión por el fútbol local en una experiencia digital única. 
+                                    <br/><strong style={{ fontWeight: 900, color: '#ef4444' }}>¡Sintoniza RADIO AKICHIP ahora!</strong>
                                 </p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '2.5rem', background: '#10b981', color: 'white', border: 'none', padding: '1rem 3rem', borderRadius: '50px' }}>
-                                    INICIAR POSTULACIÓN AHORA
-                                </button>
+                                <div style={{ display: 'flex', gap: '25px', marginTop: '4rem', flexWrap: 'wrap' }}>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); navigate('/akichip'); }}
+                                        className="btn-vls-action-light" 
+                                        style={{ background: '#ef4444', color: 'white', border: 'none', padding: '1.2rem 3.5rem', fontSize: '1.3rem', borderRadius: '50px', boxShadow: '0 20px 40px rgba(239, 68, 68, 0.4)', transition: 'all 0.3s' }}
+                                    >
+                                        INGRESAR AL PORTAL
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); navigate('/akichip'); }}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '15px', background: 'rgba(0,0,0,0.4)', padding: '1rem 2.5rem', borderRadius: '50px', border: '1px solid rgba(239, 68, 68, 0.3)', cursor: 'pointer' }}
+                                    >
+                                        <div style={{ width: '12px', height: '12px', background: '#10b981', borderRadius: '50%', boxShadow: '0 0 15px #10b981', animation: 'pulse 2s infinite' }} />
+                                        <span style={{ color: 'white', fontWeight: '900', letterSpacing: '2px', fontSize: '0.9rem' }}>ON AIR</span>
+                                    </button>
+                                </div>
                             </div>
                         </motion.div>
                     </div>
                 </div>
 
-                {/* VOCES VECINALES & HEMEROTECA SECTION (PROMOTED FOR VISIBILITY) */}
-                <div style={{ maxWidth: '1400px', margin: '4rem auto 2rem auto', width: '100%', padding: '0 2rem' }}>
-                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2rem' }}>
-                        <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
-                            <Mic size={28} />
-                        </div>
-                        <div>
-                            <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>VOCES Y ARCHIVOS</h2>
-                            <p style={{ color: '#f59e0b', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>HEMEROTECA DIGITAL · PORTAL DE LA MEMORIA VLS</p>
-                        </div>
-                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #f59e0b, transparent)' }}></div>
-                     </div>
-
-                     <div id="search-results-anchor" />
-                     <Suspense fallback={<div />}>
-                        <VLSNotesGallery />
-                     </Suspense>
-                </div>
 
                 {/* ══════════════════════════════════════════════════════════ */}
                 {/* HEADLINE: INVESTIGACIÓN ESPECIAL VLS (IAN & ARTEMIS)        */}
@@ -2823,107 +3148,11 @@ export default function HubDashboard() {
                                     </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+            </div>
 
-                {/* ══════════════════════════════════════════════════════════ */}
-                {/* HIGHLIGHTS: ACCIONA, DIPRES & AGUIRRE (REORDENADO)         */}
-                {/* ══════════════════════════════════════════════════════════ */}
-                <div style={{ padding: '0 1.5rem', maxWidth: '1400px', margin: '2rem auto 0', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
-                        {/* ACCIONA MUJERES */}
-                        <motion.div 
-                            whileHover={{ y: -5 }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-acciona'))}
-                            style={{ 
-                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
-                                border: '2px solid #ef4444', cursor: 'pointer', backdropFilter: 'blur(20px)',
-                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(239, 68, 68, 0.1)'
-                            }}
-                        >
-                            <div style={{ background: '#ef444420', color: '#ef4444', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #ef4444' }}>OPORTUNIDADES</div>
-                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Acciona Mujeres</h4>
-                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Capacitación exclusiva en construcción para el nuevo hospital.</p>
-                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#ef4444', fontWeight: 900, fontSize: '0.75rem' }}>POSTULAR ONLINE <ArrowRight size={14} /></div>
-                        </motion.div>
 
-                        {/* GESTIÓN DIPRES */}
-                        <motion.div 
-                            whileHover={{ y: -5 }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'dipres_gestion' } }))}
-                            style={{ 
-                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
-                                border: '2px solid #38bdf8', cursor: 'pointer', backdropFilter: 'blur(20px)',
-                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(56, 189, 248, 0.1)'
-                            }}
-                        >
-                            <div style={{ background: '#38bdf820', color: '#38bdf8', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #38bdf8' }}>HITOS MUNICIPALES</div>
-                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Gestión DIPRES</h4>
-                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Reunión en Santiago para destrabar recursos históricos.</p>
-                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 900, fontSize: '0.75rem' }}>VER GESTIÓN <ArrowRight size={14} /></div>
-                        </motion.div>
-
-                        {/* MONUMENTO AGUIRRE */}
-                        <motion.div 
-                            whileHover={{ y: -5 }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa', { detail: { noteId: 'aguirre' } }))}
-                            style={{ 
-                                background: 'rgba(15, 23, 42, 0.4)', padding: '1.5rem', borderRadius: '24px', 
-                                border: '2px solid #f59e0b', cursor: 'pointer', backdropFilter: 'blur(20px)',
-                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(245, 158, 11, 0.1)'
-                            }}
-                        >
-                            <div style={{ background: '#f59e0b20', color: '#f59e0b', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #f59e0b' }}>IDENTIDAD</div>
-                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Restauración Aguirre</h4>
-                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Plan maestro para recuperar el Museo al Aire Libre.</p>
-                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#f59e0b', fontWeight: 900, fontSize: '0.75rem' }}>CONOCE EL PLAN <ArrowRight size={14} /></div>
-                        </motion.div>
-                    </div>
-                </div>
-
-                {/* ══════════════════════════════════════════════════════════ */}
-                {/* NODO MAESTRO: RED REGIONAL UNIFICADA - EL NUEVO CEREBRO     */}
-                {/* ══════════════════════════════════════════════════════════ */}
-                {isVLS && (
-                <div className="animate-fade-in" style={{
-                    width: '100%',
-                    background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
-                    borderBottom: '4px solid #fbbf24',
-                    padding: '3rem 2rem',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    textAlign: 'center',
-                    boxSizing: 'border-box'
-                }}>
-                    <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle at 50% 50%, #38bdf8 0%, transparent 60%)' }}></div>
-                    <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}>
-                        <div style={{ background: '#38bdf8', padding: '10px 25px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 0 30px rgba(56,189,248,0.3)' }}>
-                            <Rocket size={20} color="white" />
-                            <span style={{ color: 'white', fontWeight: '900', fontSize: '0.85rem', letterSpacing: '2px' }}>{isRDMLS ? 'PORTAL INSTITUCIONAL' : 'COMUNIDAD DIGITAL'}</span>
-                        </div>
-                        <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', fontWeight: '900', margin: 0, color: 'white', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
-                            {isRDMLS ? 'BIENVENIDOS A LA RED ' : 'BIENVENIDO A '} <br/> <span style={{ color: '#38bdf8' }}>{isRDMLS ? 'MUNICIPAL RDMLS' : 'VECINOS LA SERENA'}</span>
-                        </h2>
-                        <p style={{ maxWidth: '900px', fontSize: '1.15rem', color: '#94a3b8', margin: '0.5rem 0', lineHeight: '1.6' }}>
-                            {tHub.heroDescription}
-                        </p>
-                        <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                            {!isRDMLS && (
-                                <button className="btn-vls-action-blue" onClick={() => window.dispatchEvent(new CustomEvent('open-hub-directory'))} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>EXPLORAR SERVICIOS</button>
-                            )}
-                            {isRDMLS && (
-                                <button className="btn-vls-action-light" onClick={() => navigate('/induccion')} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>CAPACITACIÓN MUNICIPAL</button>
-                            )}
-                        </div>
-                    </div>
-                </div>
-                )}
 
 
                 <div style={{ padding: '0 1rem 2rem 1rem' }}>
@@ -2955,31 +3184,26 @@ export default function HubDashboard() {
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2rem', padding: '1rem 0', textAlign: 'center', width: '100%' }}>
                                     {isVLS ? (
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                            <div className="animate-float" style={{ position: 'relative', width: '120px', height: '120px' }}>
-                                                {/* Faro en Líneas - Animación Premium */}
-                                                <div style={{ position: 'absolute', inset: -15, zIndex: 0, opacity: 0.6 }}>
-                                                    <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-                                                        <motion.path
-                                                            d="M 46 25 L 54 25 L 56 100 L 44 100 Z"
-                                                            stroke="var(--brand-primary)" strokeWidth="1.5" strokeLinecap="round"
-                                                            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                            transition={{ duration: 3, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
+                                            <div className="animate-float" style={{ position: 'relative', width: '150px', height: '150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div style={{ position: 'relative', zIndex: 1, width: '130px', height: '130px', borderRadius: '50%', overflow: 'hidden', border: '4px solid #38bdf8', boxShadow: '0 0 30px rgba(56,189,248,0.4)', background: 'radial-gradient(circle at center, #1e3a8a 0%, #0f172a 100%)', margin: '0' }}>
+                                                    <Canvas camera={{ position: [0, 0, 3], fov: 45 }} style={{ width: '100%', height: '100%' }}>
+                                                        <ambientLight intensity={0.8} />
+                                                        <pointLight position={[10, 10, 10]} intensity={1.5} />
+                                                        <Environment preset="city" />
+                                                        <Suspense fallback={null}>
+                                                            <UniversalSerenito 
+                                                                animation={greetingIdx === 0 ? 'Wave' : 'Idle'} 
+                                                                scale={2.2} 
+                                                                position={[0, -1.8, 0]} 
+                                                            />
+                                                        </Suspense>
+                                                        <OrbitControls 
+                                                            enableZoom={false} 
+                                                            enablePan={false} 
+                                                            autoRotate 
+                                                            autoRotateSpeed={0.5} 
                                                         />
-                                                        <motion.path
-                                                            d="M 43 25 L 57 25 M 44 20 L 56 20 L 56 25 L 44 25 Z M 47 20 L 53 20 L 53 15 L 47 15 Z M 50 15 L 50 10"
-                                                            stroke="var(--brand-primary)" strokeWidth="1.5"
-                                                            initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                                                            transition={{ duration: 2.5, repeat: Infinity, repeatType: "reverse", delay: 0.2 }}
-                                                        />
-                                                        <motion.circle 
-                                                            cx="50" cy="18" r="10" fill="rgba(255,50,50,0.15)"
-                                                            animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.4, 0.1] }}
-                                                            transition={{ duration: 2.5, repeat: Infinity }}
-                                                        />
-                                                    </svg>
-                                                </div>
-                                                <div style={{ position: 'relative', zIndex: 1, width: '100px', height: '100px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--brand-primary)', boxShadow: '0 0 20px rgba(255,50,50,0.3)', background: 'rgba(0,0,0,0.5)', margin: '10px' }}>
-                                                    <img src="/serenito_v3.png" alt="Serenito 3D" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top' }} />
+                                                    </Canvas>
                                                 </div>
                                             </div>
                                             <div style={{ textAlign: 'left', maxWidth: '400px' }}>
@@ -3607,9 +3831,41 @@ export default function HubDashboard() {
                                     <h3 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 950, marginBottom: '15px' }}>EDICIÓN VIAL</h3>
                                     <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Análisis de la ruta 5, congestión, lomos de toros y medidas estructurales.</p>
                                 </div>
+                                
+                                {/* ARCADE ZONE */}
+                                <div 
+                                    onClick={() => navigate('/arcade')}
+                                    className="glass-panel hover-lift"
+                                    style={{ padding: '2.5rem', background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.4) 0%, rgba(2, 6, 23, 0.9) 100%)', borderRadius: '30px', border: '1px solid rgba(168, 85, 247, 0.3)', display: 'flex', flexDirection: 'column', cursor: 'pointer', position: 'relative', overflow: 'hidden' }}
+                                >
+                                    <h4 style={{ color: '#a855f7', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px', marginBottom: '10px' }}>VLS LAB</h4>
+                                    <h3 style={{ color: 'white', fontSize: '1.8rem', fontWeight: 950, marginBottom: '15px' }}>ARCADE</h3>
+                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', lineHeight: 1.5, margin: 0 }}>Experimentos interactivos, minijuegos y desarrollo tecnológico regional.</p>
+                                </div>
                             </div>
+                        </div>
 
-                             {/* SALUD LA SERENA PREMIUM CARD */}
+                        {/* VOCES VECINALES & HEMEROTECA SECTION (PROMOTED FOR VISIBILITY) */}
+                        <div style={{ maxWidth: '1400px', margin: '4rem auto 2rem auto', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
+                                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '2rem' }}>
+                                    <div style={{ background: 'linear-gradient(45deg, #ef4444, #f59e0b)', padding: '12px', borderRadius: '15px', color: 'white' }}>
+                                        <Mic size={28} />
+                                    </div>
+                                    <div>
+                                        <h2 style={{ color: 'white', margin: 0, fontSize: '2.2rem', fontWeight: '900', letterSpacing: '5px', textTransform: 'uppercase', fontFamily: '"Outfit", sans-serif' }}>VOCES Y ARCHIVOS</h2>
+                                        <p style={{ color: '#f59e0b', margin: 0, fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>HEMEROTECA DIGITAL · PORTAL DE LA MEMORIA VLS</p>
+                                    </div>
+                                    <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, #f59e0b, transparent)' }}></div>
+                                 </div>
+
+                                 <div id="search-results-anchor" />
+                                 <Suspense fallback={<div />}>
+                                    <VLSNotesGallery />
+                                 </Suspense>
+                        </div>
+
+                        {/* SALUD LA SERENA PREMIUM CARD */}
+                        <div style={{ maxWidth: '1400px', margin: '0 auto 2.5rem auto', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
                              <div 
                                   onClick={() => navigate('/salud')}
                                   className="glass-panel gaudi-curves hover-lift animate-fade-in" 
@@ -3643,8 +3899,10 @@ export default function HubDashboard() {
                                      </div>
                                  </div>
                              </div>
+                        </div>
 
-                             {/* CAMBIO DE HORA 2026 PREMIUM CARD */}
+                        {/* CAMBIO DE HORA 2026 PREMIUM CARD */}
+                        <div style={{ maxWidth: '1400px', margin: '0 auto 2.5rem auto', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
                              <div 
                                   onClick={handleHorario}
                                   className="glass-panel gaudi-curves hover-lift animate-fade-in" 
@@ -3684,9 +3942,11 @@ export default function HubDashboard() {
                                      </div>
                                  </div>
                              </div>
+                        </div>
 
-                            {/* ARTEMIS II PREMIUM REPORT */}
-                            <div 
+                        {/* ARTEMIS II PREMIUM REPORT */}
+                        <div style={{ maxWidth: '1400px', margin: '0 auto 2.5rem auto', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
+                             <div 
                                  onClick={() => setShowVLSNewsArtemis(true)}
                                  className="glass-panel gaudi-curves hover-lift animate-fade-in" 
                                  style={{ 
@@ -3970,12 +4230,9 @@ export default function HubDashboard() {
                                     </div>
                                 </div>
                             </div>
-
-
-                         </div>
+                        </div>
                     </div>
-                    )}
-
+                )}
 
                     <div style={{ maxWidth: '1200px', margin: '0 auto', width: '100%', padding: '0 1rem' }}>
                         {/* ENCABEZADO DE BÚSQUEDA Y CATEGORÍAS */}
@@ -4080,7 +4337,7 @@ export default function HubDashboard() {
                                 >
                                         {news.image && (
                                             <div style={{ height: '140px', width: '100%', overflow: 'hidden', position: 'relative' }}>
-                                                <img src={news.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={news.title} />
+                                                <img src={news.image} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt={news.title} loading="lazy" />
                                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.6))' }}></div>
                                             </div>
                                         )}
@@ -4226,7 +4483,23 @@ export default function HubDashboard() {
                                         }}>
                                             {/* Fallback a Imagen si el modelo no carga o para preview rápido, pero con estilo 3D */}
                                             <div style={{ fontSize: '0.6rem', position: 'absolute', top: 10, left: 10, color: '#38bdf8', fontWeight: 900, letterSpacing: '1px', textTransform: 'uppercase' }}>VLS BIOMETRIC SCAN</div>
-                                            <img src={char.img} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} />
+                                            {char.id === 'serenito-guard' && !isMobile ? (
+                                                <Canvas camera={{ position: [0, 0, 3.5], fov: 45 }} style={{ width: '100%', height: '100%' }} dpr={[1, 1.5]}>
+                                                    <ambientLight intensity={1.2} />
+                                                    <pointLight position={[10, 10, 10]} intensity={1.5} />
+                                                    <Environment preset="city" />
+                                                    <Suspense fallback={null}>
+                                                        <UniversalSerenito 
+                                                            animation="Wave" 
+                                                            scale={2.4} 
+                                                            position={[0, -2, 0]} 
+                                                        />
+                                                    </Suspense>
+                                                    <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+                                                </Canvas>
+                                            ) : (
+                                                <img src={char.img} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} loading="lazy" />
+                                            )}
                                             <div style={{ position: 'absolute', bottom: 0, left: 0, width: '100%', height: '10px', background: 'linear-gradient(90deg, #38bdf8, transparent, #38bdf8)', opacity: 0.3 }}></div>
                                         </div>
 
@@ -4247,7 +4520,7 @@ export default function HubDashboard() {
                     </div>
 
                     {/* NUEVA SECCIÓN CÁMARAS EN VIVO C5 */}
-                    <div style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
+                    <div className="vls-perf-section" style={{ maxWidth: '1200px', margin: '3rem auto 0 auto', width: '100%' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', gap: '1rem' }}>
                             <div style={{ height: '1px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(16,185,129,0.5))' }}></div>
                             <h3 style={{ color: '#10b981', margin: 0, fontSize: '1.3rem', letterSpacing: '2px', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
@@ -4264,31 +4537,49 @@ export default function HubDashboard() {
                             <div style={{ display: 'flex', gap: '15px', flexDirection: window.innerWidth < 768 ? 'column' : 'row', height: window.innerWidth < 768 ? 'auto' : '450px' }}>
                                 <div style={{ flex: '1', display: 'flex', flexDirection: 'column', gap: '15px', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
                                     <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
+                                        {(!isMobile) ? (
                                         <video
                                             src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_Polideportivo_Las_Compa%c3%b1ias.mp4"
-                                            autoPlay loop muted playsInline
-                                            onCanPlay={e => e.target.play().catch(() => {})}
+                                            autoPlay={!isMobile} loop muted playsInline
+                                            onCanPlay={e => { if(!isMobile) e.target.play().catch(() => {}); }}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
+                                        ) : (
+                                            <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 900 }}>VIDEO EN PAUSA (AHORRO MÓVIL)</div>
+                                            </div>
+                                        )}
                                         <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-02 (C5)</div>
                                     </div>
                                     <div style={{ position: 'relative', flex: 1, borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000' }}>
+                                        {(!isMobile) ? (
                                         <video
                                             src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_kiosco_suplementero.mp4"
-                                            autoPlay loop muted playsInline
-                                            onCanPlay={e => e.target.play().catch(() => {})}
+                                            autoPlay={!isMobile} loop muted playsInline
+                                            onCanPlay={e => { if(!isMobile) e.target.play().catch(() => {}); }}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                         />
+                                        ) : (
+                                            <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 900 }}>VIDEO EN PAUSA (AHORRO MÓVIL)</div>
+                                            </div>
+                                        )}
                                         <div style={{ position: 'absolute', bottom: '8px', left: '12px', color: '#00D4FF', fontSize: '0.8rem', fontWeight: 'bold', textShadow: '0 2px 4px black', background: 'rgba(0,0,0,0.6)', padding: '2px 8px', borderRadius: '4px' }}>CAM-03 (C5)</div>
                                     </div>
                                 </div>
                                 <div style={{ flex: '2', position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '2px solid #C41230', background: '#000', minHeight: window.innerWidth < 768 ? '300px' : 'auto' }}>
+                                    {(!isMobile) ? (
                                     <video
                                         src="https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4"
-                                        autoPlay loop muted playsInline
-                                        onCanPlay={e => e.target.play().catch(() => {})}
+                                        autoPlay={!isMobile} loop muted playsInline
+                                        onCanPlay={e => { if(!isMobile) e.target.play().catch(() => {}); }}
                                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                     />
+                                    ) : (
+                                        <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <div style={{ color: '#FFD700', fontSize: '0.9rem', fontWeight: 900 }}>SEÑAL ACTIVA - CLICK PARA VER</div>
+                                        </div>
+                                    )}
                                     <div style={{ position: 'absolute', bottom: '15px', left: '20px', color: '#FFD700', fontSize: '1rem', fontWeight: 'bold', textShadow: '0 2px 5px black', display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(0,0,0,0.6)', padding: '5px 12px', borderRadius: '6px' }}>
                                         <div style={{ width: '12px', height: '12px', background: '#ef4444', borderRadius: '50%', animation: 'pulse 1s infinite' }}></div>
                                         <span style={{ letterSpacing: '1px' }}>C5: SERENITO EN TERRENO</span>
@@ -4299,11 +4590,12 @@ export default function HubDashboard() {
                             <BitacoraC5 />
 
                             <div style={{ textAlign: 'center', marginTop: '3rem', padding: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-                                <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.2 CRISTAL</span>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 900, color: '#38bdf8', letterSpacing: '2px' }}>HECHO EN LA SERENA · v3.5 CRISTAL</span>
                             </div>
                         </div>
                     </div>
                 </div>
+                </main>
             {showVeciCat && <VeciCat onClose={() => setShowVeciCat(false)} />}
             {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
             {showOrientacionLegal && <OrientacionLegal onClose={() => setShowOrientacionLegal(false)} />}
@@ -4382,11 +4674,7 @@ export default function HubDashboard() {
                 </Suspense>
             )}
 
-            {showAlcaldes && (
-                <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
-                    <AlcaldesHistory3D onClose={() => setShowAlcaldes(false)} />
-                </Suspense>
-            )}
+
 
             {showEstudio && (
                 <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 100091, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)' }}><LoadingScreen /></div>}>
@@ -4444,9 +4732,11 @@ export default function HubDashboard() {
                 <BackofficeMovilVLS onClose={() => setShowBackofficeMovil(false)} />
             )}
             
-            {showDirectory && (
-                <EmergencyDirectory onClose={() => setShowDirectory(false)} />
-            )}
+            <AnimatePresence>
+                {showDirectory && (
+                    <VLSCommunityDirectory onClose={() => setShowDirectory(false)} />
+                )}
+            </AnimatePresence>
             {showTuerca && (
                 <TuercaVecinos onClose={() => setShowTuerca(false)} />
             )}
@@ -4468,6 +4758,7 @@ export default function HubDashboard() {
             )}
             {/* FOOTER SOBERANO */}
             <HechoEnChile dark={true} />
-        </>
+        </div>
+        </React.Fragment>
     );
 }
