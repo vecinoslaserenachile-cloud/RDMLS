@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
-    PlayCircle, Tv, Gamepad2, Radio, Cloud, Video, History, 
-    Zap, Star, Radar, Pill, Dog, Rocket, Compass, 
+    PlayCircle, Tv, Gamepad2, Radio, Cloud, Video, History,
+    Zap, Star, Radar, Pill, Dog, Rocket, Compass,
+    Calendar,
     Newspaper, Activity, Hash, ExternalLink, Ticket, PhoneCall, Award
 } from 'lucide-react';
 import VecinosClipClub from '../components/VecinosClipClub';
@@ -10,11 +11,14 @@ import VLSDiscountCard from '../components/VLSDiscountCard';
 const dispatch = (eventName, detail) =>
     window.dispatchEvent(new CustomEvent(eventName, { detail }));
 
+import SeoHead from '../components/SeoHead';
+
 export default function HomeLiviano() {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [showClipClub, setShowClipClub] = useState(false);
     const [showDiscountCard, setShowDiscountCard] = useState(false);
     const [tokens, setTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
+    const [showSuccess, setShowSuccess] = useState(false);
 
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -23,37 +27,27 @@ export default function HomeLiviano() {
         return () => { clearInterval(timer); window.removeEventListener('tokens-updated', onTokens); };
     }, []);
 
-    const host = (window.location.host || window.location.hostname).toLowerCase();
-    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
-
-    // Search for payment status
-    const [showSuccess, setShowSuccess] = useState(false);
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         if (params.get('pay_status') === 'success') {
             setShowSuccess(true);
-            
-            // Reclamar las fichas pendientes compradas a través del portal de pagos
             const pendingFichas = parseInt(localStorage.getItem('vls_pending_fichas') || '0');
             if (pendingFichas > 0) {
                 const currentTokens = parseInt(localStorage.getItem('vls_tokens') || '0');
                 const newTokens = currentTokens + pendingFichas;
                 localStorage.setItem('vls_tokens', newTokens.toString());
                 window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newTokens }));
-                
-                // Limpiar caché de pago
                 localStorage.removeItem('vls_pending_fichas');
-                
-                // Levantar notificación para disparar el render del confetti o alert
                 window.dispatchEvent(new CustomEvent('vls-payment-success', { 
                     detail: { type: 'fichas', amount: pendingFichas } 
                 }));
             }
-
-            // Clear params to avoid re-triggering on reload
             window.history.replaceState({}, document.title, window.location.pathname);
         }
     }, []);
+
+    const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
 
     const secciones = [
         {
@@ -96,14 +90,22 @@ export default function HomeLiviano() {
                 { title: 'Distancias a la Serena', subtitle: 'Trazado en mapa desde tu ciudad', icon: Activity, color: '#f59e0b', action: () => dispatch('open-distances'), badge: '🗺️' },
                 { title: 'Serenamet Regional', subtitle: 'Clima, Radares y Satélites', icon: Cloud, color: '#38bdf8', action: () => window.location.href = '/serenamet', badge: '🌤️' },
                 { title: 'Centro Sismológico', subtitle: 'Monitoreo Estratégico AI', icon: Activity, color: '#ef4444', action: () => dispatch('open-sismic'), badge: '🌋' },
+                { title: '1 DE MAYO', subtitle: 'Portal del Día del Trabajador', icon: Calendar, color: '#d97706', action: () => window.location.href = '/1demayo', badge: '🎉' },
                 { title: 'Tribunales Smart', subtitle: 'Resolución Cívica', icon: History, color: '#6366f1', action: () => dispatch('open-tribunales'), badge: '⚖️' }
             ]
         }
     ];
 
     return (
-        <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', padding: '2rem', fontFamily: 'system-ui, sans-serif', color: 'white' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+        <>
+            <SeoHead
+                title="Smart Comuna – Inicio"
+                description="Portal institucional de vecinos de La Serena: noticias, denuncias, arcade, radio y servicios públicos."
+                url={window.location.origin + '/'}
+                image="https://vecinoslaserena.cl/assets/home-cover.png"
+            />
+            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', padding: '2rem', fontFamily: 'system-ui, sans-serif', color: 'white' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
 
                 {/* ── HEADER ── */}
                 <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '1.5rem', gap: '1rem', flexWrap: 'wrap' }}>
@@ -219,7 +221,8 @@ export default function HomeLiviano() {
                     to { transform: scale(1); opacity: 1; }
                 }
             `}</style>
-        </div>
+            </div>
+        </>
     );
 }
 

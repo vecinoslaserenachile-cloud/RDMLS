@@ -1,6 +1,3 @@
-/IMLS/induccion /index.html 200
-/IMLS/INDUCCION /index.html 200
-/aprende /index.html 200
-/induccion /index.html 200
-/fichas /index.html 200
-/*                /index.html 200
+# Redirect all paths to index.html for SPA
+/*    /index.html   200
+/1demayo   /index.html   200

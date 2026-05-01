@@ -98,6 +98,7 @@ import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
 import SmartFloatingTV from '../components/SmartFloatingTV';
 import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
+import SeoHead from '../components/SeoHead';
 import FeaturedBook from '../components/FeaturedBook';
 import LoadingScreen from '../components/LoadingScreen';
 const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion'));
@@ -107,6 +108,7 @@ import VLSCommunityDirectory from '../components/EmergencyDirectory';
 import NewsDataStrip from '../components/NewsDataStrip';
 import { useMasterEditor, MasterEditorToggle, MasterEditorBanner, EditorWrapper } from '../components/MasterEditorOverlay';
 import WorldNewsTablets from '../components/WorldNewsTablets';
+import LocalNewsGrid from '../components/LocalNewsGrid';
 
 export default function HubDashboard() {
     // 1. Context & Routing
@@ -741,7 +743,7 @@ export default function HubDashboard() {
             let newsList = [];
             const defaultNews = [
                 { title: "OPORTUNIDAD: Capacitaciones Acciona para Mujeres", date: "Hoy", category: "EMPLEO", desc: "Curso gratuito de terminaciones en construcción para las vecinas de La Serena.", iconStr: "UserCheck", color: "#f87171", eventId: "open-vls-acciona", image: "/acciona/afiche_real.png" },
-                { title: "INVESTIGACIÓN: Stella Díaz Varín «La Colorina»", date: "Hoy", category: "LITERATURA", desc: "Explora la vida y obra de la poeta más indómita de La Serena en su nuevo archivo digital.", iconStr: "BookOpen", color: "#ef4444", eventId: "open-vls-stella", image: "/stella/Stella Díaz Varín.png" },
+                { title: "INVESTIGACIÓN: Stella Díaz Varín «La Colorina»", date: "Hoy", category: "LITERATURA", desc: "Explora la vida y obra de la poeta más indómita de La Serena en su nuevo archivo digital.", iconStr: "BookOpen", color: "#ef4444", eventId: "open-vls-stella", image: "/stella/stella_bg.png" },
                 { title: "INVESTIGACIÓN: Misión Artemis II", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis", image: "/artemis_teaser.png" },
                 { title: "INVESTIGACIÓN: El Futuro de los Negocios (UCEN)", date: "Hoy", category: "ACADEMIA", desc: "42° Congreso ASFAE: El impacto de la IA y la descentralización en Chile.", iconStr: "GraduationCap", color: "#00F0FF", eventId: "open-vls-ucen" },
                 { title: "RESTAURACIÓN: Monumento Francisco de Aguirre", date: "Hoy", category: "PATRIMONIO", desc: "La alcaldesa Daniela Norambuena impulsa la recuperación del símbolo histórico de la ciudad.", iconStr: "Landmark", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/aguirre_real.png" },
@@ -926,6 +928,10 @@ export default function HubDashboard() {
 
     const servicios = [
         {
+            id: 'vls-1demayo', title: '1 DE MAYO: DÍA DEL TRABAJADOR', subtitle: 'Portal Histórico · Hitos, Poesía y Memoria Obrera',
+            icon: Calendar, color: '#d97706', path: '/1demayo', active: true, badge: 'HOY', category: 'citizens'
+        },
+        {
             id: 'vls-acciona', title: 'ACCIONA: CAPACITACIÓN MUJERES', subtitle: 'Curso Terminaciones · Nuevo Hospital La Serena · Inscripción Online',
             icon: HardHat, color: '#ff0000', isEvent: 'open-vls-acciona', active: true, badge: 'EMPLEO', category: 'citizens'
         },
@@ -934,7 +940,7 @@ export default function HubDashboard() {
             icon: Gem, color: '#a78bfa', isEvent: 'open-domeyko-portal', active: true, badge: 'PATRIMONIO', category: 'citizens'
         },
         {
-            id: 'low-data-access', title: 'CLON DE RESPALDO (Lite Portal)', subtitle: 'Soberanía de Acceso: Versión liviana para datos bajos',
+            id: 'failover-lite-access', title: 'CLON DE RESPALDO (Lite Portal)', subtitle: 'Soberanía de Acceso: Versión liviana para datos bajos',
             icon: ShieldCheck, color: '#10b981', isEvent: 'open-lite-portal', active: true, badge: 'FAILOVER', category: 'citizens'
         },
         {
@@ -1129,7 +1135,7 @@ export default function HubDashboard() {
             icon: Rocket, color: '#c084fc', isEvent: 'open-project-info', active: true, badge: 'Dossier 2030'
         },
         {
-            id: 'low-data-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
+            id: 'low-data-safe-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
             icon: Zap, color: '#fbbf24', path: '/lite', active: true, badge: 'LITE'
         },
         {
@@ -1325,13 +1331,15 @@ export default function HubDashboard() {
         {
             id: 'citizens',
             name: 'Smart Citizens (Atención Ciudadana)',
-            description: 'Registro digital de accesos, portal georreferenciado para reportes vecinales, monitoreo urbano/ambiental (baches, luminarias, playas, humedales) y Radio Digital Municipal.',
+            description: isRDMLS 
+                ? 'Registro digital de accesos, portal georreferenciado para reportes vecinales, monitoreo urbano/ambiental (baches, luminarias, playas, humedales) y Radio Digital Municipal.'
+                : 'Registro digital de accesos, portal georreferenciado para reportes vecinales, monitoreo urbano/ambiental (baches, luminarias, playas, humedales) y Radio Comunitaria VLS.',
             icon: Users,
             color: '#ef4444',
             modules: [
                 'vls-domeyko', 'vecinojos', 'camaras-faro', 'servicios-publicos', 'safe-route', 'serenamet-admin', 
                 'ecumenico', 'laico', 'smart-salud', 'vls-roadmap', 'pitch-inversionistas', 
-                'low-data-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 
+                'low-data-safe-access', 'failover-lite-access', 'difundir-app', 'distances', 'vetcinos', 'alcaldes-history', 
                 'vecicat', 'sticky-note', 'historic-3d', 'busdeltiempo', 'kiosko-diarios', 
                 'memorial-hijos', 'memory-portal', 'tornamesa-digital', 'personal-stereo', 
                 'vhs-tv', 'operacion-ls', 'stickers-portal', 'glosario-vls', 'ambient-mode', 
@@ -1342,7 +1350,9 @@ export default function HubDashboard() {
         {
             id: 'admin',
             name: 'Smart Administration (Gestión Interna)',
-            description: 'Portal de inducción E-learning (entrega de diplomas) y digitalización de informes para trabajadores (Honorarios) con firma digital.',
+            description: isRDMLS
+                ? 'Portal de inducción E-learning (entrega de diplomas) y digitalización de informes para trabajadores municipales (Honorarios) con firma digital.'
+                : 'Portal de formación continua, saberes locales y herramientas de gestión vecinal avanzada.',
             icon: Briefcase,
             color: '#10b981',
             modules: [
@@ -1355,7 +1365,9 @@ export default function HubDashboard() {
         {
             id: 'events',
             name: 'Smart Events (Protocolo)',
-            description: 'Gestión automatizada de eventos y un Monitor de Precedencias en tiempo real para autoridades.',
+            description: isRDMLS
+                ? 'Gestión automatizada de eventos institucionales y un Monitor de Precedencias en tiempo real para autoridades.'
+                : 'Gestión de eventos vecinales, asambleas y monitor de participación ciudadana en tiempo real.',
             icon: PartyPopper,
             color: '#f59e0b',
             modules: ['protocolo', 'almanaque-2026', 'muralismo', 'decision-vecinal']
@@ -1363,7 +1375,7 @@ export default function HubDashboard() {
         {
             id: 'listening',
             name: 'Smart Listening (Inteligencia)',
-            description: 'Centinel Faro (Social Listening, monitoreo de redes y videos mediante IA).',
+            description: 'Centinel Faro (Social Listening, monitoreo de redes y videos mediante IA para la toma de decisiones).',
             icon: Radio,
             color: '#38bdf8',
             modules: [
@@ -1466,11 +1478,11 @@ export default function HubDashboard() {
         return cardContent;
     };
     const [impactMessages, setImpactMessages] = useState([
-        { icon: Award, color: '#fbbf24', text: "[VLSABES]: ¿Cuánto sabes de tu comuna? Juega la trivia oficial y gana fichas para el portal." },
+        { icon: Award, color: '#fbbf24', text: isRDMLS ? "[RDMLSabes]: Juega la trivia oficial y valida tus conocimientos institucionales." : "[VLSABES]: ¿Cuánto sabes de tu comuna? Juega la trivia oficial y gana fichas para el portal." },
         { icon: Map, color: '#38bdf8', text: "[El Túnel del Tiempo]: Viaja al pasado de La Serena en 3D. Explora el centro histórico como era hace 100 años." },
         { icon: Box, color: '#c084fc', text: "[Render 3D]: Ya puedes visualizar tu indumentaria institucional en 3D antes de pedirla." },
-        { icon: AlertCircle, color: '#ef4444', text: "[Smart Comuna]: Reporta baches, luminarias o basura con un solo click. Gestión directa con el municipio." },
-        { icon: Radio, color: '#38bdf8', text: "[RDMLS]: La radio oficial de La Serena ya está en el aire. Escucha la programación institucional 24/7." },
+        { icon: AlertCircle, color: '#ef4444', text: isRDMLS ? "[Gestión Municipal]: Reporte de baches y luminarias integrado con la central de mando." : "[Smart Comuna]: Reporta baches, luminarias o basura con un solo click. Gestión directa con el municipio." },
+        { icon: Radio, color: '#38bdf8', text: isRDMLS ? "[RDMLS]: La radio oficial de La Serena ya está en el aire. Escucha la programación institucional 24/7." : "[Radio VLS]: La voz de los vecinos ya está en el aire. Escucha música y noticias locales 24/7." },
         { icon: Heart, color: '#f472b6', text: "[VecinityPay]: Apoya el desarrollo local de este portal 100% Home-Made y obtén beneficios exclusivos." },
         { icon: Leaf, color: '#10b981', text: "[Turismo Sustentable]: Medios destacan a La Serena como capital pionera en integración de tecnología no invasiva con el patrimonio." }
     ]);
@@ -1767,6 +1779,12 @@ export default function HubDashboard() {
 
     return (
         <React.Fragment>
+            <SeoHead 
+                title="Vecinos La Serena — Portal Inteligente de la Comuna"
+                description="La primera plataforma Smart City de la Región de Coquimbo. Radio, reportes vecinales, patrimonio 3D y servicios ciudadanos 24/7."
+                image="/vls-logo-premium.png"
+                type="website"
+            />
             {/* ── MASTER EDITOR MODE UI (solo vecinoslaserenachile@gmail.com) ── */}
             {isMaster && (
                 <MasterEditorToggle
@@ -1804,7 +1822,7 @@ export default function HubDashboard() {
                     animation-play-state: paused; 
                 }
             `}</style>
-            <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingTop: 'var(--nav-height, 60px)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <div className="page-container trencadis-guell" style={{ WebkitPaddingStart: 'env(safe-area-inset-left)', paddingBottom: '160px', paddingLeft: '0', paddingRight: '0', maxWidth: '100%', overflowX: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
 
                 {/* Acceso Nuclear In-line eliminado para priorizar inserción en Huincha Superior */}
 
@@ -2000,6 +2018,7 @@ export default function HubDashboard() {
                     {/* ══════════════════════════════════════════════════════════ */}
                     <div style={{ width: '100%', maxWidth: '1200px', margin: '1rem auto 0', padding: '0 2rem' }}>
                         <WorldNewsTablets />
+                        <LocalNewsGrid />
                     </div>
                     
                     {/* ══════════════════════════════════════════════════════════ */}
@@ -2190,7 +2209,7 @@ export default function HubDashboard() {
                 position: 'relative'
             }}>
                 <div
-                    onClick={() => navigate('/arcade')}
+                    onClick={() => { window.dispatchEvent(new CustomEvent('open-game')); navigate('/arcade'); }}
                     style={{
                         background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(239, 68, 68, 0.6)',
@@ -2593,7 +2612,22 @@ export default function HubDashboard() {
                 {/* HIGHLIGHTS: ACCIONA, DIPRES & PULSO (PERIODISMO DE DATOS)   */}
                 {/* ══════════════════════════════════════════════════════════ */}
                 <div style={{ padding: '0 1.5rem 3rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(3, 1fr)', gap: '1.5rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                        {/* 1 DE MAYO PORTAL */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            onClick={() => navigate('/1demayo')}
+                            style={{ 
+                                background: 'linear-gradient(135deg, #450a0a 0%, #0f172a 100%)', padding: '1.5rem', borderRadius: '24px', 
+                                border: '2px solid #d97706', cursor: 'pointer', backdropFilter: 'blur(20px)',
+                                display: 'flex', flexDirection: 'column', gap: '0.8rem', boxShadow: '0 10px 30px rgba(217, 119, 6, 0.2)'
+                            }}
+                        >
+                            <div style={{ background: '#d9770620', color: '#d97706', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #d97706' }}>EFEMÉRIDE HOY</div>
+                            <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>1 de Mayo: Día del Trabajador</h4>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Portal Conmemorativo: Historia, Mártires de Chicago e hitos nacionales.</p>
+                            <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#d97706', fontWeight: 900, fontSize: '0.75rem' }}>INGRESAR AL PORTAL <ArrowRight size={14} /></div>
+                        </motion.div>
                         {/* ACCIONA MUJERES */}
                         <motion.div 
                             whileHover={{ y: -5 }}
