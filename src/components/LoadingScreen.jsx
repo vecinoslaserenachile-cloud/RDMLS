@@ -139,6 +139,14 @@ const LoadingScreen = ({ isSyncing = false }) => {
                        <stop offset="0%" stopColor="#38bdf8" stopOpacity="0" />
                        <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.6" />
                      </linearGradient>
+                     <linearGradient id="beamGradientRight" x1="0%" y1="0%" x2="100%" y2="0%">
+                         <stop offset="0%" stopColor="white" stopOpacity="0.6" />
+                         <stop offset="100%" stopColor="white" stopOpacity="0" />
+                     </linearGradient>
+                     <linearGradient id="beamGradientLeft" x1="100%" y1="0%" x2="0%" y2="0%">
+                         <stop offset="0%" stopColor="white" stopOpacity="0.25" />
+                         <stop offset="100%" stopColor="white" stopOpacity="0" />
+                     </linearGradient>
                  </defs>
   
                  {/* OLA DE MAR */}
@@ -190,8 +198,8 @@ const LoadingScreen = ({ isSyncing = false }) => {
                       animate={{ rotate: [0, 18, -18, 0] }}
                       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
                   >
-                      <path d="M 0 0 L 500 -60 L 500 60 Z" fill="white" style={{ opacity: 0.5, filter: 'blur(5px)' }} />
-                      <path d="M 0 0 L -450 -50 L -450 50 Z" fill="white" style={{ opacity: 0.18, filter: 'blur(8px)' }} />
+                      <path d="M 0 0 L 500 -60 L 500 60 Z" fill="url(#beamGradientRight)" />
+                      <path d="M 0 0 L -450 -50 L -450 50 Z" fill="url(#beamGradientLeft)" />
                   </motion.g>
   
                  {/* Linterna pulsante */}
