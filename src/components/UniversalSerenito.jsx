@@ -13,7 +13,7 @@ export default function UniversalSerenito({
     onLoadAnimations 
 }) {
     const group = useRef();
-    const { scene, animations } = useGLTF('/vls-assets/serenito_3d_animado.glb');
+    const { scene, animations } = useGLTF('/vls-assets/22serenito.glb');
     const { actions, names } = useAnimations(animations, group);
 
     useEffect(() => {
