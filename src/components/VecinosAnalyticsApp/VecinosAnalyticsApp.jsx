@@ -38,7 +38,7 @@ export default function VecinosAnalyticsApp({ onClose }) {
           </motion.div>
           <div>
             <h1 className="text-xl md:text-2xl font-black text-white tracking-tight">ANALÍTICA CIUDADANA VLS</h1>
-            <p className="text-[10px] text-brand-neon font-bold uppercase tracking-widest">Inteligencia Farito AI • La Serena 2026</p>
+            <p className="text-[10px] text-brand-neon font-bold uppercase tracking-widest">Inteligencia Farito AI • La Serena 2025</p>
           </div>
         </div>
         

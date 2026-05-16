@@ -147,7 +147,7 @@ export default function VisualConceptMap({ filteredTopic }) {
                    <ChevronLeft size={20} />
                  </button>
              )}
-             <h2 className="text-xl font-black text-white">{mockConceptNodes.find(n => n.id === currentNode)?.title.toUpperCase()}</h2>
+              <h2 className="text-xl font-black text-white">{(mockConceptNodes.find(n => n.id === currentNode)?.title || 'CONCEPTOS').toUpperCase()}</h2>
            </div>
         </div>
         

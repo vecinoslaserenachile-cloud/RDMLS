@@ -12,7 +12,7 @@ import RadioBackofficeModal from '../../components/RadioBackofficeModal';
 import NewsDetailModal from '../../components/NewsDetailModal';
 import { useNavigate, useLocation } from 'react-router-dom';
 import VLSInduccion from '../VLSInduccion';
-import Induccion26 from '../Induccion26';
+import Induccion25 from '../Induccion25';
 import Aprende from '../Aprende';
 
 const VUMeter = ({ label, needleRef }) => (

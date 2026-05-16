@@ -113,11 +113,11 @@ const SmartAssistantInduccion = () => {
     );
 };
 
-// ÔöÇÔöÇ PPTX Beta26 (GitHub raw) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
-const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta26.pptx";
+// —— PPTX Beta26 (GitHub raw) ——————————————————————————————————————————
+const RAW_PPTX = "https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/94c24c55256c3fe970c5f5e91635efeccaafee92/Induccion%20IMLS%20beta25.pptx";
 const IFRAME_SRC = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX)}`;
 
-// ÔöÇÔöÇ Colores RDMLS ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// —— Colores RDMLS ————————————————————————————————————————————————————
 const C = {
     orange: '#f97316',
     gold:   '#C5A065',
@@ -127,7 +127,7 @@ const C = {
     border: 'rgba(249,115,22,0.25)',
 };
 
-// ÔöÇÔöÇ Preguntas enfocadas en Radio Municipal + IMLS ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// —— Preguntas enfocadas en Radio Municipal + IMLS ————————————————————
 const QUESTIONS = [
     {
         q: "¿Cuál es el propósito principal de la Radio Digital Municipal RDMLS?",
@@ -181,17 +181,17 @@ const QUESTIONS = [
     }
 ];
 
-// ÔöÇÔöÇ Módulos de contenido ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+// —— Módulos de contenido —————————————————————————————————————————————
 const MODULES = [
-    { icon: '­ƒÅø´©Å', label: 'Bienvenida & Misión IMLS',  desc: 'Slides 1–8 · La visión de la Alcaldesa y la misión municipal' },
-    { icon: '­ƒôí', label: 'RDMLS: La Radio Digital',    desc: 'Slides 9–15 · Historia, plataforma y objetivos de la emisora' },
-    { icon: 'ÔÜû´©Å',  label: 'Marco Legal & Decretos',    desc: 'Slides 16–22 · Normativa que regula las comunicaciones municipales' },
-    { icon: '­ƒøí´©Å', label: 'Ley Karin & Probidad',       desc: 'Slides 23–28 · Protocolo de convivencia y ética laboral' },
-    { icon: '­ƒÜ¿', label: 'Seguridad & Emergencias',    desc: 'Slides 29–33 · Planes de evacuación y números de emergencia' },
+    { icon: '🎓', label: 'Bienvenida & Misión IMLS',  desc: 'Slides 1–8 · La visión de la Alcaldesa y la misión municipal' },
+    { icon: '📻', label: 'RDMLS: La Radio Digital',    desc: 'Slides 9–15 · Historia, plataforma y objetivos de la emisora' },
+    { icon: '⚖️', label: 'Marco Legal & Decretos',    desc: 'Slides 16–22 · Normativa que regula las comunicaciones municipales' },
+    { icon: '🛡️', label: 'Ley Karin & Probidad',       desc: 'Slides 23–28 · Protocolo de convivencia y ética laboral' },
+    { icon: '🚨', label: 'Seguridad & Emergencias',    desc: 'Slides 29–33 · Planes de evacuación y números de emergencia' },
 ];
 
 // ÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉÔòÉ
-export default function Induccion26({ isRDMLS }) {
+export default function Induccion25({ isRDMLS }) {
     const navigate = useNavigate();
     const audioRef = useRef(null);
     const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
@@ -213,7 +213,7 @@ export default function Induccion26({ isRDMLS }) {
     const [disclaimerVisible, setDisclaimerVisible] = useState(false);
 
     useEffect(() => {
-        document.title = 'RDMLS · Inducción Municipal 2026';
+        document.title = 'RDMLS · Inducción Municipal 2025';
         setTimeout(() => setDisclaimerVisible(true), 100);
     }, []);
 
@@ -289,7 +289,7 @@ export default function Induccion26({ isRDMLS }) {
                 <img src="/escudo.png" alt="IMLS" style={{ height: '32px', position: 'absolute', bottom: '20px', right: '0px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.5))' }} />
             </div>
                 <h1 style={{ color:C.orange, fontSize:'clamp(1.4rem,4vw,2.2rem)', fontWeight:'900', letterSpacing:'2px', textAlign:'center', margin:'0 0 0.3rem' }}>PORTAL INDUCCIÓN RDMLS</h1>
-                <p style={{ color:'#94a3b8', fontSize:'0.85rem', letterSpacing:'2px', marginBottom:'2rem', textAlign:'center' }}>RADIO DIGITAL MUNICIPAL · LA SERENA · 2026</p>
+                <p style={{ color:'#94a3b8', fontSize:'0.85rem', letterSpacing:'2px', marginBottom:'2rem', textAlign:'center' }}>RADIO DIGITAL MUNICIPAL · LA SERENA · 2025</p>
                 <div style={{ background:'rgba(249,115,22,0.07)', border:`1px solid ${C.border}`, borderRadius:'24px', padding:'2.5rem', width:'100%', maxWidth:'480px', display:'flex', flexDirection:'column', gap:'1rem' }}>
                     <h3 style={{ margin:'0 0 0.5rem', color:'white', fontWeight:'900', fontSize:'1rem', letterSpacing:'1px', textTransform:'uppercase', borderBottom:`1px solid ${C.border}`, paddingBottom:'0.75rem' }}>🔐 Acceso Funcionario</h3>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'0.75rem' }}>
@@ -330,7 +330,7 @@ export default function Induccion26({ isRDMLS }) {
                 <AlertTriangle size={24} color="#fbbf24" style={{ flexShrink: 0 }} />
                 <div>
                     <div style={{ fontWeight: '900', color: '#fbbf24', fontSize: '0.9rem', letterSpacing: '2px' }}>
-                        ­ƒÜº MÓDULO EN DESARROLLO
+                        🚧 MÓDULO EN DESARROLLO
                     </div>
                     <div style={{ fontSize: '0.75rem', color: '#d97706', marginTop: '3px' }}>
                         Este portal de inducción está en fase de implementación. El contenido puede cambiar sin aviso previo.
@@ -338,10 +338,10 @@ export default function Induccion26({ isRDMLS }) {
                 </div>
             </div>
 
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>­ƒô╗</div>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📺</div>
             <img src="/escudo.png" alt="IMLS" style={{ height: '64px', marginBottom: '1rem', filter: 'drop-shadow(0 0 20px rgba(249,115,22,0.5))' }} />
             <h1 style={{ color: C.orange, fontSize: 'clamp(1.4rem,4vw,2rem)', fontWeight: '900', letterSpacing: '2px', textAlign: 'center', margin: '0 0 0.5rem' }}>
-                INDUCCIÓN RDMLS 2026
+                INDUCCIÓN RDMLS 2025
             </h1>
             <p style={{ color: '#f97316cc', fontSize: '0.8rem', letterSpacing: '2px', marginBottom: '0.5rem' }}>
                 RADIO DIGITAL MUNICIPAL · LA SERENA
@@ -354,10 +354,10 @@ export default function Induccion26({ isRDMLS }) {
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.8rem', maxWidth: '520px', width: '100%', marginBottom: '2.5rem' }}>
                 {[
-                    { icon: '­ƒôä', label: 'Presentación oficial IMLS Beta26' },
-                    { icon: 'ÔØô', label: '5 preguntas de validación' },
-                    { icon: '­ƒÅå', label: 'Diploma digital con tu nombre' },
-                    { icon: 'ÔÅ▒´©Å', label: 'Duración estimada: 20 min' },
+                    { icon: '📄', label: 'Presentación oficial IMLS Beta26' },
+                    { icon: '❓', label: '5 preguntas de validación' },
+                    { icon: '🏆', label: 'Diploma digital con tu nombre' },
+                    { icon: '⏱️', label: 'Duración estimada: 20 min' },
                 ].map(({ icon, label }) => (
                     <div key={label} style={{
                         background: C.card, border: `1px solid ${C.border}`,
@@ -384,7 +384,7 @@ export default function Induccion26({ isRDMLS }) {
         </div>
     );
 
-    // ÔöÇÔöÇ DIPLOMA FORM ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // —— DIPLOMA FORM ——————————————————————————————————————————————————
     if (step === 'diploma-form') return (
         <div style={{
             minHeight: '100vh', background: `radial-gradient(ellipse at top, #1a0800, ${C.dark})`,
@@ -393,8 +393,8 @@ export default function Induccion26({ isRDMLS }) {
         }}>
             <div style={{ width: '100%', maxWidth: '540px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '2.5rem' }}>
                 <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>­ƒÅå</div>
-                    <h2 style={{ color: C.orange, fontWeight: '900', letterSpacing: '2px', margin: 0 }}>OBT├ëN TU DIPLOMA</h2>
+                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>🏆</div>
+                    <h2 style={{ color: C.orange, fontWeight: '900', letterSpacing: '2px', margin: 0 }}>OBTÉN TU DIPLOMA</h2>
                     <p style={{ color: '#64748b', fontSize: '0.8rem', marginTop: '6px' }}>Completa tus datos para el registro oficial</p>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -426,7 +426,7 @@ export default function Induccion26({ isRDMLS }) {
                         </select>
                     </div>
                     <div>
-                        <label style={{ display: 'block', fontSize: '0.65rem', color: '#64748b', letterSpacing: '2px', marginBottom: '6px' }}>CALIDAD JUR├ìDICA</label>
+                        <label style={{ display: 'block', fontSize: '0.65rem', color: '#64748b', letterSpacing: '2px', marginBottom: '6px' }}>CALIDAD JURÍDICA</label>
                         <select value={userData.calidad} onChange={e => setUserData({ ...userData, calidad: e.target.value })}
                             style={{ width: '100%', background: 'rgba(0,0,0,0.4)', border: `1.5px solid ${C.border}`, borderRadius: '10px', padding: '12px', color: 'white', fontSize: '0.9rem', outline: 'none' }}>
                             <option>Planta</option>
@@ -439,7 +439,7 @@ export default function Induccion26({ isRDMLS }) {
                         if (!userData.nombres || !userData.apellidos || !userData.area) { alert('Completa todos los datos.'); return; }
                         setStep('diploma');
                         try {
-                            await addDoc(collection(db, 'induccion_certificados_2026'), {
+                            await addDoc(collection(db, 'induccion_certificados_2025'), {
                                 ...userData, fecha: new Date().toISOString(), domain: 'RDMLS', score
                             });
                         } catch (e) { console.error(e); }
@@ -448,14 +448,14 @@ export default function Induccion26({ isRDMLS }) {
                         borderRadius: '12px', padding: '14px', color: 'white', fontWeight: '900',
                         fontSize: '0.9rem', letterSpacing: '2px', cursor: 'pointer', marginTop: '0.5rem'
                     }}>
-                        GENERAR CERTIFICADO OFICIAL ­ƒÄô
+                        GENERAR CERTIFICADO OFICIAL 🎓
                     </button>
                 </div>
             </div>
         </div>
     );
 
-    // ÔöÇÔöÇ DIPLOMA FINAL ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // —— DIPLOMA FINAL ——————————————————————————————————————————————————
     if (step === 'diploma') return (
         <div style={{
             minHeight: '100vh', background: '#0f0f0f',
@@ -477,13 +477,13 @@ export default function Induccion26({ isRDMLS }) {
                     <img src="/escudo.png" alt="IMLS" style={{ height: '70px' }} />
                     <div style={{ textAlign: 'right' }}>
                         <div style={{ color: C.orange, fontWeight: '900', fontSize: '0.8rem', letterSpacing: '3px' }}>RADIO DIGITAL MUNICIPAL</div>
-                        <div style={{ color: '#94a3b8', fontSize: '0.65rem', letterSpacing: '4px', marginTop: '4px' }}>LA SERENA · CHILE · 2026</div>
+                        <div style={{ color: '#94a3b8', fontSize: '0.65rem', letterSpacing: '4px', marginTop: '4px' }}>LA SERENA · CHILE · 2025</div>
                     </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                     <h1 style={{ fontSize: 'clamp(2.5rem,8vw,5rem)', fontWeight: '900', fontFamily: 'Georgia, serif', letterSpacing: '0.1em', margin: '0 0 0.5rem', color: '#111' }}>CERTIFICADO</h1>
                     <p style={{ color: '#888', fontStyle: 'italic', fontSize: '1rem', marginBottom: '2rem', fontFamily: 'Georgia, serif' }}>
-                        De Aprobación · Inducción Corporativa RDMLS 2026
+                        De Aprobación · Inducción Corporativa RDMLS 2025
                     </p>
                     <p style={{ fontSize: '0.7rem', color: '#aaa', letterSpacing: '3px', marginBottom: '1rem' }}>OTORGADO A:</p>
                     <h2 style={{ fontSize: 'clamp(1.8rem,5vw,3.5rem)', fontWeight: '900', color: C.orange, margin: '0 0 1rem', letterSpacing: '-1px' }}>
@@ -501,7 +501,7 @@ export default function Induccion26({ isRDMLS }) {
                             <div style={{ borderTop: '2px solid #ddd', paddingTop: '8px', fontSize: '0.6rem', letterSpacing: '2px', color: '#999' }}>DIRECCIÓN DE COMUNICACIONES</div>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <div style={{ color: C.orange, fontWeight: '900', fontSize: '1rem', marginBottom: '6px' }}>RDMLS-OK-2026</div>
+                            <div style={{ color: C.orange, fontWeight: '900', fontSize: '1rem', marginBottom: '6px' }}>RDMLS-OK-2025</div>
                             <QrCode size={44} color="#ccc" />
                             <div style={{ fontSize: '0.55rem', color: '#bbb', letterSpacing: '1px', marginTop: '4px' }}>rdmls.cl/induccion</div>
                         </div>
@@ -526,12 +526,12 @@ export default function Induccion26({ isRDMLS }) {
                     background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
                     borderRadius: '14px', padding: '14px 32px', color: 'white', fontWeight: '700',
                     fontSize: '0.85rem', cursor: 'pointer'
-                }}>­ƒû¿´©Å Imprimir Diploma</button>
+                }}>🖨️ Imprimir Diploma</button>
             </div>
         </div>
     );
 
-    // ÔöÇÔöÇ TRIVIA MODAL inline ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // —— TRIVIA MODAL inline ——————————————————————————————————————————
     if (step === 'trivia') return (
         <div style={{
             position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(12px)',
@@ -575,10 +575,10 @@ export default function Induccion26({ isRDMLS }) {
                 {answered && (
                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ marginTop: '1.5rem' }}>
                         <div style={{ color: lastCorrect ? '#22c55e' : '#f87171', fontWeight: '900', fontSize: '1.1rem', marginBottom: '1rem' }}>
-                            {lastCorrect ? 'Ô£à ┬íVALIDACIÓN APROBADA! +100 XP' : 'ÔÜá´©Å REVISIÓN REQUERIDA'}
+                            {lastCorrect ? '✅ ¡VALIDACIÓN APROBADA! +100 XP' : '⚠️ REVISIÓN REQUERIDA'}
                         </div>
                         <div style={{ textAlign: 'left', background: 'rgba(197,160,101,0.1)', borderLeft: `4px solid ${C.gold}`, borderRadius: '0 12px 12px 0', padding: '1rem 1.2rem', marginBottom: '1.5rem' }}>
-                            <div style={{ fontSize: '0.65rem', color: C.gold, fontWeight: '900', letterSpacing: '2px', marginBottom: '6px' }}>­ƒôï NOTA DE INTEGRACIÓN RDMLS:</div>
+                            <div style={{ fontSize: '0.65rem', color: C.gold, fontWeight: '900', letterSpacing: '2px', marginBottom: '6px' }}>📝 NOTA DE INTEGRACIÓN RDMLS:</div>
                             <p style={{ margin: 0, color: '#e2e8f0', fontStyle: 'italic', fontSize: '0.9rem', lineHeight: 1.6 }}>
                                 {QUESTIONS[currentQuestion].explanation}
                             </p>
@@ -588,7 +588,7 @@ export default function Induccion26({ isRDMLS }) {
                             padding: '12px 36px', borderRadius: '50px', fontWeight: '900',
                             fontSize: '0.95rem', cursor: 'pointer'
                         }}>
-                            {currentQuestion < QUESTIONS.length - 1 ? 'CONTINUAR →' : '­ƒÅå OBTENER DIPLOMA'}
+                            {currentQuestion < QUESTIONS.length - 1 ? 'CONTINUAR →' : '🏆 OBTENER DIPLOMA'}
                         </button>
                     </motion.div>
                 )}
@@ -596,7 +596,7 @@ export default function Induccion26({ isRDMLS }) {
         </div>
     );
 
-    // ÔöÇÔöÇ MAIN (PPTX + Sidebar) ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
+    // —— MAIN (PPTX + Sidebar) —————————————————————————————————————————
     return (
         <div style={{
             minHeight: '100vh',
@@ -605,7 +605,7 @@ export default function Induccion26({ isRDMLS }) {
         }}>
             <audio ref={audioRef} src="https://az11.yesstreaming.net:8590/radio.mp3" />
 
-            {/* ÔöÇÔöÇ HEADER ÔöÇÔöÇ */}
+            {/* —— HEADER —— */}
             <header style={{
                 background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(20px)',
                 borderBottom: `2px solid ${C.border}`, padding: '0.9rem 1.5rem',
@@ -615,7 +615,7 @@ export default function Induccion26({ isRDMLS }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <img src="/escudo.png" alt="IMLS" style={{ height: '34px' }} />
                     <div>
-                        <div style={{ fontWeight: '900', color: C.orange, fontSize: '0.95rem', letterSpacing: '1px' }}>INDUCCIÓN RDMLS 2026</div>
+                        <div style={{ fontWeight: '900', color: C.orange, fontSize: '0.95rem', letterSpacing: '1px' }}>INDUCCIÓN RDMLS 2025</div>
                         <div style={{ fontSize: '0.6rem', color: '#64748b', letterSpacing: '1px' }}>Radio Digital Municipal La Serena · IMLS</div>
                     </div>
                 </div>
@@ -652,11 +652,11 @@ export default function Induccion26({ isRDMLS }) {
             }}>
                 <AlertTriangle size={14} color="#fbbf24" />
                 <span style={{ color: '#d97706', fontSize: '0.72rem', fontWeight: '700', letterSpacing: '1px' }}>
-                    ­ƒÜº MÓDULO EN DESARROLLO ÔÇö El contenido puede actualizarse sin aviso previo · Versión Beta 2026
+                    🚧 MÓDULO EN DESARROLLO — El contenido puede actualizarse sin aviso previo · Versión Beta 2025
                 </span>
             </div>
 
-            {/* ÔöÇÔöÇ MAIN CONTENT ÔöÇÔöÇ */}
+            {/* —— MAIN CONTENT —— */}
             <main style={{ flex: 1, padding: '1.5rem', display: 'flex', gap: '1.5rem', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
 
                 {/* PPTX Viewer */}
@@ -667,11 +667,11 @@ export default function Induccion26({ isRDMLS }) {
                 }}>
                     <div style={{ background: 'rgba(249,115,22,0.08)', borderBottom: `1px solid ${C.border}`, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Signal size={14} color={C.orange} />
-                        <span style={{ fontSize: '0.7rem', color: C.orange, fontWeight: '700', letterSpacing: '1px' }}>PRESENTACIÓN OFICIAL IMLS BETA26</span>
+                        <span style={{ fontSize: '0.7rem', color: C.orange, fontWeight: '700', letterSpacing: '1px' }}>PRESENTACIÓN OFICIAL IMLS BETA25</span>
                     </div>
                     <iframe
                         src={IFRAME_SRC} width="100%" style={{ flex: 1, border: 'none', minHeight: '500px' }}
-                        title="Inducción IMLS 2026" allowFullScreen
+                        title="Inducción IMLS 2025" allowFullScreen
                     />
                 </motion.div>
 
@@ -714,7 +714,7 @@ export default function Induccion26({ isRDMLS }) {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
                         boxShadow: progress >= 100 ? 'none' : '0 8px 20px rgba(249,115,22,0.3)', transition: 'all 0.3s'
                     }}>
-                        {progress >= 100 ? '┬íMÓDULO COMPLETADO! ✓' : 'VALIDAR AVANCE'} <FastForward size={18} />
+                        {progress >= 100 ? '¡MÓDULO COMPLETADO! ✓' : 'VALIDAR AVANCE'} <FastForward size={18} />
                     </button>
 
                     {/* Progreso preguntas */}

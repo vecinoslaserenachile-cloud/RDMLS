@@ -134,11 +134,11 @@ export default function Panoramas() {
         {
             id: 10,
             title: 'El Nuevo Peregrino: Tradición Musical',
-            provider: 'Pub & Restaurant El Nuevo Peregrino',
+            provider: 'Centro Cultural El Nuevo Peregrino',
             category: 'food',
             date: 'Abierto Lunes a Sábado',
             location: 'Av. Balmaceda 2936, La Serena',
-            price: 'Carta Variada',
+            price: 'Identidad Cultural',
             image: 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=1000&auto=format&fit=crop',
             tags: ['Gastronomía', 'Música en vivo', 'Espacio Cultural', '20 Años de Tradición'],
             color: 'var(--brand-secondary)',

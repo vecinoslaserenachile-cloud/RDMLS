@@ -45,7 +45,7 @@ const SmartAssistantInduccion = () => {
         const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyBK4-Rf1QLNBKwhJ3BtpxRsn25e7Zlq3Rs");
         const model = ai.getGenerativeModel({ 
           model: "gemini-2.0-flash-exp",
-          systemInstruction: "Eres Serenito 3D, el Asistente Virtual de la Ilustre Municipalidad de La Serena. Ayuda a los funcionarios en su inducción 2026. Sé amable y profesional."
+          systemInstruction: "Eres Serenito 3D, el Asistente Virtual de la Ilustre Municipalidad de La Serena. Ayuda a los funcionarios en su inducción 2025. Sé amable y profesional."
         });
   
         const result = await model.generateContent({
@@ -184,7 +184,7 @@ const playSound = (type) => {
 };
 
 // Enlaces RAW directos a GitHub (Versiones optimizadas para Office Viewer — Rama Main)
-const RAW_PPTX_A = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/portal-induccion-imls/main/cosas/La_Serena_Municipal_2026.pptx';
+const RAW_PPTX_A = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/portal-induccion-imls/main/cosas/La_Serena_Municipal_2025.pptx';
 const RAW_PPTX_B = 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/portal-induccion-imls/main/cosas/La%20Serena%20entorno%20municipal.pptx';
 const VIEWER_A = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX_A)}`;
 const VIEWER_B = `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(RAW_PPTX_B)}`;
@@ -221,7 +221,7 @@ const QUESTIONS = [
 
 // ── MÓDULOS DE LA MALLA ───────────────────────────────────────────────
 const MODULOS = [
-  { id:'adn', icon:'🏛️', label:'ADN Municipal 2026', desc:'Misión, Visión y 5 Valores',
+  { id:'adn', icon:'🏛️', label:'ADN Municipal 2025', desc:'Misión, Visión y 5 Valores',
     img: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/memorial/cuturrufo/municipalidad_serena_frontis.png',
     content:[
       { k:'Misión',  v:'Servicios municipales cercanos, amables y de calidad para mejorar la vida de los vecinos.' },
@@ -231,7 +231,7 @@ const MODULOS = [
     quiz:{ q:'¿Cuál es la misión central de la IMLS?', opts:['Maximizar ingresos tributarios','Servicios cercanos y de calidad para los vecinos','Gestionar concesiones privadas'], ans:1, exp:'La misión es clara: servicio cercano, amable y de calidad a cada vecino de La Serena.' }},
 
   { id:'gestion', icon:'⚙️', label:'Cerebro DAF/SECPLAN', desc:'Decreto 1730 · Gestión y Planificación',
-    img: '/smart_city_serena_2026_png_1774894743323.png',
+    img: '/smart_city_serena_2025_png_1774894743323.png',
     content:[
       { k:'Decreto 1730', v:'Regula la estructura orgánica de la Ilustre Municipalidad de La Serena.' },
       { k:'SECPLAN',      v:'Planificación Comunal, Presupuesto e Inversión Pública.' },
@@ -240,7 +240,7 @@ const MODULOS = [
     quiz:{ q:'¿Qué unidad gestiona la Planificación Comunal y el Presupuesto?', opts:['DAF','SECPLAN','Alcaldía'], ans:1, exp:'SECPLAN (Secretaría Comunal de Planificación) articula el presupuesto y la inversión pública.' }},
 
   { id:'karin', icon:'🛡️', label:'Ley Karin 21.643', desc:'Protocolo de Prevención y Denuncia',
-    img: '/smart_city_serena_2026_png_1774894743323.png',
+    img: '/smart_city_serena_2025_png_1774894743323.png',
     content:[
       { k:'Objetivo',  v:'Prevenir, investigar y sancionar el acoso laboral, sexual y la violencia en el trabajo.' },
       { k:'Protocolo', v:'Mecanismo interno confidencial de investigación. Tolerancia cero. Un acto basta.' },
@@ -249,7 +249,7 @@ const MODULOS = [
     quiz:{ q:'¿Cuántos actos de acoso se necesitan para activar la Ley Karin?', opts:['Tres o más','Dos comprobados','Un solo acto grave es suficiente'], ans:2, exp:'La Ley Karin establece tolerancia cero: un único acto grave ya activa el protocolo de investigación.' }},
 
   { id:'riesgos', icon:'🚨', label:'Prevención Ley 16.744', desc:'Seguridad y Plan de Emergencias',
-    img: '/smart_city_serena_2026_png_1774894743323.png',
+    img: '/smart_city_serena_2025_png_1774894743323.png',
     content:[
       { k:'Seguro',  v:'Seguro social obligatorio contra accidentes del trabajo y enfermedades profesionales.' },
       { k:'Acción',  v:'Ante accidente: informar a jefatura directa y acudir al centro de salud en convenio.' },
@@ -267,7 +267,7 @@ const MODULOS = [
     quiz:{ q:'¿Qué monumento es el ícono absoluto del patrimonio arquitectónico de La Serena a nivel nacional?', opts:['El Reloj Monumental','El Faro Monumental','La Recova Norte'], ans:1, exp:'El Faro Monumental de La Serena, declarado Monumento Nacional, es el emblema que nos proyecta hacia el turismo nacional e internacional.' }},
 
   { id:'turismo', icon:'🤝', label:'Atención Pública', desc:'Empatía y Resolución Ciudadana',
-    img: '/smart_city_serena_2026_png_1774894743323.png',
+    img: '/smart_city_serena_2025_png_1774894743323.png',
     content:[
       { k:'Empatía',   v:'Escucha activa ante vecinos exaltados o frustrados.' },
       { k:'Rapidez',   v:'Resolución ágil usando tecnologías como "Smart Comuna".' },
@@ -291,7 +291,7 @@ const MODULOS = [
     img: GALERIA[4],
     quiz:{ q:'¿Cómo se dice "Municipalidad" en chino mandarín (pinyin)?', opts:['Shìzhèngfǔ (市政府)','Xuéxiào (学校)','Yīyuàn (医院)'], ans:0, exp:'Shìzhèngfǔ (市政府) es "gobierno municipal" en mandarín. Clave para recibir delegaciones de ciudades hermanas.' }},
 
-  { id:'pptx_a', icon:'📄', label:'La Serena Municipal 2026', desc:'Inducción Institucional V.V.', isPPTX:true, src:VIEWER_A, rawRef:RAW_PPTX_A },
+  { id:'pptx_a', icon:'📄', label:'La Serena Municipal 2025', desc:'Inducción Institucional V.V.', isPPTX:true, src:VIEWER_A, rawRef:RAW_PPTX_A },
   { id:'pptx_b', icon:'📋', label:'Entorno Municipal',       desc:'Resumen Ejecutivo de Gestión', isPPTX:true, src:VIEWER_B, rawRef:RAW_PPTX_B },
   { id:'galeria', icon:'🖼️', label:'Galería IMLS',           desc:'Registro Visual Oficial',    isGallery:true },
 ];
@@ -390,7 +390,7 @@ export default function Aprende({ isRDMLS = false }) {
 
   const location = useLocation();
   const [userData, setUserData] = useState(() => {
-    const s = localStorage.getItem('imls_user_2026');
+    const s = localStorage.getItem('imls_user_2025');
     return s ? JSON.parse(s) : { nombres:'', apellidos:'', area:'', calidad:'Planta' };
   });
 
@@ -416,10 +416,10 @@ export default function Aprende({ isRDMLS = false }) {
   const [score, setScore]             = useState(0);
   const [modQuiz, setModQuiz]         = useState({ answer: null, showFeedback: false }); // Quiz dentro del modal
   const [showFullGate, setShowFullGate] = useState(false); // Para el IdentityGate biométrico
-  const [showAdminMode, setShowAdminMode] = useState(false); // VLS 2026: Vista Administrativa TICs
+  const [showAdminMode, setShowAdminMode] = useState(false); // VLS 2025: Vista Administrativa TICs
 
   useEffect(() => {
-    document.title = 'IMLS · Academia Smart 2026';
+    document.title = 'IMLS · Academia Smart 2025';
     // Crear audio con múltiples fuentes para mayor compatibilidad
     const audio = new Audio();
     audio.preload = 'none';
@@ -467,7 +467,7 @@ export default function Aprende({ isRDMLS = false }) {
       return; 
     }
     playSound('success');
-    localStorage.setItem('imls_user_2026', JSON.stringify(userData));
+    localStorage.setItem('imls_user_2025', JSON.stringify(userData));
     setStep('dashboard');
   };
 
@@ -570,7 +570,7 @@ export default function Aprende({ isRDMLS = false }) {
             >
               <img src="/escudo.png" alt="IMLS" style={{ height:'60px', marginBottom:'2rem', filter:'drop-shadow(0 0 20px rgba(197,160,101,0.5))' }}/>
               <h1 style={{ fontSize: isMobile ? '2.5rem' : '4.5rem', fontWeight:'900', fontStyle:'italic', textTransform:'uppercase', lineHeight:0.9, margin:0, letterSpacing:'-2px' }}>
-                Academia<br/><span style={{ color:C.gold }}>Smart 2026</span>
+                Academia<br/><span style={{ color:C.gold }}>Smart 2025</span>
               </h1>
               <p style={{ color:'#94a3b8', fontSize: '0.9rem', letterSpacing:'1px', marginTop:'1.5rem', maxWidth:'300px', lineHeight:1.6 }}>
                 Portal unificado de inducción y formación continua para funcionarios de excelencia.
@@ -596,7 +596,7 @@ export default function Aprende({ isRDMLS = false }) {
             initial={{ x: 100, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ type:'spring', damping:20, delay:0.4 }}
-            src="/serenito_3d_humanized_2026_1774875415876.png" 
+            src="/serenito_3d_humanized_2025_1774875415876.png" 
             alt="Serenito 3D" 
             style={{ 
               position:'absolute', 
@@ -809,7 +809,7 @@ export default function Aprende({ isRDMLS = false }) {
             }
             playSound('success');
             setStep('diploma');
-            try { await addDoc(collection(db, 'induccion_certificados_2026'), { ...userData, fecha: new Date().toISOString(), score, domain:'IMLS' }); }
+            try { await addDoc(collection(db, 'induccion_certificados_2025'), { ...userData, fecha: new Date().toISOString(), score, domain:'IMLS' }); }
             catch(e) { console.error(e); }
           }} style={{ ...goldBtn, width:'100%', marginTop:'0.5rem' }}>GENERAR CERTIFICADO OFICIAL 🎓</button>
         </div>
@@ -829,12 +829,12 @@ export default function Aprende({ isRDMLS = false }) {
           <img src="/escudo.png" alt="IMLS" style={{ height:'70px' }}/>
           <div style={{ textAlign:'right' }}>
             <div style={{ color:C.gold, fontWeight:'900', fontSize:'0.8rem', letterSpacing:'3px' }}>ACADEMIA SMART IMLS</div>
-            <div style={{ color:'#94a3b8', fontSize:'0.65rem', letterSpacing:'4px', marginTop:'4px' }}>LA SERENA · CHILE · 2026</div>
+            <div style={{ color:'#94a3b8', fontSize:'0.65rem', letterSpacing:'4px', marginTop:'4px' }}>LA SERENA · CHILE · 2025</div>
           </div>
         </div>
         <div style={{ textAlign:'center' }}>
           <h1 style={{ fontSize:'clamp(2.5rem,8vw,5rem)', fontWeight:'900', fontFamily:'Georgia, serif', letterSpacing:'0.1em', margin:'0 0 0.5rem', color:'#111' }}>CERTIFICADO</h1>
-          <p style={{ color:'#888', fontStyle:'italic', fontSize:'1rem', marginBottom:'2rem', fontFamily:'Georgia, serif' }}>De Aprobación · Inducción Institucional RDMLS 2026</p>
+          <p style={{ color:'#888', fontStyle:'italic', fontSize:'1rem', marginBottom:'2rem', fontFamily:'Georgia, serif' }}>De Aprobación · Inducción Institucional RDMLS 2025</p>
           <p style={{ fontSize:'0.7rem', color:'#aaa', letterSpacing:'3px', marginBottom:'1rem' }}>OTORGADO A:</p>
           <h2 style={{ fontSize:'clamp(1.8rem,5vw,3.5rem)', fontWeight:'900', color:C.gold, margin:'0 0 1rem', letterSpacing:'-1px' }}>
             {userData.nombres} {userData.apellidos}
@@ -843,11 +843,11 @@ export default function Aprende({ isRDMLS = false }) {
             {userData.calidad?.toUpperCase()} · {userData.area?.toUpperCase()}
           </p>
           <p style={{ fontFamily:'Georgia, serif', fontStyle:'italic', fontSize:'1rem', color:'#444', maxWidth:'600px', margin:'0 auto 2.5rem', lineHeight:1.7 }}>
-            "Por haber completado con éxito el proceso de inducción institucional de la Ilustre Municipalidad de La Serena, adhiriendo a los valores, protocolos y misión de la Academia Smart IMLS 2026."
+            "Por haber completado con éxito el proceso de inducción institucional de la Ilustre Municipalidad de La Serena, adhiriendo a los valores, protocolos y misión de la Academia Smart IMLS 2025."
           </p>
           <div style={{ display:'flex', justifyContent:'space-around', alignItems:'flex-end', borderTop:'2px solid rgba(197,160,101,0.2)', paddingTop:'1.5rem' }}>
             <div style={{ textAlign:'center' }}><div style={{ fontStyle:'italic', color:'#ccc', fontSize:'1.5rem', fontFamily:'Georgia, serif', marginBottom:'8px' }}>Firma Digital RDMLS</div><div style={{ borderTop:'2px solid #ddd', paddingTop:'8px', fontSize:'0.6rem', letterSpacing:'2px', color:'#999' }}>DIRECCIÓN DE COMUNICACIONES</div></div>
-            <div style={{ textAlign:'center' }}><div style={{ color:C.gold, fontWeight:'900', fontSize:'1rem', marginBottom:'6px' }}>RDMLS-IMLS-2026</div><QrCode size={44} color="#ccc"/><div style={{ fontSize:'0.55rem', color:'#bbb', letterSpacing:'1px', marginTop:'4px' }}>rdmls.cl · academia</div></div>
+            <div style={{ textAlign:'center' }}><div style={{ color:C.gold, fontWeight:'900', fontSize:'1rem', marginBottom:'6px' }}>RDMLS-IMLS-2025</div><QrCode size={44} color="#ccc"/><div style={{ fontSize:'0.55rem', color:'#bbb', letterSpacing:'1px', marginTop:'4px' }}>rdmls.cl · academia</div></div>
             <div style={{ textAlign:'center' }}><div style={{ fontStyle:'italic', color:'#ccc', fontSize:'1.5rem', fontFamily:'Georgia, serif', marginBottom:'8px' }}>Firma Alcaldía</div><div style={{ borderTop:'2px solid #ddd', paddingTop:'8px', fontSize:'0.6rem', letterSpacing:'2px', color:'#999' }}>ADMINISTRACIÓN MUNICIPAL</div></div>
           </div>
         </div>
@@ -878,7 +878,7 @@ export default function Aprende({ isRDMLS = false }) {
         }}>
           <div>
             <h1 style={{ fontSize: isMobile ? '1.5rem' : 'clamp(1.8rem,4vw,2.8rem)', fontWeight:'900', fontStyle:'italic', textTransform:'uppercase', margin:0, lineHeight:1 }}>Centro de Mando</h1>
-            <p style={{ color:C.gold, fontWeight:'700', textTransform:'uppercase', fontSize: isMobile ? '0.55rem' : '0.65rem', letterSpacing:'4px', margin:'4px 0 0' }}>Malla Curricular IMLS · Academia Smart 2026</p>
+            <p style={{ color:C.gold, fontWeight:'700', textTransform:'uppercase', fontSize: isMobile ? '0.55rem' : '0.65rem', letterSpacing:'4px', margin:'4px 0 0' }}>Malla Curricular IMLS · Academia Smart 2025</p>
           </div>
           <div style={{ display:'flex', alignItems:'center', gap:'12px', width: isMobile ? '100%' : 'auto', justifyContent: isMobile ? 'center' : 'flex-end' }}>
             <button onClick={toggleAudio} style={{
@@ -944,12 +944,12 @@ export default function Aprende({ isRDMLS = false }) {
             <div style={{ width: isMobile ? 44 : 56, height: isMobile ? 44 : 56, borderRadius:'50%', background:'rgba(0,0,0,0.6)', border:'2px solid rgba(255,255,255,0.2)', flexShrink:0, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'900', fontSize: isMobile ? '0.9rem' : '1.2rem', color:C.gold }}>{progress}%</div>
             <div>
               <div style={{ fontWeight:'900', fontSize: isMobile ? '1rem' : '1.3rem', fontStyle:'italic', textTransform:'uppercase', lineHeight:1 }}>Status Global</div>
-              <div style={{ fontSize: isMobile ? '0.5rem' : '0.6rem', letterSpacing:'3px', opacity:0.6 }}>{userData.nombres?.toUpperCase() || 'FUNCIONARIO'} · IMLS 2026</div>
+              <div style={{ fontSize: isMobile ? '0.5rem' : '0.6rem', letterSpacing:'3px', opacity:0.6 }}>{userData.nombres?.toUpperCase() || 'FUNCIONARIO'} · IMLS 2025</div>
             </div>
           </div>
           <div style={{ display:'flex', gap:'10px', width: isMobile ? '100' : 'auto', justifyContent: isMobile ? 'space-between' : 'flex-end' }}>
             <button onClick={() => { playSound('pop'); setTriviaStep(0); setAnswered(false); setScore(0); setStep('trivia'); }} style={{ ...goldBtn, background:'rgba(0,0,0,0.7)', color:'white', boxShadow:'none', border:'1px solid rgba(255,255,255,0.1)', flex: isMobile ? 1 : 'none', fontSize: isMobile ? '0.7rem' : '0.85rem' }}>EVALUACIÓN FINAL →</button>
-            <button onClick={() => { playSound('wrong'); localStorage.removeItem('imls_user_2026'); window.location.reload(); }} style={{ background:'rgba(0,0,0,0.3)', border:'1px solid rgba(0,0,0,0.2)', borderRadius:'12px', padding:'10px 14px', cursor:'pointer', color:'black' }}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
+            <button onClick={() => { playSound('wrong'); localStorage.removeItem('imls_user_2025'); window.location.reload(); }} style={{ background:'rgba(0,0,0,0.3)', border:'1px solid rgba(0,0,0,0.2)', borderRadius:'12px', padding:'10px 14px', cursor:'pointer', color:'black' }}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></button>
           </div>
         </div>
       </div>
@@ -1152,7 +1152,7 @@ export default function Aprende({ isRDMLS = false }) {
                   </div>
                   <div>
                     <span style={{ display:'block', color:C.gold, fontSize:'0.7rem', letterSpacing:'5px', fontWeight:'900', textTransform:'uppercase' }}>Presentación Institucional TICs</span>
-                    <span style={{ fontWeight:'900', fontSize:'1.5rem', fontStyle:'italic', textTransform:'uppercase' }}>ARQUITECTURA VLS 2026</span>
+                    <span style={{ fontWeight:'900', fontSize:'1.5rem', fontStyle:'italic', textTransform:'uppercase' }}>ARQUITECTURA VLS 2025</span>
                   </div>
                 </div>
                 <button onClick={() => setShowAdminMode(false)} style={{ background:'transparent', border:`1px solid ${C.glassBrd}`, borderRadius:'10px', padding:'10px', cursor:'pointer', color:'white' }}>
@@ -1163,7 +1163,7 @@ export default function Aprende({ isRDMLS = false }) {
               {/* Body */}
               <div style={{ flex:1, overflowY:'auto', padding:'2rem', display:'flex', flexDirection:'column', gap:'2rem' }}>
                 <p style={{ color:'#94a3b8', fontSize:'1.1rem', lineHeight:1.7, margin:0, fontWeight:'600' }}>
-                  Esta plataforma no es un sistema estático; es el <span style={{ color:C.gold, fontWeight:'900' }}>Ecosistema Digital 2026</span> para la IMLS. Desarrollado con tecnología Edge, inteligencia artificial cognitiva y un frontend de ultra-desempeño diseñado para escalar en toda la red municipal de La Serena.
+                  Esta plataforma no es un sistema estático; es el <span style={{ color:C.gold, fontWeight:'900' }}>Ecosistema Digital 2025</span> para la IMLS. Desarrollado con tecnología Edge, inteligencia artificial cognitiva y un frontend de ultra-desempeño diseñado para escalar en toda la red municipal de La Serena.
                 </p>
 
                 {/* Stack Tags */}

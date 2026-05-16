@@ -1,0 +1,6 @@
+{
+  "type": "TXT",
+  "name": "google._domainkey.mtl-spa.cl",
+  "content": "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnz5yh5J/F9ht62gHqCeVQohNC2Rt2P0YLp2MOxabyzKbl9NTFEkdAX9tauDO2Xug0bkcYjCyvApn+l6EKbFswg4cvY4hBiSI0jSSuJCEINMlmFvBDzb9BuLJ72Bnf+dNmcG5Cujj/Gv+OQv0nK5RNciccjvzrc7C9ewFRNbSOnIKe2RP4KOuBNSmfDy6KdtvzVzMvLYMuu6S3vNmxk6vVyfdKT8O+1cxPG9bcjSagjg7sOCYb6AVSIe2TwryaTJ2AG7ZmjSUfiKJ+tlnBUbvJuldtiYITLfItyJ7zGg0nuUzEFuvO/6hYugNAN3V5U7pNjld5tBSNOc5L7AtTCa/YwIDAQAB",
+  "ttl": 3600
+}

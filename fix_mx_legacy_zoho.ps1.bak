@@ -1,0 +1,26 @@
+
+$Email = "Vecinoslaserenachile@gmail.com"
+$Key = "bb53aaa5c29acc38c183291529a1dd8937d18"
+$ZoneId = "165c0c9a9631b72cd8d314232bc2f1f1"
+$Headers = @{
+    "X-Auth-Email" = $Email
+    "X-Auth-Key"   = $Key
+    "Content-Type"  = "application/json"
+}
+
+Write-Host "--- Limpiando registros MX antiguos ---"
+$Records = Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/dns_records?type=MX" -Method Get -Headers $Headers
+foreach ($Record in $Records.result) {
+    Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/dns_records/$($Record.id)" -Method Delete -Headers $Headers
+}
+
+Write-Host "--- Insertando registros MX de Zoho ---"
+$MX1 = @{ type="MX"; name="mtl-spa.cl"; content="mx.zoho.com"; priority=10 }
+$MX2 = @{ type="MX"; name="mtl-spa.cl"; content="mx2.zoho.com"; priority=20 }
+$MX3 = @{ type="MX"; name="mtl-spa.cl"; content="mx3.zoho.com"; priority=50 }
+
+Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/dns_records" -Method Post -Headers $Headers -Body ($MX1 | ConvertTo-Json)
+Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/dns_records" -Method Post -Headers $Headers -Body ($MX2 | ConvertTo-Json)
+Invoke-RestMethod -Uri "https://api.cloudflare.com/client/v4/zones/$ZoneId/dns_records" -Method Post -Headers $Headers -Body ($MX3 | ConvertTo-Json)
+
+Write-Host "DNS CONFIGURADO EXITOSAMENTE PARA ZOHO MAIL"

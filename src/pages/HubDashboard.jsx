@@ -87,28 +87,28 @@ const VLSNewsBencinazo = lazy(() => import('../components/VLSNewsBencinazo'));
 const VLSNewsSentinel = lazy(() => import('../components/VLSNewsSentinel'));
 const VLSNewsPoduje = lazy(() => import('../components/VLSNewsPoduje'));
 const VLSNewsAguasValle = lazy(() => import('../components/VLSNewsAguasValle'));
-const VLSNewsArtemis = lazy(() => import('../components/VLSNewsArtemis'));
-const VLSNewsChequia = lazy(() => import('../components/VLSNewsChequia'));
-const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
-const VLSNewsAvalancha = lazy(() => import('../components/VLSNewsAvalancha'));
+// const VLSNewsArtemis = lazy(() => import('../components/VLSNewsArtemis'));
+// const VLSNewsChequia = lazy(() => import('../components/VLSNewsChequia'));
+// const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
+// const VLSNewsAvalancha = lazy(() => import('../components/VLSNewsAvalancha'));
 const VLSNotesGallery = lazy(() => import('../components/VLSNotesGallery'));
-const SerenitoVLS = lazy(() => import('../components/SerenitoVLS'));
+// const SerenitoVLS = lazy(() => import('../components/SerenitoVLS'));
 import VLSRoadmap from '../components/VLSRoadmap';
 import VLSManifesto from '../components/VLSManifesto';
 import VLSTriviaMain from '../components/vls_trivia/VLSTriviaMain';
 import SmartFloatingTV from '../components/SmartFloatingTV';
 import ParliamentaryObservatory from '../components/ParliamentaryObservatory';
-import SeoHead from '../components/SeoHead';
-import FeaturedBook from '../components/FeaturedBook';
+import SEO from '../components/SEO';
+// import FeaturedBook from '../components/FeaturedBook';
 import LoadingScreen from '../components/LoadingScreen';
 const MemorialHijosRegion = lazy(() => import('../components/MemorialHijosRegion'));
 const DistancesMap = lazy(() => import('../components/DistancesMap'));
 import QuickEmergencyBar from '../components/QuickEmergencyBar';
 import VLSCommunityDirectory from '../components/EmergencyDirectory';
-import NewsDataStrip from '../components/NewsDataStrip';
-import { useMasterEditor, MasterEditorToggle, MasterEditorBanner, EditorWrapper } from '../components/MasterEditorOverlay';
+// import NewsDataStrip from '../components/NewsDataStrip';
+// import { useMasterEditor, MasterEditorToggle, MasterEditorBanner, EditorWrapper } from '../components/MasterEditorOverlay';
 import WorldNewsTablets from '../components/WorldNewsTablets';
-import LocalNewsGrid from '../components/LocalNewsGrid';
+// import LocalNewsGrid from '../components/LocalNewsGrid';
 
 export default function HubDashboard() {
     // 1. Context & Routing
@@ -116,7 +116,14 @@ export default function HubDashboard() {
     const { weather, isAuthorized, isGuest, isRegistered, currentUser, handleLogin, handleLogout } = useOutletContext();
 
     // ── MASTER EDITOR MODE (solo vecinoslaserenachile@gmail.com) ─────────────
-    const { isMaster, editorActive, toggleEditor, hiddenModules, hideModule, restoreAll, isHidden } = useMasterEditor(currentUser);
+    // const { isMaster, editorActive, toggleEditor, hiddenModules, hideModule, restoreAll, isHidden } = useMasterEditor(currentUser);
+    const isMaster = false;
+    const editorActive = false;
+    const toggleEditor = () => {};
+    const hiddenModules = [];
+    const hideModule = () => {};
+    const restoreAll = () => {};
+    const isHidden = () => false;
     const { lang, setLang, t: translate } = useTranslation();
 
     // 2. Environmental Constants & Storage
@@ -744,7 +751,7 @@ export default function HubDashboard() {
             const defaultNews = [
                 { title: "OPORTUNIDAD: Capacitaciones Acciona para Mujeres", date: "Hoy", category: "EMPLEO", desc: "Curso gratuito de terminaciones en construcción para las vecinas de La Serena.", iconStr: "UserCheck", color: "#f87171", eventId: "open-vls-acciona", image: "/acciona/afiche_real.png" },
                 { title: "INVESTIGACIÓN: Stella Díaz Varín «La Colorina»", date: "Hoy", category: "LITERATURA", desc: "Explora la vida y obra de la poeta más indómita de La Serena en su nuevo archivo digital.", iconStr: "BookOpen", color: "#ef4444", eventId: "open-vls-stella", image: "/stella/stella_bg.png" },
-                { title: "INVESTIGACIÓN: Misión Artemis II", date: "03 de Abril, 2026", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis", image: "/artemis_teaser.png" },
+                { title: "INVESTIGACIÓN: Misión Artemis II", date: "03 de Abril, 2025", category: "NASA / VLS", desc: "Visualización 3D del Orion Spacecraft y la nueva frontera de la humanidad.", iconStr: "Zap", color: "#3b82f6", eventId: "open-vls-artemis", image: "/artemis_teaser.png" },
                 { title: "INVESTIGACIÓN: El Futuro de los Negocios (UCEN)", date: "Hoy", category: "ACADEMIA", desc: "42° Congreso ASFAE: El impacto de la IA y la descentralización en Chile.", iconStr: "GraduationCap", color: "#00F0FF", eventId: "open-vls-ucen" },
                 { title: "RESTAURACIÓN: Monumento Francisco de Aguirre", date: "Hoy", category: "PATRIMONIO", desc: "La alcaldesa Daniela Norambuena impulsa la recuperación del símbolo histórico de la ciudad.", iconStr: "Landmark", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/aguirre_real.png" },
                 { title: "GESTIÓN: Recursos en Santiago (DIPRES)", date: "Hoy", category: "GESTIÓN", desc: "La alcaldesa Daniela Norambuena destraba proyectos clave en Hacienda y Salud.", iconStr: "Building2", color: "#38bdf8", eventId: "open-vls-alcaldesa", image: "/alcaldesa_notas/dipres_real.png" },
@@ -902,7 +909,7 @@ export default function HubDashboard() {
         'escuela-musica', 'escuela-artes', 'tribunales',
         'ecumenico', 'laico', 'farito-browser', 'glosario-vls',
         'stickers-portal', 'difundir-app', 'legacy-vls', 'red-social',
-        'vls-investigacion-2026', 'memorias-unicornio', 'vls-juansoldado', 'vls-andacollo', 'vls-vallenar', 'vls-domeyko'
+        'vls-investigacion-2025', 'memorias-unicornio', 'vls-juansoldado', 'vls-andacollo', 'vls-vallenar', 'vls-domeyko'
     ];
 
     const isRestrictedModule = (id) => {
@@ -972,7 +979,7 @@ export default function HubDashboard() {
             icon: Globe, color: '#3b82f6', isEvent: 'open-vls-chequia', active: true, badge: 'INTELIGENCIA'
         },
         {
-            id: 'vls-ucen', title: 'UCEN: Congreso ASFAE 42', subtitle: 'Investigación: IA, Negocios y Descentralización 2026',
+            id: 'vls-ucen', title: 'UCEN: Congreso ASFAE 42', subtitle: 'Investigación: IA, Negocios y Descentralización 2025',
             icon: GraduationCap, color: '#00F0FF', isEvent: 'open-vls-ucen', active: true, badge: 'ACADEMIA'
         },
         {
@@ -1002,7 +1009,7 @@ export default function HubDashboard() {
             icon: Joystick, color: '#FFD700', path: '/vlsabes', active: true, badge: isRDMLS ? 'SABERES' : 'TRIVIA'
         },
         {
-            id: 'vls-investigacion-2026', title: 'LA PARADOJA 2026 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
+            id: 'vls-investigacion-2025', title: 'LA PARADOJA 2025 (Reportaje)', subtitle: '¿Por qué la educación apagó el supercomputador?',
             icon: BookOpen, color: '#ef4444', isEvent: 'open-vls-investigacion', active: true, badge: 'EXCLUSIVO'
         },
         {
@@ -1111,7 +1118,7 @@ export default function HubDashboard() {
             icon: Map, color: '#c084fc', isEvent: 'open-time-bus', active: true
         },
         {
-            id: 'roadmap', title: 'Roadmap VLS', subtitle: 'Hitos proyectados 2026',
+            id: 'roadmap', title: 'Roadmap VLS', subtitle: 'Hitos proyectados 2025',
             icon: HistoryIcon, color: '#06b6d4', isEvent: 'open-vls-roadmap', active: true, badge: 'ESTRATÉGICO'
         },
         {
@@ -1127,7 +1134,7 @@ export default function HubDashboard() {
             icon: PartyPopper, color: '#ec4899', isEvent: 'open-galaxia-disco', active: true, badge: 'RECUERDOS'
         },
         {
-            id: 'vls-roadmap', title: 'Roadmap VLS 2026', subtitle: 'Inventario de Servicios y Visión Estratégica',
+            id: 'vls-roadmap', title: 'Roadmap VLS 2025', subtitle: 'Inventario de Servicios y Visión Estratégica',
             icon: ListChecks, color: '#3b82f6', isEvent: 'open-vls-roadmap', active: true, badge: 'ESTATUS'
         },
         {
@@ -1283,7 +1290,7 @@ export default function HubDashboard() {
             icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: false, badge: 'NUEVO'
         },
         {
-            id: 'vls-vial', title: 'Crisis Vial: El Laberinto', subtitle: 'Expediente VLS-2026-VIAL: Denuncia baches y rutas críticas',
+            id: 'vls-vial', title: 'Crisis Vial: El Laberinto', subtitle: 'Expediente VLS-2025-VIAL: Denuncia baches y rutas críticas',
             icon: Construction, color: '#f59e0b', isEvent: 'open-vial-news', active: true, badge: 'TACTICO'
         },
         {
@@ -1370,7 +1377,7 @@ export default function HubDashboard() {
                 : 'Gestión de eventos vecinales, asambleas y monitor de participación ciudadana en tiempo real.',
             icon: PartyPopper,
             color: '#f59e0b',
-            modules: ['protocolo', 'almanaque-2026', 'muralismo', 'decision-vecinal']
+            modules: ['protocolo', 'almanaque-2025', 'muralismo', 'decision-vecinal']
         },
         {
             id: 'listening',
@@ -1379,7 +1386,7 @@ export default function HubDashboard() {
             icon: Radio,
             color: '#38bdf8',
             modules: [
-                'vls-domeyko', 'vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2026', 
+                'vls-domeyko', 'vecinos-analytics', 'sentinel-apex', 'social-vision', 'vls-investigacion-2025', 
                 'vls-artemis', 'vls-chequia', 'central-difusion', 'plaza-vecinal', 
                 'parlamento-regional', 'faro-ia', 'pulso-ciudadano', 'vls-andacollo', 'vls-vallenar', 'vls-juansoldado'
             ]
@@ -1488,7 +1495,7 @@ export default function HubDashboard() {
     ]);
 
     const guardianes = [
-        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/serenito_38.glb', img: '/serenito_3d_humanized_2026_1774875415876.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
+        { id: 'serenito-guard', name: 'Serenito', role: 'Seguridad & Protección', model: '/models/serenito_38.glb', img: '/serenito_3d_humanized_2025_1774875415876.png', bio: isRDMLS ? 'Experto en seguridad municipal y IA biométrica. El corazón del Portal RDMLS.' : 'Experto en seguridad vecinal y IA biométrica. El corazón de VecinoSmart.' },
         { id: 'tata-rojas', name: 'Tata Rojas', role: 'Gran Patriarca VLS', model: '/models/tata_rojas_3d.glb', img: '/avatars/tio_pedro.png', bio: 'El sabio del Valle. Custodio de las tradiciones y la memoria histórica de nuestra región.' },
         { id: 'alpino-tech', name: 'Alpino 3D', role: 'Élite Tecnológica VLS', model: '/models/alpino3d.glb', img: '/avatars/alpino.png', bio: 'Experto en infraestructura crítica y sistemas inteligentes. El puente entre el cerro y la nube.' },
         { id: 'don-joako', name: 'Don Joako', role: 'Seguridad Patrimonial', model: '/models/Serenito_polera_blancacuerpo_entero.glb', img: '/avatars/don_joako_guardian.png', bio: 'Guardián del casco histórico. Siempre vigilante con su gorro de honor y mirada profunda.' },
@@ -1747,7 +1754,7 @@ export default function HubDashboard() {
                     {/* 3. Radio Dial */}
                     <div style={{ width: '100%', position: 'relative', zIndex: 100 }}>
                         <RDMLSRadioDial />
-                        <FeaturedBook isRDMLS={true} />
+                        {/* <FeaturedBook isRDMLS={true} /> */}
                     </div>
 
                     {/* 3. Cartel Burdeo Municipal */}
@@ -1769,7 +1776,18 @@ export default function HubDashboard() {
                         width: '100%', color: 'rgba(255,255,255,0.6)', fontSize: '1rem',
                         borderTop: '1px solid rgba(245,158,11,0.2)', fontWeight: '500', letterSpacing: '1px'
                     }}>
-                        <p>www.rdmls.cl · IMLS COMUNICACIONES 2026</p>
+                        {/* {isMaster && (
+                <MasterEditorToggle
+                    editorActive={editorActive}
+                    toggleEditor={toggleEditor}
+                    hiddenCount={hiddenModules.length}
+                    onRestore={restoreAll}
+                />
+            )}
+            {editorActive && (
+                <MasterEditorBanner hiddenCount={hiddenModules.length} />
+            )} */}
+                        <p>www.rdmls.cl · IMLS COMUNICACIONES 2025</p>
                         <p style={{ fontSize: '0.8rem', opacity: 0.7, marginTop: '5px' }}>Ilustre Municipalidad de La Serena</p>
                     </footer>
                 </div>
@@ -1779,11 +1797,10 @@ export default function HubDashboard() {
 
     return (
         <React.Fragment>
-            <SeoHead 
+            <SEO 
                 title="Vecinos La Serena — Portal Inteligente de la Comuna"
                 description="La primera plataforma Smart City de la Región de Coquimbo. Radio, reportes vecinales, patrimonio 3D y servicios ciudadanos 24/7."
                 image="/vls-logo-premium.png"
-                type="website"
             />
             {/* ── MASTER EDITOR MODE UI (solo vecinoslaserenachile@gmail.com) ── */}
             {isMaster && (
@@ -2018,7 +2035,7 @@ export default function HubDashboard() {
                     {/* ══════════════════════════════════════════════════════════ */}
                     <div style={{ width: '100%', maxWidth: '1200px', margin: '1rem auto 0', padding: '0 2rem' }}>
                         <WorldNewsTablets />
-                        <LocalNewsGrid />
+                        {/* <LocalNewsGrid /> */}
                     </div>
                     
                     {/* ══════════════════════════════════════════════════════════ */}
@@ -2656,7 +2673,7 @@ export default function HubDashboard() {
                         >
                             <div style={{ background: '#38bdf820', color: '#38bdf8', padding: '4px 12px', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 900, alignSelf: 'start', border: '1px solid #38bdf8' }}>NUEVO REPORTE</div>
                             <h4 style={{ margin: 0, color: 'white', fontSize: '1.2rem', fontWeight: 900 }}>Pulso Ciudadano Abril</h4>
-                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Análisis de percepción social y opinión pública Q1-2026.</p>
+                            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.4 }}>Análisis de percepción social y opinión pública Q1-2025.</p>
                             <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: '#38bdf8', fontWeight: 900, fontSize: '0.75rem' }}>VER ESTUDIO <BarChart3 size={14} /></div>
                         </motion.div>
 
@@ -3117,7 +3134,7 @@ export default function HubDashboard() {
                             <Rocket size={28} color="#38bdf8" />
                             <div>
                                 <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900 }}>MISIÓN ARTEMIS II: LA LUNA</h3>
-                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Expediciones y tecnología espacial 2026.</p>
+                                <p style={{ margin: 0, color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem' }}>Expediciones y tecnología espacial 2025.</p>
                             </div>
                         </div>
 
@@ -3178,7 +3195,7 @@ export default function HubDashboard() {
                                     <h3 style={{ margin: 0, color: '#fff', fontSize: '1.1rem', fontWeight: 900, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>UCEN: 42° CONGRESO ASFAE</h3>
                                     <p style={{ margin: 0, color: 'rgba(0, 240, 255, 0.9)', fontSize: '0.8rem', fontWeight: 900, letterSpacing: '0.5px' }}>Epicentro de Ciencias Empresariales</p>
                                     <div style={{ marginTop: '8px', display: 'flex', gap: '5px' }}>
-                                        <span style={{ fontSize: '0.6rem', color: 'white', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '50px' }}>IA / NOV 2026</span>
+                                        <span style={{ fontSize: '0.6rem', color: 'white', background: 'rgba(255,255,255,0.1)', padding: '2px 8px', borderRadius: '50px' }}>IA / NOV 2025</span>
                                     </div>
                                     </div>
                                 </div>
@@ -3470,7 +3487,7 @@ export default function HubDashboard() {
                                         </div>
                                         <div>
                                             <h3 style={{ color: '#fff', fontSize: '1.4rem', fontWeight: 900, letterSpacing: '4px', margin: 0, textTransform: 'uppercase' }}>DECODIFICANDO <span style={{ color: '#ef4444' }}>TRIPLE SEÑAL LIVE</span></h3>
-                                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontWeight: 'bold', margin: '5px 0 0 0', letterSpacing: '2px' }}>CENTINEL FARO : MASTER SIGNAL MONITORING SATELLITE 2026</p>
+                                            <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.7rem', fontWeight: 'bold', margin: '5px 0 0 0', letterSpacing: '2px' }}>CENTINEL FARO : MASTER SIGNAL MONITORING SATELLITE 2025</p>
                                         </div>
                                     </div>
                                     <div className="hide-on-mobile" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -3552,7 +3569,7 @@ export default function HubDashboard() {
                                 <div style={{ flex: 1 }}>
                                     <div style={{ display: 'flex', gap: '8px', marginBottom: '0.5rem', alignItems: 'center' }}>
                                         <span style={{ background: '#ef4444', color: 'white', padding: '0.2rem 0.8rem', borderRadius: '50px', fontSize: '0.65rem', fontWeight: 900, letterSpacing: '1px' }}>VLS INVESTIGA</span>
-                                        <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600 }}>01 de Abril, 2026</span>
+                                        <span style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.75rem', fontWeight: 600 }}>01 de Abril, 2025</span>
                                     </div>
                                     <h3 style={{ margin: 0, color: '#fff', fontSize: '1.5rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '-0.5px' }}>CASO IAN: PUNTO CIEGO DEL RETAIL</h3>
                                     <p style={{ margin: '0.5rem 0 0', color: 'rgba(255,255,255,0.7)', fontSize: '0.95rem', lineHeight: '1.5' }}>La investigación sobre negligencia e infraestructura que busca transformar para siempre las normativas de seguridad al interior de los supermercados.</p>
@@ -3589,10 +3606,10 @@ export default function HubDashboard() {
                                 <div style={{ position: 'relative', zIndex: 1, width: '100%' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
                                         <span style={{ background: '#7c3aed', color: 'white', padding: '0.4rem 1.5rem', borderRadius: '50px', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '2px' }}>HEMEROTECA VLS</span>
-                                        <span style={{ color: '#a78bfa', fontWeight: 'bold', fontSize: '0.8rem' }}>ESPECIAL SEMANA SANTA 2026</span>
+                                        <span style={{ color: '#a78bfa', fontWeight: 'bold', fontSize: '0.8rem' }}>ESPECIAL SEMANA SANTA 2025</span>
                                     </div>
                                     <h1 style={{ color: 'white', fontSize: isMobile ? '1.8rem' : '2.8rem', fontWeight: 950, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>
-                                        Semana Santa 2026:<br/>
+                                        Semana Santa 2025:<br/>
                                         <span style={{ color: '#a78bfa' }}>Historia y Tradición</span>
                                     </h1>
                                     <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: isMobile ? '0.95rem' : '1.15rem', maxWidth: '800px', margin: 0, fontWeight: 400, lineHeight: 1.5 }}>
@@ -3935,7 +3952,7 @@ export default function HubDashboard() {
                              </div>
                         </div>
 
-                        {/* CAMBIO DE HORA 2026 PREMIUM CARD */}
+                        {/* CAMBIO DE HORA 2025 PREMIUM CARD */}
                         <div style={{ maxWidth: '1400px', margin: '0 auto 2.5rem auto', width: '100%', padding: '0 2rem', boxSizing: 'border-box' }}>
                              <div 
                                   onClick={handleHorario}
@@ -3966,7 +3983,7 @@ export default function HubDashboard() {
                                              <HistoryIcon size={18} className="animate-spin-slow" />
                                          </div>
                                      </div>
-                                     <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>EL GRAN CAMBIO DE HORA 2026</h2>
+                                     <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>EL GRAN CAMBIO DE HORA 2025</h2>
                                      <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
                                          Chile atrasa sus relojes este 5 de abril. Investigamos el origen de esta medida, sus efectos en el organismo y cómo asimilarlo con éxito desde La Serena.
                                      </p>
@@ -4089,7 +4106,7 @@ export default function HubDashboard() {
                                             <Zap size={18} />
                                         </div>
                                     </div>
-                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>LA PARADOJA 2026</h2>
+                                    <h2 style={{ color: 'white', fontSize: isMobile ? '1.5rem' : '1.8rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem', fontFamily: '"Outfit", sans-serif' }}>LA PARADOJA 2025</h2>
                                     <p style={{ color: 'white', fontSize: '0.95rem', margin: '0 0 1.5rem 0', fontWeight: 400, lineHeight: 1.4, flex: 1 }}>
                                         ¿Por qué la educación apagó el supercomputador del futuro? Una crisis pedagógica silenciada en el Chile actual.
                                     </p>
@@ -4442,7 +4459,7 @@ export default function HubDashboard() {
                                 <LaFloridaAirport isMini={true} />
                             </div>
                             <MusicRanking />
-                            <NewsDataStrip />
+                            {/* <NewsDataStrip /> */}
                             {/* SportsDataStrip eliminado por inconsistencia de datos */}
                             
                             {/* TUERCA VECINOS - REFACTORIZADO A CTA COMPACTO */}
@@ -4474,7 +4491,7 @@ export default function HubDashboard() {
                         </div>
                     )}
 
-                    {/* SECCIÓN GUARDIANES DE LA REGIÓN (Upgrade a 3D Elite 2026) */}
+                    {/* SECCIÓN GUARDIANES DE LA REGIÓN (Upgrade a 3D Elite 2025) */}
                     <div style={{ maxWidth: '1200px', margin: '6rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '3rem', gap: '1.5rem' }}>
                             <div style={{ height: '2px', flex: 1, background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.5))' }}></div>
@@ -4683,9 +4700,9 @@ export default function HubDashboard() {
                 {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
                 {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
                 {showAguasValle && <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />}
-                {showChequia && <VLSNewsChequia onClose={() => setShowChequia(false)} />}
+                {/* {showChequia && <VLSNewsChequia onClose={() => setShowChequia(false)} />}
                 {showIglesias && <VLSNewsIglesiasPiedra onClose={() => setShowIglesias(false)} />}
-                {showNewsAvalancha && <VLSNewsAvalancha onClose={() => setShowNewsAvalancha(false)} />}
+                {showNewsAvalancha && <VLSNewsAvalancha onClose={() => setShowNewsAvalancha(false)} />} */}
             </Suspense>
             
             {/* MODALS RENDERED IN APP.JSX (GLOBAL EVENT BUS) */}

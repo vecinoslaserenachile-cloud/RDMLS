@@ -28,7 +28,7 @@ export default defineConfig({
             return 'vendor-firebase';
           }
           if (id.includes('node_modules/@react-three') || id.includes('node_modules/three')) {
-            return 'vendor-3d';
+            return 'vendor-3d-v2';
           }
           // Aislar el contexto de idioma en su propio chunk para evitar colisiones de minificacion
           if (id.includes('src/context/LanguageContext')) {

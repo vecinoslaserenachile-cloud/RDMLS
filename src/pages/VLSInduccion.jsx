@@ -13,6 +13,12 @@ import {
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+// Safety Guard for icons
+const SafeIcon = ({ icon: Icon, size, className, color }) => {
+  if (!Icon) return <Zap size={size} className={className} color={color} />;
+  return <Icon size={size} className={className} color={color} />;
+};
+
 // --- DATOS MAESTROS ---
 const DEPARTAMENTOS = ["Alcaldía", "Administración Municipal", "Secretaría Municipal", "SECPLAN", "DIDECO", "Dirección de Obras (DOM)", "Gestión de Personas", "Seguridad Ciudadana", "Tránsito", "Turismo y Patrimonio", "Servicio a la Comunidad", "Salud", "Educación", "Jurídica", "Control"];
 
@@ -100,7 +106,7 @@ const SmartAssistantInduccion = () => {
               <div className="flex items-center gap-3">
                 <div className="relative">
                   <div className="bg-red-600 p-0.5 rounded-full overflow-hidden border-2 border-white/20 w-12 h-12">
-                    <img src="/serenito_3d_humanized_2026_1774875415876.png" alt="Serenito 3D" className="w-full h-full object-cover" />
+                    <img src="/serenito_3d_humanized_2025_1774875415876.png" alt="Serenito 3D" className="w-full h-full object-cover" />
                   </div>
                   <div className="absolute -bottom-1 -right-1 bg-green-500 w-3 h-3 rounded-full border-2 border-slate-950 animate-pulse"></div>
                 </div>
@@ -355,7 +361,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
             src="/escudo.png" className="h-32 lg:h-48 mx-auto md:mx-0 drop-shadow-[0_0_30px_rgba(255,255,255,0.2)]" 
           />
           <h1 className="text-5xl lg:text-[5rem] font-black text-white leading-[1] tracking-tighter uppercase italic">
-            PORTAL <br/><span className="text-red-600 font-normal italic">INDUCCIÓN {isRDMLS ? 'RDMLS' : '2026'}</span>
+            PORTAL <br/><span className="text-red-600 font-normal italic">INDUCCIÓN {isRDMLS ? 'RDMLS' : '2025'}</span>
           </h1>
           <p className="text-slate-400 font-extrabold uppercase tracking-[0.5em] text-xs pl-4 border-l-4 border-red-600 mt-6 mt-12 bg-slate-900/50 py-3 rounded-r-lg">
             Smart Administration • Patrimonio • Capital Humano
@@ -396,7 +402,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
             <img src="/serenito_3d_avatar_premium_1774312066289.png" className="absolute bottom-0 right-0 h-[90%] object-contain z-10 filter drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]" />
             <div className="absolute inset-0 bg-gradient-to-t from-red-600/20 to-transparent"></div>
             <div className="p-12 h-full flex flex-col justify-start">
-              <span className="text-white font-black text-6xl italic leading-none opacity-10">{isRDMLS ? 'RDMLS' : 'VLS'}<br/>2026</span>
+              <span className="text-white font-black text-6xl italic leading-none opacity-10">{isRDMLS ? 'RDMLS' : 'VLS'}<br/>2025</span>
             </div>
           </div>
         }
@@ -423,7 +429,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
             )}
           </div>
         }
-        content={<><p className="font-black text-4xl text-white mb-6 italic tracking-tighter">Gestión de Innovación</p><p className="text-2xl font-light leading-relaxed">"Bienvenidos a la gestión municipal 2026. Nuestra Alcaldesa Daniela Norambuena Borgheresi nos invita a trabajar con pasión y compromiso. Esta administración innova para brindar soluciones eficientes y transparencia total al vecino."</p><div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10 text-justify"><p className="italic text-sm text-slate-400">Nuestro compromiso es con la probidad y el buen trato, pilares de una Smart City humana.</p></div></>} 
+        content={<><p className="font-black text-4xl text-white mb-6 italic tracking-tighter">Gestión de Innovación</p><p className="text-2xl font-light leading-relaxed">"Bienvenidos a la gestión municipal 2025. Nuestra Alcaldesa Daniela Norambuena Borgheresi nos invita a trabajar con pasión y compromiso. Esta administración innova para brindar soluciones eficientes y transparencia total al vecino."</p><div className="mt-8 p-6 bg-white/5 rounded-2xl border border-white/10 text-justify"><p className="italic text-sm text-slate-400">Nuestro compromiso es con la probidad y el buen trato, pilares de una Smart City humana.</p></div></>} 
       />;
 
       case 3: return <ChapterLayout title="Estrategia" subtitle="Misión y Visión" 
@@ -433,7 +439,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
 
       case 4: return <ChapterLayout title="Concejo" subtitle="Fiscalización y Democracia" 
         visual={<div className="grid grid-cols-2 gap-4 p-8 w-full h-full overflow-y-auto bg-slate-900/50">{CONCEJALES.map(c => <div key={c} className="bg-white/5 p-4 rounded-2xl border border-white/10 text-center text-[10px] font-black uppercase flex flex-col items-center justify-center hover:bg-red-600 transition-all group active:scale-95 shadow-lg"><User size={24} className="mb-2 text-red-500 group-hover:text-white"/><span className="text-white">{c}</span></div>)}</div>}
-        content={<><p className="text-2xl">El **Concejo Municipal** es el órgano encargado de fiscalizar la gestión y aprueba normas locales. Está compuesto por 10 concejales electos democráticamente.</p><div className="bg-yellow-500/10 p-10 rounded-[2.5rem] border border-yellow-500/20 space-y-6 mt-8 shadow-xl"><h4 className="text-yellow-500 font-black text-3xl uppercase flex items-center gap-4 italic"><Shield/> Funciones Críticas</h4><ul className="space-y-6 font-light text-xl"><li>• Fiscalizar planes, programas y el actuar de la alcaldía.</li><li>• Aprobar el presupuesto anual del municipio.</li><li>• Dictar ordenanzas y normas de convivencia comunal.</li></ul></div></>} 
+        content={<><p className="text-2xl">El **Concejo Municipal** es el órgano encargado de fiscalizar la gestión y aprueba normas locales. Está compuesto por 10 concejales electos democráticamente.</p><div className="bg-yellow-500/10 p-10 rounded-[2.5rem] border border-yellow-500/20 space-y-6 mt-8 shadow-xl"><h4 className="text-yellow-500 font-black text-3xl uppercase flex items-center gap-4 italic"><SafeIcon icon={Shield}/> Funciones Críticas</h4><ul className="space-y-6 font-light text-xl"><li>• Fiscalizar planes, programas y el actuar de la alcaldía.</li><li>• Aprobar el presupuesto anual del municipio.</li><li>• Dictar ordenanzas y normas de convivencia comunal.</li></ul></div></>} 
       />;
 
       case 5: return <ChapterLayout title="Estructura" subtitle="Direcciones Municipales" 
@@ -486,13 +492,13 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
       />;
 
       case 9: return <ChapterLayout title="Ley Karin" subtitle="Respeto (21.643)" 
-        visual={<div className="p-12 text-center"><Shield size={160} className="text-pink-600 mx-auto drop-shadow-[0_0_40px_rgba(219,39,119,0.3)]"/><h4 className="font-bold text-pink-100 mt-8 text-4xl uppercase tracking-widest">Ley 21.643</h4></div>}
+        visual={<div className="p-12 text-center"><SafeIcon icon={Shield} size={160} className="text-pink-600 mx-auto drop-shadow-[0_0_40px_rgba(219,39,119,0.3)]"/><h4 className="font-bold text-pink-100 mt-8 text-4xl uppercase tracking-widest">Ley 21.643</h4></div>}
         content={<><p className="text-4xl font-black text-white mb-8 italic uppercase leading-none border-b-2 border-pink-600/30 pb-4">Protocolo Decreto 2065.</p><p className="text-2xl mb-8">La **Ley Karin** sanciona el acoso laboral, sexual y la violencia de terceros. Es obligatorio conocer el protocolo interno de prevención.</p><div className="grid gap-6 mt-8"><div className="bg-pink-600/10 p-8 rounded-[2rem] border border-pink-500/30 flex items-center gap-8 backdrop-blur-md"><AlertTriangle className="text-pink-500" size={40}/><div><h5 className="text-white font-black text-xl uppercase italic">Canales de Denuncia</h5><p className="text-sm text-slate-400 mt-1">Envía tu caso a: **denunciaprotocolo@laserena.cl** o vía Intranet.</p></div></div><div className="bg-pink-600/10 p-8 rounded-[2rem] border border-pink-500/30 flex items-center gap-8 backdrop-blur-md"><MessageCircle className="text-pink-500" size={40}/><div><h5 className="text-white font-black text-xl uppercase italic">Buen Trato</h5><p className="text-sm text-slate-400 mt-1">Fomentamos un clima laboral basado en la dignidad y el respeto mutuo.</p></div></div></div></>} 
       />;
 
       case 10: return <ChapterLayout title="Seguridad" subtitle="Ley 16.744 & Mutua" 
         visual={<div className="p-12 text-center"><HardHat size={160} className="text-yellow-500 mx-auto animate-bounce"/><h4 className="text-white font-black text-3xl mt-8 tracking-tighter">ANEXO 7851</h4></div>}
-        content={<><h4 className="text-yellow-500 font-black text-4xl uppercase tracking-tighter mb-8 border-b border-yellow-500/20 pb-4 italic">Prevención de Riesgos</h4><p className="mb-8 font-bold text-2xl text-white">Todo accidente debe reportarse en un máximo de 24 horas.</p><div className="bg-white/5 p-10 rounded-[3rem] border border-white/10 space-y-8 shadow-2xl relative overflow-hidden"><div className="absolute top-0 right-0 p-4 opacity-5"><Shield size={100}/></div><div className="flex gap-8 items-start"><div className="bg-yellow-500 text-slate-950 w-12 h-12 rounded-full flex items-center justify-center font-black text-2xl shrink-0 shadow-lg">1</div><div><h5 className="font-black text-white text-2xl uppercase italic">IST / Mutual de Seguridad</h5><p className="text-lg mt-1 text-slate-400">Protección total para Planta, Contrata y Honorarios ante accidentes laborales.</p></div></div><div className="flex gap-8 items-start"><div className="bg-yellow-500 text-slate-950 w-12 h-12 rounded-full flex items-center justify-center font-black text-2xl shrink-0 shadow-lg">2</div><div><h5 className="font-black text-white text-2xl uppercase italic">Dudas o Reportes</h5><p className="text-lg mt-1 text-slate-400">Comunícate de inmediato con la Sección de Prevención al **Anexo 7851**.</p></div></div></div></>} 
+        content={<><h4 className="text-yellow-500 font-black text-4xl uppercase tracking-tighter mb-8 border-b border-yellow-500/20 pb-4 italic">Prevención de Riesgos</h4><p className="mb-8 font-bold text-2xl text-white">Todo accidente debe reportarse en un máximo de 24 horas.</p><div className="bg-white/5 p-10 rounded-[3rem] border border-white/10 space-y-8 shadow-2xl relative overflow-hidden"><div className="absolute top-0 right-0 p-4 opacity-5"><SafeIcon icon={Shield} size={100}/></div><div className="flex gap-8 items-start"><div className="bg-yellow-500 text-slate-950 w-12 h-12 rounded-full flex items-center justify-center font-black text-2xl shrink-0 shadow-lg">1</div><div><h5 className="font-black text-white text-2xl uppercase italic">IST / Mutual de Seguridad</h5><p className="text-lg mt-1 text-slate-400">Protección total para Planta, Contrata y Honorarios ante accidentes laborales.</p></div></div><div className="flex gap-8 items-start"><div className="bg-yellow-500 text-slate-950 w-12 h-12 rounded-full flex items-center justify-center font-black text-2xl shrink-0 shadow-lg">2</div><div><h5 className="font-black text-white text-2xl uppercase italic">Dudas o Reportes</h5><p className="text-lg mt-1 text-slate-400">Comunícate de inmediato con la Sección de Prevención al **Anexo 7851**.</p></div></div></div></>} 
       />;
 
       case 11: return <ChapterLayout title="Educación" subtitle="Capacitación Continua" 
@@ -593,7 +599,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
                     
                     <div className="text-center relative z-10">
                         <h1 className="text-7xl lg:text-[9rem] font-serif font-black uppercase tracking-[0.1em] mb-4 leading-none text-[#1a1a1a]">CERTIFICADO</h1>
-                        <p className="text-2xl lg:text-3xl italic text-slate-500 mb-16 font-serif">De Aprobación Inducción Corporativa {isRDMLS ? 'RDMLS' : 'VLS'} 2026</p>
+                        <p className="text-2xl lg:text-3xl italic text-slate-500 mb-16 font-serif">De Aprobación Inducción Corporativa {isRDMLS ? 'RDMLS' : 'VLS'} 2025</p>
                         
                         <div className="mb-14">
                             <p className="text-slate-400 text-sm uppercase tracking-[0.5em] mb-4 font-bold">OTORGADO A:</p>
@@ -610,7 +616,7 @@ export default function VLSInduccion({ onClose, isRDMLS }) {
                             <div className="border-t-2 border-slate-200 pt-4">Dirección de Gestión de Personas</div>
                         </div>
                         <div className="text-center space-y-4">
-                             <p className="text-[#C5A065] font-black text-lg">{isRDMLS ? 'RDMLS' : 'VLS'}-OK-2026</p>
+                             <p className="text-[#C5A065] font-black text-lg">{isRDMLS ? 'RDMLS' : 'VLS'}-OK-2025</p>
                             <div className="flex justify-center"><QrCode size={60} className="text-slate-300"/></div>
                         </div>
                         <div className="text-center w-64">

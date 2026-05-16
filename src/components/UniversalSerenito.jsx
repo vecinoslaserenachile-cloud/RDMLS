@@ -13,7 +13,7 @@ export default function UniversalSerenito({
     onLoadAnimations 
 }) {
     const group = useRef();
-    const { scene, animations } = useGLTF('/ASSETS IMAGES VLS/serenito_3d_animado.glb');
+    const { scene, animations } = useGLTF('/vls-assets/serenito_3d_animado.glb');
     const { actions, names } = useAnimations(animations, group);
 
     useEffect(() => {
@@ -43,4 +43,4 @@ export default function UniversalSerenito({
 }
 
 // Pre-cargar el modelo para evitar tirones
-useGLTF.preload('/ASSETS IMAGES VLS/serenito_3d_animado.glb');
+useGLTF.preload('/vls-assets/serenito_3d_animado.glb');

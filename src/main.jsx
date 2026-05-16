@@ -7,12 +7,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import App from './App.jsx';
 import { LanguageProvider } from './context/LanguageContext';
 import LoadingScreen from './components/LoadingScreen';
-import RDMLSNewsMigra from './components/RDMLSNewsMigra';
+// import RDMLSNewsMigra from './components/RDMLSNewsMigra';
 const Citizens = React.lazy(() => import('./pages/Citizens.jsx'));
 const Backoffice = React.lazy(() => import('./pages/Backoffice.jsx'));
 const LegacyPortal = React.lazy(() => import('./pages/LegacyPortal.jsx'));
-const Admin = React.lazy(() => import('./pages/Admin.jsx'));
-const PrendesMasterControl = React.lazy(() => import('./pages/PrendesMasterControl.jsx'));
+// const Admin = React.lazy(() => import('./pages/Admin.jsx'));
+// const PrendesMasterControl = React.lazy(() => import('./pages/PrendesMasterControl.jsx'));
 const HubDashboard = React.lazy(() => import('./pages/HubDashboard.jsx'));
 const VecinoDashboard = React.lazy(() => import('./pages/VecinoDashboard.jsx'));
 const Panoramas = React.lazy(() => import('./pages/Panoramas.jsx'));
@@ -51,7 +51,7 @@ const DeBonoThinkingHats = React.lazy(() => import('./components/DeBonoThinkingH
 const GameVLS = React.lazy(() => import('./pages/GameVLS.jsx'));
 const VLSMotorsShowroom = React.lazy(() => import('./pages/VLSMotorsShowroom.jsx'));
 const VLSInduccion = React.lazy(() => import('./pages/VLSInduccion.jsx'));
-const Induccion26 = React.lazy(() => import('./pages/Induccion26.jsx'));
+const Induccion25 = React.lazy(() => import('./pages/Induccion25.jsx'));
 const Serenito1945Page = React.lazy(() => import('./pages/Serenito1945Page.jsx'));
 const VLSQuantumWatch = React.lazy(() => import('./components/VLSQuantumWatch'));
 const VLSConsoleSound = React.lazy(() => import('./components/VLSConsoleSound'));
@@ -74,50 +74,51 @@ const Sitemap = React.lazy(() => import('./pages/Sitemap'));
 const TributePage = React.lazy(() => import('./pages/TributePage.jsx'));
 const MasterMiguelMelendez3D = React.lazy(() => import('./components/MasterMiguelMelendez3D.jsx'));
 const SeguridadVecinal = React.lazy(() => import('./pages/SeguridadVecinal.jsx'));
-const VLSNewsChequia = React.lazy(() => import('./components/VLSNewsChequia.jsx'));
+// const VLSNewsChequia = React.lazy(() => import('./components/VLSNewsChequia.jsx'));
 const VLSNotesGallery = React.lazy(() => import('./components/VLSNotesGallery'));
 const DiaDelTrabajador = React.lazy(() => import('./pages/DiaDelTrabajador'));
 const VLSNewsIan = React.lazy(() => import('./components/VLSNewsIan.jsx'));
-const VLSNewsArtemis = React.lazy(() => import('./components/VLSNewsArtemis.jsx'));
+// const VLSNewsArtemis = React.lazy(() => import('./components/VLSNewsArtemis.jsx'));
 const ErrorCollector = React.lazy(() => import('./components/ErrorCollector.jsx'));
 const MarruecosPortal = React.lazy(() => import('./components/MarruecosPortal.jsx'));
-const EfeERP = React.lazy(() => import('./pages/EfeERP.jsx'));
-const PeregrinoERP = React.lazy(() => import('./pages/PeregrinoERP.jsx'));
-const PrendesLanding = React.lazy(() => import('./pages/PrendesLanding.jsx'));
-import PrendesFred from './pages/PrendesFred.jsx';
-const JuanSoldadoPortal = React.lazy(() => import('./pages/JuanSoldadoPortal.jsx'));
-const DenunciaLosPerales = React.lazy(() => import('./components/DenunciaLosPerales.jsx'));
-const AndacolloPortal = React.lazy(() => import('./pages/AndacolloPortal.jsx'));
-const VallenarPortal = React.lazy(() => import('./pages/VallenarPortal.jsx'));
-const ClasicaPortal = React.lazy(() => import('./pages/ClasicaPortal.jsx'));
-const AbrazoMaipu = React.lazy(() => import('./pages/AbrazoMaipu.jsx'));
-const VLSNewsVial = React.lazy(() => import('./components/VLSNewsVial.jsx'));
-const MunicipalNewsPage = React.lazy(() => import('./pages/MunicipalNewsPage.jsx'));
-const VlsMediaCenterPage = React.lazy(() => import('./pages/VlsMediaCenterPage.jsx'));
-const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
-const VLSNewsIglesiasPiedra = React.lazy(() => import('./components/VLSNewsIglesiasPiedra.jsx'));
-const VLSNewsAlcaldesa = React.lazy(() => import('./components/VLSNewsAlcaldesa.jsx'));
-const HuinchaStandalone = React.lazy(() => import('./pages/HuinchaStandalone.jsx'));
+// const EfeERP = React.lazy(() => import('./pages/EfeERP.jsx'));
+// const PeregrinoERP = React.lazy(() => import('./pages/PeregrinoERP.jsx'));
+// const PrendesLanding = React.lazy(() => import('./pages/PrendesLanding.jsx'));
+// import PrendesFred from './pages/PrendesFred.jsx';
+// const JuanSoldadoPortal = React.lazy(() => import('./pages/JuanSoldadoPortal.jsx'));
+// const DenunciaLosPerales = React.lazy(() => import('./components/DenunciaLosPerales.jsx'));
+// const AndacolloPortal = React.lazy(() => import('./pages/AndacolloPortal.jsx'));
+// const VallenarPortal = React.lazy(() => import('./pages/VallenarPortal.jsx'));
+// const ClasicaPortal = React.lazy(() => import('./pages/ClasicaPortal.jsx'));
+// const AbrazoMaipu = React.lazy(() => import('./pages/AbrazoMaipu.jsx'));
+// const VLSNewsVial = React.lazy(() => import('./components/VLSNewsVial.jsx'));
+// const MunicipalNewsPage = React.lazy(() => import('./pages/MunicipalNewsPage.jsx'));
+// const VlsMediaCenterPage = React.lazy(() => import('./pages/VlsMediaCenterPage.jsx'));
+// const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
+// const VLSNewsIglesiasPiedra = React.lazy(() => import('./components/VLSNewsIglesiasPiedra.jsx'));
+// const VLSNewsAlcaldesa = React.lazy(() => import('./components/VLSNewsAlcaldesa.jsx'));
+// const HuinchaStandalone = React.lazy(() => import('./pages/HuinchaStandalone.jsx'));
 const MemoriasUnicornio = React.lazy(() => import('./pages/MemoriasUnicornio'));
 const NuevoPeregrinoPortal = React.lazy(() => import('./pages/NuevoPeregrinoPortal'));
-const AkichipPortal = React.lazy(() => import('./pages/AkichipPortal'));
-const VLSNewsStella = React.lazy(() => import('./components/VLSNewsStella'));
+const SmartComunaEvolution = React.lazy(() => import('./pages/SmartComunaEvolution.jsx'));
+// const AkichipPortal = React.lazy(() => import('./pages/AkichipPortal'));
+// const VLSNewsStella = React.lazy(() => import('./components/VLSNewsStella'));
 const PescaArtesanalNota = React.lazy(() => import('./pages/PescaArtesanalNota.jsx'));
-const SlepElquiNota = React.lazy(() => import('./pages/SlepElquiNota.jsx'));
-const SaludPatrimonioNota = React.lazy(() => import('./pages/SaludPatrimonioNota.jsx'));
-const AvivaPortal = React.lazy(() => import('./pages/AvivaPortal.jsx'));
+// const SlepElquiNota = React.lazy(() => import('./pages/SlepElquiNota.jsx'));
+// const SaludPatrimonioNota = React.lazy(() => import('./pages/SaludPatrimonioNota.jsx'));
+// const AvivaPortal = React.lazy(() => import('./pages/AvivaPortal.jsx'));
 const GardellaPortfolio = React.lazy(() => import('./pages/GardellaPortfolio.jsx'));
-const PlazaPoetas = React.lazy(() => import('./pages/PlazaPoetas.jsx'));
-const PulsoCiudadano = React.lazy(() => import('./pages/PulsoCiudadano.jsx'));
-const DistanciasRadar = React.lazy(() => import('./pages/DistanciasRadar.jsx'));
+// const PlazaPoetas = React.lazy(() => import('./pages/PlazaPoetas.jsx'));
+// const PulsoCiudadano = React.lazy(() => import('./pages/PulsoCiudadano.jsx'));
+// const DistanciasRadar = React.lazy(() => import('./pages/DistanciasRadar.jsx'));
 const RadioPlayer = React.lazy(() => import('./components/RadioPlayer'));
 
-const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
-const PatrimonioVulnerable = React.lazy(() => import('./pages/PatrimonioVulnerable.jsx'));
-const LegalDocs = React.lazy(() => import('./pages/LegalDocs.jsx'));
-const MegarreformaNota = React.lazy(() => import('./pages/MegarreformaNota.jsx'));
+// const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
+// const PatrimonioVulnerable = React.lazy(() => import('./pages/PatrimonioVulnerable.jsx'));
+// const LegalDocs = React.lazy(() => import('./pages/LegalDocs.jsx'));
+// const MegarreformaNota = React.lazy(() => import('./pages/MegarreformaNota.jsx'));
 
-const RawHTMLProxy = React.lazy(() => import('./components/RawHTMLProxy.jsx'));
+// const RawHTMLProxy = React.lazy(() => import('./components/RawHTMLProxy.jsx'));
 
 // Marker for hash renewal
 import './index.css';
@@ -249,7 +250,7 @@ const isPuertaDns = host.includes('puertasmart.cl');
 const isEntrevecinasDns = host.includes('entrevecinas.cl');
 const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmart.cl');
 const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
-const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('pren-vls');
+const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('pren-vls');
 const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prendes.cl rebranding
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -273,19 +274,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Suspense fallback={<LoadingScreen />}>
             <Routes>
               {/* --- 1. RUTAS GLOBALES DE ALTA PRIORIDAD (VLS_SUPER_ROUTES) --- */}
-              <Route path="/FRED" element={<PrendesFred onClose={() => window.location.href = '/'} />} />
-              <Route path="/chequia" element={<VLSNewsChequia onClose={() => window.location.href = '/'} />} />
-              <Route path="/CHEQUIA" element={<VLSNewsChequia onClose={() => window.location.href = '/'} />} />
+              <Route path="/FRED" element={<HubDashboard />} />
+              <Route path="/chequia" element={<HubDashboard />} />
+              <Route path="/CHEQUIA" element={<HubDashboard />} />
               <Route path="/retail" element={<VLSNewsIan onClose={() => window.location.href = '/'} />} />
-              <Route path="/alcaldesa" element={<VLSNewsAlcaldesa onClose={() => window.location.href = '/'} />} />
-              <Route path="/andacollo" element={<AndacolloPortal onClose={() => window.location.href = '/'} />} />
-              <Route path="/vallenar" element={<VallenarPortal onClose={() => window.location.href = '/'} />} />
-              <Route path="/juansoldado" element={<JuanSoldadoPortal onClose={() => window.location.href = '/'} />} />
-              <Route path="/juan-soldado" element={<JuanSoldadoPortal onClose={() => window.location.href = '/'} />} />
-              <Route path="/JUANSOLDADO" element={<JuanSoldadoPortal onClose={() => window.location.href = '/'} />} />
+              <Route path="/alcaldesa" element={<HubDashboard />} />
+              <Route path="/andacollo" element={<HubDashboard />} />
+              <Route path="/vallenar" element={<HubDashboard />} />
+              <Route path="/juansoldado" element={<HubDashboard />} />
+              <Route path="/juan-soldado" element={<HubDashboard />} />
+              <Route path="/JUANSOLDADO" element={<HubDashboard />} />
               <Route path="/horario" element={<HubDashboard />} />
-              <Route path="/stella" element={<VLSNewsStella onClose={() => window.location.href = '/'} />} />
-              <Route path="/STELLA" element={<VLSNewsStella onClose={() => window.location.href = '/'} />} />
+              <Route path="/stella" element={<HubDashboard />} />
+              <Route path="/STELLA" element={<HubDashboard />} />
               <Route path="/1demayo" element={<DiaDelTrabajador />} />
               <Route path="/cambio-de-hora" element={<HubDashboard />} />
               <Route path="/artemis" element={<App />}><Route index element={<HubDashboard />} /></Route>
@@ -300,8 +301,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/retail" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/sonicev" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/SONICEV" element={<App />}><Route index element={<HubDashboard />} /></Route>
-              <Route path="/nuevoperegrino" element={<App />}><Route index element={<HubDashboard />} /></Route>
-              <Route path="/NUEVOPEREGRINO" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/nuevoperegrino" element={<App />}><Route index element={<NuevoPeregrinoPortal />} /></Route>
+              <Route path="/NUEVOPEREGRINO" element={<App />}><Route index element={<NuevoPeregrinoPortal />} /></Route>
               <Route path="/acciona" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/ACCIONA" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/salud" element={<App />}><Route index element={<HubDashboard />} /></Route>
@@ -310,17 +311,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/CHOAPA" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/redcine" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/REDCINE" element={<App />}><Route index element={<HubDashboard />} /></Route>
-              <Route path="/aviva" element={<AvivaPortal />} />
-              <Route path="/AVIVA" element={<AvivaPortal />} />
-              <Route path="/slep-elqui" element={<SlepElquiNota />} />
-              <Route path="/SLEP-ELQUI" element={<SlepElquiNota />} />
+              <Route path="/aviva" element={<HubDashboard />} />
+              <Route path="/AVIVA" element={<HubDashboard />} />
+              <Route path="/slep-elqui" element={<HubDashboard />} />
+              <Route path="/SLEP-ELQUI" element={<HubDashboard />} />
               <Route path="/pesca-artesanal" element={<PescaArtesanalNota />} />
               <Route path="/PESCA-ARTESANAL" element={<PescaArtesanalNota />} />
-              <Route path="/salud-patrimonio" element={<SaludPatrimonioNota />} />
-              <Route path="/SALUD-PATRIMONIO" element={<SaludPatrimonioNota />} />
+              <Route path="/salud-patrimonio" element={<HubDashboard />} />
+              <Route path="/SALUD-PATRIMONIO" element={<HubDashboard />} />
               
-              <Route path="/pulsociudadano" element={<PulsoCiudadano />} />
-              <Route path="/PULSOCIUDADANO" element={<PulsoCiudadano />} />
+              <Route path="/pulsociudadano" element={<HubDashboard />} />
+              <Route path="/PULSOCIUDADANO" element={<HubDashboard />} />
               <Route path="/opciones" element={<RDMLSOpciones />} />
               <Route path="/OPCIONES" element={<RDMLSOpciones />} />
               <Route path="/admin-radio" element={<AdminRadio />} />
@@ -341,18 +342,18 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               {/* --- 3. RUTAS SEGMENTADAS POR DOMINIO (DNS_CONTEXTS) --- */}
               {isPrendesDns ? (
                 <Route path="/" element={<App />}>
-                  <Route path="efe" element={<EfeERP />} />
-                  <Route path="peregrino" element={<PeregrinoERP />} />
-                  <Route path="admin" element={<PrendesMasterControl />} />
+                  <Route path="efe" element={<HubDashboard />} />
+                  <Route path="peregrino" element={<HubDashboard />} />
+                  <Route path="admin" element={<HubDashboard />} />
                   <Route path="artemis" element={<HubDashboard />} />
                   <Route path="altacordillera" element={<HubDashboard />} />
                   <Route path="cordillera" element={<HubDashboard />} />
-                  <Route path="vialidad2026" element={<HubDashboard />} />
-                  <Route path="chequia" element={<VLSNewsChequia onClose={() => window.history.back()} />} />
-                  <Route path="fred" element={<PrendesFred onClose={() => window.history.back()} />} />
-                  <Route path="centro/akichip" element={<AkichipPortal />} />
-                  <Route path="akichip" element={<AkichipPortal />} />
-                  <Route index element={host.includes('peregrino') ? <NuevoPeregrinoPortal /> : <PrendesLanding />} />
+                  <Route path="vialidad2025" element={<HubDashboard />} />
+                  <Route path="chequia" element={<HubDashboard />} />
+                  <Route path="fred" element={<HubDashboard />} />
+                  <Route path="centro/akichip" element={<HubDashboard />} />
+                  <Route path="akichip" element={<HubDashboard />} />
+                  <Route index element={host.includes('peregrino') || host.includes('nuevoperegrino.cl') ? <NuevoPeregrinoPortal /> : <HubDashboard />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRdmlsDns ? (
@@ -369,6 +370,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               ) : isEntrevecinasDns ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<EntrevecinasHub />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+              ) : isPrendesLegacy ? (
+                <Route path="/" element={<App />}>
+                  <Route index element={<SmartComunaEvolution />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : (isPirataDns || isProtocoloDns) ? (
@@ -408,10 +414,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="acceso" element={<PuertaSerena />} />
                     <Route path="arquitectura" element={<ArquitecturaPage />} />
                     <Route path="dev" element={<DevPortal />} />
-                    <Route path="centro/akichip" element={<AkichipPortal />} />
-                    <Route path="akichip" element={<AkichipPortal />} />
+                    <Route path="centro/akichip" element={<HubDashboard />} />
+                    <Route path="akichip" element={<HubDashboard />} />
                     <Route path="motors" element={<VLSMotorsShowroom />} />
-                    <Route path="noticias" element={<VlsMediaCenterPage />} />
+                    <Route path="noticias" element={<HubDashboard />} />
                     <Route path="induccion" element={<Aprende isRDMLS={isRdmlsDns} />} />
                     <Route path="INDUCCION" element={<Aprende isRDMLS={isRdmlsDns} />} />
                     <Route path="IMLS/induccion" element={<Aprende isRDMLS={isRdmlsDns} />} />
@@ -462,52 +468,52 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                      <Route path="salud" element={<HubDashboard />} />
                      <Route path="choapa" element={<HubDashboard />} />
                      <Route path="redcine" element={<HubDashboard />} />
-                     <Route path="juansoldado" element={<JuanSoldadoPortal onClose={() => window.history.back()} />} />
-                    <Route path="juan-soldado" element={<JuanSoldadoPortal onClose={() => window.history.back()} />} />
-                    <Route path="JUANSOLDADO" element={<JuanSoldadoPortal onClose={() => window.history.back()} />} />
-                    <Route path="andacollo" element={<AndacolloPortal onClose={() => window.location.href = '/'} />} />
-                    <Route path="vallenar" element={<VallenarPortal onClose={() => window.location.href = '/'} />} />
-                    <Route path="alcaldesa" element={<VLSNewsAlcaldesa onClose={() => window.location.href = '/'} />} />
+                     <Route path="juansoldado" element={<HubDashboard />} />
+                    <Route path="juan-soldado" element={<HubDashboard />} />
+                    <Route path="JUANSOLDADO" element={<HubDashboard />} />
+                    <Route path="andacollo" element={<HubDashboard />} />
+                    <Route path="vallenar" element={<HubDashboard />} />
+                    <Route path="alcaldesa" element={<HubDashboard />} />
                     <Route path="horario" element={<HubDashboard />} />
                     <Route path="stella" element={<HubDashboard />} />
                     <Route path="STELLA" element={<HubDashboard />} />
                     <Route path="arcade" element={<App />} />
                     <Route path="cambio-de-hora" element={<HubDashboard />} />
 
-                    <Route path="clasica" element={<ClasicaPortal onClose={() => window.location.href = '/'} />} />
-                    <Route path="vial" element={<VLSNewsVial onClose={() => window.location.href = '/'} />} />
-                    <Route path="vls-vial" element={<VLSNewsVial onClose={() => window.location.href = '/'} />} />
-                    <Route path="CLASICA" element={<ClasicaPortal onClose={() => window.location.href = '/'} />} />
-                    <Route path="perales" element={<DenunciaLosPerales onClose={() => window.location.href = '/'} />} />
-                    <Route path="los-perales" element={<DenunciaLosPerales onClose={() => window.location.href = '/'} />} />
-                    <Route path="media/denuncias/sanitaria/los-perales" element={<DenunciaLosPerales onClose={() => window.location.href = '/'} />} />
+                    <Route path="clasica" element={<HubDashboard />} />
+                    <Route path="vial" element={<HubDashboard />} />
+                    <Route path="vls-vial" element={<HubDashboard />} />
+                    <Route path="CLASICA" element={<HubDashboard />} />
+                    <Route path="perales" element={<HubDashboard />} />
+                    <Route path="los-perales" element={<HubDashboard />} />
+                    <Route path="media/denuncias/sanitaria/los-perales" element={<HubDashboard />} />
                     <Route path="gardella" element={<GardellaPortfolio />} />
-                    <Route path="plazapoetas" element={<PlazaPoetas onClose={() => window.location.href = '/'} />} />
+                    <Route path="plazapoetas" element={<HubDashboard />} />
                     <Route path="pesca-artesanal" element={<PescaArtesanalNota />} />
-                    <Route path="slep-elqui" element={<SlepElquiNota />} />
-                    <Route path="salud-patrimonio" element={<SaludPatrimonioNota />} />
-                    <Route path="distancias" element={<DistanciasRadar />} />
-                    <Route path="DISTANCIAS" element={<DistanciasRadar />} />
-                    <Route path="privacidad" element={<LegalDocs docType="privacy" />} />
-                    <Route path="terminos" element={<LegalDocs docType="terms" />} />
-                    <Route path="megarreforma" element={<MegarreformaNota />} />
+                    <Route path="slep-elqui" element={<HubDashboard />} />
+                    <Route path="salud-patrimonio" element={<HubDashboard />} />
+                    <Route path="distancias" element={<HubDashboard />} />
+                    <Route path="DISTANCIAS" element={<HubDashboard />} />
+                    <Route path="privacidad" element={<HubDashboard />} />
+                    <Route path="terminos" element={<HubDashboard />} />
+                    <Route path="megarreforma" element={<HubDashboard />} />
                     <Route path="alcaldes" element={<HubDashboard />} />
                     <Route path="welcome" element={<WelcomePortal />} />
                   </Route>
-                  <Route path="/marruecos" element={<MarruecosPage />} />
-                  <Route path="/patrimonio" element={<PatrimonioVulnerable />} />
-                  <Route path="/efe" element={<EfeERP />} />
-                  <Route path="/peregrino" element={<PeregrinoERP />} />
+                  <Route path="/marruecos" element={<HubDashboard />} />
+                  <Route path="/patrimonio" element={<HubDashboard />} />
+                  <Route path="/efe" element={<HubDashboard />} />
+                  <Route path="/peregrino" element={<HubDashboard />} />
                   <Route path="/smart-setup" element={<SuperAdminSetup />} />
                   <Route path="/bisabuelo" element={<GameVLS />} />
                   <Route path="/vlsabes" element={<VLSGameMain onClose={() => window.location.href = '/'} />} />
                   <Route path="/bella" element={<BellaDashboard />} />
                   <Route path="/1945" element={<Serenito1945Page />} />
                   <Route path="/lite" element={<LitePortal />} />
-                  <Route path="/sombreros" element={<DeBonoThinkingHats />} />
+                  <Route path="/sombreros" element={<HubDashboard />} />
                   <Route path="/desk" element={<Backoffice />} />
-                  <Route path="/admin" element={<PrendesMasterControl />} />
-                  <Route path="/prendes-admin" element={<PrendesMasterControl />} />
+                  <Route path="/admin" element={<HubDashboard />} />
+                  <Route path="/prendes-admin" element={<HubDashboard />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </>
               )}

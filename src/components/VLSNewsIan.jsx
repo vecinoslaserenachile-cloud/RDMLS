@@ -10,9 +10,9 @@ import {
 import CommentSection from './CommentSection';
 
 // Safety Guard for icons
-const SafeIcon = ({ icon: Icon, size, color }) => {
-  if (!Icon) return <Zap size={size} color={color} />;
-  return <Icon size={size} color={color} />;
+const SafeIcon = ({ icon: Icon, size, color, className }) => {
+  if (!Icon) return <Zap size={size} color={color} className={className} />;
+  return <Icon size={size} color={color} className={className} />;
 };
 
 /* ─── DATA DEL REPORTAJE ─────────────────────────────────────────────── */
@@ -609,12 +609,12 @@ export default function VLSNewsIan({ onClose }) {
 
         <footer style={{ background: '#020617', padding: '4rem 2rem', borderTop: '1px solid rgba(255, 255, 255, 0.05)', textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginBottom: '2rem' }}>
-            <Shield size={24} color="#ef4444" />
-            <Gavel size={24} color="#ef4444" />
-            <Scale size={24} color="#ef4444" />
+            <SafeIcon icon={Shield} size={24} color="#ef4444" />
+            <SafeIcon icon={Gavel} size={24} color="#ef4444" />
+            <SafeIcon icon={Scale} size={24} color="#ef4444" />
           </div>
           <p style={{ fontSize: '0.9rem', fontWeight: '700', color: 'rgba(255, 255, 255, 0.5)', margin: 0, textTransform: 'uppercase', letterSpacing: '2px' }}>
-            © 2026 VLS INVESTIGACIÓN · LA SERENA
+            © 2025 VLS INVESTIGACIÓN · LA SERENA
           </p>
           <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.3)', marginTop: '0.5rem' }}>
             Soberanía Digital y Defensa del Consumidor

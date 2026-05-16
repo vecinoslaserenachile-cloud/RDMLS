@@ -1,0 +1,58 @@
+X [ERROR] Unexpected closing "div" tag does not match opening "main" tag
+
+    src/pages/HubDashboard_utf8.jsx:2813:22:
+      2813 │                     </div>
+           │                       ~~~
+           ╵                       main
+
+  The opening "main" tag is here:
+
+    src/pages/HubDashboard_utf8.jsx:1920:17:
+      1920 │                 <main className="flex-1 overflow-y-auto overflow...
+           ╵                  ~~~~
+
+X [ERROR] Unexpected closing "main" tag does not match opening "React.Fragment" tag
+
+    src/pages/HubDashboard_utf8.jsx:2926:18:
+      2926 │                 </main>
+           │                   ~~~~
+           ╵                   React.Fragment
+
+  The opening "React.Fragment" tag is here:
+
+    src/pages/HubDashboard_utf8.jsx:1698:9:
+      1698 │         <React.Fragment>
+           ╵          ~~~~~~~~~~~~~~
+
+X [ERROR] Expected ")" but found "{"
+
+    src/pages/HubDashboard_utf8.jsx:2927:12:
+      2927 │             {showVeciCat && <VeciCat onClose={() => setShowVeciC...
+           │             ^
+           ╵             )
+
+3 errors
+node:child_process:964
+    throw err;
+    ^
+
+Error: Command failed: C:\Users\estud\APP_LS_SEGURA\node_modules\@esbuild\win32-x64\esbuild.exe c:\Users\estud\APP_LS_SEGURA\src\pages\HubDashboard_utf8.jsx
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:925:11)
+    at Object.execFileSync (node:child_process:961:15)
+    at Object.<anonymous> (C:\Users\estud\APP_LS_SEGURA\node_modules\esbuild\bin\esbuild:222:28)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+  status: 1,
+  signal: null,
+  output: [ null, null, null ],
+  pid: 31292,
+  stdout: null,
+  stderr: null
+}
+
+Node.js v24.14.0

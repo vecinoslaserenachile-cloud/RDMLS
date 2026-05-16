@@ -11,7 +11,7 @@ import VLSDiscountCard from '../components/VLSDiscountCard';
 const dispatch = (eventName, detail) =>
     window.dispatchEvent(new CustomEvent(eventName, { detail }));
 
-import SeoHead from '../components/SeoHead';
+import SEO from '../components/SEO';
 
 export default function HomeLiviano() {
     const [currentTime, setCurrentTime] = useState(new Date());
@@ -98,10 +98,9 @@ export default function HomeLiviano() {
 
     return (
         <>
-            <SeoHead
+            <SEO
                 title="Smart Comuna – Inicio"
                 description="Portal institucional de vecinos de La Serena: noticias, denuncias, arcade, radio y servicios públicos."
-                url={window.location.origin + '/'}
                 image="https://vecinoslaserena.cl/assets/home-cover.png"
             />
             <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)', padding: '2rem', fontFamily: 'system-ui, sans-serif', color: 'white' }}>
