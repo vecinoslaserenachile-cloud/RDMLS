@@ -249,7 +249,7 @@ const ArchiCampaign = () => {
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 70% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 60%)', zIndex: 0 }} />
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '3rem 1.5rem' : '5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 style={{ color: 'white', fontSize: isMobile ? '3rem' : '4.5rem', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem' }}>
+            <h2 style={{ color: 'white', fontSize: isMobile ? '2.2rem' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem' }}>
               ARCHI de todo Chile: <br />
               <span style={{ background: 'linear-gradient(to right, #fbbf24, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Inyectemos Nueva Energía.
