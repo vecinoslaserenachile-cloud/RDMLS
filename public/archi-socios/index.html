@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archi – Socios</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+</head>
+<body>
+  <header class="site-header">
+    <h1>Gestión de Socios – ARCHI</h1>
+    <nav>
+      <a href="/">← Volver al Home</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="controls" class="card">
+      <button id="loadBtn" class="btn primary">Cargar datos</button>
+      <button id="reconcileBtn" class="btn secondary" disabled>Reconciliar</button>
+      <button id="exportBtn" class="btn secondary" disabled>Exportar CSV</button>
+    </section>
+
+    <section id="tables" class="grid">
+      <div class="card">
+        <h2>Padrón ARCHI</h2>
+        <table id="padronTable"></table>
+      </div>
+      <div class="card">
+        <h2>Listado Subtel</h2>
+        <table id="subtelTable"></table>
+      </div>
+      <div class="card full-width" id="reconcileSection" hidden>
+        <h2>Emparejamientos</h2>
+        <table id="reconcileTable"></table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+/* Fuente institucional */
+* { box-sizing: border-box; margin:0; padding:0; }
+body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f0f4ff, #e6f0ff); color:#2c3e50; }
+.site-header { background: rgba(255,255,255,0.8); padding:1rem 2rem; backdrop-filter: blur(8px); box-shadow: 0 2px 8px rgba(0,0,0,0.1); display:flex; justify-content:space-between; align-items:center; }
+.container { padding:2rem; display:flex; flex-direction:column; gap:1.5rem; }
+.card { background: rgba(255,255,255,0.9); border-radius:12px; padding:1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s ease; }
+.card:hover { transform: translateY(-2px); }
+.btn { cursor:pointer; border:none; border-radius:6px; padding:.6rem 1rem; font-weight:600; }
+.btn.primary { background:#1e90ff; color:#fff; }
+.btn.secondary { background:#e0e7ff; color:#2c3e50; margin-left:.5rem; }
+.grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:1rem; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:.5rem; border-bottom:1px solid #dfe6e9; text-align:left; }
+tr:hover { background:rgba(30,144,255,0.07); }
+.full-width { grid-column:1 / -1; }
