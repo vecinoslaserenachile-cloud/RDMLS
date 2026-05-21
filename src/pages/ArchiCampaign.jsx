@@ -6,6 +6,7 @@ import {
   MessageCircle, Link as LinkIcon, CheckCircle, 
   AlertCircle, Send, Loader, ChevronRight, X
 } from 'lucide-react';
+import ArchiRadioPlayer from '../components/ArchiRadioPlayer';
 
 const ADMIN_WA = '56956020690'; // WhatsApp administrador ARCHI
 
@@ -302,8 +303,8 @@ const ArchiCampaign = () => {
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '30px', padding: '20px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', maxWidth: '500px', width: '100%' }}>
-              <img src="/archi-media/3d/hero.png" alt="ARCHI Nueva Energía" style={{ width: '100%', borderRadius: '20px', objectFit: 'cover' }} />
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '30px', padding: '20px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', maxWidth: '500px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <ArchiRadioPlayer isVisible={true} scale={1.2} />
             </div>
           </motion.div>
         </div>

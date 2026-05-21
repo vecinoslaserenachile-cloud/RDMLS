@@ -106,10 +106,10 @@ const ARCHI_PLAYLIST = [
 // Fallback: si un archivo MP3 no existe, usa el jingle_remastered anterior
 const FALLBACK_AUDIO = '/archi-media/audio/Súmate Lista Nueva Energía.mp3';
 
-export default function ArchiRadioPlayer({ isVisible = true }) {
+export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   const audioRef = useRef(null);
   const animationRef = useRef(null);
-  const [playerMode, setPlayerMode] = useState('mini'); // 'mini' | 'compact' | 'expanded'
+  const [playerMode, setPlayerMode] = useState('expanded'); // 'mini' | 'compact' | 'expanded'
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [volume, setVolume] = useState(0.8);
@@ -131,6 +131,10 @@ export default function ArchiRadioPlayer({ isVisible = true }) {
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
+    
+    // Auto-play the first track on mount
+    loadTrack(0, true);
+
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -359,16 +363,18 @@ export default function ArchiRadioPlayer({ isVisible = true }) {
       initial={{ x: 50, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       style={{
-        position: 'fixed',
-        bottom: isMobile ? '70px' : '20px',
-        right: isMobile ? '10px' : '110px',
-        zIndex: 999998,
+        position: scale === 1 ? 'fixed' : 'relative',
+        bottom: scale === 1 ? (isMobile ? '70px' : '20px') : 'auto',
+        right: scale === 1 ? (isMobile ? '10px' : '110px') : 'auto',
+        transform: scale !== 1 ? `scale(${scale})` : 'none',
+        zIndex: scale === 1 ? 999998 : 10,
         display: isVisible ? 'flex' : 'none',
         flexDirection: 'column',
         gap: '6px',
-        alignItems: 'flex-end',
+        alignItems: 'center',
+        justifyContent: 'center',
         userSelect: 'none',
-        cursor: 'grab',
+        cursor: scale === 1 ? 'grab' : 'default',
         fontFamily: '"Outfit", sans-serif',
       }}
     >

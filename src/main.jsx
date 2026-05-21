@@ -267,11 +267,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           {/* VLS_PERSISTENT_CORE: Components that must NEVER unmount during SPA navigation */}
           {(!window.location.pathname.toLowerCase().match(/\/fred(\/|$)/)) && (
             <Suspense fallback={null}>
-              {/* En radiovecinos.cl → reproductor ARCHI propio (MP3s de campaña, sin VLS) */}
+              {/* En radiovecinos.cl el reproductor ARCHI propio está dentro de ArchiCampaign */}
               {/* En cualquier otro dominio → reproductor VLS/RDMLS estándar */}
-              {isRadioVecinosDns
-                ? <ArchiRadioPlayer isVisible={true} />
-                : <RadioPlayer isVisible={true} />}
+              {!isRadioVecinosDns && <RadioPlayer isVisible={true} />}
             </Suspense>
           )}
           
