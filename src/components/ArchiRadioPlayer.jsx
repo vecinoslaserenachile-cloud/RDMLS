@@ -127,6 +127,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   const isExpanded = playerMode === 'expanded';
   const isCompact = playerMode === 'compact';
   const isMini = playerMode === 'mini';
+  const isEmbedded = scale !== 1;
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -357,28 +358,33 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   }
 
   // ── MODOS COMPACT / EXPANDED ─────────────────────────────
+  const containerStyle = {
+    position: isEmbedded ? 'relative' : 'fixed',
+    bottom: isEmbedded ? 'auto' : (isMobile ? '70px' : '20px'),
+    right: isEmbedded ? 'auto' : (isMobile ? '10px' : '110px'),
+    zIndex: isEmbedded ? 10 : 999998,
+    display: isVisible ? 'flex' : 'none',
+    opacity: 1,
+    flexDirection: 'column',
+    gap: '6px',
+    alignItems: 'center',
+    justifyContent: 'center',
+    userSelect: 'none',
+    cursor: isEmbedded ? 'default' : 'grab',
+    fontFamily: '"Outfit", sans-serif',
+  };
+
+  const PlayerContainer = isEmbedded ? 'div' : motion.div;
+  const playerProps = isEmbedded ? { style: containerStyle } : {
+    drag: true,
+    dragMomentum: false,
+    initial: { x: 50, opacity: 0 },
+    animate: { x: 0, opacity: 1 },
+    style: containerStyle
+  };
+
   return (
-    <motion.div
-      drag={scale === 1} 
-      dragMomentum={false}
-      initial={scale === 1 ? { x: 50, opacity: 0 } : false}
-      animate={scale === 1 ? { x: 0, opacity: 1 } : false}
-      style={{
-        position: scale === 1 ? 'fixed' : 'relative',
-        bottom: scale === 1 ? (isMobile ? '70px' : '20px') : 'auto',
-        right: scale === 1 ? (isMobile ? '10px' : '110px') : 'auto',
-        transform: scale !== 1 ? `scale(${scale})` : 'none',
-        zIndex: scale === 1 ? 999998 : 10,
-        display: isVisible ? 'flex' : 'none',
-        flexDirection: 'column',
-        gap: '6px',
-        alignItems: 'center',
-        justifyContent: 'center',
-        userSelect: 'none',
-        cursor: scale === 1 ? 'grab' : 'default',
-        fontFamily: '"Outfit", sans-serif',
-      }}
-    >
+    <PlayerContainer {...playerProps}>
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
@@ -620,6 +626,6 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
           </div>
         </div>
       </div>
-    </motion.div>
+    </PlayerContainer>
   );
 }
