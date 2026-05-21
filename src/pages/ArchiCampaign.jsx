@@ -115,17 +115,15 @@ const ArchiCampaign = () => {
     return `https://wa.me/${ADMIN_WA}?text=${msg}`;
   };
 
-  // ── DATOS ──────────────────────────────────────────────────
-
   const team = [
-    { role: "Presidenta Nacional",        name: "Solange Gómez Jelves",    firstName: "Solange",      region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🏔️", img: "/archi-media/fotos/archi_foto_solange_1779330163090.png" },
-    { role: "1ª Vicepresidenta",          name: "Ximena Callejón Ortiz",   firstName: "Ximena",       region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/fotos/archi_foto_ximena_1779330177245.png" },
-    { role: "2º Vicepresidente",          name: "Xavier Araya Cortés",     firstName: "Xavier",       region: "Arica",       regionFull: "XV Región de Arica y Parinacota", color: "#34d399", emoji: "🌵", img: "/archi-media/fotos/archi_foto_xavier_1779330190353.png" },
-    { role: "3ª Vicepresidenta · Tesorera", name: "Elicena Gómez",         firstName: "Elicena",      region: "O'Higgins",   regionFull: "VI Región del Libertador",        color: "#f87171", emoji: "🌾", img: "/archi-media/fotos/archi_foto_elicena_1779330203942.png" },
-    { role: "Secretaria Nacional",        name: "María Graciela Fuentes",  firstName: "María Graciela",region: "Ñuble",       regionFull: "XVI Región de Ñuble",            color: "#a78bfa", emoji: "🌳", img: "/archi-media/fotos/archi_foto_mariagraciela_1779330242250.png" },
-    { role: "Director",                   name: "Rodrigo Jofré",           firstName: "Rodrigo",      region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/fotos/archi_foto_rodrigo_1779330256262.png" },
-    { role: "Director",                   name: "Fernando Zambra",         firstName: "Fernando",     region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🔭", img: "/archi-media/fotos/archi_foto_fernando_1779330269366.png" },
-    { role: "Director",                   name: "René Venegas",            firstName: "René",         region: "Magallanes",  regionFull: "XII Región de Magallanes",       color: "#38bdf8", emoji: "🧊", img: "/archi-media/fotos/archi_foto_rene_1779330281806.png" }
+    { role: "Presidenta Nacional",        name: "Solange Gómez Jelves",    firstName: "Solange",      region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🏔️", img: "/archi-media/audio/Solange.png" },
+    { role: "1ª Vicepresidenta",          name: "Ximena Callejón Ortiz",   firstName: "Ximena",       region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/audio/Ximena Callejón.png" },
+    { role: "2º Vicepresidente",          name: "Xavier Araya Cortés",     firstName: "Xavier",       region: "Arica",       regionFull: "XV Región de Arica y Parinacota", color: "#34d399", emoji: "🌵", img: "/archi-media/audio/Xavier Araya .png" },
+    { role: "3ª Vicepresidenta · Tesorera", name: "Elicena Gómez",         firstName: "Elicena",      region: "O'Higgins",   regionFull: "VI Región del Libertador",        color: "#f87171", emoji: "🌾", img: "/archi-media/audio/Elicena Gómez.png" },
+    { role: "Secretaria Nacional",        name: "María Graciela Fuentes",  firstName: "María Graciela",region: "Ñuble",       regionFull: "XVI Región de Ñuble",            color: "#a78bfa", emoji: "🌳", img: "/archi-media/audio/Maria Graciela.png" },
+    { role: "Director",                   name: "Rodrigo Jofré",           firstName: "Rodrigo",      region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/audio/Rodrigo Jofré.png" },
+    { role: "Director",                   name: "Fernando Zambra",         firstName: "Fernando",     region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🔭", img: "/archi-media/audio/Fernando Zambra.png" },
+    { role: "Director",                   name: "René Venegas",            firstName: "René",         region: "Magallanes",  regionFull: "XII Región de Magallanes",       color: "#38bdf8", emoji: "🧊", img: "/archi-media/audio/René Venegas.png" }
   ];
 
   // Cobertura territorial extendida (de norte a sur)
@@ -357,11 +355,18 @@ const ArchiCampaign = () => {
                     <div style={{ position: 'absolute', top: 0, right: 0, width: '60px', height: '60px', background: `radial-gradient(circle, ${member.color}15, transparent)`, pointerEvents: 'none' }} />
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '10px' }}>
-                      {/* Foto recortada */}
+                      {/* Foto recortada con filtro pro cine */}
                       {member.img ? (
-                        <img src={member.img} alt={member.firstName} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${member.color}`, boxShadow: `0 0 10px ${member.color}40` }} />
+                        <motion.img 
+                          src={member.img} 
+                          alt={member.firstName} 
+                          initial={{ filter: 'grayscale(70%) sepia(30%) brightness(0.8) contrast(1.2)' }}
+                          whileHover={{ filter: 'grayscale(0%) sepia(0%) brightness(1.1) contrast(1.1) saturate(1.3)', scale: 1.15 }}
+                          transition={{ duration: 0.4, ease: "easeOut" }}
+                          style={{ width: '55px', height: '55px', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${member.color}`, boxShadow: `0 0 10px ${member.color}40`, zIndex: 2, position: 'relative' }} 
+                        />
                       ) : (
-                        <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: `${member.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', border: `2px solid ${member.color}` }}>{member.emoji}</div>
+                        <div style={{ width: '55px', height: '55px', borderRadius: '50%', background: `${member.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', border: `2px solid ${member.color}` }}>{member.emoji}</div>
                       )}
 
                       <div>
