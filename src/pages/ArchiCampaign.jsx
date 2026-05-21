@@ -361,7 +361,7 @@ const ArchiCampaign = () => {
                           src={member.img} 
                           alt={member.firstName} 
                           initial={{ filter: 'grayscale(70%) sepia(30%) brightness(0.8) contrast(1.2)' }}
-                          whileHover={{ filter: 'grayscale(0%) sepia(0%) brightness(1.1) contrast(1.1) saturate(1.3)', scale: 1.15 }}
+                          whileHover={{ filter: 'grayscale(0%) sepia(0%) brightness(1.1) contrast(1.1) saturate(1.3)', scale: 1.35 }}
                           transition={{ duration: 0.4, ease: "easeOut" }}
                           style={{ width: '55px', height: '55px', borderRadius: '50%', objectFit: 'cover', border: `2px solid ${member.color}`, boxShadow: `0 0 10px ${member.color}40`, zIndex: 2, position: 'relative' }} 
                         />

@@ -359,9 +359,10 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   // ── MODOS COMPACT / EXPANDED ─────────────────────────────
   return (
     <motion.div
-      drag dragMomentum={false}
-      initial={{ x: 50, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
+      drag={scale === 1} 
+      dragMomentum={false}
+      initial={scale === 1 ? { x: 50, opacity: 0 } : false}
+      animate={scale === 1 ? { x: 0, opacity: 1 } : false}
       style={{
         position: scale === 1 ? 'fixed' : 'relative',
         bottom: scale === 1 ? (isMobile ? '70px' : '20px') : 'auto',
