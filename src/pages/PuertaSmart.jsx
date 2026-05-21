@@ -6,7 +6,7 @@ import {
     MessageSquare, Settings, TrendingUp, Calendar, Zap, Share2, 
     Clock, Smartphone, Shield, Star, ExternalLink, Filter, Database, 
     Activity, ChevronRight, X, AlertTriangle, Info, Coffee, HelpCircle,
-    Bell, ClipboardList, Eye, Download, ShieldClose, HardDrive,
+    Bell, ClipboardList, Eye, Download, HardDrive,
     Home, ShoppingCart, Tag, Ticket, Map as MapIcon, Globe as VlsGlobe
 } from 'lucide-react';
 import { 
@@ -71,7 +71,10 @@ const AVISOS_PROMO = [
 
 export default function PuertaSmart() {
     const navigate = useNavigate();
-    const [activeView, setActiveView] = useState('landing'); // landing, sales, citizen, monitor, admin
+    const [activeView, setActiveView] = useState(() => {
+        const host = (window.location.hostname || window.location.host || '').toLowerCase();
+        return host.includes('puertasmart.cl') ? 'citizen' : 'landing';
+    });
     const [activeAdminTab, setActiveAdminTab] = useState('dashboard'); // dashboard, guard, secretary, analytics, crm, logs
     
     // === CRM: LEAD CAPTURE ===
@@ -331,7 +334,7 @@ export default function PuertaSmart() {
                             boxShadow: '0 4px 10px rgba(239, 68, 68, 0.3)'
                         }}
                     >
-                        <ShieldClose size={18} /> SALIR
+                        <ShieldAlert size={18} /> SALIR
                     </button>
                 </div>
             </div>
@@ -883,7 +886,7 @@ function CitizenNode({ register, update, complete, current, primaryColor }) {
                         )}
                         {activeVisitor.assisted && (
                             <div className="instruction-box-white" style={{ borderColor: '#ef4444' }}>
-                                <ShieldClose size={24} color="#ef4444" />
+                                <ShieldAlert size={24} color="#ef4444" />
                                 <span>No olvide avisar al guardia al salir para cerrar su ciclo de seguridad.</span>
                             </div>
                         )}
@@ -1125,7 +1128,7 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
                     </div>
 
                     <div className="glass-panel-white">
-                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', color: '#ef4444' }}><ShieldClose size={24} /> 🛡️ VALIDACIÓN DE SALIDA</h3>
+                        <h3 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', color: '#ef4444' }}><ShieldAlert size={24} /> 🛡️ VALIDACIÓN DE SALIDA</h3>
                          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                             {Object.values(current).filter(v => ['EVALUACION', 'SALIDA_PENDIENTE'].includes(v.estado)).map(v => (
                                 <div key={v.id} className="admin-list-item" style={{ borderLeft: '5px solid #ef4444' }}>

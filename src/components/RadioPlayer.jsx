@@ -39,8 +39,10 @@ const AnalogVUMeter = ({ label, needleRef }) => (
 // playerMode: 'expanded' | 'compact' | 'mini'
 export default function RadioPlayer({ globalWeather, isVisible }) {
     const host = (window.location.hostname || window.location.host || '').toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+    const isArchi = host.includes('archi') || path.includes('/archi');
     const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
-    const isVLS = !isRDMLS;
+    const isVLS = !isRDMLS && !isArchi;
 
     const [isPlaying, setIsPlaying] = useState(false);
     const [playerMode, setPlayerMode] = useState('mini'); // Iniciamos en modo mini (replegado) para no obstruir el home
@@ -74,7 +76,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const isMini = playerMode === 'mini';
 
     // SEPARACIÓN ESTRICTA DE SEÑALES (Soberanía Digital)
-    const stations = isRDMLS ? [
+    const stations = isArchi ? [
+        { id: 99, type: 'radio', sub: 'archi', name: 'Jingle Oficial Archi', stream: '/archi-media/jingle_remastered.mp3', isLive: false, isMain: true, desc: 'Campaña Nueva Energía' }
+    ] : isRDMLS ? [
         { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
     ] : [
         { id: 1, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
@@ -646,7 +650,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const playAIDJLocution = () => {
         const hours = new Date().getHours();
         const minutes = new Date().getMinutes();
-        const timeMsg = isRDMLS 
+        const timeMsg = isArchi
+            ? `Archi de todo Chile informa: La hora exacta es, las ${hours} con ${minutes} minutos. Únete a la Lista Nueva Energía.`
+            : isRDMLS 
             ? `Radio Digital Municipal informa: La hora exacta es, las ${hours} con ${minutes} minutos. R-D-M-L-S, tecnología al servicio de la comuna.`
             : `vecinoslaserena.cl informa: La hora exacta es, las ${hours} con ${minutes} minutos. Comuna Smart, tecnología al servicio del vecino.`;
         playTimeSignal();

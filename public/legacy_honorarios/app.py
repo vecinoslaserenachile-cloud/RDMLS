@@ -425,6 +425,69 @@ def modulo_historial_auditoria():
         st.download_button("📊 EXPORTAR A CSV", csv_data, "Auditoria_Honorarios.csv", mime='text/csv', use_container_width=True)
     boton_salir("historial")
 
+# --- MÓDULO 5: AUDITORÍA FORENSE D5 (CENTINEL FARO) ---
+def modulo_auditoria_forense_d5():
+    st.markdown("<h2 style='color:#0D47A1; text-align:center;'>🕵️‍♂️ Centinel Faro: Auditoría Forense y Transparencia Activa</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:center; font-weight:bold; color:#555;'>Módulo de Fiscalización Ciudadana y Análisis de Ratios - Distrito 5</p>", unsafe_allow_html=True)
+    
+    # KPIs Row
+    st.markdown("### 📈 Ratios e Indicadores de Rendimiento y Concentración")
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("Gasto Total Consolidado", "$315,061,558 CLP", "+100% Ingesta")
+    k2.metric("Concentración Máxima", "31.44%", "D. Manouchehri")
+    k3.metric("Gasto en Radio y TV", "69.99%", "$220.5M CLP")
+    k4.metric("Registros de Gasto", "1,136", "100% Limpio")
+    
+    # Graphic display tab
+    tab_graf, tab_exp, tab_rep = st.tabs(["📊 Dashboard Gráfico", "🗃️ Explorador de Datos Interactivo", "📄 Reporte de Auditoría Escrito"])
+    
+    with tab_graf:
+        dashboard_img_path = "C:/Users/estud/.gemini/antigravity/brain/40814cad-f0a6-4304-99d7-93f8d245863a/spend_dashboard.png"
+        if os.path.exists(dashboard_img_path):
+            st.image(dashboard_img_path, caption="Dashboard de Ratios y Anomalías Forenses - Distrito 5 (Generado por Python Matplotlib/Seaborn)", use_container_width=True)
+        else:
+            st.warning("⚠️ La imagen del dashboard no se encuentra en el directorio de recursos de Antigravity. Ejecute el script de generación.")
+            
+    with tab_exp:
+        csv_path = "C:/Users/estud/Downloads/gastos_difusion_limpio.csv"
+        if os.path.exists(csv_path):
+            df_aud = pd.read_csv(csv_path)
+            
+            # Interactive Filter Controls
+            col_f1, col_f2 = st.columns(2)
+            dips = col_f1.multiselect("Filtrar por Diputado:", df_aud['Diputado_Limpio'].unique())
+            items = col_f2.multiselect("Filtrar por Tipo de Gasto / Medio:", df_aud['Item_Limpio'].unique())
+            
+            # Filter logic
+            df_filtered = df_aud.copy()
+            if dips:
+                df_filtered = df_filtered[df_filtered['Diputado_Limpio'].isin(dips)]
+            if items:
+                df_filtered = df_filtered[df_filtered['Item_Limpio'].isin(items)]
+                
+            st.markdown(f"**Registros encontrados:** `{len(df_filtered)}` de `{len(df_aud)}` filas")
+            st.dataframe(df_filtered, use_container_width=True, hide_index=True)
+            
+            # Export
+            csv_exp = df_filtered.to_csv(index=False).encode('utf-8-sig')
+            st.download_button("📥 DESCARGAR MUESTRA FILTRADA EN CSV", csv_exp, "gastos_transparencia_filtrados.csv", "text/csv", use_container_width=True)
+        else:
+            st.error("❌ Archivo de base de datos de transparencia limpio no encontrado en descargas.")
+            
+    with tab_rep:
+        report_path = "C:/Users/estud/APP_LS_SEGURA/transparency_audit_report.md"
+        if os.path.exists(report_path):
+            with open(report_path, "r", encoding="utf-8") as f_rep:
+                # Remove markdown-specific alert tags for better HTML display in Streamlit
+                rep_content = f_rep.read()
+                rep_content = rep_content.replace("> [!NOTE]", "**💡 NOTA:**")
+                rep_content = rep_content.replace("> [!TIP]", "**💡 CONSEJO:**")
+                rep_content = rep_content.replace("> [!WARNING]", "**🚨 ALERTA:**")
+                rep_content = rep_content.replace("> [!IMPORTANT]", "**⚠️ IMPORTANTE:**")
+                st.markdown(rep_content, unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Reporte en formato markdown no encontrado.")
+
 # ==============================================================================
 # 8. CABECERA MAESTRA (DOBLE LOGO + MARQUEE)
 # ==============================================================================
@@ -457,7 +520,7 @@ renderizar_cabecera_ls2026()
 
 if 'menu_activo' not in st.session_state: st.session_state.menu_activo = "👤 Portal Prestador"
 
-c_n1, c_n2, c_n3, c_n4 = st.columns(4)
+c_n1, c_n2, c_n3, c_n4, c_n5 = st.columns(5)
 with c_n1:
     if st.button("👤 PRESTADOR", key="nav_m_1", use_container_width=True): st.session_state.menu_activo = "👤 Portal Prestador"; st.rerun()
 with c_n2:
@@ -466,6 +529,8 @@ with c_n3:
     if st.button("🏛️ FINANZAS", key="nav_m_3", use_container_width=True): st.session_state.menu_activo = "🏛️ Portal Finanzas"; st.rerun()
 with c_n4:
     if st.button("📊 HISTORIAL", key="nav_m_4", use_container_width=True): st.session_state.menu_activo = "📊 Consolidado Histórico"; st.rerun()
+with c_n5:
+    if st.button("🕵️‍♂️ AUDITORÍA D5", key="nav_m_5", use_container_width=True): st.session_state.menu_activo = "🕵️‍♂️ Auditoría Forense D5"; st.rerun()
 
 st.markdown("---")
 
@@ -475,5 +540,7 @@ elif st.session_state.menu_activo == "🧑‍💼 Portal Jefatura":
     modulo_portal_jefatura()
 elif st.session_state.menu_activo == "🏛️ Portal Finanzas": 
     modulo_portal_finanzas()
-else: 
+elif st.session_state.menu_activo == "📊 Consolidado Histórico": 
     modulo_historial_auditoria()
+else: 
+    modulo_auditoria_forense_d5()

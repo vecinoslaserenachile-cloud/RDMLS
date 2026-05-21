@@ -7,20 +7,39 @@ const SEO = ({ title, description, image, article }) => {
   const host = typeof window !== 'undefined' ? (window.location.hostname || '').toLowerCase() : '';
   
   const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || pathname.includes('/radio') || (host.includes('localhost') && (pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
+  const isPuerta = host.includes('puertasmart.cl') || pathname.toLowerCase().includes('/puerta');
   
-  const siteUrl = isRDMLS ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl";
-  const defaultTitle = isRDMLS ? "Radio Digital Municipal La Serena · www.rdmls.cl" : "VLS Network · Ecosistemas Digitales";
-  const fullTitle = title ? `${title} | ${isRDMLS ? 'RDMLS' : 'VLS'}` : defaultTitle;
+  const siteUrl = isRDMLS 
+    ? "https://www.rdmls.cl" 
+    : isPuerta 
+      ? "https://www.puertasmart.cl" 
+      : "https://www.vecinoslaserena.cl";
+      
+  const defaultTitle = isRDMLS 
+    ? "Radio Digital Municipal La Serena · www.rdmls.cl" 
+    : isPuerta 
+      ? "PuertaSmart · Control de Accesos y Seguridad" 
+      : "VLS Network · Ecosistemas Digitales";
+      
+  const fullTitle = title 
+    ? `${title} | ${isRDMLS ? 'RDMLS' : isPuerta ? 'PuertaSmart' : 'VLS'}` 
+    : defaultTitle;
   
   const defaultDescription = isRDMLS 
     ? "Señal oficial de la Ilustre Municipalidad de La Serena. Radio Digital Municipal La Serena (RDMLS). Transmisión 24/7." 
-    : "Red de Portales Transmedia. Innovación y Soberanía Digital en La Serena y la Región de Coquimbo.";
-    
+    : isPuerta
+      ? "Sistema de Control de Accesos, Registro de Entrada y Pórtico QR de Seguridad."
+      : "Red de Portales Transmedia. Innovación y Soberanía Digital en La Serena y la Región de Coquimbo.";
+     
   const seoDescription = description || defaultDescription;
   const defaultImage = isRDMLS ? "/rdmls_favicon.png" : "/vls-logo-3d.png";
   const seoImage = image ? (image.startsWith('http') ? image : `${siteUrl}${image}`) : `${siteUrl}${defaultImage}`;
   
-  const siteName = isRDMLS ? "Radio Digital Municipal La Serena www.rdmls.cl" : "Vecinos La Serena";
+  const siteName = isRDMLS 
+    ? "Radio Digital Municipal La Serena www.rdmls.cl" 
+    : isPuerta
+      ? "PuertaSmart"
+      : "Vecinos La Serena";
   
   // Clean pathname for canonical
   const cleanPath = pathname === '/' ? '' : pathname.replace(/\/$/, "");

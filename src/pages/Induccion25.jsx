@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import {
     Play, Pause, Award, HelpCircle, FastForward,
     CheckCircle, Shield, Globe, Radio, Volume2, VolumeX, ArrowRight,
-    QrCode, RefreshCw, AlertTriangle, Mic, Signal, Clock
+    QrCode, RefreshCw, AlertTriangle, Mic, Signal, Clock, Sparkles, X, Send, Loader2, Bot
 } from 'lucide-react';
 import { db } from '../utils/firebase';
 import { collection, addDoc } from 'firebase/firestore';
-import { Sparkles, X, Send, Loader2, Bot } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { Canvas } from '@react-three/fiber';

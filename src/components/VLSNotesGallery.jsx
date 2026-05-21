@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Play, BookOpen, User, Calendar, ExternalLink, X, MessageSquare, Share2, Quote, Music, Video, Newspaper, Users, Award, Heart, Globe, Mic, Image as ImageIcon, Bird, Waves, ShieldCheck, Home, Thermometer, Sparkles, Building2, Landmark, Palette, Mountain, CloudRain, Wind, Beef, Apple, Moon, Stars, Baby, Briefcase, Shovel, Hammer, Sprout, FileSearch, Scale, Zap, Volume2, Heart as Activity, LayoutGrid, Droplets, Eye, Brain, Clock, Box } from 'lucide-react';
+import { Search, Filter, Play, BookOpen, User, Calendar, ExternalLink, X, MessageSquare, Share2, Quote, Music, Video, Newspaper, Users, Award, Heart, Globe, Mic, Image as ImageIcon, Bird, Waves, ShieldCheck, Home, Thermometer, Sparkles, Building2, Landmark, Palette, Mountain, CloudRain, Wind, Beef, Apple, Moon, Stars, Baby, Briefcase, Shovel, Hammer, Sprout, FileSearch, Scale, Zap, Volume2, Activity, LayoutGrid, Droplets, Eye, Brain, Clock, Box } from 'lucide-react';
 
 const LEGACY_NOTES = [
     { 
@@ -54,6 +54,19 @@ const LEGACY_NOTES = [
             { icon: LayoutGrid, label: 'Arquitectura Jazz', color: '#3b82f6', desc: 'Cimiento Rítmico' },
             { icon: Globe, label: 'Gira Europea', color: '#10b981', desc: 'Escuela de Vida' },
             { icon: ShieldCheck, label: 'Memoria Sonora', color: '#ffffff', desc: 'Legado Master' }
+        ]
+    },
+    { 
+        id: "EoIE7lVYWIw?start=0", type: "ENTREVISTA", cat: "EntreVecinas", title: "Manifiesto Entrevecinas", 
+        titular: "Manifiesto: La Voz de las Mujeres en la Nueva Serena", 
+        bajada: "Un recorrido por la visión ciudadana femenina que está transformando la identidad de la capital regional.", 
+        body: "El 'Manifiesto Entrevecinas' es la piedra angular de este portal. En esta sección inicial, se exploran las motivaciones y el espíritu de colaboración que une a las mujeres líderes, profesionales y vecinas de La Serena. Es una declaración de principios sobre la soberanía comunicacional y el derecho a narrar nuestras propias historias, lejos de los sesgos tradicionales. Aquí se sientan las bases de una red de apoyo mutuo que busca visibilizar el impacto real del trabajo femenino en la arquitectura, la ciencia, el deporte y la cultura local.",
+        contacto: "Redacción entrevecinas.cl", cita: "Nuestra historia no es un relato; es un manifiesto de acción.",
+        color: "#ec4899",
+        tacticalIcons: [
+            { icon: Heart, label: 'Sororidad', color: '#ec4899', desc: 'Red de Apoyo' },
+            { icon: Globe, label: 'Territorio', color: '#38bdf8', desc: 'Soberanía Vecinal' },
+            { icon: Sparkles, label: 'Identidad', color: '#ffffff', desc: 'Voz Propia' }
         ]
     },
     { 
@@ -231,8 +244,8 @@ const PRIVATE_NOTES = [
     },
 ];
 
-export default function VLSNotesGallery({ isOpen, onClose }) {
-  const [filter, setFilter] = useState('ALL');
+export default function VLSNotesGallery({ isOpen, onClose, initialFilter = 'ALL', hideFilters = false }) {
+  const [filter, setFilter] = useState(initialFilter);
   const [searchTerm, setSearchTerm] = useState('');
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [selectedNote, setSelectedNote] = useState(null);
@@ -272,42 +285,44 @@ export default function VLSNotesGallery({ isOpen, onClose }) {
 
   return (
     <div style={{ padding: '2rem 0', width: '100%', boxSizing: 'border-box' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
-        <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              style={{
-                padding: '0.6rem 1.2rem',
-                borderRadius: '12px',
-                background: filter === cat ? 'var(--brand-primary, #3b82f6)' : 'rgba(255,255,255,0.05)',
-                color: 'white',
-                border: '1px solid rgba(255,255,255,0.1)',
-                fontWeight: 'bold',
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-                textTransform: 'uppercase',
-                letterSpacing: '1px'
-              }}
-            >
-              {cat}
-            </button>
-          ))}
+      {!hideFilters && (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+            {categories.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                style={{
+                  padding: '0.6rem 1.2rem',
+                  borderRadius: '12px',
+                  background: filter === cat ? 'var(--brand-primary, #3b82f6)' : 'rgba(255,255,255,0.05)',
+                  color: 'white',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  fontWeight: 'bold',
+                  fontSize: '0.85rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  textTransform: 'uppercase',
+                  letterSpacing: '1px'
+                }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+          
+          <div style={{ position: 'relative', width: '300px' }}>
+            <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+            <input 
+              type="text" 
+              placeholder="Buscar en el archivo..." 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              style={{ width: '100%', padding: '0.7rem 1rem 0.7rem 2.8rem', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }}
+            />
+          </div>
         </div>
-        
-        <div style={{ position: 'relative', width: '300px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
-          <input 
-            type="text" 
-            placeholder="Buscar en el archivo..." 
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ width: '100%', padding: '0.7rem 1rem 0.7rem 2.8rem', borderRadius: '12px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', outline: 'none' }}
-          />
-        </div>
-      </div>
+      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '2rem', width: '100%', boxSizing: 'border-box' }}>
         <AnimatePresence>

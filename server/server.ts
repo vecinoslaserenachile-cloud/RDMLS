@@ -8,6 +8,8 @@ import fs from 'fs';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
+import crypto from 'crypto';
+import axios from 'axios';
 
 dotenv.config();
 
@@ -106,6 +108,99 @@ async function startServer() {
     } catch (error: any) {
       console.error('[FARITO-IA] Error:', error);
       res.status(500).json({ error: 'Farito está fuera de línea momentáneamente' });
+    }
+  });
+
+  // 🛡️ API KLING AI & GENERATIVO SOBERANO (21 de Mayo / Combate de Iquique)
+  const ACCESS_KEY = "AfyntKfmdFGMQdbBRBLFLapHdephGHJd";
+  const SECRET_KEY = "mYYg4fe8d4LkbbLQpRMmAKaKANfBLY9a";
+  const KLING_BASE_URL = "https://api-singapore.klingai.com";
+
+  function base64UrlEncode(strOrBuffer: string | Buffer): string {
+      const base64 = Buffer.isBuffer(strOrBuffer) 
+          ? strOrBuffer.toString('base64') 
+          : Buffer.from(strOrBuffer).toString('base64');
+      return base64
+          .replace(/=/g, '')
+          .replace(/\+/g, '-')
+          .replace(/\//g, '_');
+  }
+
+  function generateKlingToken(): string {
+      const header = { alg: "HS256", typ: "JWT" };
+      const now = Math.floor(Date.now() / 1000);
+      const payload = {
+          iss: ACCESS_KEY,
+          exp: now + 1800, // Válido por 30 minutos
+          nbf: now - 5
+      };
+
+      const encodedHeader = base64UrlEncode(JSON.stringify(header));
+      const encodedPayload = base64UrlEncode(JSON.stringify(payload));
+      
+      const signatureInput = `${encodedHeader}.${encodedPayload}`;
+      const signature = crypto
+          .createHmac('sha256', SECRET_KEY)
+          .update(signatureInput)
+          .digest();
+          
+      return `${signatureInput}.${base64UrlEncode(signature)}`;
+  }
+
+  // API: Crear video Kling AI (Image-to-Video)
+  app.post('/api/kling/generate', async (req, res) => {
+    try {
+      const { image, prompt, duration, fidelity } = req.body;
+      if (!image || !prompt) {
+        return res.status(400).json({ error: 'Faltan parámetros obligatorios (image, prompt)' });
+      }
+
+      const token = generateKlingToken();
+      const payload = {
+        model_name: "kling-v2-6",
+        image,
+        prompt,
+        duration: String(duration || 5),
+        mode: fidelity === "high" ? "pro" : "std"
+      };
+
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      };
+
+      console.log(`[VLS-KLING] Iniciando tarea en Kling AI...`);
+      const response = await axios.post(`${KLING_BASE_URL}/v1/videos/image2video`, payload, { headers });
+      res.json(response.data);
+    } catch (error: any) {
+      console.error('[VLS-KLING] Error al crear tarea:', error.message);
+      if (error.response) {
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        res.status(500).json({ error: 'Error de servidor al contactar con la API de Kling AI' });
+      }
+    }
+  });
+
+  // API: Consultar estado Kling AI
+  app.get('/api/kling/status/:taskId', async (req, res) => {
+    try {
+      const { taskId } = req.params;
+      const token = generateKlingToken();
+      
+      const headers = {
+        "Authorization": `Bearer ${token}`
+      };
+
+      const response = await axios.get(`${KLING_BASE_URL}/v1/videos/task/${taskId}`, { headers });
+      res.json(response.data);
+    } catch (error: any) {
+      console.error(`[VLS-KLING] Error al consultar tarea ${req.params.taskId}:`, error.message);
+      if (error.response) {
+        res.status(error.response.status).json(error.response.data);
+      } else {
+        res.status(500).json({ error: 'Error al consultar estado de Kling AI' });
+      }
     }
   });
 

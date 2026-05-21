@@ -5,7 +5,7 @@ import {
   Volume2, VolumeX, ArrowRight, QrCode, AlertTriangle,
   Landmark, Cpu, ShieldAlert, Activity, Castle, Compass,
   FileText, FilePlus, Images, Languages, ChevronLeft, ChevronRight, X,
-  ShieldCheck, Camera, User, Database, Bot, Sparkles, Send, Loader2, X as XIcon
+  ShieldCheck, Camera, User, Database, Bot, Sparkles, Send, Loader2
 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import IdentityGate from '../components/IdentityGate';
@@ -79,7 +79,7 @@ const SmartAssistantInduccion = () => {
                 <img src="/serenito_3d_avatar_premium_1774312066289.png" style={{ width:'40px', height:'40px', borderRadius:'50%', border:'2px solid #C5A065' }} />
                 <span style={{ fontWeight:'900', color:'white', fontSize:'0.9rem' }}>SERENITO 3D</span>
               </div>
-              <button onClick={()=>setIsOpen(false)} style={{ background:'transparent', border:'none', color:'#64748b', cursor:'pointer' }}><XIcon size={20}/></button>
+              <button onClick={()=>setIsOpen(false)} style={{ background:'transparent', border:'none', color:'#64748b', cursor:'pointer' }}><X size={20}/></button>
             </div>
             <div style={{ flex:1, overflowY:'auto', padding:'1rem', display:'flex', flexDirection:'column', gap:'10px' }}>
               {messages.map((m,i)=>(

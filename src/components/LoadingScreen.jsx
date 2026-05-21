@@ -191,15 +191,21 @@ const LoadingScreen = ({ isSyncing = false }) => {
                      initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                  />
   
-                 {/* Motor de Luz */}
-                 <motion.g 
-                      transform="translate(50, 17.5)"
-                      animate={{ rotate: [0, 18, -18, 0] }}
-                      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                      <path d="M 0 0 L 500 -60 L 500 60 Z" fill="url(#beamGradientRight)" />
-                      <path d="M 0 0 L -450 -50 L -450 50 Z" fill="url(#beamGradientLeft)" />
-                  </motion.g>
+                  {/* Motor de Luz */}
+                  <g transform="translate(50, 17.5)">
+                      <g>
+                           <path d="M 0 0 L 500 -60 L 500 60 Z" fill="url(#beamGradientRight)" />
+                           <path d="M 0 0 L -450 -50 L -450 50 Z" fill="url(#beamGradientLeft)" />
+                           <animateTransform 
+                               attributeName="transform" 
+                               type="rotate" 
+                               values="0; 18; -18; 0" 
+                               keyTimes="0; 0.25; 0.75; 1"
+                               dur="8s" 
+                               repeatCount="indefinite"
+                           />
+                      </g>
+                  </g>
   
                  {/* Linterna pulsante */}
                  <motion.circle 

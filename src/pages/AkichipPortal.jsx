@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X as CloseIcon, Cpu, Zap, Activity, HardDrive, 
   Smartphone, Monitor, Radio, Award, Trophy, 
   MessageCircle, MapPin, ExternalLink, Settings, 
-  ShieldCheck, Wrench, Microscope, Laptop
+  ShieldCheck, Wrench, Microscope, Laptop,
+  Play, Pause, Download, Volume2
 } from 'lucide-react';
 import { Canvas } from '@react-three/fiber';
 import { Float, ContactShadows, Environment } from '@react-three/drei';
@@ -22,6 +23,33 @@ function SerenitoHardware() {
 export default function AkichipPortal({ onClose }) {
   const [activeTab, setActiveTab] = useState('hardware'); // hardware, microsoldadura, futbol, contacto
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [playingAudio, setPlayingAudio] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef(null);
+
+  const handlePlayAudio = (track) => {
+    if (playingAudio && playingAudio.url === track.url) {
+      if (isPlaying) {
+        audioRef.current.pause();
+        setIsPlaying(false);
+      } else {
+        audioRef.current.play().catch(err => console.log("Audio play error: ", err));
+        setIsPlaying(true);
+      }
+    } else {
+      setPlayingAudio(track);
+      setIsPlaying(true);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.src = track.url;
+          audioRef.current.play().catch(err => console.log("Audio play error: ", err));
+        }
+      }, 50);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -103,6 +131,7 @@ export default function AkichipPortal({ onClose }) {
             { id: 'hardware', icon: Wrench, label: 'Hardware Maestro' },
             { id: 'microsoldadura', icon: Microscope, label: 'Microsoldadura' },
             { id: 'futbol', icon: Trophy, label: 'Pasión Regional' },
+            { id: 'multimedia', icon: Radio, label: 'Radio & Multimedia' },
             { id: 'contacto', icon: MapPin, label: 'Ubicación & Contacto' }
           ].map(tab => (
             <motion.button
@@ -369,6 +398,144 @@ export default function AkichipPortal({ onClose }) {
                 </motion.div>
               )}
 
+              {activeTab === 'multimedia' && (
+                <motion.div 
+                  key="multimedia"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                >
+                  <div style={{ marginBottom: '3rem' }}>
+                    <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: 0, letterSpacing: '-1px' }}>Radio & <span style={{ color: '#38bdf8' }}>Multimedia</span></h2>
+                    <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginTop: '10px' }}>Accede al material oficial, podcasts e investigación técnica de Akichip.</p>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1.2fr 0.8fr', gap: '3rem' }}>
+                    {/* LEFT COLUMN: PODCASTS & SEÑALES */}
+                    <div>
+                      <h3 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Radio color="#38bdf8" /> Sintonía Digital Akichip
+                      </h3>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {[
+                          { id: 'templo', title: "Akichip y el templo del hincha granate", url: "/media/akichip/Akichip_y_el_templo_del_hincha_granate.m4a", duration: "1h 10m", desc: "El podcast insignia sobre el CD La Serena, tecnología y la mística granate de la comuna." },
+                          { id: 'microchips', title: "Microchips y fútbol granate en Akichip", url: "/media/akichip/Microchips_y_fútbol_granate_en_Akichip.mp3", duration: "15m 12s", desc: "Un viaje sonoro que entrelaza la microsoldadura y el corazón deportivo serenense." },
+                          { id: 'elqueloarrela', title: "El que lo arregla - Akichip", url: "/media/akichip/ELQUELOARREGLAKICHIP.mp3", duration: "1m 15s", desc: "Jingle de audio oficial y declaración de principios de nuestro laboratorio." },
+                          { id: 'local204', title: "Señal Local 204", url: "/media/akichip/204AKICHIP.mp3", duration: "1m 20s", desc: "Señal de audio institucional sobre nuestro centro de operaciones en La Serena." }
+                        ].map((track) => {
+                          const isCurrent = playingAudio && playingAudio.url === track.url;
+                          return (
+                            <div 
+                              key={track.id}
+                              style={{
+                                background: isCurrent ? 'rgba(56, 189, 248, 0.05)' : 'rgba(255, 255, 255, 0.02)',
+                                border: isCurrent ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid rgba(255, 255, 255, 0.05)',
+                                padding: '1.8rem',
+                                borderRadius: '25px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '1.5rem',
+                                transition: '0.3s'
+                              }}
+                            >
+                              <button 
+                                onClick={() => handlePlayAudio(track)}
+                                style={{
+                                  background: isCurrent && isPlaying ? '#ef4444' : '#38bdf8',
+                                  color: '#020617',
+                                  border: 'none',
+                                  width: '56px',
+                                  height: '56px',
+                                  borderRadius: '50%',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                  boxShadow: '0 8px 16px rgba(56, 189, 248, 0.2)',
+                                  transition: '0.3s'
+                                }}
+                              >
+                                {isCurrent && isPlaying ? <Pause size={24} fill="#020617" /> : <Play size={24} fill="#020617" style={{ marginLeft: '4px' }} />}
+                              </button>
+
+                              <div style={{ flex: 1 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px' }}>
+                                  <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: '800', color: isCurrent ? '#38bdf8' : 'white' }}>{track.title}</h4>
+                                  <span style={{ fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '50px', color: '#94a3b8', fontWeight: 'bold' }}>{track.duration}</span>
+                                </div>
+                                <p style={{ margin: '6px 0 0 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.5 }}>{track.desc}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Hidden Audio Element */}
+                      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+                    </div>
+
+                    {/* RIGHT COLUMN: DOCUMENTACIÓN */}
+                    <div>
+                      <h3 style={{ fontSize: '1.8rem', fontWeight: 900, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <Award color="#10b981" /> Archivos & Documentos
+                      </h3>
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                        {[
+                          { name: "VLS Presentación Akichip (PDF)", url: "/media/akichip/VLS_Presentacion_Akichip.pdf", size: "1.3 MB" },
+                          { name: "VLS presenta Akichip La Serena (PPTX)", url: "/media/akichip/VLS_presenta_Akichip_LaSerena.pptx", size: "10.6 MB" },
+                          { name: "Akichip The Physical Axis (PDF)", url: "/media/akichip/Akichip_The_Physical_Axis.pdf", size: "7.5 MB" },
+                          { name: "Akichip The Physical Axis (PPTX)", url: "/media/akichip/Akichip_The_Physical_Axis.pptx", size: "9.5 MB" },
+                          { name: "Clean Akichip The Physical Axis (PDF)", url: "/media/akichip/clean_Akichip_The_Physical_Axis.pdf", size: "3.4 MB" },
+                          { name: "Clean Akichip The Physical Axis (PPTX)", url: "/media/akichip/clean_Akichip_The_Physical_Axis.pptx", size: "10.8 MB" }
+                        ].map((doc, idx) => (
+                          <div 
+                            key={idx}
+                            style={{
+                              background: 'rgba(255, 255, 255, 0.02)',
+                              border: '1px solid rgba(255, 255, 255, 0.05)',
+                              padding: '1.5rem',
+                              borderRadius: '25px',
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              gap: '1rem'
+                            }}
+                          >
+                            <div style={{ flex: 1 }}>
+                              <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 'bold', color: 'white', lineHeight: 1.4 }}>{doc.name}</h4>
+                              <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Tamaño: {doc.size}</span>
+                            </div>
+                            <a 
+                              href={doc.url} 
+                              download 
+                              style={{
+                                background: 'rgba(16, 185, 129, 0.1)',
+                                color: '#10b981',
+                                border: 'none',
+                                width: '44px',
+                                height: '44px',
+                                borderRadius: '15px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                cursor: 'pointer',
+                                transition: '0.3s'
+                              }}
+                              onMouseEnter={(e) => e.currentTarget.style.background = '#10b981'}
+                              onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(16, 185, 129, 0.1)'}
+                            >
+                              <Download size={20} style={{ transition: '0.3s' }} />
+                            </a>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
               {activeTab === 'contacto' && (
                 <motion.div 
                   key="contacto"
@@ -379,7 +546,17 @@ export default function AkichipPortal({ onClose }) {
                   <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '3rem' }}>
                     <div>
                       <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: 0, letterSpacing: '-1px' }}>Local <span style={{ color: '#38bdf8' }}>204</span></h2>
-                      <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginTop: '10px', marginBottom: '3rem' }}>Visítanos en el corazón de La Serena. Laboratorio experto 24/7.</p>
+                      <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginTop: '10px', marginBottom: '1.5rem' }}>Visítanos en el corazón de La Serena. Laboratorio experto 24/7.</p>
+
+                      {/* Hugo Portrait Card */}
+                      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', marginBottom: '2rem', background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '25px', border: '1px solid rgba(56, 189, 248, 0.1)' }}>
+                        <img src="/media/akichip/Hugo_AKICHIP.jpeg" alt="Hugo Akichip" style={{ width: '80px', height: '80px', borderRadius: '20px', objectFit: 'cover', border: '2px solid #38bdf8' }} />
+                        <div>
+                          <strong style={{ display: 'block', color: 'white', fontSize: '1.1rem' }}>Hugo - Akichip</strong>
+                          <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 'bold' }}>MASTER TÉCNICO & EXPERTO ESD</span>
+                          <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: '4px 0 0 0' }}>Líder de microsoldadura y creador de soluciones de hardware a nivel comunal.</p>
+                        </div>
+                      </div>
                       
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -388,7 +565,7 @@ export default function AkichipPortal({ onClose }) {
                           </div>
                           <div>
                             <strong style={{ display: 'block', color: 'white', fontSize: '1.1rem' }}>Dirección</strong>
-                            <span style={{ color: '#94a3b8' }}>Calle Brasil 204, Sector Centro, La Serena.</span>
+                            <span style={{ color: '#94a3b8' }}>Edificio Serena Oriente (Cordovez / Cienfuegos), Galería Circular Interior, Local 204, La Serena.</span>
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
@@ -425,18 +602,21 @@ export default function AkichipPortal({ onClose }) {
                       position: 'relative',
                       overflow: 'hidden'
                     }}>
-                       <div style={{ position: 'absolute', inset: 0, opacity: 0.4, background: 'url("https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&h=800&fit=crop") center/cover' }} />
+                       <div style={{ position: 'absolute', inset: 0, opacity: 0.25, background: 'url("/media/akichip/AKICHIP.png") center/contain no-repeat' }} />
                        <div style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
                           <div style={{ background: 'rgba(56, 189, 248, 0.9)', color: '#020617', padding: '1rem 2rem', borderRadius: '20px', fontWeight: '900', fontSize: '1.2rem', boxShadow: '0 10px 30px rgba(56,189,248,0.4)', marginBottom: '1.5rem' }}>
                             UBICACIÓN EXACTA
                           </div>
-                          <button style={{ background: 'white', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                          <button 
+                            onClick={() => window.open('https://maps.google.com/?q=Edificio+Serena+Oriente+La+Serena+Chile', '_blank')}
+                            style={{ background: 'white', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginInline: 'auto' }}
+                          >
                             ABRIR GOOGLE MAPS <ExternalLink size={18} />
                           </button>
-                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
+              </motion.div>
               )}
             </AnimatePresence>
           </div>

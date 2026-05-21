@@ -107,8 +107,8 @@ export default function CentroRadio({ isDevMode = false }) {
     
     // ── CONFIGURACIÓN DE SEÑALES (Soberanía Digital RDMLS) ──────────────────
     // Se utiliza redundancia de endpoints para asegurar la escucha continua.
-    const RDMLS_MAIN_STREAM = 'https://az11.yesstreaming.net:8590/radio.mp3';
-    const RDMLS_FALLBACK_STREAM = 'https://az11.yesstreaming.net/listen/rdmls/radio.mp3';
+    const RDMLS_MAIN_STREAM = 'https://az11.yesstreaming.net/listen/rdmls/radio.mp3';
+    const RDMLS_FALLBACK_STREAM = 'https://az11.yesstreaming.net:8590/radio.mp3';
     
     const [streamUrl, setStreamUrl] = useState(RDMLS_MAIN_STREAM);
     const [streamError, setStreamError] = useState(false);
@@ -217,13 +217,43 @@ export default function CentroRadio({ isDevMode = false }) {
     const radioStations = [
         { 
             id: 'municipal',
-            name: 'RADIO MUNICIPAL 100.1 FM (Simulcast)',
+            name: 'RDMLS INSTITUCIONAL (100.1 FM)',
             dialLabel: 'RDMLS',
             slogan: 'LLEGASTE AL PULSO OFICIAL DE LA CIUDAD', 
             url: RDMLS_MAIN_STREAM, 
             color: '#f97316',
             logo: '/escudo.png',
             badge: 'RDMLS'
+        },
+        { 
+            id: 'cultura',
+            name: 'RDMLS CULTURA & PATRIMONIO',
+            dialLabel: 'CULTURA',
+            slogan: 'DIFUSIÓN CULTURAL MUNICIPAL - LA SERENA', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", 
+            color: '#ef4444',
+            logo: '/escudo.png',
+            badge: 'MUNICIPAL'
+        },
+        { 
+            id: 'informativa',
+            name: 'RDMLS INFORMATIVA 24/7',
+            dialLabel: 'RADIO INFO',
+            slogan: 'BOLETINES Y GESTIÓN EN TERRENO', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", 
+            color: '#38bdf8',
+            logo: '/logo_municipio.png',
+            badge: 'OFICIAL'
+        },
+        { 
+            id: 'eventos',
+            name: 'RDMLS EVENTOS & PROTOCOLO',
+            dialLabel: 'PROTOCOL',
+            slogan: 'PROTOCOLOS Y ACTOS INSTITUCIONALES', 
+            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", 
+            color: '#10b981',
+            logo: '/escudo.png',
+            badge: 'VIVO'
         },
         ...(isDevMode ? [
              { 
@@ -246,18 +276,7 @@ export default function CentroRadio({ isDevMode = false }) {
                 badge: 'AUDIO',
                 isPlaylist: true
             }
-        ] : []),
-        ...(isVLS ? [
-            { 
-               id: 'vls',
-               name: 'VLS RADIO COMUNITARIA (Main)',
-               dialLabel: 'VLS_RADIO',
-               slogan: 'EL PULSO CIUDADANO DE LA SERENA', 
-               url: atob('aHR0cHM6Ly9hejExLnllc3N0cmVhbWluZy5uZXQ6ODYzMC9yYWRpby5tcDM='), 
-               color: '#0ea5e9',
-               badge: 'VLS'
-           }
-       ] : [])
+        ] : [])
     ];
 
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
@@ -266,7 +285,13 @@ export default function CentroRadio({ isDevMode = false }) {
     // weather fetch removed from here (handled below with correct temp extraction)
 
     const changeStation = (station) => {
-        if (!station || station.id === currentStation?.id) return;
+        if (!station) return;
+        // Si ya está seleccionada, forzamos un pequeño "re-trigger" de la animación si el usuario hace click
+        if (station.id === currentStation?.id) {
+            // Trigger pulses or visual feedbacks here if needed
+            return;
+        }
+        
         setCurrentStation(station);
         if (!station.isVideo) {
             setStreamUrl(station.url);
@@ -852,16 +877,24 @@ export default function CentroRadio({ isDevMode = false }) {
                             {isVLS ? 'VLS RADIO COMUNITARIA' : 'RDMLS RADIO DIGITAL'}
                         </h1>
                         <p style={{ margin: 0, color: 'white', opacity: 0.8, fontSize: isMobile ? '0.7rem' : '0.85rem', fontWeight: 'bold', letterSpacing: '1px' }}>
-                            {isVLS ? 'VECINOS SMART - LA SERENA 2026' : 'MUNICIPAL DE LA SERENA - IMLS 2026'}
+                            {isVLS ? 'VECINOS SMART - LA SERENA 2025' : 'MUNICIPAL DE LA SERENA - IMLS 2025'}
                         </p>
                     </div>
                 </div>
 
                 {/* Solo dejamos links oficiales de Noticias y Contacto */}
-                <div style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
-                    <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>NOTICIAS @ LASERENA.CL</a>
-                    <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
-                    <a href="mailto:radio@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>RADIO@LASERENA.CL</a>
+                <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
+                    <div className="hide-mobile" style={{ display: 'flex', gap: '1rem', marginRight: '1rem', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '1rem' }}>
+                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#38bdf8', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>CITIZENS</button>
+                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#22c55e', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>ADMIN</button>
+                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#f59e0b', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>EVENTS</button>
+                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#10b981', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>LISTENING</button>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>NOTICIAS</a>
+                        <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
+                        <a href="mailto:radio@laserena.cl" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>CONTACTO</a>
+                    </div>
                 </div>
             </header>
 
@@ -1007,24 +1040,55 @@ export default function CentroRadio({ isDevMode = false }) {
                                         <span>AM</span>
                                         <span>540</span><span>600</span><span>700</span><span>800</span><span>1000</span><span>1200</span><span>1600</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', borderTop: '1px solid rgba(0,255,65,0.15)', borderBottom: '1px solid rgba(0,255,65,0.15)', padding: '4px 0', color: '#fff' }}>
+                                    <div style={{ display: 'flex', width: '100%', height: '100%', alignItems: 'center', borderTop: '1px solid rgba(0,255,65,0.15)', borderBottom: '1px solid rgba(0,255,65,0.15)', padding: '4px 0', color: '#fff' }}>
                                         {radioStations.map((s, idx) => (
-                                            <span key={idx} onClick={() => changeStation(s)} style={{
-                                                cursor: 'pointer',
-                                                fontSize: currentStation.id === s.id ? '0.85rem' : '0.65rem',
-                                                color: currentStation.id === s.id ? '#FFD700' : '#555',
-                                                fontWeight: '900',
-                                                transition: 'all 0.4s ease',
-                                                textShadow: currentStation.id === s.id ? '0 0 10px #FFD700' : 'none',
-                                                maxWidth: '90px',
-                                                textAlign: 'center',
-                                                lineHeight: '1.1'
-                                            }}>
-                                                {s.dialLabel || s.name}
-                                            </span>
+                                            <div key={idx} 
+                                                onClick={() => changeStation(s)} 
+                                                style={{
+                                                    flex: 1,
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    cursor: 'pointer',
+                                                    position: 'relative',
+                                                    height: '100%',
+                                                    zIndex: 5
+                                                }}
+                                            >
+                                                {/* Iluminación de Sección (Glow) */}
+                                                {currentStation.id === s.id && (
+                                                    <motion.div 
+                                                        layoutId="dial-glow"
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        style={{
+                                                            position: 'absolute',
+                                                            width: '70px',
+                                                            height: '40px',
+                                                            background: `radial-gradient(circle, ${s.color}44 0%, transparent 70%)`,
+                                                            filter: 'blur(8px)',
+                                                            zIndex: -1
+                                                        }}
+                                                    />
+                                                )}
+                                                
+                                                <span style={{
+                                                    fontSize: currentStation.id === s.id ? '0.85rem' : '0.65rem',
+                                                    color: currentStation.id === s.id ? '#FFD700' : '#444',
+                                                    fontWeight: '900',
+                                                    transition: 'all 0.4s ease',
+                                                    textShadow: currentStation.id === s.id ? `0 0 15px ${s.color}aa, 0 0 5px #fff` : 'none',
+                                                    textAlign: 'center',
+                                                    lineHeight: '1.1',
+                                                    letterSpacing: '1px'
+                                                }}>
+                                                    {s.dialLabel || s.name}
+                                                </span>
+                                            </div>
                                         ))}
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6, fontSize: '0.65rem' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.4, fontSize: '0.6rem', color: '#00ff41' }}>
                                         <span>FM</span>
                                         <span>88</span><span>92</span><span>96</span><span>100</span><span>104</span><span>108</span>
                                     </div>
@@ -1032,15 +1096,15 @@ export default function CentroRadio({ isDevMode = false }) {
                                 {/* Aguja Mecánica */}
                                 <div style={{
                                     position: 'absolute',
-                                    left: `${((radioStations.findIndex(s => s.id === currentStation.id) + 1) * (100 / (radioStations.length + 1)))}%`,
+                                    left: `${((radioStations.findIndex(s => s.id === currentStation.id) + 0.5) * (100 / radioStations.length))}%`,
                                     top: '8%', bottom: '8%', width: '3px',
-                                    background: 'linear-gradient(180deg, #fff 0%, #e63946 60%, #900 100%)',
+                                    background: 'linear-gradient(180deg, #fff 0%, #ff4d4d 60%, #900 100%)',
                                     transform: 'translateX(-50%)',
                                     transition: 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                                    boxShadow: '0 0 12px rgba(230,57,70,0.9)',
+                                    boxShadow: '0 0 15px rgba(255,77,77,0.8), 0 0 5px #fff',
                                     zIndex: 10, pointerEvents: 'none'
                                 }}>
-                                    <div style={{ position: 'absolute', top: -4, left: '50%', transform: 'translateX(-50%)', width: '10px', height: '10px', borderRadius: '50%', background: '#fff', border: '2px solid #e63946', boxShadow: '0 0 8px #fff' }}></div>
+                                    <div style={{ position: 'absolute', top: -4, left: '50%', transform: 'translateX(-50%)', width: '12px', height: '12px', borderRadius: '50%', background: '#fff', border: '3px solid #ff4d4d', boxShadow: '0 0 10px #fff' }}></div>
                                 </div>
                                 {/* Reflexión de vidrio */}
                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 40%)', pointerEvents: 'none', zIndex: 6 }}></div>
@@ -1414,6 +1478,94 @@ export default function CentroRadio({ isDevMode = false }) {
                 </section>
                 )}
 
+                {/* 6. LOS 4 PILARES DE SMART CITY (IMLS 2025) */}
+                <section id="pillars-section" style={{ padding: '2rem 0' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', borderBottom: '2px solid #FFD700', paddingBottom: '1rem' }}>
+                        <Shield size={32} color="#FFD700" />
+                        <div>
+                            <h2 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '2.2rem', color: 'white', fontWeight: '900', letterSpacing: '-1px' }}>SMART COMUNA: 4 PILARES ESTRATÉGICOS</h2>
+                            <p style={{ margin: 0, color: '#FFD700', fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>INFRAESTRUCTURA DIGITAL SOBERANA</p>
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '1.5rem' }}>
+                        {/* Smart Citizens */}
+                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.3)', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                <div style={{ background: '#38bdf8', padding: '10px', borderRadius: '12px' }}><Users color="white" /></div>
+                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART CITIZENS</h3>
+                            </div>
+                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Atención Ciudadana: Registro digital, reportes vecinales georreferenciados y monitoreo urbano/ambiental.</p>
+                            <button onClick={() => navigate('/citizens')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #38bdf8', color: '#38bdf8', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>ACCEDER PORTAL</button>
+                        </div>
+
+                        {/* Smart Administration */}
+                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '24px', border: '1px solid rgba(34, 197, 94, 0.3)', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                <div style={{ background: '#22c55e', padding: '10px', borderRadius: '12px' }}><Database color="white" /></div>
+                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART ADMINISTRATION</h3>
+                            </div>
+                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Gestión Interna: E-learning con certificación digital y digitalización de informes con firma electrónica.</p>
+                            <button onClick={() => navigate('/induccion')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #22c55e', color: '#22c55e', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>MODULO RRHH</button>
+                        </div>
+
+                        {/* Smart Events */}
+                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '24px', border: '1px solid rgba(245, 158, 11, 0.3)', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                <div style={{ background: '#f59e0b', padding: '10px', borderRadius: '12px' }}><Calendar color="white" /></div>
+                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART EVENTS</h3>
+                            </div>
+                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Protocolo & Actos: Gestión automatizada de eventos y monitor de precedencias en tiempo real.</p>
+                            <button onClick={() => navigate('/protocolo')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #f59e0b', color: '#f59e0b', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>GIRAS & EVENTOS</button>
+                        </div>
+
+                        {/* Smart Listening */}
+                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.3)', position: 'relative', overflow: 'hidden' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                                <div style={{ background: '#10b981', padding: '10px', borderRadius: '12px' }}><Zap color="white" /></div>
+                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART LISTENING</h3>
+                            </div>
+                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Inteligencia: Centinel Faro para monitoreo de redes y análisis de video mediante IA avanzada.</p>
+                            <button onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #10b981', color: '#10b981', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>ANALIZAR DATOS</button>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 7. ASISTENTE VIRTUAL (SERENITO 3D) */}
+                <section style={{ 
+                    background: 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(2,6,23,1))', 
+                    borderRadius: '32px', 
+                    padding: '2.5rem', 
+                    display: 'flex', 
+                    flexDirection: isMobile ? 'column' : 'row', 
+                    alignItems: 'center', 
+                    gap: '2rem',
+                    border: '1px solid rgba(255,215,0,0.3)',
+                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+                }}>
+                    <div style={{ width: isMobile ? '100%' : '300px', height: '300px', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
+                        <Canvas camera={{ position: [0, 1.5, 4], fov: 40 }}>
+                            <Suspense fallback={null}>
+                                <UniversalSerenito />
+                                <Environment preset="city" />
+                                <OrbitControls enableZoom={false} />
+                            </Suspense>
+                        </Canvas>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <h2 style={{ fontSize: '2rem', color: 'white', fontWeight: '900', margin: '0 0 1rem 0' }}>¿NECESITAS AYUDA?</h2>
+                        <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.6', margin: '0 0 1.5rem 0' }}>
+                            Soy Serenito, tu guía inteligente. Estoy aquí para resolver tus dudas sobre trámites municipales, eventos y servicios en tiempo real.
+                        </p>
+                        <button 
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))}
+                            style={{ background: '#FFD700', color: 'black', padding: '12px 35px', borderRadius: '30px', border: 'none', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
+                        >
+                            <MessageCircle size={20} /> INICIAR CHAT CON SERENITO
+                        </button>
+                    </div>
+                </section>
+
             </main>
 
             {/* FOOTER INSTITUCIONAL */}
@@ -1428,7 +1580,7 @@ export default function CentroRadio({ isDevMode = false }) {
                             style={{ height: '70px', marginBottom: '1rem', filter: 'drop-shadow(0 0 8px rgba(255,215,0,0.4))' }}
                             onError={e => { e.target.style.display = 'none'; }}
                         />
-                                             <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2026</p>
+                                             <p style={{ margin: '0 0 0.3rem', opacity: 0.5, fontSize: '0.75rem' }}>I. MUNICIPALIDAD DE LA SERENA · COMUNICACIONES 2025</p>
                         
                         {/* Links Consolidados RDMLS */}
                         <div style={{ display: 'flex', gap: '1.2rem', marginTop: '1.2rem', flexWrap: 'wrap', justifyContent: isMobile ? 'center' : 'flex-start', alignItems: 'center' }}>
@@ -1446,7 +1598,7 @@ export default function CentroRadio({ isDevMode = false }) {
                         </button>
 
                         <div style={{ marginTop: '1.5rem', fontSize: '0.65rem', opacity: 0.5, fontWeight: 'bold', textTransform: 'uppercase' }}>
-                            RDMLS.CL Desarrollado por Comunicaciones IMLS 2026
+                            RDMLS.CL Desarrollado por Comunicaciones IMLS 2025
                         </div>
                     </div>
 

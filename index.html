@@ -63,11 +63,15 @@
     });
   </script>
   <script>
-    // PRE-HYDRATION BRANDING (Avoid flashing VLS on RDMLS Domains)
+    // PRE-HYDRATION BRANDING (Avoid flashing VLS on RDMLS or PuertaSmart Domains)
     if (window.location.hostname.includes('rdmls') || (window.location.hostname.includes('laserena.cl') && !window.location.hostname.includes('vecinos'))) {
       document.title = "RDMLS · Radio Digital Municipal";
       document.querySelector("meta[name='theme-color']").setAttribute('content', '#8B1D19');
       document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/rdmls_favicon.png'));
+    } else if (window.location.hostname.includes('puertasmart.cl')) {
+      document.title = "PuertaSmart · Control de Accesos y Seguridad";
+      document.querySelector("meta[name='theme-color']").setAttribute('content', '#1e3a8a');
+      document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/vls-crystal-icon.svg'));
     }
   </script>
   <script>
