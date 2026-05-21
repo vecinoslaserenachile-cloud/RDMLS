@@ -15,6 +15,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 const ARCHI_PLAYLIST = [
   {
     id: 1,
+    title: 'Aire',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/Aire.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 2,
     title: 'Súmate Lista Nueva Energía',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Súmate Lista Nueva Energía.mp3',
@@ -22,7 +30,7 @@ const ARCHI_PLAYLIST = [
     category: 'Jingle',
   },
   {
-    id: 2,
+    id: 3,
     title: 'Primer Mujer Presi',
     artist: 'Solange Gómez',
     file: '/archi-media/audio/Primer Mujer Presi.mp3',
@@ -30,7 +38,15 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 3,
+    id: 4,
+    title: 'Voz de Chile',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/voz de chile.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 5,
     title: 'La más transparente',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/La más transparente.mp3',
@@ -38,7 +54,7 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 4,
+    id: 6,
     title: 'La Antena de todo Chile',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/La Antena de todo Chile.mp3',
@@ -46,7 +62,15 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 5,
+    id: 7,
+    title: 'Nueva E',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/Nueva E.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 8,
     title: 'La ARChi vamos',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/La ARChi vamos.mp3',
@@ -54,7 +78,7 @@ const ARCHI_PLAYLIST = [
     category: 'Jingle',
   },
   {
-    id: 6,
+    id: 9,
     title: 'Motor Emergencia',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Motor Emergencia.mp3',
@@ -62,7 +86,15 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 7,
+    id: 10,
+    title: 'Cambia E',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/Cambia E.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 11,
     title: 'Nunca están de vacaciones',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Nunca están de vacaciones.mp3',
@@ -70,7 +102,7 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 8,
+    id: 12,
     title: 'Radio del Futuro',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Radio del Futuro.mp3',
@@ -78,7 +110,15 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 9,
+    id: 13,
+    title: 'Súmate',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/súmate.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 14,
     title: 'ARCHI NUEVA CUECA ENERGÍA',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/ARCHI NUEVA CUECA ENERGÍA.mp3',
@@ -86,7 +126,7 @@ const ARCHI_PLAYLIST = [
     category: 'Jingle',
   },
   {
-    id: 10,
+    id: 15,
     title: 'Escudo de Chile',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Escudo de Chile.mp3',
@@ -94,7 +134,15 @@ const ARCHI_PLAYLIST = [
     category: 'Himno',
   },
   {
-    id: 11,
+    id: 16,
+    title: 'Expe',
+    artist: 'Locución ARCHI',
+    file: '/archi-media/audio/Expe.MP3',
+    duration: null,
+    category: 'Locución',
+  },
+  {
+    id: 17,
     title: 'Motor Nueva E Radio',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Motor Nueva E Radio.mp3',
@@ -102,7 +150,7 @@ const ARCHI_PLAYLIST = [
     category: 'Spot',
   },
   {
-    id: 12,
+    id: 18,
     title: 'Frecuencia Solanch',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Frecuencia Solanch.mp3',
@@ -110,7 +158,7 @@ const ARCHI_PLAYLIST = [
     category: 'Jingle',
   },
   {
-    id: 13,
+    id: 19,
     title: 'Tango ARCHI',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Tango ARCHI.mp3',
@@ -118,13 +166,13 @@ const ARCHI_PLAYLIST = [
     category: 'Jingle',
   },
   {
-    id: 14,
+    id: 20,
     title: 'Cambiarchi',
     artist: 'ARCHI Nueva Energía',
     file: '/archi-media/audio/Cambiarchi.mp3',
     duration: null,
     category: 'Jingle',
-  },
+  }
 ];
 
 // Fallback: si un archivo MP3 no existe, usa el jingle_remastered anterior

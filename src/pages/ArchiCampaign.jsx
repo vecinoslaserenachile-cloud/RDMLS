@@ -300,8 +300,9 @@ const ArchiCampaign = () => {
               </div>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
-            <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '30px', padding: '20px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', maxWidth: '500px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ position: 'relative', display: 'flex', justifyContent: 'center', minHeight: '350px' }}>
+            <div style={{ background: 'rgba(255,255,255,0.03)', border: '4px solid red', borderRadius: '30px', padding: '20px', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)', maxWidth: '500px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div style={{ color: 'red', fontSize: '20px', fontWeight: 'bold', marginBottom: '10px' }}>CARGANDO REPRODUCTOR...</div>
               <ArchiRadioPlayer isVisible={true} scale={1.2} />
             </div>
           </motion.div>
