@@ -101,6 +101,30 @@ const ARCHI_PLAYLIST = [
     duration: null,
     category: 'Spot',
   },
+  {
+    id: 12,
+    title: 'Frecuencia Solanch',
+    artist: 'ARCHI Nueva Energía',
+    file: '/archi-media/audio/Frecuencia Solanch.mp3',
+    duration: null,
+    category: 'Jingle',
+  },
+  {
+    id: 13,
+    title: 'Tango ARCHI',
+    artist: 'ARCHI Nueva Energía',
+    file: '/archi-media/audio/Tango ARCHI.mp3',
+    duration: null,
+    category: 'Jingle',
+  },
+  {
+    id: 14,
+    title: 'Cambiarchi',
+    artist: 'ARCHI Nueva Energía',
+    file: '/archi-media/audio/Cambiarchi.mp3',
+    duration: null,
+    category: 'Jingle',
+  },
 ];
 
 // Fallback: si un archivo MP3 no existe, usa el jingle_remastered anterior
