@@ -132,10 +132,7 @@ const ArchiCampaign = () => {
     { zona: "Norte Grande", regiones: ["Arica y Parinacota (XV)", "Tarapacá (I)", "Antofagasta (II)"], rep: "Xavier",      active: true  },
     { zona: "Norte Chico",  regiones: ["Atacama (III)", "Coquimbo (IV)"],                              rep: "Solange · Fernando", active: true  },
     { zona: "Zona Central", regiones: ["Valparaíso (V)", "Metropolitana (RM)", "O'Higgins (VI)"],      rep: "Ximena · Rodrigo · Elicena", active: true },
-    { zona: "Sur",          regiones: ["Maule (VII)", "Ñuble (XVI)", "Biobío (VIII)"],                 rep: "María Graciela",  active: true  },
-    { zona: "La Araucanía", regiones: ["La Araucanía (IX)"],                                          rep: "Red ARCHI Sur",   active: false },
-    { zona: "Los Lagos",    regiones: ["Los Ríos (XIV)", "Los Lagos (X)"],                            rep: "Red ARCHI Sur",   active: false },
-    { zona: "Austral",      regiones: ["Aysén (XI)", "Magallanes (XII)"],                             rep: "René",            active: true  },
+    { zona: "Sur a Austral", regiones: ["Maule (VII)", "Ñuble (XVI)", "Biobío (VIII)", "Aysén (XI)", "Magallanes (XII)"], rep: "María Graciela · René", active: true },
   ];
 
   const pillars = [
@@ -403,17 +400,17 @@ const ArchiCampaign = () => {
               <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '16px', padding: '1.2rem 1.4rem', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <span style={{ color: 'white', fontWeight: 900, fontSize: '0.85rem' }}>Cobertura Nacional Directa</span>
-                  <span style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1.1rem' }}>71%</span>
+                  <span style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1.1rem' }}>100%</span>
                 </div>
                 <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '4px', height: '6px', overflow: 'hidden' }}>
                   <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: '71%' }}
+                    animate={{ width: '100%' }}
                     transition={{ duration: 1.5, ease: 'easeOut' }}
                     style={{ height: '100%', background: 'linear-gradient(to right, #fbbf24, #f59e0b)', borderRadius: '4px' }}
                   />
                 </div>
-                <div style={{ color: '#64748b', fontSize: '0.65rem', marginTop: '6px' }}>5 de 7 zonas con representación directa en el directorio</div>
+                <div style={{ color: '#64748b', fontSize: '0.65rem', marginTop: '6px' }}>Todas las regiones.</div>
               </div>
 
               {/* Lista de territorios de norte a sur */}
