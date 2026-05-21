@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-
 import { motion, AnimatePresence } from 'framer-motion';
 // StickyNoteWidget removido por solicitud institucional (MEMO no autorizado)
 
-import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, ShieldClose, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award, Joystick, Radio } from 'lucide-react';
+import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award, Joystick, Radio } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
@@ -90,6 +90,7 @@ const VLSInduccion = lazy(() => import('./pages/VLSInduccion'));
 // const VLSNewsStella = lazy(() => import('./components/VLSNewsStella'));
 // const ContactForm = lazy(() => import('./components/ContactForm'));
 const RDMLSMaintenance = lazy(() => import('./components/RDMLSMaintenance'));
+const Mayo21Studio = lazy(() => import('./components/Mayo21Studio'));
 
 const MemorialHijosRegion = lazy(() => import('./components/MemorialHijosRegion.jsx'));
 const PersonalStereo = lazy(() => import('./components/PersonalStereo.jsx'));
@@ -176,14 +177,14 @@ const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
 const BackofficeMovilVLS = lazy(() => import('./components/BackofficeMovilVLS'));
 // const VLSNewsAvalancha = lazy(() => import('./components/VLSNewsAvalancha'));
 // const DomeykoPortal = lazy(() => import('./pages/DomeykoPortal'));
-// const SonicevPortal = lazy(() => import('./pages/SonicevPortal'));
+const SonicevPortal = lazy(() => import('./pages/SonicevPortal'));
 const NuevoPeregrinoPortal = lazy(() => import('./pages/NuevoPeregrinoPortal'));
 // const SmartComunaOS = lazy(() => import('./components/SmartComunaOS'));
 const VLSNotesGallery = lazy(() => import('./components/VLSNotesGallery'));
 const MonitoreoTransparencia = lazy(() => import('./components/Auditoria/MonitoreoTransparencia'));
 const MusicRanking = lazy(() => import('./components/MusicRanking'));
 const DiaDelTrabajador = lazy(() => import('./pages/DiaDelTrabajador')); // Nueva sección autónoma 1 de Mayo
-// const AkichipPortal = lazy(() => import('./pages/AkichipPortal'));
+const AkichipPortal = lazy(() => import('./pages/AkichipPortal'));
 
 
 
@@ -421,7 +422,7 @@ function App() {
   const location = useLocation();
 
   const host = (window.location.hostname || window.location.host || '').toLowerCase();
-  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || location.pathname.includes('/radio') || host.includes('localhost') || window.location.search.includes('rdmls');
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || location.pathname.includes('/radio') || (host.includes('localhost') && (location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
 
   // Limpiar flag de mantenimiento al montar — evita bloqueo post-deploy
   useEffect(() => {
@@ -487,13 +488,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
   // but for now the global SEO component handles the canonical URL.
 
   const host = (window.location.hostname || window.location.host || '').toLowerCase();
-  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || location.pathname.includes('/radio') || host.includes('localhost') || window.location.search.includes('rdmls');
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || location.pathname.includes('/radio') || (host.includes('localhost') && (location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   const isPuertaSmart = host.includes('puertasmart.cl') || location.pathname.toLowerCase().includes('/puerta');
   const isRadioVecinos = host.includes('radiovecinos.cl') || location.pathname.toLowerCase().includes('/archi');
   const isAcademy = host.includes('vecinosmart.cl') || host.includes('prendes.cl'); // Entorno Comercial de Venta de Know-how
   const isVLS = !isRDMLS && !isAcademy && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
   const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl') || host.includes('prendes.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('pages.dev');
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('radiovecinos.cl') || host.includes('pages.dev');
   const isChile = host.includes('vecinoschile.cl');
   const isNational = isChile;
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
@@ -503,8 +504,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const isCordillera = location.pathname.toLowerCase().includes('/altacordillera') || location.pathname.toLowerCase().includes('/cordillera');
   const isClasica = location.pathname.toLowerCase().includes('/clasica');
   const isPeregrinoHost = host.includes('peregrino');
-  const isEvolutionShowroom = host.includes('vecinosmart.cl') || host.includes('localhost');
-  const isZeroDistraction = isInduccion || isVLSabes || isTribute || isClasica || isArtemis || isCordillera || isPeregrinoHost || isEvolutionShowroom;
+  const isEvolutionShowroom = (host.includes('vecinosmart.cl') || (host.includes('localhost') && !host.includes('puertasmart.cl'))) && !location.pathname.match(/^\/(21mayo|akichip|stella|1demayo)/i) && !location.hash.match(/(21mayo|akichip|stella|1demayo)/i);
+  const isZeroDistraction = isInduccion || isVLSabes || isTribute || isClasica || isArtemis || isCordillera || isPeregrinoHost || isEvolutionShowroom || !!location.pathname.match(/^\/(21mayo|akichip)/i) || !!location.hash.match(/(21mayo|akichip)/i);
   const isCommercial = isAcademy;
 
   const { t, lang, setLang } = useTranslation();
@@ -595,6 +596,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showMotorTiempo, setShowMotorTiempo] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showAkichip, setShowAkichip] = useState(false);
+  const [showMay21Studio, setShowMay21Studio] = useState(false);
   const [showEnfermeria, setShowEnfermeria] = useState(false);
   const [showSmartBusiness, setShowSmartBusiness] = useState(false);
   const [showEmbajadas, setShowEmbajadas] = useState(false);
@@ -746,8 +748,6 @@ function AppContent({ setShowCoquiSmartCRM }) {
       // Sostener en Hub sin redirección legacy
     } else if (host.includes('farito.cl') && location.pathname === '/') {
       navigate('/inversores');
-    } else if (host.includes('puertasmart.cl') && location.pathname === '/') {
-      navigate('/puerta');
     } else if (host.includes('sonicev.cl') && location.pathname === '/') {
       navigate('/sonicev');
     }
@@ -865,6 +865,9 @@ function AppContent({ setShowCoquiSmartCRM }) {
     } else if (host.includes('sonicev')) {
       pageTitle = 'Sonicev - Producción & Estudio Soberano';
       favIconUrl = '/sonicev_favicon.png';
+    } else if (host.includes('radiovecinos')) {
+      pageTitle = 'ARCHI NACIONAL | ELECCIONES 2026 | SOLANGE GÓMEZ';
+      favIconUrl = '/vls-crystal-icon.svg';
     } else if (host.includes('peregrino')) {
       pageTitle = 'Nuevo Peregrino - Soberanía Digital';
       favIconUrl = '/peregrino_favicon.png';
@@ -1412,15 +1415,26 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (newsId === 'camaras') setShowVecinojos(true); if (newsId === 'stella') setShowStella(true);
       }, 1200);
     }
-    if (location.pathname.match(/^\/stella/i)) {
+    const isStellaPath = location.pathname.match(/^\/stella/i) || location.hash.match(/stella/i);
+    const is1deMayoPath = location.pathname.match(/^\/1demayo/i) || location.hash.match(/1demayo/i);
+    const isAkichipPath = location.pathname.match(/^\/akichip/i) || location.hash.match(/akichip/i);
+    const is21MayoPath = location.pathname.match(/^\/21mayo/i) || location.hash.match(/21mayo/i);
+
+    if (isStellaPath) {
       setShowStella(true);
-    } else if (location.pathname.match(/^\/1demayo/i)) {
+    } else if (is1deMayoPath) {
       setShowDiaDelTrabajador(true);
+    } else if (isAkichipPath) {
+      setShowAkichip(true);
+    } else if (is21MayoPath) {
+      setShowMay21Studio(true);
     } else {
       setShowStella(false);
       setShowDiaDelTrabajador(false);
+      setShowAkichip(false);
+      setShowMay21Studio(false);
     }
-  }, [searchParams, location.pathname]);
+  }, [searchParams, location.pathname, location.hash]);
 
   const isInvestigacionSecreta = searchParams.get('investigacion') === 'secreta';
   useEffect(() => {
@@ -1822,8 +1836,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
   // VLS_C5: NEVER return null. Return LoadingScreen to avoid "black screen" confusion.
-  // Bypass loading screen for direct media portals to ensure immediate visual feedback
-  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas)/i);
+  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas|akichip|21mayo)/i) || location.hash.match(/(akichip|21mayo)/i);
 
   // ——— SYNC ARCADE ROUTE (Moved above early returns to satisfy Hook rules) ———
   useEffect(() => {
@@ -2418,7 +2431,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         )}
       </AnimatePresence>
 
-      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev') ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : (isRDMLS ? '60px' : '100px'), background: '#020617', minHeight: '100vh' }}>
+      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev') ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : (isRDMLS ? '60px' : '100px'), background: isRDMLS ? '#0a0a0a' : '#020617', minHeight: '100vh' }}>
         <ErrorBoundary>
           <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS, handleLogin, handleLogout }} />
         </ErrorBoundary>
@@ -2732,8 +2745,17 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {showAkichip && (
         <Suspense fallback={<LoadingScreen />}>
           <div style={{ position: 'fixed', inset: 0, zIndex: 100000 }}>
-            {/* <AkichipPortal onClose={() => setShowAkichip(false)} /> */}
+            <AkichipPortal onClose={() => setShowAkichip(false)} />
           </div>
+        </Suspense>
+      )}
+
+      {showMay21Studio && (
+        <Suspense fallback={<LoadingScreen />}>
+          <Mayo21Studio onClose={() => {
+            setShowMay21Studio(false);
+            navigate('/');
+          }} />
         </Suspense>
       )}
 

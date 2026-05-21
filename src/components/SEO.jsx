@@ -6,8 +6,7 @@ const SEO = ({ title, description, image, article }) => {
   const { pathname } = useLocation();
   const host = typeof window !== 'undefined' ? (window.location.hostname || '').toLowerCase() : '';
   
-  // -- REGLA DE SOBERANÍA RDMLS/VLS --
-  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || pathname.includes('/radio') || host.includes('localhost') || window.location.search.includes('rdmls');
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || pathname.includes('/radio') || (host.includes('localhost') && (pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   
   const siteUrl = isRDMLS ? "https://www.rdmls.cl" : "https://www.vecinoslaserena.cl";
   const defaultTitle = isRDMLS ? "Radio Digital Municipal La Serena · www.rdmls.cl" : "VLS Network · Ecosistemas Digitales";

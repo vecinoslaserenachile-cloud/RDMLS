@@ -101,7 +101,7 @@ const MarruecosPortal = React.lazy(() => import('./components/MarruecosPortal.js
 const MemoriasUnicornio = React.lazy(() => import('./pages/MemoriasUnicornio'));
 const NuevoPeregrinoPortal = React.lazy(() => import('./pages/NuevoPeregrinoPortal'));
 const SmartComunaEvolution = React.lazy(() => import('./pages/SmartComunaEvolution.jsx'));
-// const AkichipPortal = React.lazy(() => import('./pages/AkichipPortal'));
+const AkichipPortal = React.lazy(() => import('./pages/AkichipPortal'));
 // const VLSNewsStella = React.lazy(() => import('./components/VLSNewsStella'));
 const PescaArtesanalNota = React.lazy(() => import('./pages/PescaArtesanalNota.jsx'));
 // const SlepElquiNota = React.lazy(() => import('./pages/SlepElquiNota.jsx'));
@@ -112,6 +112,9 @@ const GardellaPortfolio = React.lazy(() => import('./pages/GardellaPortfolio.jsx
 // const PulsoCiudadano = React.lazy(() => import('./pages/PulsoCiudadano.jsx'));
 // const DistanciasRadar = React.lazy(() => import('./pages/DistanciasRadar.jsx'));
 const RadioPlayer = React.lazy(() => import('./components/RadioPlayer'));
+const ArchiRadioPlayer = React.lazy(() => import('./components/ArchiRadioPlayer'));
+const ArchiCampaign = React.lazy(() => import('./pages/ArchiCampaign.jsx'));
+const ArchiNewsAdmin = React.lazy(() => import('./pages/ArchiNewsAdmin.jsx'));
 
 // const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
 // const PatrimonioVulnerable = React.lazy(() => import('./pages/PatrimonioVulnerable.jsx'));
@@ -252,6 +255,7 @@ const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmar
 const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
 const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('pren-vls');
 const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prendes.cl rebranding
+const isRadioVecinosDns = host.includes('radiovecinos.cl');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -263,7 +267,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           {/* VLS_PERSISTENT_CORE: Components that must NEVER unmount during SPA navigation */}
           {(!window.location.pathname.toLowerCase().match(/\/fred(\/|$)/)) && (
             <Suspense fallback={null}>
-              <RadioPlayer isVisible={true} />
+              {/* En radiovecinos.cl → reproductor ARCHI propio (MP3s de campaña, sin VLS) */}
+              {/* En cualquier otro dominio → reproductor VLS/RDMLS estándar */}
+              {isRadioVecinosDns
+                ? <ArchiRadioPlayer isVisible={true} />
+                : <RadioPlayer isVisible={true} />}
             </Suspense>
           )}
           
@@ -274,21 +282,22 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Suspense fallback={<LoadingScreen />}>
             <Routes>
               {/* --- 1. RUTAS GLOBALES DE ALTA PRIORIDAD (VLS_SUPER_ROUTES) --- */}
-              <Route path="/FRED" element={<HubDashboard />} />
-              <Route path="/chequia" element={<HubDashboard />} />
-              <Route path="/CHEQUIA" element={<HubDashboard />} />
+              {/* FIX: Envueltas con <App /> para que useOutletContext() nunca retorne null */}
+              <Route path="/FRED" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/chequia" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/CHEQUIA" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/retail" element={<VLSNewsIan onClose={() => window.location.href = '/'} />} />
-              <Route path="/alcaldesa" element={<HubDashboard />} />
-              <Route path="/andacollo" element={<HubDashboard />} />
-              <Route path="/vallenar" element={<HubDashboard />} />
-              <Route path="/juansoldado" element={<HubDashboard />} />
-              <Route path="/juan-soldado" element={<HubDashboard />} />
-              <Route path="/JUANSOLDADO" element={<HubDashboard />} />
-              <Route path="/horario" element={<HubDashboard />} />
-              <Route path="/stella" element={<HubDashboard />} />
-              <Route path="/STELLA" element={<HubDashboard />} />
+              <Route path="/alcaldesa" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/andacollo" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/vallenar" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/juansoldado" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/juan-soldado" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/JUANSOLDADO" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/horario" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/stella" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/STELLA" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/1demayo" element={<DiaDelTrabajador />} />
-              <Route path="/cambio-de-hora" element={<HubDashboard />} />
+              <Route path="/cambio-de-hora" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/artemis" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/artemisa" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/artemis2" element={<App />}><Route index element={<HubDashboard />} /></Route>
@@ -311,17 +320,17 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/CHOAPA" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/redcine" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/REDCINE" element={<App />}><Route index element={<HubDashboard />} /></Route>
-              <Route path="/aviva" element={<HubDashboard />} />
-              <Route path="/AVIVA" element={<HubDashboard />} />
-              <Route path="/slep-elqui" element={<HubDashboard />} />
-              <Route path="/SLEP-ELQUI" element={<HubDashboard />} />
+              <Route path="/aviva" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/AVIVA" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/slep-elqui" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/SLEP-ELQUI" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/pesca-artesanal" element={<PescaArtesanalNota />} />
               <Route path="/PESCA-ARTESANAL" element={<PescaArtesanalNota />} />
-              <Route path="/salud-patrimonio" element={<HubDashboard />} />
-              <Route path="/SALUD-PATRIMONIO" element={<HubDashboard />} />
+              <Route path="/salud-patrimonio" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/SALUD-PATRIMONIO" element={<App />}><Route index element={<HubDashboard />} /></Route>
               
-              <Route path="/pulsociudadano" element={<HubDashboard />} />
-              <Route path="/PULSOCIUDADANO" element={<HubDashboard />} />
+              <Route path="/pulsociudadano" element={<App />}><Route index element={<HubDashboard />} /></Route>
+              <Route path="/PULSOCIUDADANO" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/opciones" element={<RDMLSOpciones />} />
               <Route path="/OPCIONES" element={<RDMLSOpciones />} />
               <Route path="/admin-radio" element={<AdminRadio />} />
@@ -351,25 +360,31 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="vialidad2025" element={<HubDashboard />} />
                   <Route path="chequia" element={<HubDashboard />} />
                   <Route path="fred" element={<HubDashboard />} />
-                  <Route path="centro/akichip" element={<HubDashboard />} />
-                  <Route path="akichip" element={<HubDashboard />} />
+                  <Route path="centro/akichip" element={<AkichipPortal onClose={() => window.location.href = '/'} />} />
+                  <Route path="akichip" element={<AkichipPortal onClose={() => window.location.href = '/'} />} />
                   <Route index element={host.includes('peregrino') || host.includes('nuevoperegrino.cl') ? <NuevoPeregrinoPortal /> : <HubDashboard />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRdmlsDns ? (
                 <Route path="/" element={<App />}>
-                  <Route path="noticias" element={<MunicipalNewsPage />} />
+                  <Route path="noticias" element={<HubDashboard />} />
                   <Route index element={<CentroRadio />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isPuertaDns ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<PuertaSmart />} />
+                  <Route path="puerta" element={<PuertaSmart />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isEntrevecinasDns ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<EntrevecinasHub />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+              ) : isRadioVecinosDns ? (
+                <Route path="/" element={<App />}>
+                  <Route index element={<ArchiCampaign />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isPrendesLegacy ? (
@@ -414,8 +429,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="acceso" element={<PuertaSerena />} />
                     <Route path="arquitectura" element={<ArquitecturaPage />} />
                     <Route path="dev" element={<DevPortal />} />
-                    <Route path="centro/akichip" element={<HubDashboard />} />
-                    <Route path="akichip" element={<HubDashboard />} />
+                    <Route path="centro/akichip" element={<AkichipPortal onClose={() => window.location.href = '/'} />} />
+                    <Route path="akichip" element={<AkichipPortal onClose={() => window.location.href = '/'} />} />
                     <Route path="motors" element={<VLSMotorsShowroom />} />
                     <Route path="noticias" element={<HubDashboard />} />
                     <Route path="induccion" element={<Aprende isRDMLS={isRdmlsDns} />} />
@@ -499,6 +514,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="megarreforma" element={<HubDashboard />} />
                     <Route path="alcaldes" element={<HubDashboard />} />
                     <Route path="welcome" element={<WelcomePortal />} />
+                    <Route path="archi" element={<ArchiCampaign />} />
                   </Route>
                   <Route path="/marruecos" element={<HubDashboard />} />
                   <Route path="/patrimonio" element={<HubDashboard />} />
@@ -511,6 +527,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="/1945" element={<Serenito1945Page />} />
                   <Route path="/lite" element={<LitePortal />} />
                   <Route path="/sombreros" element={<HubDashboard />} />
+                  <Route path="/news-studio" element={<HubDashboard />} />
+                  <Route path="/archi-admin" element={<ArchiNewsAdmin />} />
                   <Route path="/desk" element={<Backoffice />} />
                   <Route path="/admin" element={<HubDashboard />} />
                   <Route path="/prendes-admin" element={<HubDashboard />} />

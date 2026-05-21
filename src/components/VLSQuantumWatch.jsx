@@ -13,7 +13,9 @@ import { motion, AnimatePresence } from 'framer-motion';
  */
 export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop }) {
     const host = (window.location.host || window.location.hostname || '').toLowerCase();
+    const path = window.location.pathname.toLowerCase();
     const isRDMLS = isRDMLS_prop ?? (host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos')));
+    const isArchi = host.includes('archi') || host.includes('radiovecinos') || path.includes('/archi');
     const [time, setTime] = useState(new Date());
     const [blink, setBlink] = useState(true);
     const [isMinimized, setIsMinimized] = useState(() =>
@@ -171,35 +173,38 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                 drag dragMomentum={false}
                 style={{ position:'fixed', top:'8px', right:'150px', zIndex:9999999,
                          cursor:'grab', userSelect:'none', display:'flex', alignItems:'center',
-                         gap:'6px', background:'linear-gradient(145deg,#1e293b,#0f172a)',
-                         border:`1.5px solid ${theme.pin}60`, borderRadius:'50px',
-                         padding:'4px 10px', boxShadow:`0 4px 14px rgba(0,0,0,0.6), 0 0 0 1px ${theme.pin}30`,
+                         gap:'6px',
+                         background: isArchi
+                             ? 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(4,9,20,0.97))'
+                             : 'linear-gradient(145deg,#1e293b,#0f172a)',
+                         border: isArchi ? '1.5px solid rgba(251,191,36,0.6)' : `1.5px solid ${theme.pin}60`,
+                         borderRadius:'50px',
+                         padding:'4px 10px',
+                         boxShadow: isArchi
+                             ? '0 4px 14px rgba(0,0,0,0.6), 0 0 12px rgba(251,191,36,0.2)'
+                             : `0 4px 14px rgba(0,0,0,0.6), 0 0 0 1px ${theme.pin}30`,
                          filter:'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
                 whileTap={{ cursor:'grabbing' }}
             >
-                <Zap size={10} color="#fde047" fill="#fde047" style={{ animation:'pulse 1s infinite' }} />
-                {/* mini hora */}
-                <span style={{ fontFamily:'"Courier New",monospace', fontSize:'0.85rem', fontWeight:900,
-                               color:'white', letterSpacing:'1px', lineHeight:1 }}>
+                {isArchi
+                    ? <span style={{ fontSize: '0.6rem' }}>📻</span>
+                    : <Zap size={10} color="#fde047" fill="#fde047" style={{ animation:'pulse 1s infinite' }} />}
+                <span style={{ fontFamily: isArchi ? '"Outfit",sans-serif' : '"Courier New",monospace',
+                               fontSize:'0.85rem', fontWeight:900,
+                               color: isArchi ? '#fbbf24' : 'white',
+                               letterSpacing:'1px', lineHeight:1 }}>
                     {H}<span style={{ opacity: blink ? 1 : 0.3, transition:'opacity 0.1s' }}>:</span>{M}
                     {!is24h && <span style={{ fontSize: '0.45rem', marginLeft: '2px', opacity: 0.8 }}>{isPM ? 'PM':'AM'}</span>}
                 </span>
-                {/* botón restaurar */}
-                <button
-                    onClick={toggleMin}
-                    title="Expandir reloj"
+                {isArchi && <span style={{ fontSize: '0.5rem', color: '#f59e0b', fontWeight: 900, letterSpacing: '0.5px' }}>NE</span>}
+                <button onClick={toggleMin} title="Expandir reloj"
                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
-                             display:'flex', alignItems:'center', color:'#94a3b8' }}
-                >
+                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : '#94a3b8' }}>
                     <Maximize2 size={12} />
                 </button>
-                {/* botón calendario */}
-                <button
-                    onClick={openCalendar}
-                    title="Abrir calendario"
+                <button onClick={openCalendar} title="Abrir calendario"
                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
-                             display:'flex', alignItems:'center', color:'#94a3b8' }}
-                >
+                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : '#94a3b8' }}>
                     <Calendar size={12} />
                 </button>
             </motion.div>
@@ -209,6 +214,183 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     if (!isVisible) return null;
 
     /* ─── Modo expandido: reloj completo ─── */
+
+    // ── RENDER ARCHI ESPECIAL ──────────────────────────────────────────────────
+    if (isArchi) {
+        return (
+            <motion.div
+                drag dragMomentum={false}
+                id="vls-quantum-watch-container"
+                style={{ position:'fixed', top:'220px', left:'20px', zIndex:9999999,
+                         cursor:'grab', userSelect:'none', width:'210px',
+                         filter:'drop-shadow(0 12px 28px rgba(251,191,36,0.25))' }}
+                animate={{ y:[0,-5,0] }}
+                transition={{ y:{ duration:5, repeat:Infinity, ease:'easeInOut' } }}
+                whileHover={{ scale:1.04 }}
+                whileTap={{ cursor:'grabbing', scale:0.96 }}
+            >
+                {/* Carcasa campaña */}
+                <div style={{
+                    background: 'linear-gradient(145deg, #0a0f1e, #040914)',
+                    borderRadius: '14px', padding: '3px',
+                    border: '1px solid rgba(251,191,36,0.4)',
+                    boxShadow: '0 0 0 1px rgba(251,191,36,0.1), inset 0 1px 0 rgba(255,255,255,0.05)'
+                }}>
+                    {/* Marco dorado */}
+                    <div style={{
+                        background: 'linear-gradient(180deg, rgba(251,191,36,0.6), rgba(180,83,9,0.4))',
+                        borderRadius: '10px', padding: '1px'
+                    }}>
+                        {/* Pantalla oscura campaña */}
+                        <div style={{
+                            background: isAlarmRinging
+                                ? (blink ? 'rgba(251,191,36,0.3)' : '#040914')
+                                : 'linear-gradient(180deg, #070f20 0%, #040914 100%)',
+                            borderRadius: '8px', padding: '10px 12px',
+                            position: 'relative', overflow: 'hidden',
+                            boxShadow: 'inset 0 0 15px rgba(0,0,0,0.8)',
+                        }}>
+                            {/* Glow de fondo dorado */}
+                            <div style={{
+                                position:'absolute', inset: 0,
+                                background: 'radial-gradient(ellipse at 50% 0%, rgba(251,191,36,0.07) 0%, transparent 70%)',
+                                pointerEvents: 'none'
+                            }} />
+
+                            {/* Barra superior: logo + controles */}
+                            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'6px', position:'relative', zIndex:1 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                    <span style={{ fontSize: '0.65rem' }}>📻</span>
+                                    <span style={{ fontFamily:'"Outfit",sans-serif', fontSize:'0.6rem', fontWeight:900, color:'#fbbf24', letterSpacing:'1px', textTransform:'uppercase' }}>ARCHI</span>
+                                </div>
+                                <div style={{ display:'flex', gap:'5px', alignItems:'center' }}>
+                                    <button onClick={toggle24h}
+                                        style={{ background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.3)', padding:'1px 4px', borderRadius:'4px', cursor:'pointer', fontSize:'0.45rem', fontWeight:'bold', color:'#fbbf24' }}>
+                                        {is24h ? '24H' : '12H'}
+                                    </button>
+                                    <button onClick={toggleMin} title="Minimizar"
+                                        style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', color:'rgba(251,191,36,0.5)' }}>
+                                        <Minimize2 size={10} />
+                                    </button>
+                                    <button onClick={openCalendar} title="Calendario"
+                                        style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', color:'rgba(251,191,36,0.5)' }}>
+                                        <Calendar size={10} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Fecha */}
+                            <div style={{ textAlign:'center', marginBottom:'4px', position:'relative', zIndex:1 }}>
+                                <span style={{ fontFamily:'"Outfit",sans-serif', fontSize:'0.65rem', fontWeight:700, color:'rgba(251,191,36,0.6)', letterSpacing:'2px', textTransform:'uppercase' }}>
+                                    {dayStr} {dayNum} {monStr} 2026
+                                </span>
+                            </div>
+
+                            {/* HORA PRINCIPAL — Estilo campaña */}
+                            <div style={{ minHeight: '68px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position:'relative', zIndex:1 }}>
+                                {mode === 'time' && (
+                                    <div style={{ textAlign:'center' }}>
+                                        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'center' }}>
+                                            <span style={{ fontFamily:'"Courier New",monospace', fontSize:'2.2rem', fontWeight:900, color:'#fbbf24', letterSpacing:'3px', lineHeight:1,
+                                                textShadow:'0 0 20px rgba(251,191,36,0.5)' }}>{H}</span>
+                                            <span style={{ fontFamily:'"Courier New",monospace', fontSize:'2.2rem', fontWeight:900, color:'#f59e0b', margin:'0 1px', lineHeight:1,
+                                                opacity:blink?1:0.2, transition:'opacity 0.1s' }}>:</span>
+                                            <span style={{ fontFamily:'"Courier New",monospace', fontSize:'2.2rem', fontWeight:900, color:'#fbbf24', letterSpacing:'3px', lineHeight:1,
+                                                textShadow:'0 0 20px rgba(251,191,36,0.5)' }}>{M}</span>
+                                            <div style={{ display:'flex', flexDirection:'column', gap:'2px', marginLeft:'5px', alignSelf:'flex-end', marginBottom:'3px' }}>
+                                                <span style={{ fontFamily:'"Courier New",monospace', fontSize:'0.9rem', fontWeight:900, color:'rgba(251,191,36,0.6)' }}>{S}</span>
+                                                {!is24h && <span style={{ fontSize:'0.4rem', background:'rgba(251,191,36,0.15)', padding:'1px 3px', borderRadius:'4px', color:'#fbbf24', textAlign:'center' }}>{isPM?'PM':'AM'}</span>}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                                {mode === 'stopwatch' && (
+                                    <div style={{ textAlign:'center' }}>
+                                        <div style={{ fontFamily:'"Courier New",monospace', fontSize:'1.5rem', fontWeight:900, color:'#fbbf24', letterSpacing:'1px', textShadow:'0 0 15px rgba(251,191,36,0.4)' }}>
+                                            {formatStopwatch(stopwatchTime)}
+                                        </div>
+                                        <div style={{ display:'flex', justifyContent:'center', gap:'10px', marginTop:'6px' }}>
+                                            <button onClick={(e) => { e.stopPropagation(); setIsStopwatchRunning(!isStopwatchRunning); playBeep(600); }}
+                                                style={{ background:'rgba(251,191,36,0.15)', border:'1px solid rgba(251,191,36,0.4)', color:'#fbbf24', borderRadius:'4px', padding:'2px 8px', cursor:'pointer' }}>
+                                                {isStopwatchRunning ? <Pause size={12}/> : <Play size={12}/>}
+                                            </button>
+                                            <button onClick={(e) => { e.stopPropagation(); setStopwatchTime(0); setIsStopwatchRunning(false); playBeep(400); }}
+                                                style={{ background:'rgba(251,191,36,0.15)', border:'1px solid rgba(251,191,36,0.4)', color:'#fbbf24', borderRadius:'4px', padding:'2px 8px', cursor:'pointer' }}>
+                                                <RotateCcw size={12}/>
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                                {mode === 'alarm' && (
+                                    <div style={{ textAlign:'center', position:'relative' }}>
+                                        <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'5px' }}>
+                                            <input type="time" value={alarmTime}
+                                                onClick={(e) => e.stopPropagation()}
+                                                onChange={(e) => { setAlarmTime(e.target.value); localStorage.setItem('vls_quantum_alarm', e.target.value); }}
+                                                style={{ background:'rgba(0,0,0,0.5)', border:'1px solid rgba(251,191,36,0.4)', color:'#fbbf24', fontSize:'1.1rem', fontFamily:'"Courier New",monospace', borderRadius:'4px', padding:'2px', outline:'none' }}
+                                            />
+                                            <button onClick={(e) => { e.stopPropagation(); const next=!isAlarmSet; setIsAlarmSet(next); localStorage.setItem('vls_quantum_alarm_set',String(next)); playBeep(next?1000:500); if(isAlarmRinging)setIsAlarmRinging(false); }}
+                                                style={{ background:isAlarmSet?'#fbbf24':'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.4)', color:isAlarmSet?'black':'#fbbf24', borderRadius:'4px', padding:'5px', cursor:'pointer' }}>
+                                                <Bell size={14} fill={isAlarmSet?'currentColor':'none'}/>
+                                            </button>
+                                        </div>
+                                        {isAlarmRinging && (
+                                            <button onClick={(e) => { e.stopPropagation(); setIsAlarmRinging(false); }}
+                                                style={{ position:'absolute', inset:-10, zIndex:10, background:'rgba(251,191,36,0.95)', border:'none', color:'#0f172a', fontSize:'0.75rem', fontWeight:900, cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'5px' }}>
+                                                <Bell size={28} style={{ animation:'bounce 0.5s infinite' }}/>
+                                                DETENER ALARMA
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Selector MODOS */}
+                            <div style={{ display:'flex', justifyContent:'center', gap:'8px', marginTop:'6px', borderTop:'1px solid rgba(251,191,36,0.15)', paddingTop:'5px' }}>
+                                <button onClick={(e) => { e.stopPropagation(); setMode('time'); playBeep(800); }}
+                                    style={{ background:mode==='time'?'rgba(251,191,36,0.2)':'none', border:`1px solid ${mode==='time'?'rgba(251,191,36,0.5)':'transparent'}`, color:'#fbbf24', padding:'2px 6px', borderRadius:'4px', cursor:'pointer' }}><Clock size={12}/></button>
+                                <button onClick={(e) => { e.stopPropagation(); setMode('stopwatch'); playBeep(800); }}
+                                    style={{ background:mode==='stopwatch'?'rgba(251,191,36,0.2)':'none', border:`1px solid ${mode==='stopwatch'?'rgba(251,191,36,0.5)':'transparent'}`, color:'#fbbf24', padding:'2px 6px', borderRadius:'4px', cursor:'pointer' }}><Timer size={12}/></button>
+                                <button onClick={(e) => { e.stopPropagation(); setMode('alarm'); playBeep(800); }}
+                                    style={{ background:mode==='alarm'?'rgba(251,191,36,0.2)':'none', border:`1px solid ${mode==='alarm'?'rgba(251,191,36,0.5)':'transparent'}`, color:'#fbbf24', padding:'2px 6px', borderRadius:'4px', cursor:'pointer' }}><Bell size={12}/></button>
+                            </div>
+
+                            {/* Branding campaña */}
+                            <div style={{ marginTop:'6px', borderTop:'1px solid rgba(251,191,36,0.2)', paddingTop:'5px', textAlign:'center', position:'relative', zIndex:1 }}>
+                                <div style={{ fontSize:'0.55rem', fontWeight:900, color:'#fbbf24', letterSpacing:'2px', textTransform:'uppercase', marginBottom:'4px' }}>
+                                    NUEVA ENERGÍA · ARCHI 2026
+                                </div>
+                                <div style={{ fontSize:'0.5rem', color:'rgba(251,191,36,0.5)', fontStyle:'italic' }}>
+                                    Solange Gómez Jelves · Presidenta
+                                </div>
+                                {/* Pulso vivo dorado */}
+                                <div style={{ display:'flex', justifyContent:'center', gap:'3px', marginTop:'5px' }}>
+                                    {[0,1,2,3,4].map(i => (
+                                        <div key={i} style={{
+                                            width:'3px',
+                                            height: `${[6,10,14,10,6][i]}px`,
+                                            background:'rgba(251,191,36,0.6)',
+                                            borderRadius:'1px',
+                                            animation: `archiBeat${i} ${0.8 + i*0.15}s ease-in-out infinite alternate`
+                                        }}/>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <style>{`
+                    @keyframes archiBeat0 { from{height:4px;opacity:0.3} to{height:10px;opacity:1} }
+                    @keyframes archiBeat1 { from{height:6px;opacity:0.4} to{height:14px;opacity:1} }
+                    @keyframes archiBeat2 { from{height:8px;opacity:0.5} to{height:18px;opacity:1} }
+                    @keyframes archiBeat3 { from{height:6px;opacity:0.4} to{height:14px;opacity:1} }
+                    @keyframes archiBeat4 { from{height:4px;opacity:0.3} to{height:10px;opacity:1} }
+                `}</style>
+            </motion.div>
+        );
+    }
+
+    /* ─── Modo expandido estándar (no ARCHI) ─── */
     return (
         <motion.div
             drag dragMomentum={false}
@@ -248,18 +430,15 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                 {dayStr} {dayNum} {monStr}
                             </span>
                             <div style={{ display:'flex', gap:'6px', alignItems:'center' }}>
-                                {/* Boton 12/24 */}
                                 <button onClick={toggle24h} title="Formato 12/24h"
                                     style={{ background:'rgba(0,0,0,0.2)', border:`1px solid ${theme.pin}`, padding:'1px 4px', borderRadius:'4px', cursor:'pointer', fontSize: '0.45rem', fontWeight: 'bold', color: 'white' }}>
                                     {is24h ? '24H' : '12H'}
                                 </button>
-                                {/* Minimizar */}
                                 <button onClick={toggleMin} title="Minimizar"
                                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
                                              display:'flex', alignItems:'center', color:'rgba(255,255,255,0.6)' }}>
                                     <Minimize2 size={10} />
                                 </button>
-                                {/* Calendario */}
                                 <button onClick={openCalendar} title="Calendario"
                                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
                                              display:'flex', alignItems:'center', color:'rgba(255,255,255,0.6)' }}>
@@ -281,7 +460,6 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                     </span>
                                 </div>
                             )}
-
                             {mode === 'stopwatch' && (
                                 <div style={{ textAlign: 'center', position:'relative', zIndex:1 }}>
                                     <div style={{ fontFamily:'"Courier New",monospace', fontSize:'1.6rem', fontWeight:900, color:'white', letterSpacing:'1px' }}>
@@ -297,44 +475,22 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                     </div>
                                 </div>
                             )}
-
                             {mode === 'alarm' && (
                                 <div style={{ textAlign: 'center', position:'relative', zIndex:1 }}>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                                        <input 
-                                            type="time" 
-                                            value={alarmTime}
+                                        <input type="time" value={alarmTime}
                                             onClick={(e) => e.stopPropagation()}
                                             onChange={(e) => { setAlarmTime(e.target.value); localStorage.setItem('vls_quantum_alarm', e.target.value); }}
                                             style={{ background: 'rgba(0,0,0,0.4)', border: `1px solid ${theme.sub}`, color: 'white', fontSize: '1.2rem', fontFamily: '"Courier New", monospace', borderRadius: '4px', padding: '2px', outline: 'none' }}
                                         />
-                                        <button 
-                                            onClick={(e) => { 
-                                                e.stopPropagation(); 
-                                                const next = !isAlarmSet;
-                                                setIsAlarmSet(next); 
-                                                localStorage.setItem('vls_quantum_alarm_set', String(next));
-                                                playBeep(next ? 1000 : 500);
-                                                if (isAlarmRinging) setIsAlarmRinging(false);
-                                            }} 
-                                            style={{ background: isAlarmSet ? '#f59e0b' : 'rgba(255,255,255,0.1)', border: 'none', color: isAlarmSet ? 'black' : 'white', borderRadius: '4px', padding: '5px', cursor: 'pointer' }}
-                                        >
+                                        <button onClick={(e) => { e.stopPropagation(); const next = !isAlarmSet; setIsAlarmSet(next); localStorage.setItem('vls_quantum_alarm_set', String(next)); playBeep(next ? 1000 : 500); if (isAlarmRinging) setIsAlarmRinging(false); }}
+                                            style={{ background: isAlarmSet ? '#f59e0b' : 'rgba(255,255,255,0.1)', border: 'none', color: isAlarmSet ? 'black' : 'white', borderRadius: '4px', padding: '5px', cursor: 'pointer' }}>
                                             <Bell size={14} fill={isAlarmSet ? 'black' : 'none'} />
                                         </button>
                                     </div>
                                     {isAlarmRinging && (
-                                        <button 
-                                            onClick={(e) => { e.stopPropagation(); setIsAlarmRinging(false); }} 
-                                            style={{ 
-                                                position: 'absolute', inset: -10, zIndex: 10,
-                                                background: 'rgba(239,68,68,0.9)', 
-                                                border: 'none', color: 'white', 
-                                                fontSize: '0.8rem', fontWeight: '900', 
-                                                cursor: 'pointer', display: 'flex', 
-                                                flexDirection: 'column', alignItems: 'center', 
-                                                justifyContent: 'center', gap: '5px' 
-                                            }}
-                                        >
+                                        <button onClick={(e) => { e.stopPropagation(); setIsAlarmRinging(false); }}
+                                            style={{ position: 'absolute', inset: -10, zIndex: 10, background: 'rgba(239,68,68,0.9)', border: 'none', color: 'white', fontSize: '0.8rem', fontWeight: '900', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
                                             <Bell size={30} style={{ animation: 'bounce 0.5s infinite' }} />
                                             CLICK PARA DETENER
                                         </button>
@@ -350,29 +506,17 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                             <button onClick={(e) => { e.stopPropagation(); setMode('alarm'); playBeep(800); }} style={{ background: mode === 'alarm' ? 'rgba(255,255,255,0.2)' : 'none', border:'none', color:'white', padding:'2px', borderRadius:'4px', cursor:'pointer' }}><Bell size={12}/></button>
                         </div>
 
-                        {/* Branding + dots de color (FIXED: Larger and better spacing) */}
-                        <div style={{ marginTop:'4px', borderTop:'1px solid rgba(255,255,255,0.2)',
-                                      paddingTop:'4px', display:'flex', flexDirection:'column',
-                                      alignItems:'center', position:'relative', zIndex:1, gap:'4px' }}>
+                        {/* Branding + dots */}
+                        <div style={{ marginTop:'4px', borderTop:'1px solid rgba(255,255,255,0.2)', paddingTop:'4px', display:'flex', flexDirection:'column', alignItems:'center', position:'relative', zIndex:1, gap:'4px' }}>
                             <div style={{ fontSize: '0.55rem', fontWeight: 'bold', color: theme.sub, letterSpacing: '1px', textTransform: 'uppercase' }}>
                                 {isRDMLS ? 'HORA OFICIAL RDMLS.CL' : 'VLS QUANTUM'}
                             </div>
-                            
-                            {/* Color dots — Agrandados y centrados para evitar que salgan del visor */}
                             <div style={{ display:'flex', gap:'10px', alignItems:'center', background: 'rgba(0,0,0,0.3)', padding:'5px 15px', borderRadius:'20px', flexWrap: 'wrap', justifyContent: 'center' }}>
                                 {themes.map(themeItem => (
-                                    <button
-                                        key={themeItem.id}
+                                    <button key={themeItem.id}
                                         onClick={(e) => { e.stopPropagation(); setTheme(themeItem.id); playBeep(1200, 0.05); }}
                                         title={`Color ${themeItem.id}`}
-                                        style={{
-                                            width:'14px', height:'14px', borderRadius:'50%',
-                                            background:themeItem.pin, padding:0, cursor:'pointer',
-                                            border: themeId === themeItem.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)',
-                                            boxShadow: themeId === themeItem.id ? `0 0 12px ${themeItem.pin}` : 'none',
-                                            transform: themeId === themeItem.id ? 'scale(1.2)' : 'scale(1)',
-                                            transition:'all 0.2s'
-                                        }}
+                                        style={{ width:'14px', height:'14px', borderRadius:'50%', background:themeItem.pin, padding:0, cursor:'pointer', border: themeId === themeItem.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)', boxShadow: themeId === themeItem.id ? `0 0 12px ${themeItem.pin}` : 'none', transform: themeId === themeItem.id ? 'scale(1.2)' : 'scale(1)', transition:'all 0.2s' }}
                                     />
                                 ))}
                             </div>

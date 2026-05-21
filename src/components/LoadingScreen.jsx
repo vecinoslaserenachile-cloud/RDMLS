@@ -4,8 +4,7 @@ import { motion } from 'framer-motion';
 const LoadingScreen = ({ isSyncing = false }) => {
   const host = (window.location.hostname || window.location.host || '').toLowerCase();
   const isEntrevecinas = host.includes('entrevecinas.cl');
-  // Detecta RDMLS con máxima cobertura — también cubre la ruta /radio en VLS
-  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || window.location.pathname.includes('/radio') || host.includes('localhost') || window.location.search.includes('rdmls');
+  const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || window.location.pathname.includes('/radio') || (host.includes('localhost') && (window.location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   const isPeregrino = host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('nuevo-peregrino') || window.location.pathname.includes('/peregrino');
   const isPrendesLegacy = host.includes('vecinosmart.cl');
 
