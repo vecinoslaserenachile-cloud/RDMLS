@@ -130,13 +130,13 @@ const ArchiCampaign = () => {
   };
 
   const team = [
-    { role: "Presidenta Nacional",        name: "Solange Gómez Jelves",    firstName: "Solange",      region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🏔️", img: "/archi-media/audio/Solange.png" },
+    { role: "Presidenta Nacional",        name: "Solange Gómez Jelves",    firstName: "Solange",      region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#d4af37", emoji: "🏔️", img: "/archi-media/audio/Solange.png" },
     { role: "1ª Vicepresidenta",          name: "Ximena Callejón Ortiz",   firstName: "Ximena",       region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/audio/Ximena Callejón.png" },
     { role: "2º Vicepresidente",          name: "Xavier Araya Cortés",     firstName: "Xavier",       region: "Arica",       regionFull: "XV Región de Arica y Parinacota", color: "#34d399", emoji: "🌵", img: "/archi-media/audio/Xavier Araya .png" },
     { role: "3ª Vicepresidenta · Tesorera", name: "Elicena Gómez",         firstName: "Elicena",      region: "O'Higgins",   regionFull: "VI Región del Libertador",        color: "#f87171", emoji: "🌾", img: "/archi-media/audio/Elicena Gómez.png" },
     { role: "Secretaria Nacional",        name: "María Graciela Fuentes",  firstName: "María Graciela",region: "Ñuble",       regionFull: "XVI Región de Ñuble",            color: "#a78bfa", emoji: "🌳", img: "/archi-media/audio/Maria Graciela.png" },
     { role: "Director",                   name: "Rodrigo Jofré",           firstName: "Rodrigo",      region: "RM",          regionFull: "Región Metropolitana",           color: "#60a5fa", emoji: "🏙️", img: "/archi-media/audio/Rodrigo Jofré.png" },
-    { role: "Director",                   name: "Fernando Zambra",         firstName: "Fernando",     region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#fbbf24", emoji: "🔭", img: "/archi-media/audio/Fernando Zambra.png" },
+    { role: "Director",                   name: "Fernando Zambra",         firstName: "Fernando",     region: "Coquimbo",    regionFull: "IV Región de Coquimbo",          color: "#d4af37", emoji: "🔭", img: "/archi-media/audio/Fernando Zambra.png" },
     { role: "Director",                   name: "René Venegas",            firstName: "René",         region: "Magallanes",  regionFull: "XII Región de Magallanes",       color: "#38bdf8", emoji: "🧊", img: "/archi-media/audio/René Venegas.png" }
   ];
 
@@ -193,9 +193,9 @@ const ArchiCampaign = () => {
 
   const sectionLabel = {
     display: 'inline-flex', alignItems: 'center', gap: '8px',
-    background: 'rgba(251, 191, 36, 0.1)', padding: '8px 16px',
-    borderRadius: '20px', border: '1px solid rgba(251, 191, 36, 0.3)',
-    color: '#fbbf24', fontWeight: 900, fontSize: '0.75rem',
+    background: 'rgba(212, 175, 55, 0.1)', padding: '8px 16px',
+    borderRadius: '20px', border: '1px solid rgba(212, 175, 55, 0.3)',
+    color: '#d4af37', fontWeight: 900, fontSize: '0.75rem',
     letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: '1rem'
   };
 
@@ -203,7 +203,7 @@ const ArchiCampaign = () => {
 
   return (
     <div style={{
-      position: 'fixed', inset: 0, zIndex: 100080, background: '#070f20',
+      position: 'fixed', inset: 0, zIndex: 100080, background: '#0033a0',
       display: 'block', overflowY: 'auto', paddingBottom: isMobile ? '80px' : '40px',
       fontFamily: '"Outfit", sans-serif', color: 'white', scrollBehavior: 'smooth'
     }}>
@@ -213,17 +213,17 @@ const ArchiCampaign = () => {
         position: 'sticky', top: 0, zIndex: 100, background: 'rgba(7, 15, 32, 0.92)',
         backdropFilter: 'blur(20px)', padding: isMobile ? '1rem' : '1.2rem 2.5rem',
         display: 'flex', flexDirection: isMobile ? 'column' : 'row', justifyContent: 'space-between',
-        alignItems: 'center', borderBottom: '1px solid rgba(251, 191, 36, 0.2)', gap: '15px'
+        alignItems: 'center', borderBottom: '1px solid rgba(212, 175, 55, 0.2)', gap: '15px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? '8px' : '15px' }}>
-          <div style={{ background: 'linear-gradient(135deg, #fbbf24, #b45309)', padding: isMobile ? '6px' : '10px', borderRadius: '12px', boxShadow: '0 0 20px rgba(251, 191, 36, 0.4)' }}>
-            <Radio size={isMobile ? 18 : 24} color="#0f172a" />
+          <div style={{ background: 'linear-gradient(135deg, #d4af37, #b45309)', padding: isMobile ? '6px' : '10px', borderRadius: '12px', boxShadow: '0 0 20px rgba(212, 175, 55, 0.4)' }}>
+            <Radio size={isMobile ? 18 : 24} color="#002D8B" />
           </div>
           <div>
             <h1 style={{ color: 'white', fontSize: isMobile ? '1rem' : '1.4rem', fontWeight: '900', textTransform: 'uppercase', margin: 0, letterSpacing: '-0.5px' }}>
-              ARCHI <span style={{ color: '#fbbf24' }}>NACIONAL</span>
+              ARCHI <span style={{ color: '#d4af37' }}>NACIONAL</span>
             </h1>
-            <div style={{ display: 'flex', gap: isMobile ? '5px' : '15px', color: '#fbbf24', fontSize: isMobile ? '0.6rem' : '0.85rem', fontWeight: 'bold', alignItems: 'center' }}>
+            <div style={{ display: 'flex', gap: isMobile ? '5px' : '15px', color: '#d4af37', fontSize: isMobile ? '0.6rem' : '0.85rem', fontWeight: 'bold', alignItems: 'center' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>📡 ELECCIONES 2026</span>
               <span style={{ opacity: 0.5 }}>|</span>
               <span style={{ color: '#ef4444' }}>SOLANGE GÓMEZ</span>
@@ -244,7 +244,7 @@ const ArchiCampaign = () => {
             onClick={() => {
               if (navigator.share) navigator.share({ title: 'Solange Gómez: Presidenta ARCHI', text: 'Únete a la Lista Nueva Energía.', url: 'https://radiovecinos.cl/archi' });
             }}
-            style={{ background: 'rgba(251, 191, 36, 0.1)', color: '#fbbf24', border: '1px solid rgba(251, 191, 36, 0.5)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            style={{ background: 'rgba(212, 175, 55, 0.1)', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.5)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
             <Share2 size={14} /> COMPARTIR
           </button>
         </div>
@@ -252,21 +252,21 @@ const ArchiCampaign = () => {
 
       {/* ── HERO ── */}
       <section style={{ position: 'relative', minHeight: isMobile ? 'auto' : '80vh', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 70% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 60%)', zIndex: 0 }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 60%)', zIndex: 0 }} />
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '2rem 1rem' : '5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '2rem' : '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <h2 style={{ color: 'white', fontSize: isMobile ? 'clamp(1.8rem, 8vw, 2.2rem)' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem' }}>
               ARCHI de todo Chile: <br />
-              <span style={{ background: 'linear-gradient(to right, #fbbf24, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(to right, #d4af37, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Inyectemos Nueva Energía.
               </span>
             </h2>
-            <p style={{ color: '#94a3b8', fontSize: '1.2rem', lineHeight: 1.6, marginBottom: '2.5rem', fontWeight: 500, borderLeft: '4px solid #fbbf24', paddingLeft: '1rem' }}>
+            <p style={{ color: '#94a3b8', fontSize: '1.2rem', lineHeight: 1.6, marginBottom: '2.5rem', fontWeight: 500, borderLeft: '4px solid #d4af37', paddingLeft: '1rem' }}>
               Solange Gómez Jelves – Primera Mujer Presidenta Nacional en 90 años de historia.
             </p>
             <button
               onClick={() => document.getElementById('registro-cta').scrollIntoView({ behavior: 'smooth' })}
-              style={{ background: 'linear-gradient(135deg, #fbbf24, #b45309)', color: '#0f172a', padding: '1.2rem 2.5rem', borderRadius: '15px', fontWeight: 900, fontSize: '1.1rem', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(251, 191, 36, 0.3)', transition: 'transform 0.3s ease' }}
+              style={{ background: 'linear-gradient(135deg, #d4af37, #b45309)', color: '#002D8B', padding: '1.2rem 2.5rem', borderRadius: '15px', fontWeight: 900, fontSize: '1.1rem', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)', transition: 'transform 0.3s ease' }}
               onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
             >
@@ -275,7 +275,7 @@ const ArchiCampaign = () => {
 
             {/* ── TIRA DE NOMBRES DE PILA ── */}
             <div style={{ marginTop: '2rem', overflow: 'hidden', width: '100%' }}>
-              <div style={{ fontSize: '0.72rem', color: 'rgba(251,191,36,0.55)', letterSpacing: '2px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '6px' }}>
+              <div style={{ fontSize: '0.72rem', color: 'rgba(212, 175, 55,0.55)', letterSpacing: '2px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '6px' }}>
                 📻 DIRECTORIO · LISTA NUEVA ENERGÍA
               </div>
               <div style={{ display: 'flex', gap: '0', overflow: 'hidden', maskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)' }}>
@@ -286,7 +286,7 @@ const ArchiCampaign = () => {
                 >
                   {[...team, ...team].map((m, i) => (
                     <span key={i} style={{
-                      background: `rgba(${m.color === '#fbbf24' ? '251,191,36' : m.color === '#60a5fa' ? '96,165,250' : m.color === '#34d399' ? '52,211,153' : m.color === '#f87171' ? '248,113,113' : m.color === '#a78bfa' ? '167,139,250' : '56,189,248'}, 0.12)`,
+                      background: `rgba(${m.color === '#d4af37' ? '251,191,36' : m.color === '#60a5fa' ? '96,165,250' : m.color === '#34d399' ? '52,211,153' : m.color === '#f87171' ? '248,113,113' : m.color === '#a78bfa' ? '167,139,250' : '56,189,248'}, 0.12)`,
                       border: `1px solid ${m.color}40`,
                       color: m.color,
                       padding: '5px 14px',
@@ -332,7 +332,7 @@ const ArchiCampaign = () => {
       </section>
 
       {/* ── MESA DIRECTIVA + COBERTURA TERRITORIAL ── */}
-      <section style={{ padding: isMobile ? '4rem 1.5rem' : '6rem 3rem', background: '#0a1226', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
+      <section style={{ padding: isMobile ? '4rem 1.5rem' : '6rem 3rem', background: '#0033a0', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative' }}>
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("/assets/mapa-chile-lineas.svg")', backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', opacity: 0.04, pointerEvents: 'none' }} />
         <div style={{ maxWidth: '1300px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
 
@@ -340,7 +340,7 @@ const ArchiCampaign = () => {
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
             <div style={{ ...sectionLabel, margin: '0 auto 1rem' }}><Users size={16} /> DIRECTORIO NACIONAL</div>
             <h3 style={{ color: 'white', fontSize: isMobile ? '2rem' : '2.8rem', fontWeight: 900, margin: 0, lineHeight: 1.1 }}>
-              Un Directorio con <span style={{ color: '#fbbf24' }}>Cobertura Real</span><br/>
+              Un Directorio con <span style={{ color: '#d4af37' }}>Cobertura Real</span><br/>
               <span style={{ fontSize: isMobile ? '1.1rem' : '1.4rem', color: '#94a3b8', fontWeight: 500 }}>De Arica a Magallanes — de nombre a nombre</span>
             </h3>
           </div>
@@ -350,8 +350,8 @@ const ArchiCampaign = () => {
 
             {/* Columna izquierda: tarjetas directivos por nombre de pila */}
             <div>
-              <div style={{ fontSize: '0.7rem', color: '#fbbf24', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ width: '24px', height: '2px', background: '#fbbf24', display: 'inline-block' }}/> LISTA NUEVA ENERGÍA · DIRECTORIO EJECUTIVO
+              <div style={{ fontSize: '0.7rem', color: '#d4af37', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '24px', height: '2px', background: '#d4af37', display: 'inline-block' }}/> LISTA NUEVA ENERGÍA · DIRECTORIO EJECUTIVO
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '1rem' }}>
                 {team.map((member, idx) => (
@@ -421,22 +421,22 @@ const ArchiCampaign = () => {
 
             {/* Columna derecha: mapa de cobertura territorial */}
             <div>
-              <div style={{ fontSize: '0.7rem', color: '#fbbf24', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ width: '24px', height: '2px', background: '#fbbf24', display: 'inline-block' }}/> RED TERRITORIAL · CHILE COMPLETO
+              <div style={{ fontSize: '0.7rem', color: '#d4af37', fontWeight: 900, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ width: '24px', height: '2px', background: '#d4af37', display: 'inline-block' }}/> RED TERRITORIAL · CHILE COMPLETO
               </div>
 
               {/* Barra de progreso de cobertura */}
               <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '16px', padding: '1.2rem 1.4rem', border: '1px solid rgba(255,255,255,0.08)', marginBottom: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                   <span style={{ color: 'white', fontWeight: 900, fontSize: '0.85rem' }}>Cobertura Nacional Directa</span>
-                  <span style={{ color: '#fbbf24', fontWeight: 900, fontSize: '1.1rem' }}>100%</span>
+                  <span style={{ color: '#d4af37', fontWeight: 900, fontSize: '1.1rem' }}>100%</span>
                 </div>
                 <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: '4px', height: '6px', overflow: 'hidden' }}>
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: '100%' }}
                     transition={{ duration: 1.5, ease: 'easeOut' }}
-                    style={{ height: '100%', background: 'linear-gradient(to right, #fbbf24, #f59e0b)', borderRadius: '4px' }}
+                    style={{ height: '100%', background: 'linear-gradient(to right, #d4af37, #f59e0b)', borderRadius: '4px' }}
                   />
                 </div>
                 <div style={{ color: '#64748b', fontSize: '0.65rem', marginTop: '6px' }}>Todas las regiones.</div>
@@ -451,8 +451,8 @@ const ArchiCampaign = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + i * 0.07 }}
                     style={{
-                      background: t.active ? 'rgba(251,191,36,0.04)' : 'rgba(255,255,255,0.01)',
-                      border: `1px solid ${t.active ? 'rgba(251,191,36,0.2)' : 'rgba(255,255,255,0.04)'}`,
+                      background: t.active ? 'rgba(212, 175, 55,0.04)' : 'rgba(255,255,255,0.01)',
+                      border: `1px solid ${t.active ? 'rgba(212, 175, 55,0.2)' : 'rgba(255,255,255,0.04)'}`,
                       borderRadius: '12px',
                       padding: '10px 14px',
                       display: 'flex',
@@ -461,12 +461,12 @@ const ArchiCampaign = () => {
                     }}
                   >
                     {/* Indicador activo */}
-                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: t.active ? '#fbbf24' : 'rgba(255,255,255,0.15)', flexShrink: 0, marginTop: '5px', boxShadow: t.active ? '0 0 8px #fbbf24' : 'none', animation: t.active ? 'archiPing 2s infinite' : 'none' }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: t.active ? '#d4af37' : 'rgba(255,255,255,0.15)', flexShrink: 0, marginTop: '5px', boxShadow: t.active ? '0 0 8px #d4af37' : 'none', animation: t.active ? 'archiPing 2s infinite' : 'none' }} />
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px', flexWrap: 'wrap' }}>
                         <span style={{ color: t.active ? 'white' : '#475569', fontWeight: 900, fontSize: '0.85rem' }}>{t.zona}</span>
                         {t.active && (
-                          <span style={{ background: 'rgba(251,191,36,0.15)', color: '#fbbf24', padding: '2px 8px', borderRadius: '8px', fontSize: '0.6rem', fontWeight: 900, letterSpacing: '0.5px' }}>
+                          <span style={{ background: 'rgba(212, 175, 55,0.15)', color: '#d4af37', padding: '2px 8px', borderRadius: '8px', fontSize: '0.6rem', fontWeight: 900, letterSpacing: '0.5px' }}>
                             📛 {t.rep}
                           </span>
                         )}
@@ -480,9 +480,9 @@ const ArchiCampaign = () => {
               </div>
 
               {/* Nota pie */}
-              <div style={{ marginTop: '1.5rem', background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)', borderRadius: '12px', padding: '12px 16px' }}>
+              <div style={{ marginTop: '1.5rem', background: 'rgba(212, 175, 55,0.06)', border: '1px solid rgba(212, 175, 55,0.15)', borderRadius: '12px', padding: '12px 16px' }}>
                 <p style={{ color: '#94a3b8', fontSize: '0.75rem', margin: 0, lineHeight: 1.6 }}>
-                  🗺️ <strong style={{ color: '#fbbf24' }}>Solange, Ximena, Xavier, Elicena, María Graciela, Rodrigo, Fernando y René</strong> — ocho nombres, ocho regiones distintas, una sola voz: la radio regional independiente de todo Chile.
+                  🗺️ <strong style={{ color: '#d4af37' }}>Solange, Ximena, Xavier, Elicena, María Graciela, Rodrigo, Fernando y René</strong> — ocho nombres, ocho regiones distintas, una sola voz: la radio regional independiente de todo Chile.
                 </p>
               </div>
 
@@ -493,12 +493,12 @@ const ArchiCampaign = () => {
       </section>
 
       {/* ── 4 PILARES ── */}
-      <section style={{ padding: isMobile ? '4rem 0' : '6rem 0', background: '#070f20' }}>
+      <section style={{ padding: isMobile ? '4rem 0' : '6rem 0', background: '#0033a0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem' }}>
           <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
             <div style={{ ...sectionLabel, margin: '0 auto 1rem' }}><Globe size={16} /> PROPUESTAS</div>
             <h3 style={{ color: 'white', fontSize: isMobile ? '2rem' : '2.5rem', fontWeight: 900, margin: 0 }}>
-              EJES <span style={{ color: '#fbbf24' }}>PROGRAMÁTICOS</span>
+              EJES <span style={{ color: '#d4af37' }}>PROGRAMÁTICOS</span>
             </h3>
           </div>
           {pillars.map((pillar, idx) => {
@@ -506,9 +506,9 @@ const ArchiCampaign = () => {
             return (
               <div key={idx} style={{ display: 'flex', flexDirection: isMobile ? 'column' : (isEven ? 'row' : 'row-reverse'), alignItems: 'center', gap: '4rem', marginBottom: idx === pillars.length - 1 ? 0 : '6rem' }}>
                 <div style={{ flex: 1 }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(251, 191, 36, 0.1)', padding: '8px 15px', borderRadius: '15px', border: '1px solid rgba(251, 191, 36, 0.3)', marginBottom: '1.5rem' }}>
-                    <pillar.icon size={20} color="#fbbf24" />
-                    <span style={{ color: '#fbbf24', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Pilar {idx + 1}</span>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', background: 'rgba(212, 175, 55, 0.1)', padding: '8px 15px', borderRadius: '15px', border: '1px solid rgba(212, 175, 55, 0.3)', marginBottom: '1.5rem' }}>
+                    <pillar.icon size={20} color="#d4af37" />
+                    <span style={{ color: '#d4af37', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '1px', textTransform: 'uppercase' }}>Pilar {idx + 1}</span>
                   </div>
                   <h4 style={{ color: 'white', fontSize: isMobile ? '2rem' : '2.5rem', fontWeight: 900, lineHeight: 1.1, margin: '0 0 1.5rem 0' }}>
                     {pillar.title}
@@ -529,12 +529,12 @@ const ArchiCampaign = () => {
       </section>
 
       {/* ── ÚLTIMAS NOTICIAS (D1) ── */}
-      <section style={{ padding: isMobile ? '4rem 1.5rem' : '6rem 5.5rem', background: '#0a1226', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+      <section style={{ padding: isMobile ? '4rem 1.5rem' : '6rem 5.5rem', background: '#0033a0', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
             <div style={{ ...sectionLabel, margin: '0 auto 1rem' }}><Radio size={16} /> EN GIRA</div>
             <h3 style={{ color: 'white', fontSize: isMobile ? '2rem' : '2.5rem', fontWeight: 900, margin: 0 }}>
-              Últimas <span style={{ color: '#fbbf24' }}>Noticias</span> de la Gira
+              Últimas <span style={{ color: '#d4af37' }}>Noticias</span> de la Gira
             </h3>
           </div>
 
@@ -557,17 +557,17 @@ const ArchiCampaign = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   style={{ background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(20px)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', display: 'flex', flexDirection: 'column', transition: 'all 0.3s ease' }}
-                  whileHover={{ y: -6, borderColor: 'rgba(251,191,36,0.2)' }}
+                  whileHover={{ y: -6, borderColor: 'rgba(212, 175, 55,0.2)' }}
                 >
                   {item.image_url && (
                     <img src={item.image_url} alt={item.title} style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
                   )}
                   {!item.image_url && (
-                    <div style={{ height: '8px', background: 'linear-gradient(90deg, #fbbf24, #b45309)' }} />
+                    <div style={{ height: '8px', background: 'linear-gradient(90deg, #d4af37, #b45309)' }} />
                   )}
                   <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
-                      <span style={{ background: 'rgba(251,191,36,0.1)', color: '#fbbf24', fontSize: '0.7rem', fontWeight: 900, padding: '3px 10px', borderRadius: '20px', border: '1px solid rgba(251,191,36,0.3)', textTransform: 'uppercase' }}>
+                      <span style={{ background: 'rgba(212, 175, 55,0.1)', color: '#d4af37', fontSize: '0.7rem', fontWeight: 900, padding: '3px 10px', borderRadius: '20px', border: '1px solid rgba(212, 175, 55,0.3)', textTransform: 'uppercase' }}>
                         {item.category || 'Campaña'}
                       </span>
                       <span style={{ fontSize: '0.75rem', color: '#64748b', marginLeft: 'auto' }}>
@@ -607,15 +607,15 @@ const ArchiCampaign = () => {
       </section>
 
       {/* ── REGISTRO D1 (NO FIREBASE) ── */}
-      <footer id="registro-cta" style={{ background: '#040914', padding: isMobile ? '4rem 1.5rem' : '6rem 5.5rem', borderTop: '1px solid rgba(251, 191, 36, 0.2)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(251,191,36,0.06) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
+      <footer id="registro-cta" style={{ background: '#002D8B', padding: isMobile ? '4rem 1.5rem' : '6rem 5.5rem', borderTop: '1px solid rgba(212, 175, 55, 0.2)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '800px', height: '800px', background: 'radial-gradient(circle, rgba(212, 175, 55,0.06) 0%, transparent 70%)', filter: 'blur(60px)', pointerEvents: 'none' }} />
 
         <div style={{ maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
           <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
             <div style={{ ...sectionLabel, margin: '0 auto 1.5rem' }}><Send size={16} /> ÚNETE</div>
             <h2 style={{ color: 'white', fontSize: isMobile ? '2.2rem' : '3.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1rem' }}>
               El futuro de la radio nos pertenece. <br />
-              <span style={{ background: 'linear-gradient(to right, #fbbf24, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(to right, #d4af37, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Comparte tu idea y súmate.
               </span>
             </h2>
@@ -662,7 +662,7 @@ const ArchiCampaign = () => {
                       type="text" name="name" value={formData.name} onChange={handleFormChange}
                       placeholder="Ej: María González Reyes" required
                       style={inputStyle}
-                      onFocus={e => e.target.style.borderColor = 'rgba(251,191,36,0.5)'}
+                      onFocus={e => e.target.style.borderColor = 'rgba(212, 175, 55,0.5)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
                     />
                   </div>
@@ -673,7 +673,7 @@ const ArchiCampaign = () => {
                       type="email" name="email" value={formData.email} onChange={handleFormChange}
                       placeholder="tu@correo.cl" required
                       style={inputStyle}
-                      onFocus={e => e.target.style.borderColor = 'rgba(251,191,36,0.5)'}
+                      onFocus={e => e.target.style.borderColor = 'rgba(212, 175, 55,0.5)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
                     />
                   </div>
@@ -684,7 +684,7 @@ const ArchiCampaign = () => {
                       type="tel" name="phone" value={formData.phone} onChange={handleFormChange}
                       placeholder="+56 9 XXXX XXXX"
                       style={inputStyle}
-                      onFocus={e => e.target.style.borderColor = 'rgba(251,191,36,0.5)'}
+                      onFocus={e => e.target.style.borderColor = 'rgba(212, 175, 55,0.5)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
                     />
                   </div>
@@ -695,7 +695,7 @@ const ArchiCampaign = () => {
                       type="text" name="radio_station" value={formData.radio_station} onChange={handleFormChange}
                       placeholder="Ej: Radio Serena 92.1 FM"
                       style={inputStyle}
-                      onFocus={e => e.target.style.borderColor = 'rgba(251,191,36,0.5)'}
+                      onFocus={e => e.target.style.borderColor = 'rgba(212, 175, 55,0.5)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
                     />
                   </div>
@@ -707,7 +707,7 @@ const ArchiCampaign = () => {
                       placeholder="¿Qué propuesta tienes para fortalecer la radio regional en Chile? Tu voz importa..."
                       rows={4}
                       style={{ ...inputStyle, resize: 'vertical', minHeight: '100px' }}
-                      onFocus={e => e.target.style.borderColor = 'rgba(251,191,36,0.5)'}
+                      onFocus={e => e.target.style.borderColor = 'rgba(212, 175, 55,0.5)'}
                       onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.15)'}
                     />
                   </div>
@@ -723,7 +723,7 @@ const ArchiCampaign = () => {
                     <button
                       type="submit"
                       disabled={formStatus === 'loading'}
-                      style={{ width: '100%', background: formStatus === 'loading' ? 'rgba(251,191,36,0.4)' : 'linear-gradient(135deg, #fbbf24, #b45309)', color: '#0f172a', padding: '1.1rem', borderRadius: '14px', fontSize: '1.1rem', fontWeight: 900, border: 'none', cursor: formStatus === 'loading' ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(251, 191, 36, 0.3)', transition: 'all 0.3s ease', fontFamily: '"Outfit", sans-serif' }}>
+                      style={{ width: '100%', background: formStatus === 'loading' ? 'rgba(212, 175, 55,0.4)' : 'linear-gradient(135deg, #d4af37, #b45309)', color: '#002D8B', padding: '1.1rem', borderRadius: '14px', fontSize: '1.1rem', fontWeight: 900, border: 'none', cursor: formStatus === 'loading' ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)', transition: 'all 0.3s ease', fontFamily: '"Outfit", sans-serif' }}>
                       {formStatus === 'loading' ? (
                         <><Loader size={20} style={{ animation: 'spin 1s linear infinite' }} /> Registrando...</>
                       ) : (
@@ -766,11 +766,11 @@ const ArchiCampaign = () => {
                 <X size={16} />
               </button>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #fbbf24, #b45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #d4af37, #b45309)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <Radio size={20} color="white" />
                 </div>
                 <div>
-                  <div style={{ fontWeight: 900, fontSize: '0.9rem', color: '#0f172a', fontFamily: '"Outfit", sans-serif' }}>ARCHI Nueva Energía</div>
+                  <div style={{ fontWeight: 900, fontSize: '0.9rem', color: '#002D8B', fontFamily: '"Outfit", sans-serif' }}>ARCHI Nueva Energía</div>
                   <div style={{ fontSize: '0.72rem', color: '#22c55e', display: 'flex', alignItems: 'center', gap: '4px' }}>
                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
                     En línea

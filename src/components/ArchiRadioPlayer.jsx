@@ -400,9 +400,9 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   };
 
   // ── COLORES CAMPAÑA ─────────────────────────────────────
-  const gold = '#fbbf24';
+  const gold = '#d4af37';
   const darkBg = 'rgba(4, 9, 20, 0.97)';
-  const borderGold = 'rgba(251, 191, 36, 0.5)';
+  const borderGold = 'rgba(212, 175, 55, 0.5)';
 
   // ── MODO MINI ────────────────────────────────────────────
   if (isMini) {
@@ -446,14 +446,14 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
               : 'rgba(7, 15, 32, 0.97)',
             border: `2px solid ${isPlaying ? gold : borderGold}`,
             boxShadow: isPlaying
-              ? `0 0 24px rgba(251,191,36,0.7), 0 4px 15px rgba(0,0,0,0.5)`
+              ? `0 0 24px rgba(212, 175, 55,0.7), 0 4px 15px rgba(0,0,0,0.5)`
               : '0 4px 15px rgba(0,0,0,0.5)',
             cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             backdropFilter: 'blur(20px)',
           }}
         >
-          <Radio size={22} color={isPlaying ? '#0f172a' : gold} />
+          <Radio size={22} color={isPlaying ? '#002D8B' : gold} />
         </motion.button>
 
         {/* Mini play/pause */}
@@ -462,15 +462,15 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
           whileTap={{ scale: 0.85 }}
           style={{
             width: '28px', height: '28px', borderRadius: '50%',
-            background: `rgba(251, 191, 36, 0.9)`,
+            background: `rgba(212, 175, 55, 0.9)`,
             border: 'none', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 2px 8px rgba(0,0,0,0.4)'
           }}
         >
           {isPlaying
-            ? <Pause size={12} color="#0f172a" />
-            : <Play size={12} color="#0f172a" style={{ marginLeft: '2px' }} />}
+            ? <Pause size={12} color="#002D8B" />
+            : <Play size={12} color="#002D8B" style={{ marginLeft: '2px' }} />}
         </motion.button>
 
         {isPlaying && (
@@ -527,14 +527,14 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
         backdropFilter: 'blur(20px)',
         borderRadius: isExpanded ? '20px' : '30px',
         border: `2px solid ${borderGold}`,
-        boxShadow: `0 15px 45px rgba(0,0,0,0.9), 0 0 40px rgba(251,191,36,0.08)`,
+        boxShadow: `0 15px 45px rgba(0,0,0,0.9), 0 0 40px rgba(212, 175, 55,0.08)`,
         width: isExpanded ? (isMobile ? '290px' : '340px') : '280px',
         overflow: 'hidden',
       }}>
 
         {/* ── HEADER ── */}
         <div style={{
-          background: `linear-gradient(135deg, rgba(251,191,36,0.15), rgba(180,83,9,0.1))`,
+          background: `linear-gradient(135deg, rgba(212, 175, 55,0.15), rgba(180,83,9,0.1))`,
           borderBottom: `1px solid ${borderGold}`,
           padding: '10px 14px',
           display: 'flex', alignItems: 'center', gap: '10px'
@@ -544,9 +544,9 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
             width: '32px', height: '32px', borderRadius: '8px', flexShrink: 0,
             background: `linear-gradient(135deg, ${gold}, #b45309)`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 0 12px rgba(251,191,36,0.4)`
+            boxShadow: `0 0 12px rgba(212, 175, 55,0.4)`
           }}>
-            <Radio size={16} color="#0f172a" />
+            <Radio size={16} color="#002D8B" />
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ color: gold, fontWeight: 900, fontSize: '0.75rem', letterSpacing: '1px', textTransform: 'uppercase' }}>
@@ -559,12 +559,13 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
           {/* Controles header */}
           <div style={{ display: 'flex', gap: '4px', flexShrink: 0 }}>
             <button onClick={() => setShowPlaylist(!showPlaylist)}
-              style={{ background: showPlaylist ? 'rgba(251,191,36,0.2)' : 'none', border: 'none', cursor: 'pointer', padding: '4px', borderRadius: '6px', color: gold }}>
+              style={{ background: showPlaylist ? 'rgba(212, 175, 55,0.2)' : 'none', border: 'none', cursor: 'pointer', padding: '4px', borderRadius: '6px', color: gold }}>
               <List size={14} />
             </button>
             <button onClick={cycleMode}
+              title="Minimizar reproductor"
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '4px', borderRadius: '6px', color: '#64748b' }}>
-              <GripHorizontal size={14} />
+              {isExpanded ? <X size={16} color={gold} /> : <GripHorizontal size={14} />}
             </button>
           </div>
         </div>
@@ -600,7 +601,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
             {hasError ? '⚠️ Archivo no disponible aún' : currentTrack.title}
           </div>
           <div style={{ color: '#64748b', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ background: `rgba(251,191,36,0.1)`, color: gold, padding: '1px 6px', borderRadius: '10px', fontSize: '0.65rem', fontWeight: 700 }}>
+            <span style={{ background: `rgba(212, 175, 55,0.1)`, color: gold, padding: '1px 6px', borderRadius: '10px', fontSize: '0.65rem', fontWeight: 700 }}>
               {currentTrack.category}
             </span>
             <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -648,12 +649,12 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
               background: `linear-gradient(135deg, ${gold}, #b45309)`,
               border: 'none', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: `0 0 20px rgba(251,191,36,0.4)`,
+              boxShadow: `0 0 20px rgba(212, 175, 55,0.4)`,
               transition: 'all 0.2s ease'
             }}>
             {isPlaying
-              ? <Pause size={18} color="#0f172a" />
-              : <Play size={18} color="#0f172a" style={{ marginLeft: '2px' }} />}
+              ? <Pause size={18} color="#002D8B" />
+              : <Play size={18} color="#002D8B" style={{ marginLeft: '2px' }} />}
           </button>
 
           {/* Skip adelante */}
@@ -699,7 +700,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
                     onClick={() => loadTrack(idx, true)}
                     style={{
                       width: '100%', background: idx === currentIndex
-                        ? 'rgba(251,191,36,0.08)' : 'none',
+                        ? 'rgba(212, 175, 55,0.08)' : 'none',
                       border: 'none',
                       borderBottom: '1px solid rgba(255,255,255,0.04)',
                       padding: '10px 14px', cursor: 'pointer',
@@ -712,8 +713,8 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
                       display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}>
                       {idx === currentIndex && isPlaying
-                        ? <Zap size={12} color="#0f172a" />
-                        : <Music size={12} color={idx === currentIndex ? '#0f172a' : '#64748b'} />}
+                        ? <Zap size={12} color="#002D8B" />
+                        : <Music size={12} color={idx === currentIndex ? '#002D8B' : '#64748b'} />}
                     </div>
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{
@@ -732,7 +733,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
               </div>
 
               {/* Aviso repositorio */}
-              <div style={{ padding: '10px 14px', background: 'rgba(251,191,36,0.05)', borderTop: '1px solid rgba(251,191,36,0.1)' }}>
+              <div style={{ padding: '10px 14px', background: 'rgba(212, 175, 55,0.05)', borderTop: '1px solid rgba(212, 175, 55,0.1)' }}>
                 <p style={{ color: '#64748b', fontSize: '0.65rem', margin: 0, lineHeight: 1.5 }}>
                   📁 Archivos MP3 en: <code style={{ color: gold }}>public/archi-media/audio/</code>
                 </p>

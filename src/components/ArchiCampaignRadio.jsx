@@ -45,9 +45,9 @@ export default function ArchiCampaignRadio() {
   const sourceRef = useRef(null);
   const dataArrayRef = useRef(null);
   
-  const gold = '#fbbf24';
-  const borderGold = 'rgba(251, 191, 36, 0.4)';
-  const darkBg = 'rgba(10, 15, 30, 0.65)'; 
+  const gold = '#d4af37';
+  const borderGold = 'rgba(212, 175, 55, 0.4)';
+  const darkBg = 'rgba(0, 51, 160, 0.65)'; 
 
   const initAudioContext = () => {
     try {
@@ -171,8 +171,8 @@ export default function ArchiCampaignRadio() {
       <motion.div 
         animate={{
           boxShadow: isPlaying 
-            ? '0 20px 50px rgba(0,0,0,0.5), 0 0 60px rgba(251,191,36,0.15), inset 0 0 20px rgba(251,191,36,0.05)' 
-            : '0 15px 45px rgba(0,0,0,0.5), 0 0 0px rgba(251,191,36,0), inset 0 0 0px rgba(251,191,36,0)'
+            ? '0 20px 50px rgba(0,0,0,0.5), 0 0 60px rgba(212, 175, 55,0.15), inset 0 0 20px rgba(212, 175, 55,0.05)' 
+            : '0 15px 45px rgba(0,0,0,0.5), 0 0 0px rgba(212, 175, 55,0), inset 0 0 0px rgba(212, 175, 55,0)'
         }}
         transition={{ duration: 1 }}
         style={{
@@ -209,7 +209,7 @@ export default function ArchiCampaignRadio() {
           <button 
             onClick={() => setShowPlaylist(!showPlaylist)}
             style={{
-              background: showPlaylist ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.05)',
+              background: showPlaylist ? 'rgba(212, 175, 55,0.15)' : 'rgba(255,255,255,0.05)',
               border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '12px',
               color: showPlaylist ? gold : 'white',
               transition: 'all 0.3s ease',
@@ -236,8 +236,8 @@ export default function ArchiCampaignRadio() {
           <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
             <div style={{
               display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: 'rgba(251,191,36,0.1)', padding: '4px 12px', borderRadius: '20px',
-              border: '1px solid rgba(251,191,36,0.2)',
+              background: 'rgba(212, 175, 55,0.1)', padding: '4px 12px', borderRadius: '20px',
+              border: '1px solid rgba(212, 175, 55,0.2)',
               fontSize: '0.7rem', color: gold, textTransform: 'uppercase',
               letterSpacing: '1px', fontWeight: 900, marginBottom: '12px'
             }}>
@@ -265,14 +265,14 @@ export default function ArchiCampaignRadio() {
                 background: isPlaying ? `linear-gradient(to top, #b45309, ${gold})` : 'rgba(255,255,255,0.1)',
                 borderRadius: '4px',
                 transition: 'height 0.08s ease',
-                boxShadow: isPlaying ? `0 0 10px rgba(251,191,36,0.3)` : 'none'
+                boxShadow: isPlaying ? `0 0 10px rgba(212, 175, 55,0.3)` : 'none'
               }} />
             ))}
           </div>
 
           {/* ProgressBar */}
           <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden', cursor: 'pointer' }}>
-            <div style={{ width: `${progress}%`, height: '100%', background: `linear-gradient(90deg, #b45309, ${gold})`, transition: 'width 0.1s linear', boxShadow: '0 0 10px rgba(251,191,36,0.5)' }} />
+            <div style={{ width: `${progress}%`, height: '100%', background: `linear-gradient(90deg, #b45309, ${gold})`, transition: 'width 0.1s linear', boxShadow: '0 0 10px rgba(212, 175, 55,0.5)' }} />
           </div>
 
           {/* Botonera */}
@@ -289,8 +289,8 @@ export default function ArchiCampaignRadio() {
                 background: `linear-gradient(135deg, ${gold} 0%, #b45309 100%)`,
                 border: 'none', cursor: 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: isPlaying ? '0 10px 25px rgba(251,191,36,0.4), inset 0 -3px 10px rgba(0,0,0,0.2)' : '0 10px 25px rgba(0,0,0,0.3), inset 0 -3px 10px rgba(0,0,0,0.2)',
-                color: '#0f172a'
+                boxShadow: isPlaying ? '0 10px 25px rgba(212, 175, 55,0.4), inset 0 -3px 10px rgba(0,0,0,0.2)' : '0 10px 25px rgba(0,0,0,0.3), inset 0 -3px 10px rgba(0,0,0,0.2)',
+                color: '#002D8B'
               }}>
               {isPlaying ? <Pause size={32} /> : <Play size={32} style={{ marginLeft: '4px' }} />}
             </motion.button>
@@ -320,8 +320,8 @@ export default function ArchiCampaignRadio() {
                       borderRadius: '16px',
                       cursor: 'pointer',
                       display: 'flex', alignItems: 'center', gap: '15px',
-                      background: currentIndex === i ? 'rgba(251,191,36,0.15)' : 'transparent',
-                      border: currentIndex === i ? `1px solid rgba(251,191,36,0.3)` : '1px solid transparent',
+                      background: currentIndex === i ? 'rgba(212, 175, 55,0.15)' : 'transparent',
+                      border: currentIndex === i ? `1px solid rgba(212, 175, 55,0.3)` : '1px solid transparent',
                       marginBottom: '6px',
                       transition: 'all 0.2s'
                     }}

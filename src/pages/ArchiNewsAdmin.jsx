@@ -150,9 +150,9 @@ const ArchiNewsAdmin = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#070f20', color: 'white', fontFamily: '"Outfit", sans-serif', padding: isMobile ? '20px' : '40px' }}>
+    <div style={{ minHeight: '100vh', background: '#0033a0', color: 'white', fontFamily: '"Outfit", sans-serif', padding: isMobile ? '20px' : '40px' }}>
       <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-        <h1 style={{ color: '#fbbf24', fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center' }}>
+        <h1 style={{ color: '#d4af37', fontSize: '2rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center' }}>
           ARCHI - Panel de Control
         </h1>
 
@@ -160,13 +160,13 @@ const ArchiNewsAdmin = () => {
         <div style={{ display: 'flex', gap: '10px', marginBottom: '2rem', background: 'rgba(255,255,255,0.05)', padding: '5px', borderRadius: '15px' }}>
           <button 
             onClick={() => setActiveTab('news')}
-            style={{ flex: 1, padding: '15px', borderRadius: '10px', background: activeTab === 'news' ? 'rgba(251,191,36,0.15)' : 'transparent', color: activeTab === 'news' ? '#fbbf24' : '#94a3b8', border: 'none', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
+            style={{ flex: 1, padding: '15px', borderRadius: '10px', background: activeTab === 'news' ? 'rgba(212, 175, 55,0.15)' : 'transparent', color: activeTab === 'news' ? '#d4af37' : '#94a3b8', border: 'none', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
           >
             📰 Noticias (Web)
           </button>
           <button 
             onClick={() => setActiveTab('supporters')}
-            style={{ flex: 1, padding: '15px', borderRadius: '10px', background: activeTab === 'supporters' ? 'rgba(251,191,36,0.15)' : 'transparent', color: activeTab === 'supporters' ? '#fbbf24' : '#94a3b8', border: 'none', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
+            style={{ flex: 1, padding: '15px', borderRadius: '10px', background: activeTab === 'supporters' ? 'rgba(212, 175, 55,0.15)' : 'transparent', color: activeTab === 'supporters' ? '#d4af37' : '#94a3b8', border: 'none', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
           >
             👥 Padrón de Socios ({supporters.length})
           </button>
@@ -174,9 +174,9 @@ const ArchiNewsAdmin = () => {
 
         {activeTab === 'news' && (
           <>
-            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(251,191,36,0.3)', marginBottom: '3rem' }}>
+            <div style={{ background: 'rgba(255,255,255,0.05)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(212, 175, 55,0.3)', marginBottom: '3rem' }}>
               <h2 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Send size={20} color="#fbbf24" /> Publicar Nueva Noticia
+                <Send size={20} color="#d4af37" /> Publicar Nueva Noticia
               </h2>
               
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -227,7 +227,7 @@ const ArchiNewsAdmin = () => {
                 <button 
                   type="submit" 
                   disabled={loading}
-                  style={{ background: '#fbbf24', color: '#0f172a', padding: '15px', borderRadius: '10px', fontWeight: 900, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '1.1rem' }}
+                  style={{ background: '#d4af37', color: '#002D8B', padding: '15px', borderRadius: '10px', fontWeight: 900, border: 'none', cursor: loading ? 'not-allowed' : 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontSize: '1.1rem' }}
                 >
                   {loading ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
                   {loading ? 'Publicando...' : 'Publicar Noticia'}
@@ -253,7 +253,7 @@ const ArchiNewsAdmin = () => {
                     <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '0 0 10px 0', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                       {item.content}
                     </p>
-                    <div style={{ fontSize: '0.8rem', color: '#fbbf24' }}>
+                    <div style={{ fontSize: '0.8rem', color: '#d4af37' }}>
                       {item.created_at ? new Date(item.created_at).toLocaleString() : 'Publicando...'}
                     </div>
                   </div>
@@ -272,7 +272,7 @@ const ArchiNewsAdmin = () => {
         {activeTab === 'supporters' && (
           <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)', overflow: 'hidden' }}>
             <div style={{ padding: '20px', background: 'rgba(0,0,0,0.3)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-              <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#fbbf24' }}>Padrones y Adhesiones ({supporters.length})</h2>
+              <h2 style={{ fontSize: '1.2rem', margin: 0, color: '#d4af37' }}>Padrones y Adhesiones ({supporters.length})</h2>
               <p style={{ color: '#94a3b8', fontSize: '0.9rem', margin: '5px 0 0' }}>Simbatizantes que se han registrado a través de la web radiovecinos.cl</p>
             </div>
             
@@ -304,7 +304,7 @@ const ArchiNewsAdmin = () => {
                           {new Date(s.created_at).toLocaleDateString()}
                         </td>
                         <td style={{ padding: '15px', fontWeight: 'bold' }}>{s.name}</td>
-                        <td style={{ padding: '15px', color: '#fbbf24' }}>{s.radio_station || '-'}</td>
+                        <td style={{ padding: '15px', color: '#d4af37' }}>{s.radio_station || '-'}</td>
                         <td style={{ padding: '15px' }}>
                           <div style={{ marginBottom: '4px' }}>{s.email}</div>
                           {s.phone && (
