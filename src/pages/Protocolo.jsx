@@ -27,7 +27,7 @@ const VIPS_DEFAULT = [
 
 
 export default function Protocolo() {
-    const { isRDMLS } = useOutletContext();
+    const { isRDMLS } = useOutletContext() || {};
     const SONGS_HATS = [
         { id: 1, title: `Sinfonía Blanca (Datos ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/blanca", hat: "Blanco", color: "#ffffff" },
         { id: 2, title: `Ritmo Rojo (Emoción ${isRDMLS ? 'RDMLS' : 'VLS'})`, url: "https://vecinoslaserena.cl/audioteca/roja", hat: "Rojo", color: "#ef4444" },
@@ -549,7 +549,7 @@ const VistaTecnica = ({ evento }) => {
 
 // --- MÓDULO VECINOS DEL MUNDO (ALMANAQUE 2026) ---
 const VecinosDelMundo = () => {
-    const { isRDMLS } = useOutletContext();
+    const { isRDMLS } = useOutletContext() || {};
     const [search, setSearch] = useState('');
     const [selectedCountry, setSelectedCountry] = useState(null);
 

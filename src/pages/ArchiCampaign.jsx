@@ -156,8 +156,8 @@ const ArchiCampaign = () => {
       icon: Cpu
     },
     {
-      title: "OIPP y Equidad Territorial",
-      desc: "Creación del Observatorio de Inversión Pública (OIPP). Exigiremos al Estado el cumplimiento del artículo 4° de la Ley 19.733 (Ley de Prensa), asegurando que el 40% del avisaje estatal se destine mayoritariamente a medios regionales, garantizando una verdadera integración nacional.",
+      title: "OIP y Equidad Territorial",
+      desc: "Creación del Observatorio de Inversión Pública (OIP). Exigiremos al Estado el cumplimiento del artículo 4° de la Ley 19.733 (Ley de Prensa), asegurando que el 40% del avisaje estatal se destine mayoritariamente a medios regionales, garantizando una verdadera integración nacional.",
       img: "/archi-media/3d/pillar2.png",
       icon: Shield
     },
@@ -168,7 +168,7 @@ const ArchiCampaign = () => {
       icon: TrendingUp
     },
     {
-      title: "Escudo Civil y Resiliencia Analógica",
+      title: "Escudo Civil y Soporte en emergencias",
       desc: "La única red a prueba de apagones. La radio es la infraestructura crítica de seguridad nacional que salva vidas en emergencias y opera como amortiguador psicológico frente al pánico. Al pautar en radios, el Estado subsidia nuestra red de emergencia.",
       img: "/archi-media/3d/pillar4.png",
       icon: Radio

@@ -457,7 +457,7 @@ function App() {
       <ErrorBoundary>
         <AppContent setShowCoquiSmartCRM={setShowCoquiSmartCRM} />
       </ErrorBoundary>
-      {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !window.location.host.includes('sonicev') && window.location.pathname !== '/sonicev' && !window.location.host.includes('vecinosmart.cl') && !window.location.host.includes('radiovecinos.cl')) && (
+      {(window.location.pathname !== '/induccion' && window.location.pathname !== '/induccion_imls' && window.location.pathname !== '/vlsabes' && !window.location.host.includes('sonicev') && window.location.pathname !== '/sonicev' && !window.location.host.includes('vecinosmart.cl')) && (
         isRDMLS ? <div /> : <VLSQuantumWatch isRDMLS={isRDMLS} />
       )}
       <MaintenanceNotice />

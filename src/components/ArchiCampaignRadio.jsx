@@ -76,15 +76,7 @@ export default function ArchiCampaignRadio() {
   }, []);
 
   // Control de reproducción automática (siguiente pista)
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const handleEnded = () => {
-      loadTrack((currentIndex + 1) % ARCHI_PLAYLIST.length, true);
-    };
-    audio.addEventListener('ended', handleEnded);
-    return () => audio.removeEventListener('ended', handleEnded);
-  }, [currentIndex]);
+  // Ahora manejado por onEnded en la etiqueta <audio>
 
   // Animación de espectro fluido (Premium - Real/Simulado)
   useEffect(() => {
@@ -172,6 +164,7 @@ export default function ArchiCampaignRadio() {
         }}
         onPlay={() => { initAudioContext(); setIsPlaying(true); }}
         onPause={() => setIsPlaying(false)}
+        onEnded={nextTrack}
       />
 
       {/* REPRODUCTOR PRINCIPAL - DISEÑO PREMIUM */}

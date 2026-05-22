@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import EscuelaOficios from '../components/EscuelaOficios';
 
 export default function Elearning() {
-    const { isRDMLS } = useOutletContext();
+    const { isRDMLS } = useOutletContext() || {};
     const navigate = useNavigate();
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [isPlaying, setIsPlaying] = useState(false);

@@ -255,16 +255,10 @@ const isRadioVecinosDns = host.includes('radiovecinos.cl') || host.includes('rad
 if (typeof window !== 'undefined' && isRadioVecinosDns) {
   document.title = "ARCHI Nueva Energía";
   try {
-    const canvas = document.createElement('canvas');
-    canvas.height = 64;
-    canvas.width = 64;
-    const ctx = canvas.getContext('2d');
-    ctx.font = '56px serif';
-    ctx.fillText('📻', 0, 50);
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/png';
     link.rel = 'icon';
-    link.href = canvas.toDataURL();
+    link.href = '/archi-media/audio/Solange.png';
     document.getElementsByTagName('head')[0].appendChild(link);
   } catch(e) {}
 }
@@ -401,11 +395,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRadioVecinosDns ? (
-                <Route path="/" element={<App />}>
-                  <Route index element={<ArchiCampaign />} />
-                  <Route path="archi" element={<ArchiCampaign />} />
+                <>
+                  <Route path="/" element={<App />}>
+                    <Route index element={<ArchiCampaign />} />
+                    <Route path="archi" element={<ArchiCampaign />} />
+                  </Route>
+                  <Route path="/admin" element={<ArchiNewsAdmin />} />
+                  <Route path="/archi-admin" element={<ArchiNewsAdmin />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
-                </Route>
+                </>
               ) : isPrendesLegacy ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<SmartComunaEvolution />} />

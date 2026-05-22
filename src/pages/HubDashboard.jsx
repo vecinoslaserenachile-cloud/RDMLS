@@ -113,7 +113,7 @@ import WorldNewsTablets from '../components/WorldNewsTablets';
 export default function HubDashboard() {
     // 1. Context & Routing
     const navigate = useNavigate();
-    const { weather, isAuthorized, isGuest, isRegistered, currentUser, handleLogin, handleLogout } = useOutletContext();
+    const { weather, isAuthorized, isGuest, isRegistered, currentUser, handleLogin, handleLogout } = useOutletContext() || {};
 
     // ── MASTER EDITOR MODE (solo vecinoslaserenachile@gmail.com) ─────────────
     // const { isMaster, editorActive, toggleEditor, hiddenModules, hideModule, restoreAll, isHidden } = useMasterEditor(currentUser);

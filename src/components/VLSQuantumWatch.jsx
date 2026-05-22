@@ -22,6 +22,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
         localStorage.getItem('vls_quantum_minimized') === 'true'
     );
     const [isAnyModalOpen, setIsAnyModalOpen] = useState(false);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
     useEffect(() => {
         const checkModals = () => {
@@ -31,7 +32,14 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
         };
         const interval = setInterval(checkModals, 500); // Check every 500ms
         checkModals();
-        return () => clearInterval(interval);
+
+        const handleResize = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearInterval(interval);
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
 
 
@@ -221,7 +229,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
             <motion.div
                 drag dragMomentum={false}
                 id="vls-quantum-watch-container"
-                style={{ position:'fixed', top:'220px', left:'20px', zIndex:9999999,
+                style={{ position:'fixed', top: isMobile ? '80px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%)' : 'none', zIndex:9999999,
                          cursor:'grab', userSelect:'none', width:'210px',
                          filter:'drop-shadow(0 12px 28px rgba(251,191,36,0.25))' }}
                 animate={{ y:[0,-5,0] }}
@@ -395,7 +403,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
         <motion.div
             drag dragMomentum={false}
             id="vls-quantum-watch-container"
-            style={{ position:'fixed', top:'220px', left:'20px', zIndex:9999999,
+            style={{ position:'fixed', top: isMobile ? '80px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%)' : 'none', zIndex:9999999,
                      cursor:'grab', userSelect:'none', width:'205px',
                      filter:'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
             animate={{ y:[0,-4,0] }}

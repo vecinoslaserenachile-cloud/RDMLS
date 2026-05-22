@@ -16,7 +16,7 @@ const MOCK_INFORMES = [
 ];
 
 export default function Honorarios() {
-    const { isRDMLS } = useOutletContext();
+    const { isRDMLS } = useOutletContext() || {};
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('prestador');
 
