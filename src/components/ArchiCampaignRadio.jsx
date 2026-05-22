@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, Volume2, SkipForward, SkipBack, ListMusic, Radio } from 'lucide-react';
+import { Play, Pause, Volume2, SkipForward, SkipBack, ListMusic, Radio, Disc } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ARCHI_PLAYLIST = [
@@ -36,13 +36,38 @@ export default function ArchiCampaignRadio() {
   const [progress, setProgress] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-  const [spectrumLevels, setSpectrumLevels] = useState(Array(12).fill(5));
+  const [spectrumLevels, setSpectrumLevels] = useState(Array(16).fill(5));
 
   const currentTrack = ARCHI_PLAYLIST[currentIndex];
+
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceRef = useRef(null);
+  const dataArrayRef = useRef(null);
   
   const gold = '#fbbf24';
-  const borderGold = 'rgba(251, 191, 36, 0.3)';
-  const darkBg = 'rgba(7, 15, 32, 0.85)';
+  const borderGold = 'rgba(251, 191, 36, 0.4)';
+  const darkBg = 'rgba(10, 15, 30, 0.65)'; 
+
+  const initAudioContext = () => {
+    try {
+      if (!audioContextRef.current && audioRef.current) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioContextRef.current = new AudioCtx();
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 64;
+        sourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+        sourceRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(audioContextRef.current.destination);
+        dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
+      }
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+    } catch (e) {
+      console.warn("AudioContext init failed:", e);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -50,18 +75,40 @@ export default function ArchiCampaignRadio() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Animación de espectro
+  // Control de reproducción automática (siguiente pista)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const handleEnded = () => {
+      loadTrack((currentIndex + 1) % ARCHI_PLAYLIST.length, true);
+    };
+    audio.addEventListener('ended', handleEnded);
+    return () => audio.removeEventListener('ended', handleEnded);
+  }, [currentIndex]);
+
+  // Animación de espectro fluido (Premium - Real/Simulado)
   useEffect(() => {
     if (!isPlaying) {
       cancelAnimationFrame(animationRef.current);
-      setSpectrumLevels(Array(12).fill(5));
+      setSpectrumLevels(Array(16).fill(5));
       return;
     }
     const animate = () => {
-      setSpectrumLevels(prev => prev.map((_, i) => {
-        const base = [70, 85, 60, 75, 50, 65, 80, 55, 45, 70, 60, 40][i];
-        return Math.max(5, base + (Math.random() - 0.5) * 40);
-      }));
+      if (analyserRef.current && dataArrayRef.current) {
+        analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+        const newLevels = [];
+        for (let i = 0; i < 16; i++) {
+          const value = dataArrayRef.current[i + 1] || 0;
+          const percent = Math.max(5, (value / 255) * 100);
+          newLevels.push(percent);
+        }
+        setSpectrumLevels(newLevels);
+      } else {
+        setSpectrumLevels(prev => prev.map((_, i) => {
+          const base = [40, 60, 80, 50, 90, 70, 40, 60, 80, 50, 70, 90, 60, 40, 70, 50][i];
+          return Math.max(5, base + (Math.sin(Date.now() / 100 + i) * 30));
+        }));
+      }
       animationRef.current = requestAnimationFrame(animate);
     };
     animationRef.current = requestAnimationFrame(animate);
@@ -76,6 +123,7 @@ export default function ArchiCampaignRadio() {
     audioRef.current.src = ARCHI_PLAYLIST[index].file;
     audioRef.current.load();
     if (autoplay) {
+      initAudioContext();
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch(() => {
@@ -88,6 +136,7 @@ export default function ArchiCampaignRadio() {
 
   const togglePlay = () => {
     if (!audioRef.current) return;
+    initAudioContext();
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -107,7 +156,7 @@ export default function ArchiCampaignRadio() {
   return (
     <div style={{
       width: '100%',
-      maxWidth: isMobile ? '100%' : '400px',
+      maxWidth: isMobile ? '100%' : '420px',
       margin: '0 auto',
       fontFamily: '"Outfit", sans-serif',
       position: 'relative',
@@ -115,48 +164,63 @@ export default function ArchiCampaignRadio() {
     }}>
       <audio
         ref={audioRef}
-        onEnded={nextTrack}
+        crossOrigin="anonymous"
         onTimeUpdate={() => {
           if (audioRef.current && audioRef.current.duration) {
             setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100);
           }
         }}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => { initAudioContext(); setIsPlaying(true); }}
         onPause={() => setIsPlaying(false)}
       />
 
-      {/* REPRODUCTOR PRINCIPAL */}
-      <div style={{
-        background: darkBg,
-        backdropFilter: 'blur(20px)',
-        borderRadius: '24px',
-        border: \`2px solid \${borderGold}\`,
-        boxShadow: \`0 15px 45px rgba(0,0,0,0.5), 0 0 40px rgba(251,191,36,0.1)\`,
-        overflow: 'hidden',
-        width: '100%',
-      }}>
+      {/* REPRODUCTOR PRINCIPAL - DISEÑO PREMIUM */}
+      <motion.div 
+        animate={{
+          boxShadow: isPlaying 
+            ? '0 20px 50px rgba(0,0,0,0.5), 0 0 60px rgba(251,191,36,0.15), inset 0 0 20px rgba(251,191,36,0.05)' 
+            : '0 15px 45px rgba(0,0,0,0.5), 0 0 0px rgba(251,191,36,0), inset 0 0 0px rgba(251,191,36,0)'
+        }}
+        transition={{ duration: 1 }}
+        style={{
+          background: darkBg,
+          backdropFilter: 'blur(30px) saturate(150%)',
+          WebkitBackdropFilter: 'blur(30px) saturate(150%)',
+          borderRadius: '30px',
+          border: `1px solid rgba(255, 255, 255, 0.1)`,
+          borderTop: `1px solid rgba(255, 255, 255, 0.2)`,
+          overflow: 'hidden',
+          width: '100%',
+          position: 'relative'
+        }}>
+          
+        {/* Glow de acento superior */}
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: `linear-gradient(90deg, transparent, ${gold}, transparent)`, opacity: 0.8 }} />
+
         {/* Top Header */}
         <div style={{
-          padding: '12px 20px',
-          background: 'rgba(0,0,0,0.3)',
+          padding: '16px 24px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          borderBottom: '1px solid rgba(255,255,255,0.05)'
+          borderBottom: '1px solid rgba(255,255,255,0.03)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Radio size={16} color={gold} />
-            <span style={{ color: 'white', fontSize: '0.8rem', fontWeight: 600, letterSpacing: '1px' }}>
-              SEÑAL OFICIAL
+            <motion.div animate={isPlaying ? { scale: [1, 1.2, 1], opacity: [0.7, 1, 0.7] } : {}} transition={{ repeat: Infinity, duration: 2 }}>
+              <Radio size={18} color={gold} />
+            </motion.div>
+            <span style={{ color: 'white', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '2px', textTransform: 'uppercase' }}>
+              SEÑAL OFICIAL ARCHI
             </span>
           </div>
           <button 
             onClick={() => setShowPlaylist(!showPlaylist)}
             style={{
-              background: showPlaylist ? 'rgba(251,191,36,0.2)' : 'transparent',
-              border: 'none', cursor: 'pointer', padding: '6px', borderRadius: '8px',
-              color: showPlaylist ? gold : '#94a3b8',
-              transition: 'all 0.2s'
+              background: showPlaylist ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.05)',
+              border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '12px',
+              color: showPlaylist ? gold : 'white',
+              transition: 'all 0.3s ease',
+              display: 'flex', alignItems: 'center', justifyContent: 'center'
             }}
           >
             <ListMusic size={18} />
@@ -164,111 +228,133 @@ export default function ArchiCampaignRadio() {
         </div>
 
         {/* Info & Controles */}
-        <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ padding: '30px 24px 35px', display: 'flex', flexDirection: 'column', gap: '25px', position: 'relative' }}>
           
+          {/* Disco giratorio decorativo de fondo */}
+          <motion.div 
+            animate={{ rotate: isPlaying ? 360 : 0 }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+            style={{ position: 'absolute', top: '10%', right: '-15%', opacity: 0.05, pointerEvents: 'none' }}
+          >
+            <Disc size={180} color={gold} />
+          </motion.div>
+
           {/* Metadata */}
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
             <div style={{
-              fontSize: '0.75rem', color: gold, textTransform: 'uppercase',
-              letterSpacing: '1px', fontWeight: 800, marginBottom: '6px'
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              background: 'rgba(251,191,36,0.1)', padding: '4px 12px', borderRadius: '20px',
+              border: '1px solid rgba(251,191,36,0.2)',
+              fontSize: '0.7rem', color: gold, textTransform: 'uppercase',
+              letterSpacing: '1px', fontWeight: 900, marginBottom: '12px'
             }}>
               {currentTrack.category}
             </div>
             <h4 style={{
-              margin: 0, color: 'white', fontSize: isMobile ? '1.2rem' : '1.3rem',
-              fontWeight: 800, lineHeight: 1.2, whiteSpace: 'nowrap',
-              overflow: 'hidden', textOverflow: 'ellipsis'
+              margin: 0, color: 'white', fontSize: isMobile ? '1.4rem' : '1.6rem',
+              fontWeight: 900, lineHeight: 1.2, whiteSpace: 'nowrap',
+              overflow: 'hidden', textOverflow: 'ellipsis',
+              textShadow: '0 2px 10px rgba(0,0,0,0.5)'
             }}>
               {currentTrack.title}
             </h4>
-            <div style={{ color: '#94a3b8', fontSize: '0.9rem', marginTop: '4px' }}>
+            <div style={{ color: '#cbd5e1', fontSize: '0.95rem', marginTop: '6px', fontWeight: 500 }}>
               {currentTrack.artist}
             </div>
           </div>
 
           {/* Spectrum */}
-          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '4px', height: '40px' }}>
+          <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'center', gap: '4px', height: '50px', margin: '10px 0' }}>
             {spectrumLevels.map((level, i) => (
               <div key={i} style={{
                 width: '6px',
-                height: \`\${level}%\`,
-                background: isPlaying ? \`linear-gradient(to top, #b45309, \${gold})\` : '#334155',
-                borderRadius: '3px',
-                transition: 'height 0.1s ease'
+                height: `${level}%`,
+                background: isPlaying ? `linear-gradient(to top, #b45309, ${gold})` : 'rgba(255,255,255,0.1)',
+                borderRadius: '4px',
+                transition: 'height 0.08s ease',
+                boxShadow: isPlaying ? `0 0 10px rgba(251,191,36,0.3)` : 'none'
               }} />
             ))}
           </div>
 
           {/* ProgressBar */}
-          <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-            <div style={{ width: \`\${progress}%\`, height: '100%', background: gold, transition: 'width 0.1s linear' }} />
+          <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden', cursor: 'pointer' }}>
+            <div style={{ width: `${progress}%`, height: '100%', background: `linear-gradient(90deg, #b45309, ${gold})`, transition: 'width 0.1s linear', boxShadow: '0 0 10px rgba(251,191,36,0.5)' }} />
           </div>
 
           {/* Botonera */}
-          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '24px' }}>
-            <button onClick={prevTrack} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px' }}>
-              <SkipBack size={24} />
-            </button>
-            <button onClick={togglePlay} style={{
-              width: '56px', height: '56px', borderRadius: '50%',
-              background: \`linear-gradient(135deg, \${gold} 0%, #b45309 100%)\`,
-              border: 'none', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: isPlaying ? '0 0 20px rgba(251,191,36,0.5)' : '0 4px 15px rgba(0,0,0,0.3)',
-              color: '#0f172a'
-            }}>
-              {isPlaying ? <Pause size={28} /> : <Play size={28} style={{ marginLeft: '4px' }} />}
-            </button>
-            <button onClick={nextTrack} style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', padding: '8px' }}>
-              <SkipForward size={24} />
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '30px', marginTop: '10px' }}>
+            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={prevTrack} style={{ background: 'transparent', border: 'none', color: '#cbd5e1', cursor: 'pointer', padding: '10px' }}>
+              <SkipBack size={26} />
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.05 }} 
+              whileTap={{ scale: 0.95 }}
+              onClick={togglePlay} 
+              style={{
+                width: '70px', height: '70px', borderRadius: '50%',
+                background: `linear-gradient(135deg, ${gold} 0%, #b45309 100%)`,
+                border: 'none', cursor: 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: isPlaying ? '0 10px 25px rgba(251,191,36,0.4), inset 0 -3px 10px rgba(0,0,0,0.2)' : '0 10px 25px rgba(0,0,0,0.3), inset 0 -3px 10px rgba(0,0,0,0.2)',
+                color: '#0f172a'
+              }}>
+              {isPlaying ? <Pause size={32} /> : <Play size={32} style={{ marginLeft: '4px' }} />}
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={nextTrack} style={{ background: 'transparent', border: 'none', color: '#cbd5e1', cursor: 'pointer', padding: '10px' }}>
+              <SkipForward size={26} />
+            </motion.button>
           </div>
         </div>
 
-        {/* Playlist Desplegable */}
+        {/* Playlist Desplegable - Glassmorphism */}
         <AnimatePresence>
           {showPlaylist && (
             <motion.div
               initial={{ height: 0, opacity: 0 }}
-              animate={{ height: '220px', opacity: 1 }}
+              animate={{ height: '260px', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               style={{ overflow: 'hidden', background: 'rgba(0,0,0,0.4)', borderTop: '1px solid rgba(255,255,255,0.05)' }}
             >
-              <div style={{ padding: '10px', height: '100%', overflowY: 'auto' }}>
+              <div style={{ padding: '15px 10px', height: '100%', overflowY: 'auto' }}>
                 {ARCHI_PLAYLIST.map((t, i) => (
-                  <div
+                  <motion.div
+                    whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
                     key={t.id}
                     onClick={() => { loadTrack(i, true); setShowPlaylist(false); }}
                     style={{
-                      padding: '10px 12px',
-                      borderRadius: '12px',
+                      padding: '12px 16px',
+                      borderRadius: '16px',
                       cursor: 'pointer',
-                      display: 'flex', alignItems: 'center', gap: '12px',
-                      background: currentIndex === i ? 'rgba(251,191,36,0.1)' : 'transparent',
-                      border: currentIndex === i ? \`1px solid \${borderGold}\` : '1px solid transparent',
-                      marginBottom: '4px'
+                      display: 'flex', alignItems: 'center', gap: '15px',
+                      background: currentIndex === i ? 'rgba(251,191,36,0.15)' : 'transparent',
+                      border: currentIndex === i ? `1px solid rgba(251,191,36,0.3)` : '1px solid transparent',
+                      marginBottom: '6px',
+                      transition: 'all 0.2s'
                     }}
                   >
                     {currentIndex === i && isPlaying ? (
-                      <div style={{ color: gold }}><Radio size={16} /></div>
+                      <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity }} style={{ color: gold }}>
+                        <Radio size={18} />
+                      </motion.div>
                     ) : (
-                      <div style={{ fontSize: '0.8rem', color: '#64748b', width: '16px', textAlign: 'center' }}>{i + 1}</div>
+                      <div style={{ fontSize: '0.85rem', color: '#64748b', width: '18px', textAlign: 'center', fontWeight: 'bold' }}>{i + 1}</div>
                     )}
                     <div style={{ flex: 1, overflow: 'hidden' }}>
-                      <div style={{ color: currentIndex === i ? gold : '#e2e8f0', fontSize: '0.85rem', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                      <div style={{ color: currentIndex === i ? gold : 'white', fontSize: '0.9rem', fontWeight: 700, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                         {t.title}
                       </div>
-                      <div style={{ color: '#64748b', fontSize: '0.7rem' }}>
-                        {t.artist} • {t.category}
+                      <div style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '2px' }}>
+                        {t.artist} • <span style={{ opacity: 0.8 }}>{t.category}</span>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
     </div>
   );
 }

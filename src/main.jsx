@@ -248,6 +248,28 @@ class ErrorBoundary extends React.Component {
 
 const host = (window.location.hostname || window.location.host || '').toLowerCase();
 const isRdmlsDns = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes'));
+const isImlsDns = host.includes('imls');
+const isRDMLS = host.includes('vecinoslaserena.cl') && (window.location.pathname.includes('/rdmls') || window.location.pathname === '/rdmls' || window.location.pathname === '/rdmls/');
+const isRadioVecinosDns = host.includes('radiovecinos.cl') || host.includes('radiovecinos');
+
+if (typeof window !== 'undefined' && isRadioVecinosDns) {
+  document.title = "ARCHI Nueva Energía";
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.height = 64;
+    canvas.width = 64;
+    const ctx = canvas.getContext('2d');
+    ctx.font = '56px serif';
+    ctx.fillText('📻', 0, 50);
+    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/png';
+    link.rel = 'icon';
+    link.href = canvas.toDataURL();
+    document.getElementsByTagName('head')[0].appendChild(link);
+  } catch(e) {}
+}
+
+const themeMode = (isRdmlsDns || isImlsDns || isRDMLS || isRadioVecinosDns) ? 'dark' : 'light';
 const isDirectRdmls = host.includes('rdmls.cl') || host.includes('rdmk.cl');
 const isPuertaDns = host.includes('puertasmart.cl');
 const isEntrevecinasDns = host.includes('entrevecinas.cl');
@@ -255,7 +277,6 @@ const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmar
 const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
 const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('pren-vls');
 const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prendes.cl rebranding
-const isRadioVecinosDns = host.includes('radiovecinos.cl');
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -267,9 +288,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           {/* VLS_PERSISTENT_CORE: Components that must NEVER unmount during SPA navigation */}
           {(!window.location.pathname.toLowerCase().match(/\/fred(\/|$)/)) && (
             <Suspense fallback={null}>
-              {/* En radiovecinos.cl el reproductor ARCHI propio está dentro de ArchiCampaign */}
-              {/* En cualquier otro dominio → reproductor VLS/RDMLS estándar */}
-              {!isRadioVecinosDns && <RadioPlayer isVisible={true} />}
+              {/* En radiovecinos.cl el reproductor ARCHI propio aparece globalmente */}
+              {isRadioVecinosDns ? <ArchiRadioPlayer isVisible={true} /> : <RadioPlayer isVisible={true} />}
             </Suspense>
           )}
           
@@ -383,6 +403,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               ) : isRadioVecinosDns ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<ArchiCampaign />} />
+                  <Route path="archi" element={<ArchiCampaign />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isPrendesLegacy ? (
@@ -528,7 +549,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="/news-studio" element={<HubDashboard />} />
                   <Route path="/archi-admin" element={<ArchiNewsAdmin />} />
                   <Route path="/desk" element={<Backoffice />} />
-                  <Route path="/admin" element={<HubDashboard />} />
+                  {isRadioVecinosDns ? (
+                    <Route path="/admin" element={<ArchiNewsAdmin />} />
+                  ) : (
+                    <Route path="/admin" element={<HubDashboard />} />
+                  )}
                   <Route path="/prendes-admin" element={<HubDashboard />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </>

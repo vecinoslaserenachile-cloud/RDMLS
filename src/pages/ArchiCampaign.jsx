@@ -37,6 +37,20 @@ const ArchiCampaign = () => {
   const [waPulse, setWaPulse] = useState(true);
 
   useEffect(() => {
+    // Forzar título y favicon de la campaña ARCHI siempre que se esté en esta página
+    document.title = "ARCHI Nueva Energía";
+    try {
+      let link = document.querySelector("link[rel*='icon']");
+      if (!link) {
+        link = document.createElement('link');
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
+      link.type = 'image/png';
+      link.rel = 'icon';
+      // Usar la foto de Solange como favicon oficial (o podemos mantener el emoji)
+      link.href = '/archi-media/audio/Solange.png'; 
+    } catch(e) {}
+
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
 
@@ -220,14 +234,6 @@ const ArchiCampaign = () => {
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
           {isArchiRoute && (
             <>
-              <a href="/archi-media/estatutos.pdf" target="_blank" rel="noreferrer"
-                style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-                <FileText size={14} /> ESTATUTOS
-              </a>
-              <a href="/archi-media/manifiesto_completo.pdf" target="_blank" rel="noreferrer"
-                style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
-                <Download size={14} /> MANIFIESTO
-              </a>
               <a href="https://wa.me/56956020690" target="_blank" rel="noreferrer"
                 style={{ background: '#25D366', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
                 <Phone size={14} /> +56956020690
@@ -247,9 +253,9 @@ const ArchiCampaign = () => {
       {/* ── HERO ── */}
       <section style={{ position: 'relative', minHeight: isMobile ? 'auto' : '80vh', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 70% 50%, rgba(251, 191, 36, 0.15) 0%, transparent 60%)', zIndex: 0 }} />
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '3rem 1.5rem' : '5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '2rem 1rem' : '5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '2rem' : '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 style={{ color: 'white', fontSize: isMobile ? '2.2rem' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem' }}>
+            <h2 style={{ color: 'white', fontSize: isMobile ? 'clamp(1.8rem, 8vw, 2.2rem)' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem' }}>
               ARCHI de todo Chile: <br />
               <span style={{ background: 'linear-gradient(to right, #fbbf24, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 Inyectemos Nueva Energía.
@@ -300,8 +306,27 @@ const ArchiCampaign = () => {
               </div>
             </div>
           </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <ArchiCampaignRadio />
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
+            {/* ── AVATAR 3D HUMANIZADO ── */}
+            <motion.img 
+              src="/archi-media/3d/host_avatar.png" 
+              alt="Locutora ARCHI 3D" 
+              initial={{ opacity: 0, scale: 0.8, x: 50 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
+              style={{ 
+                position: 'absolute', 
+                bottom: isMobile ? '-10px' : '-40px', 
+                right: isMobile ? '-20px' : '-80px', 
+                height: isMobile ? '250px' : '450px', 
+                zIndex: 0, 
+                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.6))',
+                pointerEvents: 'none'
+              }}
+            />
+            <div style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <ArchiCampaignRadio />
+            </div>
           </motion.div>
         </div>
       </section>

@@ -201,6 +201,31 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   const isMini = playerMode === 'mini';
   const isEmbedded = scale !== 1;
 
+  const audioContextRef = useRef(null);
+  const analyserRef = useRef(null);
+  const sourceRef = useRef(null);
+  const dataArrayRef = useRef(null);
+
+  const initAudioContext = () => {
+    try {
+      if (!audioContextRef.current && audioRef.current) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        audioContextRef.current = new AudioCtx();
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 64; // Generates 32 bins
+        sourceRef.current = audioContextRef.current.createMediaElementSource(audioRef.current);
+        sourceRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(audioContextRef.current.destination);
+        dataArrayRef.current = new Uint8Array(analyserRef.current.frequencyBinCount);
+      }
+      if (audioContextRef.current && audioContextRef.current.state === 'suspended') {
+        audioContextRef.current.resume();
+      }
+    } catch (e) {
+      console.warn("AudioContext init failed:", e);
+    }
+  };
+
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
@@ -211,7 +236,29 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Animación de espectro simulado
+  // Control de reproducción automática (siguiente pista)
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const handleEnded = () => {
+      loadTrack((currentIndex + 1) % ARCHI_PLAYLIST.length, true);
+    };
+    audio.addEventListener('ended', handleEnded);
+    return () => audio.removeEventListener('ended', handleEnded);
+  }, [currentIndex]);
+
+  // Autoplay al cargar la página
+  useEffect(() => {
+    // Intentar autoplay al iniciar. Los navegadores pueden bloquearlo si no hay interacción previa.
+    const attemptAutoplay = setTimeout(() => {
+      if (!isPlaying) {
+        loadTrack(0, true);
+      }
+    }, 1000);
+    return () => clearTimeout(attemptAutoplay);
+  }, []);
+
+  // Animación de espectro real / simulado
   useEffect(() => {
     if (!isPlaying) {
       cancelAnimationFrame(animationRef.current);
@@ -219,15 +266,27 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
       return;
     }
     const animate = () => {
-      setSpectrumLevels(prev => prev.map((_, i) => {
-        const base = [70, 85, 60, 75, 50, 65, 80, 55, 45, 70, 60, 40][i] * volume;
-        return Math.max(5, base + (Math.random() - 0.5) * 40);
-      }));
+      if (analyserRef.current && dataArrayRef.current && !isMuted) {
+        analyserRef.current.getByteFrequencyData(dataArrayRef.current);
+        const newLevels = [];
+        // Map 12 bars from the 32 frequency bins (focusing on the lower/mid frequencies for better visuals)
+        for (let i = 0; i < 12; i++) {
+          const value = dataArrayRef.current[i + 1] || 0; // Skip bin 0 as it's often too constant
+          const percent = Math.max(5, (value / 255) * 100 * volume);
+          newLevels.push(percent);
+        }
+        setSpectrumLevels(newLevels);
+      } else {
+        setSpectrumLevels(prev => prev.map((_, i) => {
+          const base = [70, 85, 60, 75, 50, 65, 80, 55, 45, 70, 60, 40][i] * volume;
+          return Math.max(5, base + (Math.random() - 0.5) * 40);
+        }));
+      }
       animationRef.current = requestAnimationFrame(animate);
     };
     animationRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationRef.current);
-  }, [isPlaying, volume]);
+  }, [isPlaying, volume, isMuted]);
 
   const loadTrack = (index, autoplay = false) => {
     if (!audioRef.current) return;
@@ -241,6 +300,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
     audioRef.current.src = track.file;
     audioRef.current.load();
     if (autoplay) {
+      initAudioContext();
       audioRef.current.play()
         .then(() => setIsPlaying(true))
         .catch(() => {
@@ -256,6 +316,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
 
   const togglePlay = () => {
     if (!audioRef.current) return;
+    initAudioContext();
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
@@ -373,10 +434,10 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
       >
         <audio
           ref={audioRef}
+          crossOrigin="anonymous"
           onTimeUpdate={handleTimeUpdate}
-          onEnded={handleEnded}
           onError={handleError}
-          onPlay={() => setIsPlaying(true)}
+          onPlay={() => { initAudioContext(); setIsPlaying(true); }}
           onPause={() => setIsPlaying(false)}
         />
 
@@ -459,10 +520,10 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
     <PlayerContainer {...playerProps}>
       <audio
         ref={audioRef}
+        crossOrigin="anonymous"
         onTimeUpdate={handleTimeUpdate}
-        onEnded={handleEnded}
         onError={handleError}
-        onPlay={() => setIsPlaying(true)}
+        onPlay={() => { initAudioContext(); setIsPlaying(true); }}
         onPause={() => setIsPlaying(false)}
       />
 
@@ -630,42 +691,51 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
               exit={{ height: 0, opacity: 0 }}
               style={{ overflow: 'hidden', borderTop: `1px solid rgba(255,255,255,0.06)` }}
             >
-              {ARCHI_PLAYLIST.map((track, idx) => (
-                <button
-                  key={track.id}
-                  onClick={() => loadTrack(idx, true)}
-                  style={{
-                    width: '100%', background: idx === currentIndex
-                      ? 'rgba(251,191,36,0.08)' : 'none',
-                    border: 'none',
-                    borderBottom: '1px solid rgba(255,255,255,0.04)',
-                    padding: '10px 14px', cursor: 'pointer',
-                    display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left'
-                  }}
-                >
-                  <div style={{
-                    width: '24px', height: '24px', borderRadius: '6px', flexShrink: 0,
-                    background: idx === currentIndex ? `linear-gradient(135deg, ${gold}, #b45309)` : 'rgba(255,255,255,0.05)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {idx === currentIndex && isPlaying
-                      ? <Zap size={12} color="#0f172a" />
-                      : <Music size={12} color={idx === currentIndex ? '#0f172a' : '#64748b'} />}
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
+              <div 
+                style={{ 
+                  maxHeight: '320px', 
+                  overflowY: 'auto', 
+                  overscrollBehavior: 'contain' 
+                }}
+                onPointerDownCapture={e => e.stopPropagation()}
+              >
+                {ARCHI_PLAYLIST.map((track, idx) => (
+                  <button
+                    key={track.id}
+                    onClick={() => loadTrack(idx, true)}
+                    style={{
+                      width: '100%', background: idx === currentIndex
+                        ? 'rgba(251,191,36,0.08)' : 'none',
+                      border: 'none',
+                      borderBottom: '1px solid rgba(255,255,255,0.04)',
+                      padding: '10px 14px', cursor: 'pointer',
+                      display: 'flex', alignItems: 'center', gap: '10px', textAlign: 'left'
+                    }}
+                  >
                     <div style={{
-                      color: idx === currentIndex ? gold : 'white',
-                      fontSize: '0.8rem', fontWeight: 700,
-                      overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
-                    }}>{track.title}</div>
-                    <div style={{ color: '#64748b', fontSize: '0.65rem' }}>{track.artist}</div>
-                  </div>
-                  <span style={{
-                    background: 'rgba(255,255,255,0.05)', color: '#64748b',
-                    fontSize: '0.6rem', padding: '2px 6px', borderRadius: '8px', flexShrink: 0
-                  }}>{track.category}</span>
-                </button>
-              ))}
+                      width: '24px', height: '24px', borderRadius: '6px', flexShrink: 0,
+                      background: idx === currentIndex ? `linear-gradient(135deg, ${gold}, #b45309)` : 'rgba(255,255,255,0.05)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}>
+                      {idx === currentIndex && isPlaying
+                        ? <Zap size={12} color="#0f172a" />
+                        : <Music size={12} color={idx === currentIndex ? '#0f172a' : '#64748b'} />}
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{
+                        color: idx === currentIndex ? gold : 'white',
+                        fontSize: '0.8rem', fontWeight: 700,
+                        overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'
+                      }}>{track.title}</div>
+                      <div style={{ color: '#64748b', fontSize: '0.65rem' }}>{track.artist}</div>
+                    </div>
+                    <span style={{
+                      background: 'rgba(255,255,255,0.05)', color: '#64748b',
+                      fontSize: '0.6rem', padding: '2px 6px', borderRadius: '8px', flexShrink: 0
+                    }}>{track.category}</span>
+                  </button>
+                ))}
+              </div>
 
               {/* Aviso repositorio */}
               <div style={{ padding: '10px 14px', background: 'rgba(251,191,36,0.05)', borderTop: '1px solid rgba(251,191,36,0.1)' }}>

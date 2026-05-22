@@ -49,23 +49,31 @@ export async function onRequestPost({ request, env }) {
       }), { status: 409, headers: CORS });
     }
 
-    // Insertar en D1
-    const stmt = await env.DB_ARCHI.prepare(
-      `INSERT INTO archi_supporters (name, email, phone, radio_station, ideas, created_at)
-       VALUES (?, ?, ?, ?, ?, datetime('now', 'localtime'))`
-    ).bind(
-      name.trim(),
-      email.toLowerCase().trim(),
-      phone ? phone.trim() : null,
-      radio_station ? radio_station.trim() : null,
-      ideas ? ideas.trim() : null
-    ).run();
+    let registrationId = '?';
+    let dbSuccess = false;
 
-    const registrationId = stmt.meta?.last_row_id || '?';
+    // Intento guardar en D1 (puede fallar si no está bindeado en Cloudflare Dashboard)
+    try {
+      if (env.DB_ARCHI) {
+        const stmt = await env.DB_ARCHI.prepare(
+          `INSERT INTO archi_supporters (name, email, phone, radio_station, ideas, created_at)
+           VALUES (?, ?, ?, ?, ?, datetime('now', 'localtime'))`
+        ).bind(
+          name.trim(),
+          email.toLowerCase().trim(),
+          phone ? phone.trim() : null,
+          radio_station ? radio_station.trim() : null,
+          ideas ? ideas.trim() : null
+        ).run();
+        
+        registrationId = stmt.meta?.last_row_id || '?';
+        dbSuccess = true;
+      }
+    } catch (e) {
+      console.warn("D1 Error (not bound?):", e);
+    }
 
     // ── Construir mensaje WhatsApp preformateado ──────────────
-    // El nuevo simpatizante presiona el botón y se abre WhatsApp
-    // con un mensaje listo para enviar al administrador.
     const waMessage = [
       `📻 *NUEVA ADHESIÓN - Lista Nueva Energía*`,
       ``,
@@ -83,9 +91,11 @@ export async function onRequestPost({ request, env }) {
 
     return new Response(JSON.stringify({
       success: true,
-      message: '¡Bienvenido/a a la Lista Nueva Energía! Tu registro fue guardado correctamente.',
+      message: dbSuccess 
+        ? '¡Bienvenido/a a la Lista Nueva Energía! Tu registro fue guardado correctamente.'
+        : 'Registro iniciado. Por favor envía el mensaje de WhatsApp para confirmar tu adhesión.',
       id: registrationId,
-      waLink,                  // ← el frontend abre esto automáticamente
+      waLink,
       adminPhone: ADMIN_PHONE,
     }), { status: 201, headers: CORS });
 
