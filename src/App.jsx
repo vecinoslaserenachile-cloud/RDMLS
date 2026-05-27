@@ -114,7 +114,7 @@ const SmartAdministration = lazy(() => import('./components/SmartAdministration.
 const EmbajadasConsulados = lazy(() => import('./components/EmbajadasConsulados.jsx'));
 const SismicCenter = lazy(() => import('./components/SismicCenter.jsx'));
 const SmartTheater = lazy(() => import('./components/SmartTheater.jsx'));
-// const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
+const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
 // const VLSNewsIglesiasPiedra = React.lazy(() => import('./components/VLSNewsIglesiasPiedra.jsx'));
 const SmartHub3D = lazy(() => import('./components/SmartHub3D'));
 const SocialVision = lazy(() => import('./components/SocialVision'));
@@ -2649,11 +2649,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
       
       {showVLSNewsUcen && (
         <Suspense fallback={<LoadingScreen />}>
-          {/* VLSNewsUcen removido por ausencia de componente */}
-          {/* <VLSNewsUcen onClose={() => {
+          <VLSNewsUcen onClose={() => {
             setShowVLSNewsUcen(false);
             if (location.pathname.match(/^\/ucen/i)) navigate('/');
-          }} /> */}
+          }} />
         </Suspense>
       )}
 
