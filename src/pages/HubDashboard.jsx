@@ -2034,7 +2034,7 @@ export default function HubDashboard() {
                     {/* RADAR MUNDIAL: NOTICIAS INTERNACIONALES (SIEMPRE VISIBLE)  */}
                     {/* ══════════════════════════════════════════════════════════ */}
                     <div style={{ width: '100%', maxWidth: '1200px', margin: '1rem auto 0', padding: '0 2rem' }}>
-                        <WorldNewsTablets />
+                        {/* <WorldNewsTablets /> */}
                         {/* <LocalNewsGrid /> */}
                     </div>
                     
@@ -2115,18 +2115,18 @@ export default function HubDashboard() {
                                 
                                 <div style={{ display: 'flex', gap: '2.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
                                     <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#ef4444' }}>53.3%</div>
+                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#ef4444' }}>54.4%</div>
                                         <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Desaprobación Presidencial</div>
                                     </div>
                                     <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
                                     <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#38bdf8' }}>27.0%</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación Gabinete</div>
+                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#38bdf8' }}>31.2%</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación Presidencial</div>
                                     </div>
                                     <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
                                     <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '2.5rem', fontWeight: 950, color: '#38bdf8' }}>Iván Poduje</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Líder Gestión (46.4%)</div>
+                                        <div style={{ fontSize: '2.5rem', fontWeight: 950, color: '#38bdf8' }}>J. A. Kast</div>
+                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación (31.2%)</div>
                                     </div>
                                 </div>
 

@@ -87,7 +87,7 @@ const TiendaPoleras3D = lazy(() => import('./components/TiendaPoleras3D'));
 const CoquiSmartKanban = lazy(() => import('./components/CoquiSmartKanban'));
 const Aprende = lazy(() => import('./pages/Aprende'));
 const VLSInduccion = lazy(() => import('./pages/VLSInduccion'));
-// const VLSNewsStella = lazy(() => import('./components/VLSNewsStella'));
+const VLSNewsStella = lazy(() => import('./components/VLSNewsStella'));
 // const ContactForm = lazy(() => import('./components/ContactForm'));
 const RDMLSMaintenance = lazy(() => import('./components/RDMLSMaintenance'));
 const Mayo21Studio = lazy(() => import('./components/Mayo21Studio'));
@@ -161,7 +161,7 @@ const VecinosAnalyticsApp = lazy(() => import('./components/VecinosAnalyticsApp/
 const VLSNewsBencinazo = lazy(() => import('./components/VLSNewsBencinazo'));
 const VLSNewsSemanaSanta = lazy(() => import('./components/VLSNewsSemanaSanta'));
 const VLSMotorsSpot = lazy(() => import('./components/VLSMotorsSpot'));
-// const PulsoCiudadano = lazy(() => import('./pages/PulsoCiudadano.jsx'));
+const PulsoCiudadano = lazy(() => import('./pages/PulsoCiudadano.jsx'));
 const SafeRouteAI = lazy(() => import('./components/SafeRouteAI'));
 const PortMonitor = lazy(() => import('./components/NavieraMonitor'));
 const OrientacionLegal = lazy(() => import('./components/OrientacionLegal'));
@@ -490,11 +490,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const host = (window.location.hostname || window.location.host || '').toLowerCase();
   const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || location.pathname.includes('/radio') || (host.includes('localhost') && (location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   const isPuertaSmart = host.includes('puertasmart.cl') || location.pathname.toLowerCase().includes('/puerta');
-  const isRadioVecinos = host.includes('radiovecinos.cl') || location.pathname.toLowerCase().includes('/archi');
+  const isRadioVecinos = host.includes('radiovecinos.cl') || host.includes('radiovecinos') || host.includes('archinuevaenergia') || location.pathname.toLowerCase().includes('/archi');
   const isAcademy = host.includes('vecinosmart.cl') || host.includes('prendes.cl'); // Entorno Comercial de Venta de Know-how
   const isVLS = !isRDMLS && !isAcademy && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
   const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl') || host.includes('prendes.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('radiovecinos.cl') || host.includes('pages.dev');
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('radiovecinos.cl') || host.includes('radiovecinos') || host.includes('archinuevaenergia') || host.includes('pages.dev');
   const isChile = host.includes('vecinoschile.cl');
   const isNational = isChile;
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
@@ -944,7 +944,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       if (location.pathname.toLowerCase().match(/\/salud(\/|$)/i)) setShowSalud(true);
       if (location.pathname.toLowerCase().match(/\/choapa(\/|$)/i)) setShowNewsChoapa(true);
       if (location.pathname.toLowerCase().match(/\/redcine(\/|$)/i)) setShowNewsRedCine(true);
-      // if (location.pathname.toLowerCase().match(/\/pulsociudadano(\/|$)/i)) setShowPulsoCiudadano(true);
+      if (location.pathname.toLowerCase().match(/\/pulsociudadano(\/|$)/i)) setShowPulsoCiudadano(true);
       
       const handleAcciona = () => setShowAcciona(true);
       const handleChoapa = () => setShowNewsChoapa(true);
@@ -962,7 +962,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.addEventListener('open-smart-administration', () => window.open('https://www.rdmls.cl/imls/induccion', '_blank'));
       window.addEventListener('open-smart-events', () => window.open('https://vecinoslaserenachile-cloud.github.io/serenito-app/', '_blank'));
       window.addEventListener('open-smart-listening', handleOpenSentinelApex);
-      // window.addEventListener('open-pulso-ciudadano', () => setShowPulsoCiudadano(true));
+      window.addEventListener('open-pulso-ciudadano', () => setShowPulsoCiudadano(true));
       // Reset Modals on Route Change (Soberanía de Navegación v5.8)
       setShowSmartEvents(false);
       setShowSmartBusiness(false);
@@ -2437,14 +2437,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </ErrorBoundary>
         {!isZeroDistraction && (
           <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
-            <p>© 2025 {isRDMLS ? 'RDMLS.CL · RADIO DIGITAL MUNICIPAL LA SERENA' : 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA'}</p>
-            <p>Contacto: <button onClick={() => setShowContactForm(true)} style={{ color: '#FFD700', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 'bold' }}>FORMULARIO DE CONTACTO</button></p>
+            <p>© 2026 {isRadioVecinos ? 'ARCHI NUEVA ENERGÍA' : isRDMLS ? 'RDMLS.CL · RADIO DIGITAL MUNICIPAL LA SERENA' : 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA'}</p>
+            {isRadioVecinos ? (
+              <p>Contacto: <a href="/#registro-cta" onClick={() => { if(window.location.pathname !== '/') { window.location.href = '/#registro-cta'; } }} style={{ color: '#FFD700', textDecoration: 'underline', fontWeight: 'bold' }}>SÚMATE A LA LISTA</a></p>
+            ) : (
+              <p>Contacto: <button onClick={() => setShowContactForm(true)} style={{ color: '#FFD700', background: 'none', border: 'none', cursor: 'pointer', padding: 0, textDecoration: 'underline', fontWeight: 'bold' }}>FORMULARIO DE CONTACTO</button></p>
+            )}
           </footer>
         )}
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
-      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && <SmartToolbox />}
+      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isRadioVecinos && <SmartToolbox />}
 
       {/* Chat Botón y Panel */}
       {showChat && (
@@ -3076,14 +3080,14 @@ function AppContent({ setShowCoquiSmartCRM }) {
           /> */}
         </Suspense>
       )}
-      {/* showPulsoCiudadano && (
+      {showPulsoCiudadano && (
         <Suspense fallback={<LoadingScreen />}>
           <PulsoCiudadano onClose={() => {
             setShowPulsoCiudadano(false);
             if (location.pathname.match(/^\/pulsociudadano/i)) navigate('/');
           }} />
         </Suspense>
-      ) */}
+      )}
       {showSmartOS && (
         <Suspense fallback={<LoadingScreen />}>
           {/* SmartComunaOS removido por ausencia de componente */}
@@ -3092,13 +3096,12 @@ function AppContent({ setShowCoquiSmartCRM }) {
       )}
       {showStella && (
         <Suspense fallback={<LoadingScreen />}>
-          {/* VLSNewsStella removido por ausencia de componente */}
-          {/* <VLSNewsStella onClose={() => { 
+          <VLSNewsStella onClose={() => { 
             window.dispatchEvent(new CustomEvent('stop-all-audio'));
             setShowStella(false); 
             navigate('/'); 
             window.dispatchEvent(new CustomEvent('vls-start-radio'));
-          }} /> */}
+          }} />
         </Suspense>
       )}
       {showDiaDelTrabajador && (
