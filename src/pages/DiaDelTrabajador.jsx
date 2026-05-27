@@ -23,7 +23,7 @@ const Nav = ({ activeTab, setActiveTab }) => (
       </div>
       
       <div className="flex items-center gap-2 md:gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
-        {['HISTORIA', 'CHILE', 'MUNDO', 'FAMILIA'].map((tab) => (
+        {['LA SERENA', 'HISTORIA', 'CHILE', 'MUNDO', 'FAMILIA'].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
@@ -112,6 +112,70 @@ const SectionHero = () => (
       <div className="w-px h-16 bg-gradient-to-b from-red-500 to-transparent"></div>
     </motion.div>
   </div>
+);
+
+const SectionLaSerena = () => (
+  <motion.section 
+    initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+    className="max-w-6xl mx-auto px-6 py-20"
+  >
+    <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-900/30 border border-red-800/50 rounded-full mb-6">
+          <Star className="w-4 h-4 text-red-500" />
+          <span className="text-red-400 text-xs font-bold tracking-widest uppercase">Homenaje Local</span>
+        </div>
+        
+        <h3 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+          El Alma de Nuestra Ciudad
+        </h3>
+        
+        <div className="space-y-6 text-slate-300 text-lg leading-relaxed">
+          <p>
+            <span className="text-2xl">☀️</span> El alma de nuestra ciudad está en sus trabajadoras y trabajadores, vecinas y vecinos. <span className="text-2xl">👷🏽‍♂️</span> Hoy no solo conmemoramos una fecha, honramos una historia.
+          </p>
+          <p>
+            Desde los cimientos de piedra caliza, ladrillo y cemento, hasta los jardines de la Población Romeral o la Villa El Indio, La Serena creció gracias a manos que transformaron el concreto en hogar.
+          </p>
+          <p className="p-4 bg-slate-900/60 border-l-4 border-red-500 rounded-r-2xl italic text-slate-400 text-base">
+            📝 El legado de la Bethlehem Iron Company, la CAP y la Minera El Indio, nos recuerda una época donde el trabajador y su familia eran el centro de la comunidad. En un presente de tercerización e invisibilidad, este saludo es un llamado a no olvidar ese rostro humano que hoy sigue luchando, ahora por nuevas conquistas como las 40 horas y muchas más que vendrán.
+          </p>
+          <p className="font-bold text-xl text-white mt-8">
+            🫂 ¡Feliz Día del Trabajador a quienes construyeron nuestro pasado y sostienen nuestro presente!
+          </p>
+        </div>
+        
+        <div className="mt-12 pt-6 border-t border-slate-800/50">
+          <p className="text-xs text-slate-500 leading-relaxed">
+            ©️ Imágenes originales de Internet, archivo y desde Grupo Historia de La Serena en Facebook. Publicaciones de Miguel Rivera Flores, Iván Samuel Acevedo, Juan Pereira, Elizabeth Pinina Beck, Juan Rojas Morales, Marko Boniche Castillo, Benito Orlando, Felipe Briceño, Miguel Rivera, Julio Lenz Levy y Grupo Facebook Villa El Indio. Edición de vecinoslaserena.cl
+          </p>
+        </div>
+      </div>
+      
+      {/* Contenedor del Video */}
+      <div className="bg-slate-900/50 backdrop-blur-xl border border-slate-700/50 p-4 rounded-[2rem] shadow-2xl relative group overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-red-600/20 rounded-full blur-3xl -mr-10 -mt-10"></div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-600/20 rounded-full blur-3xl -ml-10 -mb-10"></div>
+        
+        <div className="aspect-video bg-black rounded-2xl overflow-hidden relative border border-slate-800">
+          <video 
+            src="/1demayo/clip_trabajador.mp4" 
+            controls 
+            className="w-full h-full object-cover"
+            poster="/img/dia_del_trabajador_vls.png"
+          >
+            Tu navegador no soporta el formato de video.
+          </video>
+          
+          {/* Overlay si el video falla o está cargando */}
+          <div className="absolute inset-0 bg-slate-950/80 flex flex-col items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+            <Play className="w-16 h-16 text-white/50 mb-4" />
+            <p className="text-white/50 text-sm font-medium tracking-widest uppercase">Clip Conmemorativo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </motion.section>
 );
 
 // --- SECCIONES PRINCIPALES ---
@@ -401,7 +465,7 @@ const SectionFamilia = () => (
 // --- COMPONENTE PRINCIPAL ---
 
 export default function DiaDelTrabajador() {
-  const [activeTab, setActiveTab] = useState('HISTORIA');
+  const [activeTab, setActiveTab] = useState('LA SERENA');
 
   useEffect(() => {
     // Scroll al inicio al cargar
@@ -421,6 +485,7 @@ export default function DiaDelTrabajador() {
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-slate-950/0 to-slate-950 -translate-y-full pointer-events-none"></div>
         
         <AnimatePresence mode="wait">
+          {activeTab === 'LA SERENA' && <SectionLaSerena key="laserena" />}
           {activeTab === 'HISTORIA' && <HistoryChicago key="hist" />}
           {activeTab === 'CHILE' && <HistoryChile key="chile" />}
           {activeTab === 'MUNDO' && <HistoryGlobal key="mundo" />}
