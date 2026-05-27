@@ -9,6 +9,8 @@ export default function GardellaPortfolio({ onClose }) {
     }, []);
 
     // Gallery Pages 1 to 53
+    const pages = Array.from({ length: 53 }, (_, i) => i + 1);
+    
     // Audio Player State
     const [currentTrack, setCurrentTrack] = useState(0);
     const [isPlaying, setIsPlaying] = useState(false);

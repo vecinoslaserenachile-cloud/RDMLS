@@ -2392,46 +2392,7 @@ export default function HubDashboard() {
                     </div>
                 )}
 
-                {/* NUEVA TARJETA: ARCHIVO DE ALCALDES 3D - VISIBLE PARA TODOS (Soberanía Cultural VLS) */}
-                <div
-                    onClick={handleAlcaldes}
-                    style={{
-                        background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)',
-                        border: '1px solid rgba(56, 189, 248, 0.4)',
-                        borderRadius: '24px',
-                        padding: '1.5rem',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1.2rem',
-                        position: 'relative',
-                        overflow: 'hidden',
-                        transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                        backdropFilter: 'blur(10px)'
-                    }}
-                    onMouseEnter={e => { 
-                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)'; 
-                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 1)';
-                        e.currentTarget.style.boxShadow = '0 25px 60px rgba(56, 189, 248, 0.25)';
-                    }}
-                    onMouseLeave={e => { 
-                        e.currentTarget.style.transform = 'translateY(0) scale(1)'; 
-                        e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.4)';
-                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)';
-                    }}
-                >
-                    <div style={{ background: 'linear-gradient(135deg, #38bdf8, #1e40af)', borderRadius: '50%', width: '55px', height: '55px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 25px rgba(56, 189, 248, 0.4)', flexShrink: 0, border: '2px solid rgba(255,255,255,0.2)' }}>
-                        <Landmark size={28} color="white" />
-                    </div>
-                    <div style={{ flex: 1, zIndex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span style={{ fontSize: '1.1rem', fontWeight: '950', color: '#7dd3fc', textShadow: '0 0 15px rgba(58, 189, 248, 0.6)' }}>ARCHIVO HISTÓRICO</span>
-                            <span style={{ background: '#0ea5e9', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>ALCALDES</span>
-                        </div>
-                        <p style={{ color: 'rgba(186, 230, 253, 0.9)', fontSize: '0.8rem', margin: '4px 0 0 0', fontWeight: '500' }}>Línea de Tiempo 1944-2028</p>
-                    </div>
-                </div>
+
 
                 {/* Tarjeta 5: SMART LISTENING (CENTINEL FARO IA) */}
                 <div
@@ -4646,6 +4607,9 @@ export default function HubDashboard() {
                         </div>
                     </div>
                 </div>
+
+                {/* FOOTER SOBERANO - Movido dentro de main para correcta visualización en móvil */}
+                <HechoEnChile dark={true} />
                 </main>
             {showVeciCat && <VeciCat onClose={() => setShowVeciCat(false)} />}
             {showVLSMotors && <VLSMotorsSpot onClose={() => setShowVLSMotors(false)} />}
@@ -4807,8 +4771,6 @@ export default function HubDashboard() {
                 }}
               />
             )}
-            {/* FOOTER SOBERANO */}
-            <HechoEnChile dark={true} />
         </div>
         </React.Fragment>
     );

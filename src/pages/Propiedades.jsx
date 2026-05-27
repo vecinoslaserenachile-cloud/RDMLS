@@ -4,9 +4,11 @@ import {
     Home, Search, MapPin, DollarSign, Filter, 
     ArrowLeft, Star, Camera, CheckCircle2, 
     TrendingUp, ShieldCheck, Key, Ruler,
-    ChevronRight, Info, Heart, Plus, Zap, AlertTriangle, MessageSquare, Send, Tag, Building2, Upload
+    ChevronRight, Info, Heart, Plus, Zap, AlertTriangle, MessageSquare, Send, Tag, Building2, Upload,
+    Trash2, X, Image as ImageIcon, Video, Loader2
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '../utils/supabase';
 
 const INITIAL_PROPERTIES = [
     {
@@ -39,41 +41,169 @@ export default function Propiedades() {
         title: '', price: '', location: '', beds: '', baths: '', size: '', type: 'Venta', desc: ''
     });
 
-    const handlePublish = (e) => {
+    // Media State
+    const [mediaFiles, setMediaFiles] = useState([]);
+    const [featuredId, setFeaturedId] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(0);
+
+    const handleFileDrop = (e) => {
+        e.preventDefault();
+        const files = Array.from(e.dataTransfer ? e.dataTransfer.files : e.target.files);
+        processFiles(files);
+    };
+
+    const processFiles = (files) => {
+        const imageCount = mediaFiles.filter(m => m.type.startsWith('image/')).length;
+        const videoCount = mediaFiles.filter(m => m.type.startsWith('video/')).length;
+        
+        let newMedia = [];
+        let newImageCount = imageCount;
+        let newVideoCount = videoCount;
+
+        for (const file of files) {
+            if (file.size > 5 * 1024 * 1024 && file.type.startsWith('image/')) {
+                alert(`La imagen ${file.name} supera los 5MB.`);
+                continue;
+            }
+            if (file.size > 30 * 1024 * 1024 && file.type.startsWith('video/')) {
+                alert(`El video ${file.name} supera los 30MB.`);
+                continue;
+            }
+
+            if (file.type.startsWith('image/')) {
+                if (newImageCount >= 10) {
+                    alert("Máximo 10 imágenes permitidas.");
+                    continue;
+                }
+                newImageCount++;
+            } else if (file.type.startsWith('video/')) {
+                if (newVideoCount >= 1) {
+                    alert("Solo se permite 1 video promocional.");
+                    continue;
+                }
+                newVideoCount++;
+            } else {
+                continue; // Not an image or video
+            }
+
+            const id = Math.random().toString(36).substr(2, 9);
+            const preview = URL.createObjectURL(file);
+            newMedia.push({ file, preview, type: file.type, id });
+            
+            if (!featuredId && file.type.startsWith('image/')) {
+                setFeaturedId(id);
+            }
+        }
+
+        if (newMedia.length > 0) {
+            setMediaFiles(prev => [...prev, ...newMedia]);
+            if (!featuredId) {
+                const firstImg = newMedia.find(m => m.type.startsWith('image/'));
+                if (firstImg) setFeaturedId(firstImg.id);
+            }
+        }
+    };
+
+    const removeMedia = (id) => {
+        setMediaFiles(prev => prev.filter(m => m.id !== id));
+        if (featuredId === id) {
+            const remainingImages = mediaFiles.filter(m => m.id !== id && m.type.startsWith('image/'));
+            setFeaturedId(remainingImages.length > 0 ? remainingImages[0].id : null);
+        }
+    };
+
+    const handlePublish = async (e) => {
         e.preventDefault();
         
-        // Logic check: First publication is free (check a local flag), otherwise 1 token per publication/hour
         const hasPublishedBefore = localStorage.getItem('vls_has_published_prop') === 'true';
-        
         if (hasPublishedBefore && tokens < 1) {
             return alert("Insuficiente saldo de Fichas VLS. Recarga en el Hub para continuar publicando.");
         }
 
-        const newProp = {
-            id: Date.now(),
-            ...formData,
-            img: 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=800&q=80', // Mock image
-            featured: false,
-            tag: formData.type === 'Venta' ? 'PARTICULAR' : 'ARRIENDO'
-        };
-
-        if (hasPublishedBefore) {
-            const newBalance = tokens - 1;
-            setTokens(newBalance);
-            localStorage.setItem('vls_tokens', newBalance.toString());
-            window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newBalance }));
-        } else {
-            localStorage.setItem('vls_has_published_prop', 'true');
+        if (mediaFiles.length === 0) {
+            return alert("Debes subir al menos una foto de la propiedad.");
         }
 
-        setProperties([newProp, ...properties]);
-        setShowPublishModal(false);
-        setFormData({ title: '', price: '', location: '', beds: '', baths: '', size: '', type: 'Venta', desc: '' });
-        
-        // Mock Match system
-        setTimeout(() => {
-            alert(`¡SISTEMA MATCH VLS!: Hemos detectado 3 vecinos interesados en tu publicación de "${formData.title}". Revisa tu mensajería interna.`);
-        }, 3000);
+        setIsUploading(true);
+        setUploadProgress(10);
+
+        try {
+            const uploadedUrls = [];
+            let coverImgUrl = '';
+            
+            const totalFiles = mediaFiles.length;
+            let uploadedCount = 0;
+
+            for (const media of mediaFiles) {
+                const fileExt = media.file.name.split('.').pop();
+                const fileName = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
+                const filePath = `propiedades/${fileName}`;
+
+                const { error: uploadError } = await supabase.storage
+                    .from('propiedades')
+                    .upload(filePath, media.file);
+
+                if (uploadError) {
+                    console.error("Error subiendo archivo:", uploadError);
+                } else {
+                    const { data } = supabase.storage.from('propiedades').getPublicUrl(filePath);
+                    const url = data.publicUrl;
+                    uploadedUrls.push({ url, type: media.type });
+                    
+                    if (media.id === featuredId) {
+                        coverImgUrl = url;
+                    }
+                }
+                
+                uploadedCount++;
+                setUploadProgress(10 + Math.floor((uploadedCount / totalFiles) * 80));
+            }
+
+            if (!coverImgUrl && uploadedUrls.length > 0) {
+                const firstImg = uploadedUrls.find(u => u.type.startsWith('image/'));
+                if (firstImg) coverImgUrl = firstImg.url;
+                else coverImgUrl = uploadedUrls[0].url;
+            }
+
+            const newProp = {
+                id: Date.now(),
+                ...formData,
+                img: coverImgUrl || 'https://images.unsplash.com/photo-1480074568708-e7b720bb3f09?auto=format&fit=crop&w=800&q=80',
+                media: uploadedUrls,
+                featured: false,
+                tag: formData.type === 'Venta' ? 'PARTICULAR' : 'ARRIENDO'
+            };
+
+            setProperties([newProp, ...properties]);
+            
+            if (hasPublishedBefore) {
+                const newBalance = tokens - 1;
+                setTokens(newBalance);
+                localStorage.setItem('vls_tokens', newBalance.toString());
+                window.dispatchEvent(new CustomEvent('tokens-updated', { detail: newBalance }));
+            } else {
+                localStorage.setItem('vls_has_published_prop', 'true');
+            }
+
+            setUploadProgress(100);
+            setTimeout(() => {
+                setShowPublishModal(false);
+                setFormData({ title: '', price: '', location: '', beds: '', baths: '', size: '', type: 'Venta', desc: '' });
+                setMediaFiles([]);
+                setFeaturedId(null);
+                setIsUploading(false);
+                
+                setTimeout(() => {
+                    alert(`¡SISTEMA MATCH VLS!: Hemos detectado 3 vecinos interesados en tu publicación de "${formData.title}". Revisa tu mensajería interna.`);
+                }, 3000);
+            }, 500);
+
+        } catch (err) {
+            console.error(err);
+            alert("Error general durante la publicación.");
+            setIsUploading(false);
+        }
     };
 
     return (
@@ -257,21 +387,110 @@ export default function Propiedades() {
                                     </div>
                                 </div>
 
+                                {/* Multimedia Drag & Drop Zone */}
                                 <div style={{ gridColumn: 'span 2' }}>
-                                    <div style={{ background: 'rgba(56, 189, 248, 0.05)', border: '1px dashed #38bdf8', padding: '2rem', borderRadius: '20px', textAlign: 'center', cursor: 'pointer', color: '#38bdf8' }}>
-                                        <Upload size={32} style={{ marginBottom: '10px' }} />
-                                        <div style={{ fontWeight: 'bold' }}>Sube Fotos de tu Propiedad</div>
-                                        <div style={{ fontSize: '0.7rem', opacity: 0.7 }}>Máximo 5 fotos de alta calidad</div>
+                                    <label style={{ display: 'block', color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'bold', marginBottom: '0.8rem', textTransform: 'uppercase' }}>Multimedia ({mediaFiles.length}/11)</label>
+                                    
+                                    <div 
+                                        onDragOver={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = '#10b981'; }}
+                                        onDragLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; }}
+                                        onDrop={(e) => { e.preventDefault(); e.currentTarget.style.borderColor = 'rgba(56, 189, 248, 0.5)'; handleFileDrop(e); }}
+                                        style={{ 
+                                            background: 'rgba(15, 23, 42, 0.5)', 
+                                            border: '2px dashed rgba(56, 189, 248, 0.5)', 
+                                            padding: '2rem', 
+                                            borderRadius: '20px', 
+                                            textAlign: 'center', 
+                                            transition: '0.3s',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            minHeight: '150px'
+                                        }}
+                                    >
+                                        <input 
+                                            type="file" 
+                                            id="media-upload" 
+                                            multiple 
+                                            accept="image/*,video/*" 
+                                            onChange={handleFileDrop} 
+                                            style={{ display: 'none' }} 
+                                        />
+                                        <label htmlFor="media-upload" style={{ cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                                            <div style={{ display: 'flex', gap: '15px', marginBottom: '10px' }}>
+                                                <ImageIcon size={32} color="#38bdf8" />
+                                                <Video size={32} color="#10b981" />
+                                            </div>
+                                            <div style={{ fontWeight: 'bold', color: 'white', fontSize: '1.1rem' }}>Arrastra tus fotos o video aquí</div>
+                                            <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '5px' }}>o haz clic para explorar en tu dispositivo</div>
+                                            <div style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '10px' }}>Hasta 10 fotos (5MB c/u) y 1 video (30MB)</div>
+                                        </label>
                                     </div>
+
+                                    {/* Preview Grid */}
+                                    {mediaFiles.length > 0 && (
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+                                            <AnimatePresence>
+                                                {mediaFiles.map((media) => (
+                                                    <motion.div 
+                                                        key={media.id}
+                                                        initial={{ opacity: 0, scale: 0.8 }}
+                                                        animate={{ opacity: 1, scale: 1 }}
+                                                        exit={{ opacity: 0, scale: 0.8 }}
+                                                        style={{ 
+                                                            position: 'relative', 
+                                                            aspectRatio: '1', 
+                                                            borderRadius: '12px', 
+                                                            overflow: 'hidden',
+                                                            border: featuredId === media.id ? '2px solid #f59e0b' : '1px solid rgba(255,255,255,0.1)'
+                                                        }}
+                                                    >
+                                                        {media.type.startsWith('image/') ? (
+                                                            <img src={media.preview} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Preview" />
+                                                        ) : (
+                                                            <div style={{ width: '100%', height: '100%', background: '#1e293b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <Video size={32} color="#94a3b8" />
+                                                            </div>
+                                                        )}
+                                                        
+                                                        <button 
+                                                            type="button"
+                                                            onClick={() => removeMedia(media.id)}
+                                                            style={{ position: 'absolute', top: '5px', right: '5px', background: 'rgba(239, 68, 68, 0.8)', color: 'white', border: 'none', borderRadius: '50%', padding: '5px', cursor: 'pointer', zIndex: 10 }}
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+
+                                                        {media.type.startsWith('image/') && (
+                                                            <button 
+                                                                type="button"
+                                                                onClick={() => setFeaturedId(media.id)}
+                                                                style={{ position: 'absolute', bottom: '5px', left: '5px', background: featuredId === media.id ? '#f59e0b' : 'rgba(0,0,0,0.5)', color: featuredId === media.id ? '#0f172a' : 'white', border: 'none', borderRadius: '8px', padding: '4px 8px', fontSize: '0.65rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', backdropFilter: 'blur(4px)' }}
+                                                            >
+                                                                <Star size={12} fill={featuredId === media.id ? '#0f172a' : 'none'} /> 
+                                                                {featuredId === media.id ? 'PORTADA' : 'Elegir'}
+                                                            </button>
+                                                        )}
+                                                    </motion.div>
+                                                ))}
+                                            </AnimatePresence>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div style={{ gridColumn: 'span 2', display: 'flex', gap: '2rem', alignItems: 'center', background: 'rgba(16, 185, 129, 0.1)', padding: '1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                                     <div style={{ flex: 1 }}>
                                         <h4 style={{ margin: 0, color: '#10b981' }}>Publicación Certificada VLS</h4>
                                         <p style={{ margin: 0, fontSize: '0.8rem', opacity: 0.8 }}>Al publicar aquí, los vecinos saben que es un trato directo y seguro.</p>
+                                        {isUploading && (
+                                            <div style={{ marginTop: '10px', height: '6px', background: 'rgba(0,0,0,0.3)', borderRadius: '4px', overflow: 'hidden' }}>
+                                                <div style={{ height: '100%', background: '#10b981', width: `${uploadProgress}%`, transition: 'width 0.3s' }}></div>
+                                            </div>
+                                        )}
                                     </div>
-                                    <button type="submit" className="btn-primary-vls" style={{ padding: '1rem 3rem', background: '#10b981', color: 'white', borderRadius: '14px', border: 'none', fontWeight: '900', fontSize: '1rem', boxShadow: '0 10px 30px rgba(16, 185, 129, 0.3)' }}>
-                                        PUBLICAR AHORA
+                                    <button disabled={isUploading} type="submit" className="btn-primary-vls hover-lift" style={{ padding: '1rem 3rem', background: isUploading ? '#064e3b' : '#10b981', color: 'white', borderRadius: '14px', border: 'none', fontWeight: '900', fontSize: '1rem', boxShadow: isUploading ? 'none' : '0 10px 30px rgba(16, 185, 129, 0.3)', display: 'flex', alignItems: 'center', gap: '10px', cursor: isUploading ? 'not-allowed' : 'pointer' }}>
+                                        {isUploading ? <><Loader2 size={20} className="animate-spin" /> SUBIENDO...</> : 'PUBLICAR AHORA'}
                                     </button>
                                 </div>
                             </form>

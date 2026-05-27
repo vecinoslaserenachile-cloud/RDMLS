@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Radio Montecarlo celebra 40 años siendo la voz de La Serena y Coquimbo. Una historia de música, noticias y comunidad desde 1987." />
+  <title>Radio Montecarlo · 40 Años Siendo Tu Voz | La Serena & Coquimbo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== INTRO CINEMATOGRÁFICO ===== -->
+  <div id="intro-screen" class="intro-screen">
+    <div class="static-noise"></div>
+    <div class="intro-logo">
+      <div class="radio-wave-icon">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <p class="intro-text">Sintonizando la historia...</p>
+    </div>
+  </div>
+
+  <!-- ===== HERO: VIDEO DE FONDO ===== -->
+  <section id="hero" class="hero hidden">
+
+    <!-- Fondo: imagen estática hero -->
+    <img id="bg-video" class="bg-video" src="assets/hero_imagen.png" alt="Radio Montecarlo 40 años - Estudio" />
+
+    <!-- Overlay degradado -->
+    <div class="overlay"></div>
+
+    <!-- Partículas decorativas -->
+    <div class="particles" id="particles-container"></div>
+
+    <!-- Contenido principal -->
+    <div class="hero-content">
+
+      <!-- Eyebrow -->
+      <p class="eyebrow">
+        <span class="dot"></span>
+        La Serena · Coquimbo · Región de Coquimbo
+        <span class="dot"></span>
+      </p>
+
+      <!-- Logo animado 40 años (video) -->
+      <div class="logo-video-wrapper">
+        <video id="logo-video" class="logo-video" autoplay loop muted playsinline>
+          <source src="assets/logo_montecarlo.mp4" type="video/mp4" />
+        </video>
+      </div>
+
+      <!-- Título principal -->
+      <h1 class="hero-title">
+        <span class="title-line">RADIO</span>
+        <span class="title-line brand">MONTECARLO</span>
+        <span class="title-sub">Siendo Tu Voz Desde 1987</span>
+      </h1>
+
+      <!-- Dial decorativo -->
+      <div class="dial-container">
+        <div class="dial" id="dial">
+          <div class="dial-inner">
+            <span class="dial-freq">102.7</span>
+            <span class="dial-fm">FM</span>
+          </div>
+          <div class="dial-ring"></div>
+        </div>
+        <div class="dial-labels">
+          <span>1987</span>
+          <span class="dial-label-center">SINTONIZA</span>
+          <span>2026</span>
+        </div>
+      </div>
+
+      <!-- Botón Ver Spot -->
+      <button id="audio-btn" class="audio-btn" aria-label="Ver Spot de Radio Montecarlo">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+        </svg>
+        <span id="audio-label">Ver Spot 40 Años</span>
+      </button>
+
+      <!-- Tagline inferior -->
+      <p class="tagline">
+        40 años de música · noticias · cultura · comunidad
+      </p>
+
+    </div>
+
+    <!-- Modal YouTube -->
+    <div id="video-modal" class="video-modal">
+      <div class="video-modal-overlay" id="modal-overlay"></div>
+      <div class="video-modal-content">
+        <button id="modal-close" class="modal-close" aria-label="Cerrar">✕</button>
+        <div class="video-wrapper">
+          <iframe id="yt-player" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <p class="modal-caption">Radio Montecarlo · Spot 40 Años · 102.7 FM</p>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator">
+      <div class="scroll-mouse">
+        <div class="scroll-wheel"></div>
+      </div>
+      <span>Descubre la historia</span>
+    </div>
+
+  </section>
+
+  <!-- ===== TIMELINE: EL DIAL DEL TIEMPO ===== -->
+  <section id="timeline" class="timeline-section">
+    <div class="timeline-header">
+      <h2 class="section-title">El <span class="gradient-text">Dial del Tiempo</span></h2>
+      <p class="section-subtitle">40 años en la frecuencia de la Región de Coquimbo</p>
+    </div>
+
+    <div class="decades-grid">
+
+      <!-- Década 80 -->
+      <div class="decade-card card-80">
+        <div class="decade-year">80s</div>
+        <div class="decade-era-icon">📻</div>
+        <h3 class="decade-title">Los Orígenes</h3>
+        <p class="decade-desc">Nacemos en 1987 con la misión de ser la voz de La Serena y Coquimbo. Equipos análogos, vinilos y cassettes marcaban la época.</p>
+        <div class="decade-tech">
+          <span class="tech-badge">Disco de Vinilo</span>
+          <span class="tech-badge">Cassette</span>
+          <span class="tech-badge">Antena UHF</span>
+        </div>
+      </div>
+
+      <!-- Década 90 -->
+      <div class="decade-card card-90">
+        <div class="decade-year">90s</div>
+        <div class="decade-era-icon">💿</div>
+        <h3 class="decade-title">La Expansión</h3>
+        <p class="decade-desc">La región creció y Montecarlo creció con ella. Los CDs revolucionaron la música. Cubrimos los hitos que marcaron generaciones.</p>
+        <div class="decade-tech">
+          <span class="tech-badge">CD Digital</span>
+          <span class="tech-badge">FM Estéreo</span>
+          <span class="tech-badge">Multiplex</span>
+        </div>
+      </div>
+
+      <!-- Década 2000 -->
+      <div class="decade-card card-00">
+        <div class="decade-year">2000s</div>
+        <div class="decade-era-icon">🌐</div>
+        <h3 class="decade-title">La Era Digital</h3>
+        <p class="decade-desc">Internet cambió todo. Montecarlo se adaptó al mundo digital, llegando más lejos que nunca. MP3, streaming y primeros sitios web.</p>
+        <div class="decade-tech">
+          <span class="tech-badge">MP3</span>
+          <span class="tech-badge">Streaming</span>
+          <span class="tech-badge">Sitio Web</span>
+        </div>
+      </div>
+
+      <!-- Década 2010+ -->
+      <div class="decade-card card-10">
+        <div class="decade-year">2010s+</div>
+        <div class="decade-era-icon">📱</div>
+        <h3 class="decade-title">La Revolución Móvil</h3>
+        <p class="decade-desc">Redes sociales, podcasts, apps móviles. Montecarlo hoy te acompaña en tu bolsillo, donde quiera que vayas, en cualquier pantalla.</p>
+        <div class="decade-tech">
+          <span class="tech-badge">Podcast</span>
+          <span class="tech-badge">Redes Sociales</span>
+          <span class="tech-badge">App Móvil</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===== FRECUENCIA: ONDAS ===== -->
+  <section id="frecuencia" class="freq-section">
+    <div class="freq-bg-waves">
+      <svg viewBox="0 0 1440 200" preserveAspectRatio="none">
+        <path d="M0,100 C200,180 400,20 600,100 C800,180 1000,20 1200,100 C1300,140 1380,80 1440,100 L1440,200 L0,200 Z" fill="rgba(212,175,55,0.08)"/>
+        <path d="M0,120 C180,60 360,160 540,120 C720,80 900,160 1080,120 C1200,95 1340,135 1440,120 L1440,200 L0,200 Z" fill="rgba(212,175,55,0.05)"/>
+      </svg>
+    </div>
+    <div class="freq-content">
+      <div class="freq-display">
+        <span class="freq-number">102.7</span>
+        <span class="freq-unit">FM</span>
+      </div>
+      <p class="freq-tagline">40 años en la misma frecuencia. <br/><strong>Siempre contigo.</strong></p>
+      <div class="freq-signal-bars">
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+        <div class="signal-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="footer-logo">
+      <div class="footer-radio-icon">
+        <span></span><span></span><span></span>
+      </div>
+      <span>RADIO MONTECARLO</span>
+    </div>
+    <p class="footer-tagline">102.7 FM · La Serena · Coquimbo</p>
+    <p class="footer-years">1987 — 2026 · 40 Años Siendo Tu Voz</p>
+    <p class="footer-copy">© 2026 Radio Montecarlo · Región de Coquimbo, Chile</p>
+  </footer>
+  <!-- ===== REPRODUCTOR EN VIVO ===== -->
+  <div id="radio-player" class="radio-player">
+    <audio id="live-audio" src="https://sonic.mallocohosting.cl/8032/stream" preload="none" crossorigin="anonymous"></audio>
+
+    <div class="player-inner">
+      <!-- Indicador EN VIVO -->
+      <div class="player-live-badge">
+        <span class="live-dot"></span>
+        <span>EN VIVO</span>
+      </div>
+
+      <!-- Botón Play/Pause -->
+      <button id="player-play" class="player-play-btn" aria-label="Reproducir señal en vivo">
+        <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>
+        <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" class="hidden-icon"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>
+      </button>
+
+      <!-- Info -->
+      <div class="player-info">
+        <span class="player-station">Radio Montecarlo</span>
+        <span class="player-freq">102.7 FM · Señal Online</span>
+      </div>
+
+      <!-- Ecualizador animado -->
+      <div class="player-eq" id="player-eq">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+
+      <!-- Volumen -->
+      <div class="player-volume">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="range" id="volume-slider" min="0" max="100" value="80" class="volume-range" aria-label="Volumen" />
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

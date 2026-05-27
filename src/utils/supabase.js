@@ -1,26 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 
-// IMPORTANTE: El usuario debe reemplazar estos valores con su URL y KEY de Supabase
-const supabaseUrl = 'TU_SUPABASE_URL';
-const supabaseAnonKey = 'TU_SUPABASE_ANON_KEY';
+// Credenciales recuperadas desde el proyecto Norte Casas
+const supabaseUrl = 'https://svfepietzoydigmicety.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2ZmVwaWV0em95ZGlnbWljZXR5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk2MDcxMTgsImV4cCI6MjA5NTE4MzExOH0.-E1IL8Zl93W2mR6GEFX4WOBn8idrxDOSPtzAF7FlaKE';
 
 let supabaseInstance = null;
 try {
-    // Only create client if URL looks like a valid URL or we are not in the browser yet
-    if (supabaseUrl.startsWith('http')) {
-        supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
-    } else {
-        console.warn('Supabase no está configurado. Usando un mock temporal para evitar que la app se caiga.');
-        supabaseInstance = {
-            from: () => ({ select: () => ({ data: [], error: null }), insert: () => ({ data: null, error: null }) }),
-            auth: {
-                getSession: async () => ({ data: { session: null }, error: null }),
-                onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => { } } } }),
-                signInWithPassword: async () => ({ data: null, error: new Error('Supabase no está configurado. Las credenciales no funcionarán.') }),
-                signOut: async () => ({ error: null })
-            }
-        }; // Simple mock
-    }
+    supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
 } catch (e) {
     console.warn('Error inicializando Supabase. Revise las credenciales.', e);
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Zap, Minimize2, Maximize2, Clock, Timer, Bell, Play, Pause, RotateCcw, Volume2 } from 'lucide-react';
+import { Calendar, Zap, Minimize2, Maximize2, Clock, Timer, Bell, Play, Pause, RotateCcw, Volume2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**
@@ -229,7 +229,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
             <motion.div
                 drag dragMomentum={false}
                 id="vls-quantum-watch-container"
-                style={{ position:'fixed', top: isMobile ? '80px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%)' : 'none', zIndex:9999999,
+                style={{ position:'fixed', top: isMobile ? '70px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%) scale(0.85)' : 'none', zIndex:9999999,
                          cursor:'grab', userSelect:'none', width:'210px',
                          filter:'drop-shadow(0 12px 28px rgba(251,191,36,0.25))' }}
                 animate={{ y:[0,-5,0] }}
@@ -276,9 +276,9 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                         style={{ background:'rgba(251,191,36,0.1)', border:'1px solid rgba(251,191,36,0.3)', padding:'1px 4px', borderRadius:'4px', cursor:'pointer', fontSize:'0.45rem', fontWeight:'bold', color:'#fbbf24' }}>
                                         {is24h ? '24H' : '12H'}
                                     </button>
-                                    <button onClick={toggleMin} title="Minimizar"
-                                        style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', color:'rgba(251,191,36,0.5)' }}>
-                                        <Minimize2 size={10} />
+                                    <button onClick={toggleMin} title="Cerrar / Minimizar"
+                                        style={{ background:'rgba(239,68,68,0.2)', border:'1px solid rgba(239,68,68,0.4)', borderRadius: '4px', cursor:'pointer', padding:'2px', display:'flex', alignItems:'center', color:'#ef4444' }}>
+                                        <X size={12} strokeWidth={3} />
                                     </button>
                                     <button onClick={openCalendar} title="Calendario"
                                         style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', color:'rgba(251,191,36,0.5)' }}>
@@ -403,7 +403,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
         <motion.div
             drag dragMomentum={false}
             id="vls-quantum-watch-container"
-            style={{ position:'fixed', top: isMobile ? '80px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%)' : 'none', zIndex:9999999,
+            style={{ position:'fixed', top: isMobile ? '70px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%) scale(0.85)' : 'none', zIndex:9999999,
                      cursor:'grab', userSelect:'none', width:'205px',
                      filter:'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}
             animate={{ y:[0,-4,0] }}
@@ -442,10 +442,9 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                                     style={{ background:'rgba(0,0,0,0.2)', border:`1px solid ${theme.pin}`, padding:'1px 4px', borderRadius:'4px', cursor:'pointer', fontSize: '0.45rem', fontWeight: 'bold', color: 'white' }}>
                                     {is24h ? '24H' : '12H'}
                                 </button>
-                                <button onClick={toggleMin} title="Minimizar"
-                                    style={{ background:'none', border:'none', cursor:'pointer', padding:0,
-                                             display:'flex', alignItems:'center', color:'rgba(255,255,255,0.6)' }}>
-                                    <Minimize2 size={10} />
+                                <button onClick={toggleMin} title="Cerrar / Minimizar"
+                                    style={{ background:'rgba(239,68,68,0.2)', border:`1px solid rgba(239,68,68,0.5)`, padding:'2px', borderRadius:'4px', cursor:'pointer', display:'flex', alignItems:'center', color:'#ef4444' }}>
+                                    <X size={12} strokeWidth={3} />
                                 </button>
                                 <button onClick={openCalendar} title="Calendario"
                                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,

@@ -6,7 +6,7 @@ import {
   MessageCircle, Link as LinkIcon, CheckCircle, 
   AlertCircle, Send, Loader, ChevronRight, X
 } from 'lucide-react';
-import ArchiCampaignRadio from '../components/ArchiCampaignRadio';
+
 
 const ADMIN_WA = '56956020690'; // WhatsApp administrador ARCHI
 
@@ -204,8 +204,8 @@ const ArchiCampaign = () => {
   return (
     <div style={{
       position: 'fixed', inset: 0, zIndex: 100080, background: '#0033a0',
-      display: 'block', overflowY: 'auto', paddingBottom: isMobile ? '80px' : '40px',
-      fontFamily: '"Outfit", sans-serif', color: 'white', scrollBehavior: 'smooth'
+      display: 'block', overflowY: 'auto', overflowX: 'hidden', paddingBottom: isMobile ? '80px' : '40px',
+      fontFamily: '"Outfit", sans-serif', color: 'white', scrollBehavior: 'smooth', width: '100vw'
     }}>
 
       {/* ── HEADER ── */}
@@ -234,6 +234,10 @@ const ArchiCampaign = () => {
         <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
           {isArchiRoute && (
             <>
+              <a href="/afiches"
+                style={{ background: '#d4af37', color: '#002D8B', border: 'none', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+                <Share2 size={14} /> AFICHES
+              </a>
               <a href="https://wa.me/56956020690" target="_blank" rel="noreferrer"
                 style={{ background: '#25D366', color: 'white', border: 'none', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
                 <Phone size={14} /> +56956020690
@@ -242,7 +246,7 @@ const ArchiCampaign = () => {
           )}
           <button
             onClick={() => {
-              if (navigator.share) navigator.share({ title: 'Solange Gómez: Presidenta ARCHI', text: 'Únete a la Lista Nueva Energía.', url: 'https://radiovecinos.cl/archi' });
+              if (navigator.share) navigator.share({ title: 'Solange Gómez: Presidenta ARCHI', text: 'Únete a la Lista Nueva Energía.', url: 'https://www.archinuevaenergia.cl' });
             }}
             style={{ background: 'rgba(212, 175, 55, 0.1)', color: '#d4af37', border: '1px solid rgba(212, 175, 55, 0.5)', padding: '8px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
             <Share2 size={14} /> COMPARTIR
@@ -251,13 +255,13 @@ const ArchiCampaign = () => {
       </header>
 
       {/* ── HERO ── */}
-      <section style={{ position: 'relative', minHeight: isMobile ? 'auto' : '80vh', overflow: 'hidden' }}>
+      <section style={{ position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(circle at 70% 50%, rgba(212, 175, 55, 0.15) 0%, transparent 60%)', zIndex: 0 }} />
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '2rem 1rem' : '5rem', display: 'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? '2rem' : '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
-          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
-            <h2 style={{ color: 'white', fontSize: isMobile ? 'clamp(1.8rem, 8vw, 2.2rem)' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: isMobile ? '2rem 1rem 12rem 1rem' : '3rem 5rem 10rem 5rem', display: 'grid', gridTemplateColumns: '1fr', gap: isMobile ? '2rem' : '4rem', alignItems: 'center', position: 'relative', zIndex: 10 }}>
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} style={{ width: '100%', maxWidth: '100vw', overflow: 'hidden' }}>
+            <h2 style={{ color: 'white', fontSize: isMobile ? 'clamp(1.8rem, 8vw, 2.2rem)' : '4.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '1.5rem', wordBreak: 'break-word', hyphens: 'auto' }}>
               ARCHI de todo Chile: <br />
-              <span style={{ background: 'linear-gradient(to right, #d4af37, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: 'linear-gradient(to right, #d4af37, #f59e0b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', display: 'inline-block' }}>
                 Inyectemos Nueva Energía.
               </span>
             </h2>
@@ -266,7 +270,7 @@ const ArchiCampaign = () => {
             </p>
             <button
               onClick={() => document.getElementById('registro-cta').scrollIntoView({ behavior: 'smooth' })}
-              style={{ background: 'linear-gradient(135deg, #d4af37, #b45309)', color: '#002D8B', padding: '1.2rem 2.5rem', borderRadius: '15px', fontWeight: 900, fontSize: '1.1rem', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)', transition: 'transform 0.3s ease' }}
+              style={{ background: 'linear-gradient(135deg, #d4af37, #b45309)', color: '#002D8B', padding: isMobile ? '1rem 1.5rem' : '1.2rem 2.5rem', borderRadius: '15px', fontWeight: 900, fontSize: isMobile ? '0.95rem' : '1.1rem', border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 30px rgba(212, 175, 55, 0.3)', transition: 'transform 0.3s ease', width: isMobile ? '100%' : 'auto', textAlign: 'center', flexWrap: 'wrap' }}
               onMouseOver={e => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
             >
@@ -304,28 +308,6 @@ const ArchiCampaign = () => {
                   ))}
                 </motion.div>
               </div>
-            </div>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', width: '100%' }}>
-            {/* ── AVATAR 3D HUMANIZADO ── */}
-            <motion.img 
-              src="/archi-media/3d/host_avatar.png" 
-              alt="Locutora ARCHI 3D" 
-              initial={{ opacity: 0, scale: 0.8, x: 50 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-              style={{ 
-                position: 'absolute', 
-                bottom: isMobile ? '-10px' : '-40px', 
-                right: isMobile ? '-20px' : '-80px', 
-                height: isMobile ? '250px' : '450px', 
-                zIndex: 0, 
-                filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.6))',
-                pointerEvents: 'none'
-              }}
-            />
-            <div style={{ position: 'relative', zIndex: 10, width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <ArchiCampaignRadio />
             </div>
           </motion.div>
         </div>
@@ -582,16 +564,16 @@ const ArchiCampaign = () => {
                     </p>
                     <div style={{ display: 'flex', gap: '10px', marginTop: 'auto', paddingTop: '15px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                       <button
-                        onClick={() => window.open(`https://wa.me/?text=📻 *${encodeURIComponent(item.title)}*%0A${encodeURIComponent(item.content.substring(0, 100))}...%0AVisita: https://radiovecinos.cl/archi`, '_blank')}
+                        onClick={() => window.open(`https://wa.me/?text=📻 *${encodeURIComponent(item.title)}*%0A${encodeURIComponent(item.content.substring(0, 100))}...%0AVisita: https://www.archinuevaenergia.cl`, '_blank')}
                         style={{ flex: 1, background: '#25D366', color: 'white', border: 'none', padding: '10px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontWeight: 'bold', fontSize: '0.85rem', fontFamily: '"Outfit", sans-serif' }}>
                         <MessageCircle size={16} /> WhatsApp
                       </button>
                       <button
                         onClick={() => {
                           if (navigator.share) {
-                            navigator.share({ title: item.title, text: item.content.substring(0, 100), url: 'https://radiovecinos.cl/archi' });
+                            navigator.share({ title: item.title, text: item.content.substring(0, 100), url: 'https://www.archinuevaenergia.cl' });
                           } else {
-                            navigator.clipboard.writeText('https://radiovecinos.cl/archi');
+                            navigator.clipboard.writeText('https://www.archinuevaenergia.cl');
                           }
                         }}
                         style={{ background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', padding: '10px 14px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -749,7 +731,7 @@ const ArchiCampaign = () => {
       </footer>
 
       {/* ── WIDGET FLOTANTE WHATSAPP ── */}
-      <div style={{ position: 'fixed', bottom: isMobile ? '90px' : '30px', right: '24px', zIndex: 999999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
+      <motion.div drag dragConstraints={{ left: -window.innerWidth + 100, right: 0, top: -window.innerHeight + 100, bottom: 0 }} style={{ position: 'fixed', bottom: isMobile ? '120px' : '90px', right: '24px', zIndex: 999999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '12px' }}>
 
         {/* Popup de mensaje */}
         <AnimatePresence>
@@ -810,7 +792,7 @@ const ArchiCampaign = () => {
             : <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
           }
         </motion.button>
-      </div>
+      </motion.div>
 
       {/* ── CSS KEYFRAMES ── */}
       <style>{`

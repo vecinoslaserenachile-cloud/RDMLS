@@ -181,7 +181,8 @@ const FALLBACK_AUDIO = '/archi-media/audio/Súmate Lista Nueva Energía.mp3';
 export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   const audioRef = useRef(null);
   const animationRef = useRef(null);
-  const [playerMode, setPlayerMode] = useState('expanded'); // 'mini' | 'compact' | 'expanded'
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [playerMode, setPlayerMode] = useState(window.innerWidth < 768 ? 'mini' : 'expanded'); // 'expanded' | 'compact' | 'mini'
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [volume, setVolume] = useState(0.8);
@@ -190,8 +191,30 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
   const [duration, setDuration] = useState(0);
   const [currentTime, setCT] = useState(0);
   const [showPlaylist, setShowPlaylist] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [spectrumLevels, setSpectrumLevels] = useState(Array(12).fill(5));
+
+  useEffect(() => {
+    // Autoplay at startup
+    const handleFirstInteraction = () => {
+      if (!isPlaying && audioRef.current && audioRef.current.paused) {
+        loadTrack(0, true);
+      }
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('scroll', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+
+    window.addEventListener('click', handleFirstInteraction);
+    window.addEventListener('scroll', handleFirstInteraction);
+    window.addEventListener('touchstart', handleFirstInteraction);
+
+    return () => {
+      window.removeEventListener('click', handleFirstInteraction);
+      window.removeEventListener('scroll', handleFirstInteraction);
+      window.removeEventListener('touchstart', handleFirstInteraction);
+    };
+  }, []);
+
   const [hasError, setHasError] = useState(false);
   const [errorCount, setErrorCount] = useState(0);
 
@@ -295,7 +318,8 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
       initAudioContext();
       audioRef.current.play()
         .then(() => setIsPlaying(true))
-        .catch(() => {
+        .catch((e) => {
+          console.warn("Autoplay was blocked or failed", e);
           // Intentar con fallback
           audioRef.current.src = FALLBACK_AUDIO;
           audioRef.current.load();
@@ -329,7 +353,8 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
 
   const nextTrack = () => {
     const next = (currentIndex + 1) % ARCHI_PLAYLIST.length;
-    loadTrack(next, isPlaying);
+    // Forzamos el autoplay al pasar al siguiente track de forma continua
+    loadTrack(next, true);
   };
 
   const prevTrack = () => {
@@ -485,10 +510,10 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
 
   // ── MODOS COMPACT / EXPANDED ─────────────────────────────
   const containerStyle = {
-    position: isEmbedded ? 'relative' : 'fixed',
-    bottom: isEmbedded ? 'auto' : (isMobile ? '70px' : '20px'),
-    right: isEmbedded ? 'auto' : (isMobile ? '10px' : '110px'),
-    zIndex: isEmbedded ? 10 : 999998,
+    position: 'fixed',
+    bottom: isMobile ? '80px' : '30px',
+    left: isMobile ? '10px' : '40px', // Movido a la izquierda para no tapar WA
+    zIndex: 999998,
     display: isVisible ? 'flex' : 'none',
     opacity: 1,
     flexDirection: 'column',
@@ -496,17 +521,19 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
     alignItems: 'center',
     justifyContent: 'center',
     userSelect: 'none',
-    cursor: isEmbedded ? 'default' : 'grab',
     fontFamily: '"Outfit", sans-serif',
+    transform: isMobile ? 'scale(0.9)' : 'none',
+    transformOrigin: 'bottom right'
   };
 
-  const PlayerContainer = isEmbedded ? 'div' : motion.div;
-  const playerProps = isEmbedded ? { style: containerStyle } : {
+  const PlayerContainer = motion.div;
+  const playerProps = {
+    initial: { x: -50, opacity: 0 }, // Animación desde la izquierda ahora
+    animate: { x: 0, opacity: 1 },
     drag: true,
     dragMomentum: false,
-    initial: { x: 50, opacity: 0 },
-    animate: { x: 0, opacity: 1 },
-    style: containerStyle
+    dragConstraints: { left: 0, right: window.innerWidth - 200, top: -window.innerHeight + 200, bottom: 0 },
+    style: { ...containerStyle, cursor: 'grab' }
   };
 
   return (
@@ -528,7 +555,8 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
         borderRadius: isExpanded ? '20px' : '30px',
         border: `2px solid ${borderGold}`,
         boxShadow: `0 15px 45px rgba(0,0,0,0.9), 0 0 40px rgba(212, 175, 55,0.08)`,
-        width: isExpanded ? (isMobile ? '290px' : '340px') : '280px',
+        width: isExpanded ? (isMobile ? 'calc(100vw - 20px)' : '340px') : '280px',
+        maxWidth: '380px',
         overflow: 'hidden',
       }}>
 

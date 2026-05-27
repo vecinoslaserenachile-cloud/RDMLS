@@ -108,14 +108,17 @@ const PescaArtesanalNota = React.lazy(() => import('./pages/PescaArtesanalNota.j
 // const SaludPatrimonioNota = React.lazy(() => import('./pages/SaludPatrimonioNota.jsx'));
 // const AvivaPortal = React.lazy(() => import('./pages/AvivaPortal.jsx'));
 const GardellaPortfolio = React.lazy(() => import('./pages/GardellaPortfolio.jsx'));
-// const PlazaPoetas = React.lazy(() => import('./pages/PlazaPoetas.jsx'));
+const PlazaPoetas = React.lazy(() => import('./pages/PlazaPoetas.jsx'));
 // const PulsoCiudadano = React.lazy(() => import('./pages/PulsoCiudadano.jsx'));
 // const DistanciasRadar = React.lazy(() => import('./pages/DistanciasRadar.jsx'));
 const RadioPlayer = React.lazy(() => import('./components/RadioPlayer'));
 const ArchiRadioPlayer = React.lazy(() => import('./components/ArchiRadioPlayer'));
 const ArchiCampaign = React.lazy(() => import('./pages/ArchiCampaign.jsx'));
 const ArchiNewsAdmin = React.lazy(() => import('./pages/ArchiNewsAdmin.jsx'));
+const ArchiWapHub = React.lazy(() => import('./pages/ArchiWapHub.jsx'));
+const ArchiSocialHub = React.lazy(() => import('./pages/ArchiSocialHub.jsx'));
 
+// Configuración de rutas (React Router v6)
 // const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
 // const PatrimonioVulnerable = React.lazy(() => import('./pages/PatrimonioVulnerable.jsx'));
 // const LegalDocs = React.lazy(() => import('./pages/LegalDocs.jsx'));
@@ -250,7 +253,7 @@ const host = (window.location.hostname || window.location.host || '').toLowerCas
 const isRdmlsDns = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes'));
 const isImlsDns = host.includes('imls');
 const isRDMLS = host.includes('vecinoslaserena.cl') && (window.location.pathname.includes('/rdmls') || window.location.pathname === '/rdmls' || window.location.pathname === '/rdmls/');
-const isRadioVecinosDns = host.includes('radiovecinos.cl') || host.includes('radiovecinos');
+const isRadioVecinosDns = host.includes('radiovecinos.cl') || host.includes('radiovecinos') || host.includes('archinuevaenergia');
 
 if (typeof window !== 'undefined' && isRadioVecinosDns) {
   document.title = "ARCHI Nueva Energía";
@@ -258,7 +261,7 @@ if (typeof window !== 'undefined' && isRadioVecinosDns) {
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/png';
     link.rel = 'icon';
-    link.href = '/archi-media/audio/Solange.png';
+    link.href = '/archi-media/fotos/archi_foto_solange_1779330163090.png';
     document.getElementsByTagName('head')[0].appendChild(link);
   } catch(e) {}
 }
@@ -399,6 +402,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="/" element={<App />}>
                     <Route index element={<ArchiCampaign />} />
                     <Route path="archi" element={<ArchiCampaign />} />
+                    <Route path="wap" element={<ArchiWapHub />} />
+                    <Route path="social" element={<ArchiSocialHub />} />
+                    <Route path="afiches" element={<ArchiSocialHub />} />
                   </Route>
                   <Route path="/admin" element={<ArchiNewsAdmin />} />
                   <Route path="/archi-admin" element={<ArchiNewsAdmin />} />
@@ -520,7 +526,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="los-perales" element={<HubDashboard />} />
                     <Route path="media/denuncias/sanitaria/los-perales" element={<HubDashboard />} />
                     <Route path="gardella" element={<GardellaPortfolio />} />
-                    <Route path="plazapoetas" element={<HubDashboard />} />
+                    <Route path="plazapoetas" element={<PlazaPoetas />} />
                     <Route path="pesca-artesanal" element={<PescaArtesanalNota />} />
                     <Route path="slep-elqui" element={<HubDashboard />} />
                     <Route path="salud-patrimonio" element={<HubDashboard />} />
