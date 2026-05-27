@@ -822,6 +822,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showNewsChoapa, setShowNewsChoapa] = useState(location.pathname.toLowerCase().match(/^\/choapa/i));
   const [showNewsRedCine, setShowNewsRedCine] = useState(location.pathname.toLowerCase().match(/^\/redcine/i));
   const [showStella, setShowStella] = useState(location.pathname.toLowerCase().match(/^\/stella/i) || searchParams.get('news') === 'stella' || searchParams.get('note') === 'stella');
+  const [showPulsoCiudadano, setShowPulsoCiudadano] = useState(location.pathname.toLowerCase().match(/^\/pulsociudadano/i) || searchParams.get('news') === 'pulsociudadano' || searchParams.get('note') === 'pulsociudadano');
 
 
 
