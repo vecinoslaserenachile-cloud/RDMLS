@@ -2647,7 +2647,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         </Suspense>
       )}
       
-      {showVLSNewsUcen && (
+      {(showVLSNewsUcen || location.pathname.toLowerCase().match(/^\/ucen(\/|$)/i)) && (
         <Suspense fallback={<LoadingScreen />}>
           <VLSNewsUcen onClose={() => {
             setShowVLSNewsUcen(false);

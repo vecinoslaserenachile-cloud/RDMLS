@@ -1,3 +1,5 @@
 # Redirect all paths to index.html for SPA
 /*    /index.html   200
 /1demayo   /index.html   200
+/ucen      /index.html   200
+/UCEN      /index.html   200
