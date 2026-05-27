@@ -176,7 +176,7 @@ const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
 // const VLSNewsTimeChange = lazy(() => import('./components/VLSNewsTimeChange'));
 const BackofficeMovilVLS = lazy(() => import('./components/BackofficeMovilVLS'));
 // const VLSNewsAvalancha = lazy(() => import('./components/VLSNewsAvalancha'));
-// const DomeykoPortal = lazy(() => import('./pages/DomeykoPortal'));
+const DomeykoPortal = lazy(() => import('./pages/DomeykoPortal'));
 const SonicevPortal = lazy(() => import('./pages/SonicevPortal'));
 const NuevoPeregrinoPortal = lazy(() => import('./pages/NuevoPeregrinoPortal'));
 // const SmartComunaOS = lazy(() => import('./components/SmartComunaOS'));
@@ -3070,15 +3070,14 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
       {showDomeyko && (
         <Suspense fallback={<div style={{ position: 'fixed', inset: 0, zIndex: 9999999, background: '#020617', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38bdf8', fontFamily: 'Outfit, sans-serif', fontWeight: 900 }}>Cargando Portal Domeyko...</div>}>
-          {/* DomeykoPortal removido por ausencia de componente */}
-          {/* <DomeykoPortal 
+          <DomeykoPortal 
             initialTab={domeykoInitialTab}
             onClose={() => {
               setShowDomeyko(false);
               setDomeykoInitialTab('bio'); 
               if (location.pathname.match(/^\/(domeyko|lambert)/i)) navigate('/');
             }} 
-          /> */}
+          />
         </Suspense>
       )}
       {showPulsoCiudadano && (
