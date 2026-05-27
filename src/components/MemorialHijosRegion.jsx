@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     X, Heart, Star, BookOpen, Music, Medal, MapPin, 
     Search, ArrowRight, Share2, Calendar, Award, 
-    Castle, Shield, Sparkles, AlertTriangle, RefreshCw, Skull, Plus, FileText
+    Castle, Shield, Sparkles, AlertTriangle, RefreshCw, Skull, Plus, FileText, Landmark
 } from 'lucide-react';
 import MasterDanielPalominos3D from './MasterDanielPalominos3D';
 import MasterDonWilson3D from './MasterDonWilson3D';
