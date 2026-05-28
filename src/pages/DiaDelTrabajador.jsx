@@ -45,7 +45,7 @@ const SectionHero = () => (
   <div className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-slate-950">
     {/* Fondo Artístico */}
     <div className="absolute inset-0 opacity-40 pointer-events-none">
-      <img src="/1demayo/dia_trabajador_v2.png" alt="1 de Mayo" className="w-full h-full object-cover scale-105 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
+      <img src="/1demayo_media/dia_trabajador_v2.png" alt="1 de Mayo" className="w-full h-full object-cover scale-105 animate-[pulse_10s_ease-in-out_infinite_alternate]" />
       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/70 to-transparent"></div>
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-red-900/20 via-transparent to-transparent"></div>
     </div>
@@ -159,10 +159,10 @@ const SectionLaSerena = () => (
         
         <div className="aspect-video bg-black rounded-2xl overflow-hidden relative border border-slate-800">
           <video 
-            src="/1demayo/clip_trabajador.mp4" 
+            src="/1demayo_media/clip_trabajador.mp4" 
             controls 
             className="w-full h-full object-cover"
-            poster="/1demayo/dia_trabajador_v2.png"
+            poster="/1demayo_media/dia_trabajador_v2.png"
           >
             Tu navegador no soporta el formato de video.
           </video>
@@ -446,7 +446,7 @@ const SectionFamilia = () => (
           </div>
 
           <div className="bg-red-950/30 border border-red-900/50 rounded-3xl p-8 flex flex-col justify-center items-center text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/1demayo/dia_trabajador_v2.png')] bg-cover bg-center opacity-10 grayscale mix-blend-overlay"></div>
+            <div className="absolute inset-0 bg-[url('/1demayo_media/dia_trabajador_v2.png')] bg-cover bg-center opacity-10 grayscale mix-blend-overlay"></div>
             <div className="relative z-10">
               <Users className="w-12 h-12 text-red-500 mx-auto mb-4" />
               <h5 className="text-white font-bold text-xl mb-2">Comunidad y Esfuerzo</h5>
