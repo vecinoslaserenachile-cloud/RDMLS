@@ -3103,7 +3103,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
           }} />
         </Suspense>
       )}
-      {showDiaDelTrabajador && (
+      {(showDiaDelTrabajador || location.pathname.toLowerCase().match(/^\/1demayo(\/|$)/i)) && (
         <Suspense fallback={<LoadingScreen />}>
           <DiaDelTrabajador onClose={() => { 
             setShowDiaDelTrabajador(false); 
