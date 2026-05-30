@@ -828,7 +828,7 @@ export default function TanoPortal() {
 
       <header className="tano-header" style={{ padding: '1rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <img src="/tano_assets/francesca.png" alt="Francesca Vives" style={{ height: '120px', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))', marginTop: '-10px', marginBottom: '-10px' }} onError={(e) => e.target.style.display = 'none'} />
+          <img src="/tano_assets/francesca_blanco.png" alt="Francesca Vives" style={{ height: '160px', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))', marginTop: '-20px', marginBottom: '-20px' }} onError={(e) => e.target.style.display = 'none'} />
           <div>
             <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
               Italiano con Francesca
