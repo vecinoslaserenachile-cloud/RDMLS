@@ -354,7 +354,7 @@ const InteractiveKaraoke = () => {
   return (
     <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #7f1d1d, #450a0a)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
       <Music size={60} color="#f87171" style={{ marginBottom: '1rem' }} />
-      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#f87171', textAlign: 'center' }}>SALA KARAOKE VLS</h2>
+      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#f87171', textAlign: 'center' }}>KARAOKE ENTRE VECINAS</h2>
       <p style={{ fontSize: '1.2rem', color: '#fca5a5', marginBottom: '3rem', textAlign: 'center' }}>Selecciona un clásico y practica tu pronunciación.</p>
       
       {activeVideo ? (
@@ -860,6 +860,67 @@ export default function TanoPortal() {
       <TanoGlobalPlayer />
 
       <main className="tano-main" style={{ padding: '4rem', maxWidth: '1600px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+        
+        {/* Quick Interactive Banners (Mini Ads) */}
+        <div style={{ width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem', marginBottom: '1rem' }}>
+          
+          {/* Karaoke Banner */}
+          <div 
+            onClick={() => setViewerFile({ name: 'Karaoke Entre Vecinas', type: 'interactive_karaoke', path: '' })}
+            style={{ background: 'linear-gradient(135deg, #7f1d1d, #b91c1c)', borderRadius: '20px', padding: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1.5rem', boxShadow: '0 10px 30px rgba(185, 28, 28, 0.4)', transition: 'transform 0.3s' }}
+            onMouseEnter={e => e.currentTarget.style.transform='translateY(-10px)'}
+            onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
+          >
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '1rem', borderRadius: '16px' }}><Music size={32} color="white" /></div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'white', fontWeight: 900 }}>Karaoke Entre Vecinas</h3>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#fca5a5', fontSize: '0.9rem', fontWeight: 'bold' }}>¡Canta los clásicos!</p>
+            </div>
+          </div>
+
+          {/* Trivia Banner */}
+          <div 
+            onClick={() => setViewerFile({ name: 'Trivia Culturale', type: 'interactive_trivia', path: '' })}
+            style={{ background: 'linear-gradient(135deg, #1e3a8a, #1d4ed8)', borderRadius: '20px', padding: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1.5rem', boxShadow: '0 10px 30px rgba(29, 78, 216, 0.4)', transition: 'transform 0.3s' }}
+            onMouseEnter={e => e.currentTarget.style.transform='translateY(-10px)'}
+            onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
+          >
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '1rem', borderRadius: '16px' }}><Award size={32} color="white" /></div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'white', fontWeight: 900 }}>Trivia Culturale</h3>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#bfdbfe', fontSize: '0.9rem', fontWeight: 'bold' }}>Pon a prueba tu italiano</p>
+            </div>
+          </div>
+
+          {/* Bingo Banner */}
+          <div 
+            onClick={() => setViewerFile({ name: 'Giochi: Bingo Italiano', type: 'interactive_bingo', path: '' })}
+            style={{ background: 'linear-gradient(135deg, #064e3b, #047857)', borderRadius: '20px', padding: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1.5rem', boxShadow: '0 10px 30px rgba(4, 120, 87, 0.4)', transition: 'transform 0.3s' }}
+            onMouseEnter={e => e.currentTarget.style.transform='translateY(-10px)'}
+            onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
+          >
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '1rem', borderRadius: '16px' }}><Gamepad2 size={32} color="white" /></div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'white', fontWeight: 900 }}>Tombola (Bingo)</h3>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#6ee7b7', fontSize: '0.9rem', fontWeight: 'bold' }}>Juega con la comunidad</p>
+            </div>
+          </div>
+
+          {/* Ristorante Banner */}
+          <div 
+            onClick={() => setViewerFile({ name: 'Il Ristorante', type: 'interactive_ristorante', path: '' })}
+            style={{ background: 'linear-gradient(135deg, #78350f, #b45309)', borderRadius: '20px', padding: '2rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1.5rem', boxShadow: '0 10px 30px rgba(180, 83, 9, 0.4)', transition: 'transform 0.3s' }}
+            onMouseEnter={e => e.currentTarget.style.transform='translateY(-10px)'}
+            onMouseLeave={e => e.currentTarget.style.transform='translateY(0)'}
+          >
+            <div style={{ background: 'rgba(255,255,255,0.2)', padding: '1rem', borderRadius: '16px' }}><Coffee size={32} color="white" /></div>
+            <div>
+              <h3 style={{ margin: 0, fontSize: '1.4rem', color: 'white', fontWeight: 900 }}>Il Ristorante</h3>
+              <p style={{ margin: '0.5rem 0 0 0', color: '#fcd34d', fontSize: '0.9rem', fontWeight: 'bold' }}>Práctica inmersiva</p>
+            </div>
+          </div>
+          
+        </div>
         
         {/* Sidebar Nav */}
         <aside className="tano-sidebar" style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
