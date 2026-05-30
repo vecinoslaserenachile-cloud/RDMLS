@@ -466,6 +466,52 @@ const InteractiveTrivia = () => {
     window.speechSynthesis.speak(utterance);
   };
 
+  const playSound = (type) => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      const osc = ctx.createOscillator();
+      const gainNode = ctx.createGain();
+      
+      osc.connect(gainNode);
+      gainNode.connect(ctx.destination);
+      
+      if (type === 'correct') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
+        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1); // E5
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, ctx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } else if (type === 'error') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, ctx.currentTime);
+        osc.frequency.setValueAtTime(100, ctx.currentTime + 0.15);
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.05);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.4);
+      } else if (type === 'win') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, ctx.currentTime); // A4
+        osc.frequency.setValueAtTime(554.37, ctx.currentTime + 0.1); // C#5
+        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.2); // E5
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.3); // A5
+        gainNode.gain.setValueAtTime(0, ctx.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, ctx.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.8);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.8);
+      }
+    } catch (e) {
+      console.error("Audio error:", e);
+    }
+  };
+
   useEffect(() => {
     if (gameState === 'playing' && !showResult) {
       speakItalian(questions[currentQuestion].question);
@@ -486,6 +532,10 @@ const InteractiveTrivia = () => {
       const correct = option === questions[currentQuestion].answer;
       setIsCorrect(correct);
       
+      if (correct) playSound('correct');
+      else playSound('error');
+      
+      
       setTimeout(() => {
         if (correct) {
           const nextQ = currentQuestion + 1;
@@ -497,6 +547,7 @@ const InteractiveTrivia = () => {
           } else {
             setShowResult(true);
             setGameState('result');
+            playSound('win');
           }
         } else {
           setShowResult(true);
