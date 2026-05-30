@@ -244,11 +244,17 @@ const TanoMusicPlayer = () => {
 
   const playlist = [
     { title: "Marraqueta Ponte (Los Saludos)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_saludos.mp3" },
+    { title: "Marraqueta Ponte (Versión Acústica)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_saludos_alt.mp3" },
     { title: "Scusi Il Menu (En el Ristorante)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante.mp3" },
+    { title: "Scusi Il Menu (Pop Remix)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante_alt1.mp3" },
+    { title: "Scusi Il Menu (Acapella)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante_alt2.mp3" },
     { title: "Bingo Cartones (Los Números)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_numeros.mp3" },
-    { title: "Palabras de Cortesía (Remastered)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia.mp3" },
+    { title: "Bingo Cartones (Versión Disco)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_numeros_alt.mp3" },
+    { title: "Palabras de Cortesía", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia.mp3" },
+    { title: "Palabras de Cortesía (Remastered)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia_alt.mp3" },
     { title: "Palabras Mágicas (La Piazza)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_magicas.mp3" },
-    { title: "La Nonna Siede (La Famiglia)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_familia.mp3" }
+    { title: "La Nonna Siede (La Famiglia)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_familia.mp3" },
+    { title: "La Nonna Siede (Lullaby Mix)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_familia_alt.mp3" }
   ];
 
   const handlePlay = (index) => {
