@@ -346,9 +346,9 @@ const InteractiveKaraoke = () => {
   const [activeVideo, setActiveVideo] = useState(null);
 
   const songs = [
-    { title: "Vivo Per Lei", artist: "Andrea Bocelli" },
-    { title: "Volare (Nel Blu Dipinto Di Blu)", artist: "Domenico Modugno" },
-    { title: "La Donna è Mobile", artist: "Giuseppe Verdi" }
+    { title: "Vivo Per Lei", artist: "Andrea Bocelli", videoId: "m5UcZ9thgPI" },
+    { title: "Volare (Nel Blu Dipinto Di Blu)", artist: "Domenico Modugno", videoId: "u99ivDAqwSM" },
+    { title: "La Donna è Mobile", artist: "Giuseppe Verdi", videoId: "uvhUmzBP_aI" }
   ];
 
   return (
@@ -363,7 +363,7 @@ const InteractiveKaraoke = () => {
             <iframe 
               width="100%" 
               height="100%" 
-              src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(activeVideo.title + ' ' + activeVideo.artist + ' karaoke')}&autoplay=1`}
+              src={`https://www.youtube.com/embed/${activeVideo.videoId}?autoplay=1`}
               title="YouTube video player" 
               frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
