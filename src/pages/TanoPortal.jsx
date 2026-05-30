@@ -668,7 +668,23 @@ export default function TanoPortal() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #064e3b 0%, #111827 50%, #7f1d1d 100%)', color: 'white', fontFamily: '"Outfit", sans-serif' }}>
-      
+      <style>{`
+        @media (max-width: 768px) {
+          .tano-header { padding: 1.5rem 1rem !important; flex-direction: column !important; gap: 1.5rem !important; text-align: center !important; position: static !important; }
+          .tano-header h1 { font-size: 2.2rem !important; }
+          .tano-header p { font-size: 1rem !important; }
+          .tano-header-actions { flex-direction: column !important; width: 100% !important; gap: 1rem !important; }
+          .tano-header-actions > * { width: 100% !important; justify-content: center !important; }
+          .tano-main { padding: 1rem !important; gap: 2rem !important; flex-direction: column !important; }
+          .tano-sidebar { flex: none !important; width: 100% !important; max-height: none !important; padding-right: 0 !important; }
+          .tano-content { flex: none !important; width: 100% !important; }
+          .tano-content-card { padding: 1.5rem !important; border-radius: 20px !important; }
+          .tano-content-header { flex-direction: column !important; text-align: center !important; gap: 1rem !important; }
+          .tano-content-header h2 { font-size: 1.8rem !important; }
+          .tano-viewer-header { padding: 1rem !important; flex-direction: column !important; gap: 1rem !important; text-align: center !important; }
+        }
+      `}</style>
+
       {/* Viewer Overlay */}
       <AnimatePresence>
         {viewerFile && (
@@ -678,12 +694,12 @@ export default function TanoPortal() {
             exit={{ opacity: 0, y: 50, scale: 0.95 }}
             style={{ position: 'fixed', inset: 0, zIndex: 99999, background: 'rgba(2, 6, 23, 0.98)', display: 'flex', flexDirection: 'column' }}
           >
-            <div style={{ padding: '1.5rem 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="tano-viewer-header" style={{ padding: '1.5rem 3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <Star size={24} color="#fcd34d" />
+                <Star size={24} color="#fcd34d" style={{ flexShrink: 0 }} />
                 <h3 style={{ margin: 0, fontSize: '1.5rem', color: 'white', letterSpacing: '1px' }}>{viewerFile.name}</h3>
               </div>
-              <button onClick={() => setViewerFile(null)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.8rem 2rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem' }}>
+              <button onClick={() => setViewerFile(null)} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '0.8rem 2rem', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1rem', width: '100%', justifyContent: 'center' }}>
                 <X size={20} /> CERRAR
               </button>
             </div>
@@ -708,14 +724,14 @@ export default function TanoPortal() {
         )}
       </AnimatePresence>
 
-      <header style={{ padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
+      <header className="tano-header" style={{ padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
         <div>
           <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
             Italiano con Francesca
           </h1>
           <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arquitecta Francesca Vives</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <div className="tano-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem 1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
               <User size={24} color="#10b981" />
@@ -735,10 +751,10 @@ export default function TanoPortal() {
         </div>
       </header>
 
-      <main style={{ padding: '4rem', maxWidth: '1600px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
+      <main className="tano-main" style={{ padding: '4rem', maxWidth: '1600px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
         
         {/* Sidebar Nav */}
-        <aside style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
+        <aside className="tano-sidebar" style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
           <h2 style={{ fontSize: '1.2rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', margin: '0 0 1rem 0', flexShrink: 0 }}>Módulos de Aprendizaje</h2>
           {TANO_MODULES.map((mod) => (
             <button
@@ -778,16 +794,17 @@ export default function TanoPortal() {
         </aside>
 
         {/* Content Area */}
-        <section style={{ flex: '2 1 700px' }}>
+        <section className="tano-content" style={{ flex: '2 1 700px' }}>
           <AnimatePresence mode="wait">
             <motion.div
+              className="tano-content-card"
               key={activeModule.id}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               style={{ background: 'rgba(0,0,0,0.4)', padding: '4rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
+              <div className="tano-content-header" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
                 <div style={{ padding: '1.5rem', background: 'rgba(16, 185, 129, 0.2)', borderRadius: '24px', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
                   <activeModule.icon size={50} />
                 </div>
