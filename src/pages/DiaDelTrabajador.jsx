@@ -9,40 +9,51 @@ import {
 
 // --- COMPONENTES AUXILIARES ---
 
-const Nav = ({ activeTab, setActiveTab }) => (
-  <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/90 backdrop-blur-md border-b border-red-900/40 px-6 py-4 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
-    <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-gradient-to-br from-red-600 to-red-900 rounded-lg flex items-center justify-center shadow-[0_0_15px_rgba(220,38,38,0.5)]">
-          <History className="text-white w-5 h-5" />
+const Nav = ({ activeTab, setActiveTab }) => {
+  const tabs = [
+    { name: 'LA SERENA', icon: Globe },
+    { name: 'HISTORIA', icon: History },
+    { name: 'CHILE', icon: Star },
+    { name: 'MUNDO', icon: Users },
+    { name: 'FAMILIA', icon: Heart }
+  ];
+
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-950/95 backdrop-blur-xl border-b border-red-900/30 px-6 py-4 shadow-[0_10px_40px_rgba(0,0,0,0.8)]">
+      <div className="max-w-7xl mx-auto flex flex-col xl:flex-row justify-between items-center gap-6">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-900 rounded-xl flex items-center justify-center shadow-[0_0_25px_rgba(220,38,38,0.6)] border border-red-500/30">
+            <History className="text-white w-6 h-6" />
+          </div>
+          <div>
+            <h1 className="text-white font-black text-2xl leading-none tracking-tight">1 DE MAYO</h1>
+            <p className="text-red-400 text-[11px] font-black tracking-[0.3em] uppercase mt-1">Día del Trabajador</p>
+          </div>
         </div>
-        <div>
-          <h1 className="text-white font-black text-xl leading-tight tracking-wide">1 DE MAYO</h1>
-          <p className="text-red-400 text-[10px] font-bold tracking-[0.2em] uppercase">Día del Trabajador</p>
+        
+        <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 w-full xl:w-auto">
+          {tabs.map((tab) => (
+            <button
+              key={tab.name}
+              onClick={() => setActiveTab(tab.name)}
+              className={`flex items-center gap-2 px-6 py-3 text-[11px] md:text-xs font-black tracking-[0.2em] rounded-2xl transition-all duration-300 whitespace-nowrap ${
+                activeTab === tab.name 
+                  ? 'bg-gradient-to-r from-red-600 to-red-800 text-white border border-red-400/50 shadow-[0_0_20px_rgba(220,38,38,0.5)] scale-105' 
+                  : 'bg-slate-900/60 text-slate-400 hover:text-white hover:bg-slate-800 border border-slate-800 hover:border-slate-600 hover:scale-105 shadow-lg'
+              }`}
+            >
+              <tab.icon className={`w-4 h-4 ${activeTab === tab.name ? 'text-white' : 'text-slate-500'}`} />
+              {tab.name}
+            </button>
+          ))}
         </div>
       </div>
-      
-      <div className="flex items-center gap-2 md:gap-6 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 scrollbar-hide">
-        {['LA SERENA', 'HISTORIA', 'CHILE', 'MUNDO', 'FAMILIA'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-xs md:text-sm font-bold tracking-widest rounded-full transition-all whitespace-nowrap ${
-              activeTab === tab 
-                ? 'bg-red-700/20 text-red-400 border border-red-500/50 shadow-[0_0_10px_rgba(220,38,38,0.2)]' 
-                : 'text-slate-400 hover:text-white hover:bg-white/5 border border-transparent'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-    </div>
-  </nav>
-);
+    </nav>
+  );
+};
 
 const SectionHero = () => (
-  <div className="relative min-h-screen flex items-center justify-center pt-24 overflow-hidden bg-slate-950">
+  <div className="relative min-h-screen flex items-center justify-center pt-32 overflow-hidden bg-slate-950">
     {/* Fondo Artístico */}
     <div className="absolute inset-0 opacity-40 pointer-events-none">
       <img src="/1demayo_media/dia_trabajador_v2.png" alt="1 de Mayo" className="w-full h-full object-cover scale-105 animate-[pulse_10s_ease-in-out_infinite_alternate]" />

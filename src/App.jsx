@@ -7,7 +7,7 @@ import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X a
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
-// import LoginModal from './components/LoginModal';
+import LoginModal from './components/LoginModal';
 import { supabase } from './utils/supabase';
 import GlobalAnnouncer from './components/GlobalAnnouncer';
 import SEO from './components/SEO';
@@ -169,7 +169,7 @@ const VLSpeakTranslator = lazy(() => import('./components/VLSpeakTranslator'));
 const VLSNewsIan = lazy(() => import('./components/VLSNewsIan'));
 // const VLSNewsArtemis = lazy(() => import('./components/VLSNewsArtemis'));
 // const VLSNewsAlcaldesa = lazy(() => import('./components/VLSNewsAlcaldesa'));
-// const VLSNewsAcciona = lazy(() => import('./components/VLSNewsAcciona'));
+const VLSNewsAcciona = lazy(() => import('./components/VLSNewsAcciona'));
 // const VLSNewsSalud = lazy(() => import('./components/VLSNewsSalud'));
 // const VLSNewsChequia = lazy(() => import('./components/VLSNewsChequia'));
 const SeguridadVecinal = lazy(() => import('./pages/SeguridadVecinal'));
@@ -2392,8 +2392,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
       )}
 
 
-      {/* LoginModal removido por ausencia de componente */}
-      {/* <LoginModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} /> */}
+      <LoginModal 
+        isOpen={showLoginModal} 
+        onClose={() => setShowLoginModal(false)} 
+        onForceGuest={() => {
+          localStorage.removeItem('smart_logout');
+          localStorage.setItem('smart_is_guest', 'true');
+          setIsGuest(true);
+          setShowLoginModal(false);
+        }}
+      />
 
       {/* BANNER DE ALERTAS CRITICAS (GLOBAL) */}
       <AnimatePresence>
@@ -2630,20 +2638,26 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
       {(showAcciona || location.pathname.toLowerCase().match(/^\/acciona(\/|$)/i)) && (
         <Suspense fallback={<LoadingScreen />}>
-          {/* VLSNewsAcciona removido por ausencia de componente */}
-          {/* <VLSNewsAcciona onClose={() => {
+          <VLSNewsAcciona onClose={() => {
             setShowAcciona(false);
             if (location.pathname.match(/^\/acciona/i)) navigate('/');
-          }} /> */}
+          }} />
         </Suspense>
       )}
 
       {(showSalud || location.pathname.toLowerCase().match(/^\/salud(\/|$)/i)) && (
         <Suspense fallback={<LoadingScreen />}>
-          <VLSNewsSalud onClose={() => {
+          {/* VLSNewsSalud removido por ausencia de componente */}
+          {/* <VLSNewsSalud onClose={() => {
             setShowSalud(false);
             if (location.pathname.match(/^\/salud/i)) navigate('/');
-          }} />
+          }} /> */}
+        </Suspense>
+      )}
+
+      {showMemoriasUnicornio && (
+        <Suspense fallback={<LoadingScreen />}>
+          <MemoriasUnicornio onClose={() => setShowMemoriasUnicornio(false)} />
         </Suspense>
       )}
       

@@ -440,7 +440,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
           position: 'fixed',
           bottom: isMobile ? '160px' : '100px',
           right: isMobile ? '12px' : '100px',
-          zIndex: 999998,
+          zIndex: 99999999,
           display: isVisible ? 'flex' : 'none',
           flexDirection: 'column',
           alignItems: 'center',
@@ -513,7 +513,7 @@ export default function ArchiRadioPlayer({ isVisible = true, scale = 1 }) {
     position: 'fixed',
     bottom: isMobile ? '80px' : '30px',
     left: isMobile ? '10px' : '40px', // Movido a la izquierda para no tapar WA
-    zIndex: 999998,
+    zIndex: 99999999,
     display: isVisible ? 'flex' : 'none',
     opacity: 1,
     flexDirection: 'column',

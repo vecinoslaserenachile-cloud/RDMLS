@@ -2793,132 +2793,35 @@ export default function HubDashboard() {
                         </div>
                     </motion.div>
 
-                        {/* CARD 2: ALCALDESA GESTIÓN (MOVED DOWN) */}
+                        {/* CARD YOUTUBE INFORMATIVO */}
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-alcaldesa'))}
                             style={{ 
-                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
-                                border: '2px solid rgba(56, 189, 248, 0.4)', boxShadow: '0 30px 60px rgba(56, 189, 248, 0.2)',
-                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                position: 'relative', minHeight: isMobile ? '300px' : '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(245, 158, 11, 0.4)', boxShadow: '0 30px 60px rgba(245, 158, 11, 0.2)',
+                                background: '#020617', display: 'flex', flexDirection: 'column',
                                 gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
                             }}
-                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
                         >
-                            <img src="/alcaldesa_daniela_norambuena.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top', opacity: 0.9 }} alt="Alcaldesa" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #020617 0%, rgba(2, 6, 23, 0.8) 40%, transparent 100%)' }} />
-                            
-                                <div style={{ 
-                                    position: 'absolute', top: 30, right: 30, 
-                                    background: '#38bdf8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
-                                    color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
-                                    zIndex: 20, boxShadow: '0 10px 20px rgba(56, 189, 248, 0.5)' 
-                                }}>
-                                    GESTIÓN ESTRATÉGICA
-                                </div>
- 
-                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
-                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 950, margin: 0, letterSpacing: '-2px', lineHeight: 0.95 }}>
-                                   AVANCE Y SOBERANÍA:<br/>
-                                   <span style={{ color: '#38bdf8' }}>PORTAL GESTIÓN</span>
-                                </h2>
-                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(0.9rem, 2.5vw, 1.25rem)', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
-                                   Conoce los pilares de la gestión actual y el compromiso de la Alcaldesa Daniela Norambuena con la comuna.
-                                </p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#38bdf8', color: 'white', border: 'none', padding: '1rem 2rem' }}>
-                                   ENTRAR AL PORTAL
-                                </button>
+                            <iframe 
+                                width="100%" height="100%" 
+                                src="https://www.youtube.com/embed/6-sgGRjSd_A?modestbranding=1&rel=0&showinfo=0"
+                                frameBorder="0" allowFullScreen 
+                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '38px' }}
+                            />
+                            <div style={{ 
+                                position: 'absolute', top: 30, right: 30, 
+                                background: '#f59e0b', padding: '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
+                                zIndex: 10, boxShadow: '0 10px 20px rgba(245, 158, 11, 0.5)', pointerEvents: 'none'
+                            }}>
+                                TRANSMISIÓN OFICIAL
                             </div>
                         </motion.div>
 
-                        {/* CARD 5: JVRCH - ELECCIONES COMUNIDADES DE AGUAS */}
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            onClick={() => {
-                                navigate('/choapa');
-                                window.dispatchEvent(new CustomEvent('open-vls-choapa'));
-                            }}
-                            style={{ 
-                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
-                                border: '2px solid rgba(59, 130, 246, 0.4)', boxShadow: '0 30px 60px rgba(59, 130, 246, 0.2)',
-                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
-                            }}
-                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                        >
-                            <img src="/jvrch/foto_referencial_choapa.jpg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.8 }} alt="JVRCH" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0a1628 0%, rgba(10, 22, 40, 0.8) 40%, transparent 100%)' }} />
-                            
-                            <div style={{ 
-                                position: 'absolute', top: 30, right: 30, 
-                                background: '#1d4ed8', padding: '0.6rem 1.8rem', borderRadius: '30px', 
-                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
-                                zIndex: 20
-                            }}>
-                                AGUAS SOBERANAS
-                            </div>
- 
-                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
-                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1.5px', lineHeight: 1 }}>
-                                   CHOAPA: ELECCIONES<br/>
-                                   <span style={{ color: '#60a5fa' }}>COMUNIDADES DE AGUAS</span>
-                                </h2>
-                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1rem', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
-                                   Llamado a regularizar procesos de renovación de directorios. Seguridad jurídica para la cuenca.
-                                </p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#1d4ed8', color: 'white', border: 'none', padding: '0.8rem 1.8rem', borderRadius: '50px' }}>
-                                   VER COMUNICADO
-                                </button>
-                            </div>
-                        </motion.div>
 
-                        {/* CARD 6: RED SALAS DE CINE - TALLERES GRATUITOS */}
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                            onClick={() => {
-                                navigate('/redcine');
-                                window.dispatchEvent(new CustomEvent('open-vls-redcine'));
-                            }}
-                            style={{ 
-                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
-                                border: '2px solid rgba(244, 63, 94, 0.4)', boxShadow: '0 30px 60px rgba(244, 63, 94, 0.2)',
-                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
-                                gridColumn: window.innerWidth < 1024 ? 'auto' : 'span 1'
-                            }}
-                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
-                        >
-                            <img src="/redcine/taller1.jpg" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} alt="Red Cine" />
-                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, #0f172a 0%, rgba(15, 23, 42, 0.8) 40%, transparent 100%)' }} />
-                            
-                            <div style={{ 
-                                position: 'absolute', top: 30, right: 30, 
-                                background: '#f43f5e', padding: '0.6rem 1.8rem', borderRadius: '30px', 
-                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 0.9rem)', letterSpacing: '2px', 
-                                zIndex: 20
-                            }}>
-                                FORMACIÓN CULTURAL
-                            </div>
- 
-                            <div style={{ position: 'relative', padding: '3rem', zIndex: 10 }}>
-                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 4vw, 2.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1.5px', lineHeight: 1 }}>
-                                   RED SALAS DE CINE:<br/>
-                                   <span style={{ color: '#fb7185' }}>TALLERES GRATUITOS</span>
-                                </h2>
-                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: '1rem', marginTop: '1.2rem', fontWeight: 400, maxWidth: '450px', lineHeight: 1.4 }}>
-                                   Cineclubismo y curatoría. Convocatoria abierta para gestores y amantes del séptimo arte.
-                                </p>
-                                <button className="btn-vls-action-light" style={{ marginTop: '2rem', background: '#f43f5e', color: 'white', border: 'none', padding: '0.8rem 1.8rem', borderRadius: '50px' }}>
-                                   INSCRIBIRSE AHORA
-                                </button>
-                            </div>
-                        </motion.div>
 
                         {/* CARD AKICHIP MASTER (GRAND TARJETÓN CENTRAL - REPLACING EDUCATIVO) */}
                         <motion.div 

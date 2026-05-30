@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Music, Tv, PlayCircle, Headphones, Radio, Gamepad2, MonitorPlay, Speaker, Newspaper, Plane, Brain, Cloud, Video, Monitor, Layers, Wind } from 'lucide-react';
 import MusicRanking from '../components/MusicRanking';
-import RadioPlayer from '../components/RadioPlayer';
 import VlsDjMixer from '../components/VlsDjMixer';
 
 export default function MusicaPage() {
@@ -95,12 +94,14 @@ export default function MusicaPage() {
                         <VlsDjMixer />
                     </div>
                     
-                    {/* SECCIÓN 2: RADIO MUNICIPAL */}
+                    {/* SECCIÓN 2: RADIO MUNICIPAL (Usando Reproductor Global Flotante) */}
                     <div className="glass-panel" style={{ padding: '2rem', borderRadius: '24px', background: 'rgba(15, 23, 42, 0.6)', border: '1px solid rgba(56,189,248,0.2)' }}>
-                        <h2 style={{ color: '#38bdf8', marginTop: 0, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
+                        <h2 style={{ color: '#38bdf8', marginTop: 0, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>
                             <Radio size={24} /> CONSOLA RADIO VLS MUNICIPAL
                         </h2>
-                        <RadioPlayer />
+                        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', fontStyle: 'italic' }}>
+                           El reproductor de radio VLS se encuentra anclado en la pantalla de forma flotante. Puede pausar, cambiar el volumen o consultar la canción actual allí en todo momento.
+                        </p>
                     </div>
                 </div>
 

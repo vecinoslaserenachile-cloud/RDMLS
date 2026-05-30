@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Home, CloudRain, Sun, Moon, Cloud, CloudSnow, CloudFog, CloudLightning } from 'lucide-react';
 import OldTVModal from '../../components/OldTVModal';
 import VhsTVModal from '../../components/VhsTVModal';
-import RadioPlayer from '../../components/RadioPlayer';
 
 function TimeWidget() {
     const [time, setTime] = useState(new Date());
@@ -187,10 +186,9 @@ export default function PuntoVecinal() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                     <div className="glass-panel" style={{ padding: '1.5rem', border: '1px solid rgba(245, 158, 11, 0.4)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, minHeight: '180px' }}>
                         <h2 style={{ color: '#f59e0b', margin: '0 0 1rem 0', fontSize: '1.3rem' }}>Radio Digital</h2>
-                        {/* Invocar al RadioPlayer. Necesitaremos estilizarlo un poco si no queremos que flote aquí */}
-                        <div style={{ width: '100%', transform: 'scale(0.9)', transformOrigin: 'top center' }}>
-                            <RadioPlayer globalWeather={weather} inline={true} />
-                        </div>
+                        <p style={{ color: '#cbd5e1', fontSize: '0.9rem', fontStyle: 'italic', textAlign: 'center' }}>
+                           El reproductor de radio VLS se encuentra anclado en la pantalla de forma flotante.
+                        </p>
                     </div>
 
                     <div className="glass-panel" style={{ padding: '1.5rem', border: '1px solid rgba(139, 92, 246, 0.4)', borderRadius: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', flex: 1, background: 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(88,28,135,0.4))' }}>
