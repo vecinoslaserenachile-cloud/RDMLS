@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Play, FileText, Download, Award, Music, Coffee, Map, Gamepad2, 
-  ChevronRight, X, User, LogIn, CheckCircle, Volume2, Star
+  ChevronRight, X, User, LogIn, CheckCircle, Volume2, Star, Radio, Activity
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useNavigate } from 'react-router-dom';
@@ -564,9 +564,17 @@ export default function TanoPortal() {
   };
 
   const handleLogin = async () => {
+    // Determine the correct redirect URL: always go back to /tano on this site
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const redirectBase = isLocal 
+      ? window.location.origin 
+      : 'https://www.entrevecinas.cl';
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin + '/tano' }
+      options: { 
+        redirectTo: redirectBase + '/tano',
+        queryParams: { prompt: 'select_account' }
+      }
     });
   };
 
