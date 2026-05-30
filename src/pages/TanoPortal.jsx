@@ -80,6 +80,15 @@ const TANO_MODULES = [
     files: [
       { id: 'j1', name: 'Jugar Bingo Italiano (Interactivo)', type: 'interactive_bingo' }
     ]
+  },
+  {
+    id: 'trivia',
+    title: 'Trivia Culturale',
+    icon: Star,
+    desc: 'Pon a prueba tus conocimientos de cultura y vocabulario italiano.',
+    files: [
+      { id: 't1', name: 'Jugar Trivia Interactiva', type: 'interactive_trivia' }
+    ]
   }
 ];
 
@@ -196,6 +205,90 @@ const InteractiveKaraoke = () => {
   );
 };
 
+const InteractiveTrivia = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResult, setShowResult] = useState(false);
+
+  const questions = [
+    {
+      image: '/tano_assets/trivia_coffee.png',
+      question: '¿Qué es esto en italiano?',
+      options: ['Un Cappuccino', 'Un Caffè', 'Un Tè', 'Una Birra'],
+      answer: 'Un Caffè'
+    },
+    {
+      image: '/tano_assets/trivia_pizza.png',
+      question: 'El plato más famoso de Italia es...',
+      options: ['La Pasta', 'Il Gelato', 'La Pizza', 'Il Risotto'],
+      answer: 'La Pizza'
+    },
+    {
+      image: '/tano_assets/trivia_colosseum.png',
+      question: '¿Qué monumento histórico es este?',
+      options: ['Il Colosseo', 'La Torre di Pisa', 'Il Duomo', 'Il Pantheon'],
+      answer: 'Il Colosseo'
+    },
+    {
+      image: '/tano_assets/trivia_scooter.png',
+      question: 'El clásico medio de transporte italiano de 2 ruedas:',
+      options: ['La Ferrari', 'La Vespa', 'La Bicicletta', 'La Macchina'],
+      answer: 'La Vespa'
+    }
+  ];
+
+  const handleAnswer = (option) => {
+    if (option === questions[currentQuestion].answer) {
+      setScore(score + 1);
+    }
+    const nextQ = currentQuestion + 1;
+    if (nextQ < questions.length) {
+      setCurrentQuestion(nextQ);
+    } else {
+      setShowResult(true);
+    }
+  };
+
+  const restartTrivia = () => {
+    setScore(0);
+    setCurrentQuestion(0);
+    setShowResult(false);
+  };
+
+  return (
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #4c1d95, #312e81)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
+      <Star size={60} color="#a78bfa" style={{ marginBottom: '1rem' }} />
+      <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#a78bfa' }}>Trivia Culturale</h2>
+      
+      {showResult ? (
+        <div style={{ textAlign: 'center' }}>
+          <h3 style={{ fontSize: '2.5rem', color: '#34d399', marginBottom: '1rem' }}>¡Hai finito!</h3>
+          <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Puntaje: {score} de {questions.length}</p>
+          <button onClick={restartTrivia} style={{ background: '#a78bfa', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>JUGAR OTRA VEZ</button>
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '600px' }}>
+          <img src={questions[currentQuestion].image} alt="Trivia" style={{ height: '250px', objectFit: 'contain', borderRadius: '20px', marginBottom: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
+          <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>{questions[currentQuestion].question}</h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
+            {questions[currentQuestion].options.map((opt, i) => (
+              <button 
+                key={i} 
+                onClick={() => handleAnswer(opt)}
+                style={{ background: 'rgba(255,255,255,0.1)', border: '2px solid rgba(167, 139, 250, 0.4)', color: 'white', padding: '1rem', borderRadius: '16px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.background = 'rgba(167, 139, 250, 0.2)'}
+                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 // -----------------------------------------------------------------------------
 
 export default function TanoPortal() {
@@ -204,8 +297,15 @@ export default function TanoPortal() {
   const [viewerFile, setViewerFile] = useState(null);
   const [user, setUser] = useState(null);
   const [progress, setProgress] = useState(0); 
+  const [isWrongDomain, setIsWrongDomain] = useState(false);
   
   useEffect(() => {
+    // Restricción de dominio
+    const hostname = window.location.hostname;
+    if (!hostname.includes('entrevecinas.cl') && !hostname.includes('localhost') && !hostname.includes('127.0.0.1') && !hostname.includes('pages.dev') && !hostname.includes('vecinoslaserena.cl')) {
+      setIsWrongDomain(true);
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user || null);
       if (session?.user) loadProgress(session.user.id);
@@ -234,6 +334,21 @@ export default function TanoPortal() {
     setViewerFile(file);
     if (user) setProgress(p => Math.min(p + 5, 100));
   };
+
+  if (isWrongDomain) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#020617', color: 'white', fontFamily: '"Outfit", sans-serif', padding: '2rem', textAlign: 'center' }}>
+        <BookOpen size={80} color="#ef4444" style={{ marginBottom: '2rem' }} />
+        <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: '#ef4444' }}>Acceso Restringido</h1>
+        <p style={{ fontSize: '1.2rem', color: '#9ca3af', maxWidth: '600px', lineHeight: 1.6, marginBottom: '2rem' }}>
+          El curso de Italiano con la arquitecta Francesca Vives es una experiencia exclusiva de <strong>Entre Vecinas</strong>.
+        </p>
+        <button onClick={() => window.location.href = 'https://www.entrevecinas.cl/tano'} style={{ background: '#10b981', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer' }}>
+          Ir a www.entrevecinas.cl/tano
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #064e3b 0%, #111827 50%, #7f1d1d 100%)', color: 'white', fontFamily: '"Outfit", sans-serif' }}>
@@ -267,6 +382,8 @@ export default function TanoPortal() {
                 <InteractiveBingo />
               ) : viewerFile.type === 'interactive_karaoke' ? (
                 <InteractiveKaraoke />
+              ) : viewerFile.type === 'interactive_trivia' ? (
+                <InteractiveTrivia />
               ) : null}
             </div>
           </motion.div>
@@ -328,7 +445,7 @@ export default function TanoPortal() {
           {/* Diploma Section */}
           <div style={{ marginTop: '3rem', padding: '2rem', background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(245, 158, 11, 0.05))', borderRadius: '24px', border: '1px solid rgba(245, 158, 11, 0.3)', textAlign: 'center' }}>
             <Award size={60} color="#fcd34d" style={{ marginBottom: '1.5rem', filter: 'drop-shadow(0 0 10px rgba(245, 158, 11, 0.5))' }} />
-            <h3 style={{ margin: '0 0 1rem 0', color: 'white', fontSize: '1.8rem', fontWeight: 900 }}>Certificación VLS</h3>
+            <h3 style={{ margin: '0 0 1rem 0', color: 'white', fontSize: '1.8rem', fontWeight: 900 }}>Certificación Entre Vecinas</h3>
             <p style={{ fontSize: '1rem', color: '#d1d5db', marginBottom: '2rem', lineHeight: 1.5 }}>Completa todo el material interactivo de la Profesora Francesca Vives para obtener tu diploma digital.</p>
             {user ? (
               <button style={{ width: '100%', padding: '1rem', background: progress >= 100 ? '#f59e0b' : 'rgba(255,255,255,0.1)', border: progress >= 100 ? 'none' : '1px solid rgba(255,255,255,0.2)', color: progress >= 100 ? 'black' : '#9ca3af', borderRadius: '12px', fontWeight: '900', cursor: progress >= 100 ? 'pointer' : 'not-allowed', fontSize: '1.1rem' }}>
