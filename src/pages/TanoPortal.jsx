@@ -445,8 +445,26 @@ const InteractiveTrivia = () => {
     }
   ];
 
+  const speakItalian = (text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'it-IT';
+    utterance.rate = 0.9;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  };
+
+  useEffect(() => {
+    if (gameState === 'playing' && !showResult) {
+      speakItalian(questions[currentQuestion].question);
+    }
+  }, [currentQuestion, gameState, showResult]);
+
   const handleAnswer = (option) => {
     if (gameState !== 'playing') return;
+    
+    // Hablar la opción en italiano sin la letra "A) "
+    const cleanOption = option.replace(/^[A-D]\)\s*/, '');
+    speakItalian(cleanOption);
     
     setSelectedOption(option);
     setGameState('checking');

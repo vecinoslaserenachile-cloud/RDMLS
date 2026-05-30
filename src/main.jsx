@@ -303,7 +303,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <GlobalOmniSyncOverlay />
           
           {/* VLS_PERSISTENT_CORE: Components that must NEVER unmount during SPA navigation */}
-          {(!window.location.pathname.toLowerCase().match(/\/fred(\/|$)/)) && (
+          {(!window.location.pathname.toLowerCase().match(/\/(fred|tano)(\/|$)/)) && (
             <Suspense fallback={null}>
               {/* En radiovecinos.cl el reproductor ARCHI propio aparece globalmente */}
               {isRadioVecinosDns ? <ArchiRadioPlayer isVisible={true} /> : <RadioPlayer isVisible={true} />}
