@@ -104,32 +104,74 @@ const TANO_MODULES = [
 // --- COMPONENTES INTERACTIVOS (Sustitutos de descarga) ---
 
 const InteractiveRistorante = () => {
-  const [step, setStep] = useState(0);
+  const [speaking, setSpeaking] = useState(null);
+
   const vocabulary = [
-    { it: "Il Menu", es: "El Menú", icon: "📋" },
-    { it: "Il Cameriere", es: "El Mesero", icon: "🤵" },
-    { it: "Il Conto", es: "La Cuenta", icon: "🧾" },
-    { it: "Il Piatto", es: "El Plato", icon: "🍽️" },
-    { it: "Il Bicchiere", es: "El Vaso", icon: "🥛" }
+    { it: "Il Menu", es: "El Menú", icon: "📋", frase: "Posso avere il menu, per favore?" },
+    { it: "Il Cameriere", es: "El Mesero", icon: "🤵", frase: "Cameriere, un tavolo per due, per favore!" },
+    { it: "Il Conto", es: "La Cuenta", icon: "🧾", frase: "Il conto, per favore. Grazie mille!" },
+    { it: "Il Piatto", es: "El Plato", icon: "🍽️", frase: "Che piatto delizioso! Complimenti allo chef!" },
+    { it: "Il Bicchiere", es: "El Vaso", icon: "🥛", frase: "Un bicchiere d'acqua, per favore." },
+    { it: "La Pizza", es: "La Pizza", icon: "🍕", frase: "Una pizza margherita, per favore!" },
+    { it: "Il Caffè", es: "El Café", icon: "☕", frase: "Un caffè espresso, grazie!" },
+    { it: "Buon Appetito", es: "Buen Provecho", icon: "✨", frase: "Buon appetito a tutti!" }
   ];
 
+  const speakItalian = (item, index) => {
+    if (!('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    setSpeaking(index);
+
+    // First speak the word
+    const wordUtterance = new SpeechSynthesisUtterance(item.it);
+    wordUtterance.lang = 'it-IT';
+    wordUtterance.rate = 0.8;
+    wordUtterance.pitch = 1.1;
+
+    // Then speak the example sentence
+    const phraseUtterance = new SpeechSynthesisUtterance(item.frase);
+    phraseUtterance.lang = 'it-IT';
+    phraseUtterance.rate = 0.85;
+    phraseUtterance.pitch = 1.0;
+    phraseUtterance.onend = () => setSpeaking(null);
+
+    window.speechSynthesis.speak(wordUtterance);
+    window.speechSynthesis.speak(phraseUtterance);
+  };
+
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a, #0f172a)', borderRadius: '24px', padding: '2rem', color: 'white' }}>
-      <Coffee size={80} color="#fcd34d" style={{ marginBottom: '1rem' }} />
-      <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#fcd34d' }}>Benvenuti al Ristorante!</h2>
-      <p style={{ fontSize: '1.2rem', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px', color: '#94a3b8' }}>
-        Aprende el vocabulario esencial para pedir comida como un verdadero italiano. Haz clic en las tarjetas para descubrir su significado.
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a, #0f172a)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
+      <Coffee size={70} color="#fcd34d" style={{ marginBottom: '1rem' }} />
+      <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem', textAlign: 'center', color: '#fcd34d' }}>Benvenuti al Ristorante!</h2>
+      <p style={{ fontSize: '1rem', marginBottom: '1.5rem', textAlign: 'center', maxWidth: '600px', color: '#94a3b8' }}>
+        🔊 <strong>Haz clic en cada tarjeta</strong> para escuchar la pronunciación italiana y una frase de ejemplo.
       </p>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'center', width: '100%' }}>
+      {speaking !== null && (
+        <div style={{ marginBottom: '1rem', padding: '0.8rem 2rem', background: 'rgba(16,185,129,0.2)', border: '1px solid #10b981', borderRadius: '30px', color: '#34d399', fontWeight: 'bold', fontSize: '1rem', animation: 'pulse 1s infinite' }}>
+          🎙️ {vocabulary[speaking]?.frase}
+        </div>
+      )}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.2rem', justifyContent: 'center', width: '100%' }}>
         {vocabulary.map((item, i) => (
           <motion.div 
             key={i}
-            whileHover={{ scale: 1.05, rotateY: 10 }}
-            style={{ background: 'rgba(255,255,255,0.1)', border: '2px solid rgba(255,255,255,0.2)', padding: '2rem', borderRadius: '20px', cursor: 'pointer', textAlign: 'center', width: '220px', height: '220px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}
+            onClick={() => speakItalian(item, i)}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.95 }}
+            style={{ 
+              background: speaking === i ? 'rgba(16,185,129,0.25)' : 'rgba(255,255,255,0.08)', 
+              border: speaking === i ? '2px solid #10b981' : '2px solid rgba(255,255,255,0.15)', 
+              padding: '1.5rem', borderRadius: '20px', cursor: 'pointer', textAlign: 'center', 
+              width: '180px', height: '180px', display: 'flex', flexDirection: 'column', 
+              alignItems: 'center', justifyContent: 'center', gap: '0.8rem',
+              boxShadow: speaking === i ? '0 0 30px rgba(16,185,129,0.5)' : 'none',
+              transition: 'all 0.3s ease'
+            }}
           >
-            <div style={{ fontSize: '4rem' }}>{item.icon}</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{item.it}</div>
-            <div style={{ fontSize: '1rem', color: '#10b981', fontWeight: 'bold' }}>{item.es}</div>
+            <div style={{ fontSize: '3rem' }}>{speaking === i ? '🔊' : item.icon}</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: speaking === i ? '#34d399' : 'white' }}>{item.it}</div>
+            <div style={{ fontSize: '0.85rem', color: '#10b981', fontWeight: 'bold' }}>{item.es}</div>
+            <div style={{ fontSize: '0.7rem', color: '#6ee7b7', opacity: 0.8 }}>← tocca per ascoltare</div>
           </motion.div>
         ))}
       </div>

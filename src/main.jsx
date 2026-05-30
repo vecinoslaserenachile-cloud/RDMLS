@@ -276,6 +276,25 @@ const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protoco
 const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('pren-vls');
 const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prendes.cl rebranding
 
+// ── TANO OAUTH CROSS-DOMAIN RELAY ────────────────────────────────────────────
+// Supabase Site URL is vecinoslaserena.cl, but TanoPortal lives on entrevecinas.cl.
+// When Google login completes, Supabase sends the access_token to vecinoslaserena.cl (root).
+// This interceptor detects that case and forwards the token to the correct domain.
+(function tanoOAuthRelay() {
+  try {
+    const hash = window.location.hash;
+    const path = window.location.pathname;
+    const isVecinosRoot = (host.includes('vecinoslaserena.cl') || host.includes('pages.dev')) && (path === '/' || path === '');
+    if (isVecinosRoot && hash && hash.includes('access_token=')) {
+      // Token landed on wrong domain root → relay to entrevecinas.cl/tano
+      const target = 'https://www.entrevecinas.cl/tano' + hash;
+      window.location.replace(target);
+      return; // Don't render anything — we're navigating away
+    }
+  } catch(e) { console.warn('[VLS] tanoOAuthRelay error:', e); }
+})();
+// ─────────────────────────────────────────────────────────────────────────────
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <ErrorBoundary>
