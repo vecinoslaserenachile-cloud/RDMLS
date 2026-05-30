@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Play, FileText, Download, Award, Music, Coffee, Map, Gamepad2, 
-  ChevronRight, X, User, LogIn, CheckCircle, Volume2, Star, Radio, Activity
+  ChevronRight, X, User, LogIn, CheckCircle, Volume2, Star, Radio, Activity,
+  Pause, SkipForward, SkipBack
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useNavigate } from 'react-router-dom';
@@ -236,9 +237,10 @@ const InteractiveBingo = () => {
   );
 };
 
-const TanoMusicPlayer = () => {
+const TanoGlobalPlayer = () => {
   const [currentTrack, setCurrentTrack] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(0.8);
   const [audioError, setAudioError] = useState(false);
   
   const audioRef = useRef(null);
@@ -258,92 +260,83 @@ const TanoMusicPlayer = () => {
     { title: "La Nonna Siede (Lullaby Mix)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_familia_alt.mp3" }
   ];
 
-  const handlePlay = (index) => {
-    // Mute global radio
-    document.querySelectorAll('audio').forEach(a => {
-      if(a.id !== 'tano-player-audio') {
-        a.pause();
-      }
-    });
-    
-    if (index === currentTrack && isPlaying) {
-      if (audioRef.current) audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      setCurrentTrack(index);
-      setIsPlaying(true);
-      setAudioError(false);
-      
-      if (audioRef.current) {
-        audioRef.current.src = playlist[index].src;
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+      if (isPlaying) {
         audioRef.current.play().catch(e => {
-          console.error("Audio error", e);
+          console.error("Autoplay prevented or error", e);
+          setIsPlaying(false);
           setAudioError(true);
         });
       }
     }
+  }, [currentTrack]);
+
+  const handleNext = () => {
+    setAudioError(false);
+    setCurrentTrack((prev) => (prev + 1) % playlist.length);
+  };
+
+  const handlePrev = () => {
+    setAudioError(false);
+    setCurrentTrack((prev) => (prev - 1 + playlist.length) % playlist.length);
+  };
+
+  const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+      setIsPlaying(false);
+    } else {
+      audioRef.current.play().catch(() => setAudioError(true));
+      setIsPlaying(true);
+    }
+  };
+
+  const handleVolume = (e) => {
+    const v = parseFloat(e.target.value);
+    setVolume(v);
+    if(audioRef.current) audioRef.current.volume = v;
   };
 
   return (
-    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #111827, #064e3b)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
-      <Radio size={60} color="#34d399" style={{ marginBottom: '1rem' }} />
-      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#34d399', textAlign: 'center' }}>Radio Didattica Tano</h2>
-      <p style={{ fontSize: '1.2rem', color: '#6ee7b7', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px' }}>
-        Aprende italiano cantando. Las pistas de audio originales generadas con inteligencia artificial.
-      </p>
-
-      {/* Now Playing Widget */}
-      <div className="tano-radio-now-playing" style={{ width: '100%', maxWidth: '600px', background: 'rgba(0,0,0,0.5)', padding: '2rem', borderRadius: '20px', border: '1px solid #34d399', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
-        <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)', flexShrink: 0 }}>
-          <Music size={40} color="white" />
+    <div style={{ width: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '1rem 4rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: '92px', zIndex: 90 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
+        <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)' }}>
+          <Music size={24} color="white" />
         </div>
-        <div style={{ flex: 1 }}>
-          <div style={{ color: '#10b981', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem' }}>Sonando Ahora</div>
-          <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.5rem 0' }}>{playlist[currentTrack].title}</h3>
-          <p style={{ color: '#9ca3af', margin: 0 }}>{playlist[currentTrack].artist}</p>
-          
-          {audioError && isPlaying && (
-            <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
-              ⚠️ Archivo de audio no encontrado: {playlist[currentTrack].src}
-            </div>
-          )}
+        <div style={{ overflow: 'hidden' }}>
+          <div style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.2rem' }}>Radio Didattica Automática</div>
+          <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'white', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{playlist[currentTrack].title}</h3>
+          <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.9rem' }}>{playlist[currentTrack].artist}</p>
         </div>
       </div>
 
-      {/* Playlist */}
-      <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        {playlist.map((track, i) => {
-          const isSelected = currentTrack === i;
-          return (
-            <div 
-              key={i} 
-              onClick={() => handlePlay(i)}
-              style={{ 
-                background: isSelected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.05)', 
-                padding: '1.2rem', borderRadius: '16px', 
-                border: isSelected ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)', 
-                display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
-                transition: 'all 0.2s'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                {isSelected && isPlaying ? <Activity size={24} color="#10b981" /> : <Play size={24} color={isSelected ? '#10b981' : '#9ca3af'} />}
-                <div>
-                  <div style={{ fontWeight: 'bold', color: isSelected ? 'white' : '#e5e7eb' }}>{track.title}</div>
-                  <div style={{ fontSize: '0.85rem', color: '#9ca3af' }}>{track.artist}</div>
-                </div>
-              </div>
-              <div style={{ color: '#6b7280', fontWeight: 'bold' }}>{track.duration}</div>
-            </div>
-          );
-        })}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+        <button onClick={handlePrev} style={{ background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color='white'} onMouseLeave={e => e.currentTarget.style.color='#9ca3af'}><SkipBack size={24} /></button>
+        <button onClick={togglePlay} style={{ background: '#10b981', border: 'none', color: 'black', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
+          {isPlaying ? <Pause size={24} color="black" /> : <Play size={24} color="black" style={{ marginLeft: '4px' }} />}
+        </button>
+        <button onClick={handleNext} style={{ background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color='white'} onMouseLeave={e => e.currentTarget.style.color='#9ca3af'}><SkipForward size={24} /></button>
       </div>
-      
-      {/* Actual Audio Element */}
+
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'flex-end' }}>
+        <Volume2 size={20} color="#9ca3af" />
+        <input type="range" min="0" max="1" step="0.01" value={volume} onChange={handleVolume} style={{ width: '100px', cursor: 'pointer', accentColor: '#10b981' }} />
+      </div>
+
       <audio 
-        id="tano-player-audio" 
+        id="tano-global-player-audio"
         ref={audioRef} 
-        onEnded={() => setIsPlaying(false)}
+        src={playlist[currentTrack].src} 
+        onEnded={handleNext}
       />
     </div>
   );
@@ -862,6 +855,9 @@ export default function TanoPortal() {
           </button>
         </div>
       </header>
+
+      {/* Global Music Player below header */}
+      <TanoGlobalPlayer />
 
       <main className="tano-main" style={{ padding: '4rem', maxWidth: '1600px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
         
