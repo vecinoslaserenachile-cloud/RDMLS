@@ -720,8 +720,8 @@ export default function TanoPortal() {
       <main style={{ padding: '4rem', maxWidth: '1600px', margin: '0 auto', display: 'flex', gap: '4rem', flexWrap: 'wrap' }}>
         
         {/* Sidebar Nav */}
-        <aside style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.2rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', margin: '0 0 1rem 0' }}>Módulos de Aprendizaje</h2>
+        <aside style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
+          <h2 style={{ fontSize: '1.2rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', margin: '0 0 1rem 0', flexShrink: 0 }}>Módulos de Aprendizaje</h2>
           {TANO_MODULES.map((mod) => (
             <button
               key={mod.id}
