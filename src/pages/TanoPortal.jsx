@@ -602,7 +602,9 @@ export default function TanoPortal() {
   }, []);
 
   const loadProgress = async (userId) => {
-    setProgress(Math.floor(Math.random() * 40) + 60); 
+    // Start new users at 5% — increases as they open materials
+    const saved = localStorage.getItem(`tano_progress_${userId}`);
+    setProgress(saved ? parseInt(saved) : 5);
   };
 
   const handleLogin = async () => {
@@ -622,7 +624,13 @@ export default function TanoPortal() {
 
   const openViewer = (file) => {
     setViewerFile(file);
-    if (user) setProgress(p => Math.min(p + 5, 100));
+    if (user) {
+      setProgress(p => {
+        const next = Math.min(p + 5, 100);
+        localStorage.setItem(`tano_progress_${user.id}`, next.toString());
+        return next;
+      });
+    }
   };
 
   if (isWrongDomain) {
@@ -687,7 +695,7 @@ export default function TanoPortal() {
           <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
             Italiano con Francesca
           </h1>
-          <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arch. Francesca Vives</p>
+          <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arquitecta Francesca Vives</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {user ? (
