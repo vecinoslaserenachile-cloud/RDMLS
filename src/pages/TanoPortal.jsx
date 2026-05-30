@@ -243,12 +243,12 @@ const TanoMusicPlayer = () => {
   const audioRef = useRef(null);
 
   const playlist = [
-    { title: "Marraqueta Ponte (Los Saludos)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_saludos.mp3" },
-    { title: "Scusi Il Menu (En el Ristorante)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante.mp3" },
-    { title: "Bingo Cartones (Los Números)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_numeros.mp3" },
-    { title: "Palabras de Cortesía (Remastered)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia.mp3" },
-    { title: "Palabras Mágicas (La Piazza)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_magicas.mp3" },
-    { title: "La Nonna Siede (La Famiglia)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_familia.mp3" }
+    { title: "Marraqueta Ponte (Los Saludos)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_saludos.mp3" },
+    { title: "Scusi Il Menu (En el Ristorante)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante.mp3" },
+    { title: "Bingo Cartones (Los Números)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_numeros.mp3" },
+    { title: "Palabras de Cortesía (Remastered)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia.mp3" },
+    { title: "Palabras Mágicas (La Piazza)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_magicas.mp3" },
+    { title: "La Nonna Siede (La Famiglia)", artist: "Francesca ft. Vecinos", duration: "🎶", src: "/tano_assets/audio/cancion_familia.mp3" }
   ];
 
   const handlePlay = (index) => {
