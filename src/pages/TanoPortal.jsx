@@ -63,6 +63,15 @@ const TANO_MODULES = [
     ]
   },
   {
+    id: 'radio_tano',
+    title: 'Radio Didattica Tano',
+    icon: Radio,
+    desc: 'Escucha 5 canciones didácticas para aprender italiano cantando.',
+    files: [
+      { id: 'r1', name: 'Abrir Reproductor Musical', type: 'interactive_radio' }
+    ]
+  },
+  {
     id: 'cultura',
     title: 'Cultura e Urbanismo',
     icon: Map,
@@ -171,6 +180,100 @@ const InteractiveBingo = () => {
           </div>
         </div>
       </div>
+    </div>
+  );
+};
+
+const TanoMusicPlayer = () => {
+  const [currentTrack, setCurrentTrack] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioError, setAudioError] = useState(false);
+  
+  const playlist = [
+    { title: "Continuidad 1: Bienvenida", artist: "Radio Tano", duration: "0:15", src: "/tano_assets/audio/cont1.mp3" },
+    { title: "El Saludo del Compadre", artist: "Francesca ft. Suno", duration: "1:45", src: "/tano_assets/audio/cancion1.mp3" },
+    { title: "El Menú de la Mamma", artist: "Francesca ft. Suno", duration: "2:10", src: "/tano_assets/audio/cancion2.mp3" },
+    { title: "Continuidad 2: Los Números", artist: "Radio Tano", duration: "0:20", src: "/tano_assets/audio/cont2.mp3" },
+    { title: "Contando hasta 10 en la Micro", artist: "Francesca ft. Suno", duration: "1:55", src: "/tano_assets/audio/cancion3.mp3" },
+    { title: "La Piazza y el Barrio", artist: "Francesca ft. Suno", duration: "2:05", src: "/tano_assets/audio/cancion4.mp3" },
+    { title: "Continuidad 3: Despedida", artist: "Radio Tano", duration: "0:15", src: "/tano_assets/audio/cont3.mp3" },
+    { title: "Arrivederci, Nos Vimos", artist: "Francesca ft. Suno", duration: "2:30", src: "/tano_assets/audio/cancion5.mp3" }
+  ];
+
+  const handlePlay = (index) => {
+    // Mute global radio
+    document.querySelectorAll('audio').forEach(a => {
+      if(a.id !== 'tano-player-audio') {
+        a.pause();
+      }
+    });
+    
+    if (index === currentTrack && isPlaying) {
+      setIsPlaying(false);
+    } else {
+      setCurrentTrack(index);
+      setIsPlaying(true);
+      setAudioError(true); // Placeholder state
+    }
+  };
+
+  return (
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #111827, #064e3b)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
+      <Radio size={60} color="#34d399" style={{ marginBottom: '1rem' }} />
+      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#34d399', textAlign: 'center' }}>Radio Didattica Tano</h2>
+      <p style={{ fontSize: '1.2rem', color: '#6ee7b7', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px' }}>
+        Aprende italiano cantando. Las pistas de audio se conectarán aquí una vez generadas en Suno.
+      </p>
+
+      {/* Now Playing Widget */}
+      <div style={{ width: '100%', maxWidth: '600px', background: 'rgba(0,0,0,0.5)', padding: '2rem', borderRadius: '20px', border: '1px solid #34d399', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+        <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)', flexShrink: 0 }}>
+          <Music size={40} color="white" />
+        </div>
+        <div style={{ flex: 1 }}>
+          <div style={{ color: '#10b981', fontSize: '0.9rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.5rem' }}>Sonando Ahora</div>
+          <h3 style={{ fontSize: '1.5rem', margin: '0 0 0.5rem 0' }}>{playlist[currentTrack].title}</h3>
+          <p style={{ color: '#9ca3af', margin: 0 }}>{playlist[currentTrack].artist}</p>
+          
+          {audioError && isPlaying && (
+            <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
+              ⚠️ Esperando archivo MP3 desde Suno... <br/>({playlist[currentTrack].src})
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Playlist */}
+      <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+        {playlist.map((track, i) => {
+          const isSelected = currentTrack === i;
+          return (
+            <div 
+              key={i} 
+              onClick={() => handlePlay(i)}
+              style={{ 
+                background: isSelected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255,255,255,0.05)', 
+                padding: '1.2rem', borderRadius: '16px', 
+                border: isSelected ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)', 
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer',
+                transition: 'all 0.2s'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                {isSelected && isPlaying ? <Activity size={24} color="#10b981" /> : <Play size={24} color={isSelected ? '#10b981' : '#9ca3af'} />}
+                <div>
+                  <div style={{ fontWeight: 'bold', color: isSelected ? 'white' : '#e5e7eb' }}>{track.title}</div>
+                  <div style={{ fontSize: '0.85rem', color: '#9ca3af' }}>{track.artist}</div>
+                </div>
+              </div>
+              <div style={{ color: '#6b7280', fontWeight: 'bold' }}>{track.duration}</div>
+            </div>
+          );
+        })}
+      </div>
+      
+      {/* Invisible Audio Element to mute others */}
+      <audio id="tano-player-audio" />
     </div>
   );
 };
@@ -510,6 +613,8 @@ export default function TanoPortal() {
                 <InteractiveKaraoke />
               ) : viewerFile.type === 'interactive_trivia' ? (
                 <InteractiveTrivia />
+              ) : viewerFile.type === 'interactive_radio' ? (
+                <TanoMusicPlayer />
               ) : null}
             </div>
           </motion.div>
