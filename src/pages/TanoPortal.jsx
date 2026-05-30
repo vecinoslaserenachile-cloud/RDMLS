@@ -207,84 +207,210 @@ const InteractiveKaraoke = () => {
 
 const InteractiveTrivia = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
   const [showResult, setShowResult] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [gameState, setGameState] = useState('playing'); // playing, checking, result
+
+  const moneyTree = ['€ 500', '€ 1.000', '€ 2.000', '€ 3.000', '€ 5.000', '€ 10.000', '€ 20.000', '€ 50.000', '€ 100.000', '€ 250.000', '€ 500.000', '€ 1 MILIONE'];
 
   const questions = [
     {
       image: '/tano_assets/trivia_coffee.png',
-      question: '¿Qué es esto en italiano?',
-      options: ['Un Cappuccino', 'Un Caffè', 'Un Tè', 'Una Birra'],
-      answer: 'Un Caffè'
+      question: 'Come si chiama questa bevanda classica in Italia?',
+      options: ['A) Un Cappuccino', 'B) Un Caffè', 'C) Un Tè', 'D) Una Birra'],
+      answer: 'B) Un Caffè'
+    },
+    {
+      image: '📝',
+      question: 'Come si dice "Buenos días" in italiano?',
+      options: ['A) Buonasera', 'B) Arrivederci', 'C) Buongiorno', 'D) Ciao'],
+      answer: 'C) Buongiorno'
     },
     {
       image: '/tano_assets/trivia_pizza.png',
-      question: 'El plato más famoso de Italia es...',
-      options: ['La Pasta', 'Il Gelato', 'La Pizza', 'Il Risotto'],
-      answer: 'La Pizza'
+      question: 'Qual è il piatto più famoso del mondo nato a Napoli?',
+      options: ['A) La Pasta', 'B) Il Gelato', 'C) La Pizza', 'D) Il Risotto'],
+      answer: 'C) La Pizza'
+    },
+    {
+      image: '🗣️',
+      question: 'Cosa significa la parola "Grazie"?',
+      options: ['A) Hola', 'B) Por favor', 'C) Adiós', 'D) Gracias'],
+      answer: 'D) Gracias'
     },
     {
       image: '/tano_assets/trivia_colosseum.png',
-      question: '¿Qué monumento histórico es este?',
-      options: ['Il Colosseo', 'La Torre di Pisa', 'Il Duomo', 'Il Pantheon'],
-      answer: 'Il Colosseo'
+      question: 'Come si chiama questo famoso monumento?',
+      options: ['A) Il Colosseo', 'B) La Torre di Pisa', 'C) Il Duomo', 'D) Il Pantheon'],
+      answer: 'A) Il Colosseo'
+    },
+    {
+      image: '🏛️',
+      question: 'Dove si trova esattamente il Colosseo?',
+      options: ['A) A Venezia', 'B) A Firenze', 'C) A Milano', 'D) A Roma'],
+      answer: 'D) A Roma'
+    },
+    {
+      image: '/tano_assets/trivia_pasta.png',
+      question: 'Come si chiama questo delizioso piatto tradizionale?',
+      options: ['A) Gli Gnocchi', 'B) La Lasagna', 'C) Gli Spaghetti', 'D) I Ravioli'],
+      answer: 'C) Gli Spaghetti'
+    },
+    {
+      image: '🤌',
+      question: 'Come si chiede "Por favor" in italiano?',
+      options: ['A) Prego', 'B) Per favore', 'C) Scusa', 'D) Grazie'],
+      answer: 'B) Per favore'
     },
     {
       image: '/tano_assets/trivia_scooter.png',
-      question: 'El clásico medio de transporte italiano de 2 ruedas:',
-      options: ['La Ferrari', 'La Vespa', 'La Bicicletta', 'La Macchina'],
-      answer: 'La Vespa'
+      question: 'Qual è il classico mezzo di trasporto italiano a 2 ruote?',
+      options: ['A) La Ferrari', 'B) La Vespa', 'C) La Bicicletta', 'D) La Macchina'],
+      answer: 'B) La Vespa'
+    },
+    {
+      image: '🇮🇹',
+      question: 'Quali sono i colori della bandiera italiana?',
+      options: ['A) Verde, Bianco, Rosso', 'B) Rosso, Giallo, Verde', 'C) Blu, Bianco, Rosso', 'D) Nero, Giallo, Rosso'],
+      answer: 'A) Verde, Bianco, Rosso'
+    },
+    {
+      image: '/tano_assets/trivia_gelato.png',
+      question: 'Il dolce freddo italiano per eccellenza è...',
+      options: ['A) Il Tiramisù', 'B) La Panna Cotta', 'C) Il Gelato', 'D) Il Cannolo'],
+      answer: 'C) Il Gelato'
+    },
+    {
+      image: '🤝',
+      question: 'Come si risponde educatamente a "Grazie"?',
+      options: ['A) Prego', 'B) Scusa', 'C) Ciao', 'D) Bene'],
+      answer: 'A) Prego'
     }
   ];
 
   const handleAnswer = (option) => {
-    if (option === questions[currentQuestion].answer) {
-      setScore(score + 1);
-    }
-    const nextQ = currentQuestion + 1;
-    if (nextQ < questions.length) {
-      setCurrentQuestion(nextQ);
-    } else {
-      setShowResult(true);
-    }
+    if (gameState !== 'playing') return;
+    
+    setSelectedOption(option);
+    setGameState('checking');
+    
+    setTimeout(() => {
+      const correct = option === questions[currentQuestion].answer;
+      setIsCorrect(correct);
+      
+      setTimeout(() => {
+        if (correct) {
+          const nextQ = currentQuestion + 1;
+          if (nextQ < questions.length) {
+            setCurrentQuestion(nextQ);
+            setSelectedOption(null);
+            setIsCorrect(null);
+            setGameState('playing');
+          } else {
+            setShowResult(true);
+            setGameState('result');
+          }
+        } else {
+          setShowResult(true);
+          setGameState('result');
+        }
+      }, 2000);
+    }, 1500);
   };
 
   const restartTrivia = () => {
-    setScore(0);
     setCurrentQuestion(0);
     setShowResult(false);
+    setSelectedOption(null);
+    setIsCorrect(null);
+    setGameState('playing');
   };
 
+  const getButtonBg = (opt) => {
+    if (selectedOption !== opt) return 'linear-gradient(to right, #1e3a8a, #312e81)';
+    if (gameState === 'checking') return 'linear-gradient(to right, #d97706, #b45309)'; // Orange/Gold
+    if (isCorrect) return 'linear-gradient(to right, #059669, #047857)'; // Green
+    return 'linear-gradient(to right, #dc2626, #b91c1c)'; // Red
+  };
+
+  const isEmoji = (str) => !str.includes('/');
+
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #4c1d95, #312e81)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
-      <Star size={60} color="#a78bfa" style={{ marginBottom: '1rem' }} />
-      <h2 style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#a78bfa' }}>Trivia Culturale</h2>
+    <div style={{ width: '100%', height: '100%', display: 'flex', background: 'radial-gradient(circle at center, #1e3a8a 0%, #020617 100%)', borderRadius: '24px', color: 'white', overflow: 'hidden', position: 'relative' }}>
       
-      {showResult ? (
-        <div style={{ textAlign: 'center' }}>
-          <h3 style={{ fontSize: '2.5rem', color: '#34d399', marginBottom: '1rem' }}>¡Hai finito!</h3>
-          <p style={{ fontSize: '1.5rem', marginBottom: '2rem' }}>Puntaje: {score} de {questions.length}</p>
-          <button onClick={restartTrivia} style={{ background: '#a78bfa', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', cursor: 'pointer' }}>JUGAR OTRA VEZ</button>
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '600px' }}>
-          <img src={questions[currentQuestion].image} alt="Trivia" style={{ height: '250px', objectFit: 'contain', borderRadius: '20px', marginBottom: '1.5rem', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }} />
-          <h3 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>{questions[currentQuestion].question}</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', width: '100%' }}>
-            {questions[currentQuestion].options.map((opt, i) => (
-              <button 
-                key={i} 
-                onClick={() => handleAnswer(opt)}
-                style={{ background: 'rgba(255,255,255,0.1)', border: '2px solid rgba(167, 139, 250, 0.4)', color: 'white', padding: '1rem', borderRadius: '16px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.2s' }}
-                onMouseEnter={e => e.currentTarget.style.background = 'rgba(167, 139, 250, 0.2)'}
-                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
-              >
-                {opt}
-              </button>
-            ))}
+      {/* Sidebar Score (Money Tree) */}
+      <div style={{ width: '250px', background: 'rgba(0,0,0,0.6)', borderRight: '2px solid rgba(59, 130, 246, 0.5)', display: 'flex', flexDirection: 'column-reverse', padding: '2rem 1rem', gap: '0.5rem' }}>
+        {moneyTree.map((money, idx) => {
+          const isActive = idx === currentQuestion && !showResult;
+          const isPassed = idx < currentQuestion;
+          return (
+            <div key={idx} style={{ 
+              display: 'flex', justifyContent: 'space-between', padding: '0.5rem 1rem', borderRadius: '8px',
+              background: isActive ? '#d97706' : 'transparent',
+              color: isActive ? 'white' : isPassed ? '#fbbf24' : '#64748b',
+              fontWeight: isActive || isPassed ? 'bold' : 'normal',
+              fontSize: isActive ? '1.2rem' : '1rem',
+              transition: 'all 0.3s'
+            }}>
+              <span>{idx + 1}</span>
+              <span>{money}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Main Content */}
+      <div style={{ flex: 1, padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        
+        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#fbbf24', textShadow: '0 0 20px rgba(251, 191, 36, 0.5)' }}>CHI VUOL PARLARE ITALIANO?</h2>
+        
+        {showResult ? (
+          <div style={{ textAlign: 'center', background: 'rgba(0,0,0,0.5)', padding: '4rem', borderRadius: '24px', border: '1px solid #fbbf24' }}>
+            <h3 style={{ fontSize: '3rem', color: isCorrect ? '#34d399' : '#f87171', marginBottom: '1rem' }}>
+              {isCorrect ? 'COMPLIMENTI!' : 'MAMMA MIA! HAI PERSO!'}
+            </h3>
+            <p style={{ fontSize: '1.8rem', marginBottom: '3rem', color: '#fbbf24' }}>
+              Premio Vinto: {currentQuestion > 0 ? moneyTree[currentQuestion - 1] : '€ 0'}
+            </p>
+            <button onClick={restartTrivia} style={{ background: 'linear-gradient(to right, #d97706, #b45309)', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '16px', fontWeight: '900', fontSize: '1.5rem', cursor: 'pointer', boxShadow: '0 10px 30px rgba(217, 119, 6, 0.4)' }}>
+              GIOCA DI NUOVO
+            </button>
           </div>
-        </div>
-      )}
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
+            
+            <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+              {isEmoji(questions[currentQuestion].image) ? (
+                <span style={{ fontSize: '100px', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.2))' }}>{questions[currentQuestion].image}</span>
+              ) : (
+                <img src={questions[currentQuestion].image} alt="Trivia" style={{ height: '100%', objectFit: 'contain', borderRadius: '16px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)', border: '2px solid rgba(255,255,255,0.1)' }} />
+              )}
+            </div>
+
+            <div style={{ background: 'linear-gradient(to bottom, #1e40af, #1e3a8a)', width: '100%', padding: '2rem', borderRadius: '50px', border: '2px solid #60a5fa', marginBottom: '2rem', boxShadow: 'inset 0 0 20px rgba(0,0,0,0.5), 0 10px 30px rgba(0,0,0,0.3)', textAlign: 'center', position: 'relative' }}>
+              <h3 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 'bold' }}>{questions[currentQuestion].question}</h3>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', width: '100%' }}>
+              {questions[currentQuestion].options.map((opt, i) => (
+                <button 
+                  key={i} 
+                  onClick={() => handleAnswer(opt)}
+                  disabled={gameState !== 'playing'}
+                  style={{ 
+                    background: getButtonBg(opt),
+                    border: '2px solid #60a5fa', color: 'white', padding: '1.5rem', borderRadius: '40px', fontWeight: 'bold', fontSize: '1.3rem', cursor: gameState === 'playing' ? 'pointer' : 'default', transition: 'all 0.3s', textAlign: 'left', paddingLeft: '2rem',
+                    boxShadow: selectedOption === opt && gameState === 'checking' ? '0 0 30px rgba(217, 119, 6, 0.8)' : '0 5px 15px rgba(0,0,0,0.3)'
+                  }}
+                >
+                  {opt}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
