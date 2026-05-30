@@ -145,6 +145,15 @@ const InteractiveBingo = () => {
     const newNum = Math.floor(Math.random() * 90) + 1;
     setNumber(newNum);
     setHistory([newNum, ...history].slice(0, 5));
+    
+    if ('speechSynthesis' in window) {
+      // Cancel previous speech if spamming the button
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(newNum.toString());
+      utterance.lang = 'it-IT';
+      utterance.rate = 0.9;
+      window.speechSynthesis.speak(utterance);
+    }
   };
 
   return (
@@ -298,7 +307,9 @@ const InteractiveKaraoke = () => {
               <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{song.title}</h3>
               <p style={{ margin: 0, color: '#fca5a5', fontSize: '1.1rem' }}>{song.artist}</p>
             </div>
-            <button style={{ background: '#f87171', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+            <button 
+              onClick={() => alert(`¡Preparando pista de ${song.title}! El módulo de Karaoke interactivo estará disponible en la próxima actualización.`)}
+              style={{ background: '#f87171', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
               <Volume2 size={24} /> CANTAR
             </button>
           </div>
