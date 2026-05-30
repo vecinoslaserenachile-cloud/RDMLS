@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Play, FileText, Download, Award, Music, Coffee, Map, Gamepad2, 
   ChevronRight, X, User, LogIn, CheckCircle, Volume2, Star, Radio, Activity,
-  Pause, SkipForward, SkipBack
+  Pause, SkipForward, SkipBack, LogOut
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useNavigate } from 'react-router-dom';
@@ -734,6 +734,12 @@ export default function TanoPortal() {
     });
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setProgress(0);
+  };
+
   const openViewer = (file) => {
     setViewerFile(file);
     if (user) {
@@ -844,12 +850,17 @@ export default function TanoPortal() {
         </div>
         <div className="tano-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {user ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem 1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-              <User size={24} color="#10b981" />
-              <div>
-                <div style={{ fontSize: '0.9rem', fontWeight: '900', color: 'white' }}>{user.email}</div>
-                <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold' }}>Progreso: {progress}%</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem 1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                <User size={24} color="#10b981" />
+                <div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '900', color: 'white' }}>{user.email}</div>
+                  <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold' }}>Progreso: {progress}%</div>
+                </div>
               </div>
+              <button onClick={handleLogout} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.8rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='rgba(239, 68, 68, 0.2)'} onMouseLeave={e => e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'} title="Cerrar sesión">
+                <LogOut size={20} />
+              </button>
             </div>
           ) : (
             <button onClick={handleLogin} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '1rem 2rem', borderRadius: '16px', fontWeight: '900', cursor: 'pointer', transition: 'all 0.2s', fontSize: '1rem' }} onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'} onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}>
