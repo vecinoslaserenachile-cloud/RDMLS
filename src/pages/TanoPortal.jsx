@@ -240,15 +240,15 @@ const TanoMusicPlayer = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioError, setAudioError] = useState(false);
   
+  const audioRef = useRef(null);
+
   const playlist = [
-    { title: "Continuidad 1: Bienvenida", artist: "Radio Tano", duration: "0:15", src: "/tano_assets/audio/cont1.mp3" },
-    { title: "El Saludo del Compadre", artist: "Francesca ft. Suno", duration: "1:45", src: "/tano_assets/audio/cancion1.mp3" },
-    { title: "El Menú de la Mamma", artist: "Francesca ft. Suno", duration: "2:10", src: "/tano_assets/audio/cancion2.mp3" },
-    { title: "Continuidad 2: Los Números", artist: "Radio Tano", duration: "0:20", src: "/tano_assets/audio/cont2.mp3" },
-    { title: "Contando hasta 10 en la Micro", artist: "Francesca ft. Suno", duration: "1:55", src: "/tano_assets/audio/cancion3.mp3" },
-    { title: "La Piazza y el Barrio", artist: "Francesca ft. Suno", duration: "2:05", src: "/tano_assets/audio/cancion4.mp3" },
-    { title: "Continuidad 3: Despedida", artist: "Radio Tano", duration: "0:15", src: "/tano_assets/audio/cont3.mp3" },
-    { title: "Arrivederci, Nos Vimos", artist: "Francesca ft. Suno", duration: "2:30", src: "/tano_assets/audio/cancion5.mp3" }
+    { title: "Marraqueta Ponte (Los Saludos)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_saludos.mp3" },
+    { title: "Scusi Il Menu (En el Ristorante)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_ristorante.mp3" },
+    { title: "Bingo Cartones (Los Números)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_numeros.mp3" },
+    { title: "Palabras de Cortesía (Remastered)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_cortesia.mp3" },
+    { title: "Palabras Mágicas (La Piazza)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_magicas.mp3" },
+    { title: "La Nonna Siede (La Famiglia)", artist: "Francesca ft. Suno", duration: "🎶", src: "/tano_assets/audio/cancion_familia.mp3" }
   ];
 
   const handlePlay = (index) => {
@@ -260,11 +260,20 @@ const TanoMusicPlayer = () => {
     });
     
     if (index === currentTrack && isPlaying) {
+      if (audioRef.current) audioRef.current.pause();
       setIsPlaying(false);
     } else {
       setCurrentTrack(index);
       setIsPlaying(true);
-      setAudioError(true); // Placeholder state
+      setAudioError(false);
+      
+      if (audioRef.current) {
+        audioRef.current.src = playlist[index].src;
+        audioRef.current.play().catch(e => {
+          console.error("Audio error", e);
+          setAudioError(true);
+        });
+      }
     }
   };
 
@@ -273,7 +282,7 @@ const TanoMusicPlayer = () => {
       <Radio size={60} color="#34d399" style={{ marginBottom: '1rem' }} />
       <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#34d399', textAlign: 'center' }}>Radio Didattica Tano</h2>
       <p style={{ fontSize: '1.2rem', color: '#6ee7b7', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px' }}>
-        Aprende italiano cantando. Las pistas de audio se conectarán aquí una vez generadas en Suno.
+        Aprende italiano cantando. Las pistas de audio originales generadas con inteligencia artificial.
       </p>
 
       {/* Now Playing Widget */}
@@ -288,7 +297,7 @@ const TanoMusicPlayer = () => {
           
           {audioError && isPlaying && (
             <div style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: 'rgba(239, 68, 68, 0.2)', color: '#fca5a5', borderRadius: '8px', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.4)' }}>
-              ⚠️ Esperando archivo MP3 desde Suno... <br/>({playlist[currentTrack].src})
+              ⚠️ Archivo de audio no encontrado: {playlist[currentTrack].src}
             </div>
           )}
         </div>
@@ -323,8 +332,12 @@ const TanoMusicPlayer = () => {
         })}
       </div>
       
-      {/* Invisible Audio Element to mute others */}
-      <audio id="tano-player-audio" />
+      {/* Actual Audio Element */}
+      <audio 
+        id="tano-player-audio" 
+        ref={audioRef} 
+        onEnded={() => setIsPlaying(false)}
+      />
     </div>
   );
 };
