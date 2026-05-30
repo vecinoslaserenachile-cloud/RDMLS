@@ -307,28 +307,28 @@ const TanoGlobalPlayer = () => {
   };
 
   return (
-    <div style={{ width: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '1rem 4rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'sticky', top: '92px', zIndex: 90 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: 1 }}>
-        <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)' }}>
+    <div style={{ width: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', position: 'sticky', top: '92px', zIndex: 90 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 250px' }}>
+        <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)', flexShrink: 0 }}>
           <Music size={24} color="white" />
         </div>
         <div style={{ overflow: 'hidden' }}>
           <div style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '0.2rem' }}>Radio Didattica Automática</div>
-          <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'white', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>{playlist[currentTrack].title}</h3>
+          <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'white', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{playlist[currentTrack].title}</h3>
           <p style={{ color: '#9ca3af', margin: 0, fontSize: '0.9rem' }}>{playlist[currentTrack].artist}</p>
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flex: '1 1 auto', justifyContent: 'center' }}>
         <button onClick={handlePrev} style={{ background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color='white'} onMouseLeave={e => e.currentTarget.style.color='#9ca3af'}><SkipBack size={24} /></button>
-        <button onClick={togglePlay} style={{ background: '#10b981', border: 'none', color: 'black', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
+        <button onClick={togglePlay} style={{ background: '#10b981', border: 'none', color: 'black', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'transform 0.2s', flexShrink: 0 }} onMouseEnter={e => e.currentTarget.style.transform='scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}>
           {isPlaying ? <Pause size={24} color="black" /> : <Play size={24} color="black" style={{ marginLeft: '4px' }} />}
         </button>
         <button onClick={handleNext} style={{ background: 'transparent', border: 'none', color: '#9ca3af', cursor: 'pointer', transition: 'color 0.2s' }} onMouseEnter={e => e.currentTarget.style.color='white'} onMouseLeave={e => e.currentTarget.style.color='#9ca3af'}><SkipForward size={24} /></button>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, justifyContent: 'flex-end' }}>
-        <Volume2 size={20} color="#9ca3af" />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 200px', justifyContent: 'center' }}>
+        <Volume2 size={20} color="#9ca3af" style={{ flexShrink: 0 }} />
         <input type="range" min="0" max="1" step="0.01" value={volume} onChange={handleVolume} style={{ width: '100px', cursor: 'pointer', accentColor: '#10b981' }} />
       </div>
 
