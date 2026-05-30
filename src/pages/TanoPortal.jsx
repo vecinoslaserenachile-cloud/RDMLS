@@ -140,7 +140,7 @@ const InteractiveRistorante = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a, #0f172a)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
+    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #1e3a8a, #0f172a)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
       <Coffee size={70} color="#fcd34d" style={{ marginBottom: '1rem' }} />
       <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem', textAlign: 'center', color: '#fcd34d' }}>Benvenuti al Ristorante!</h2>
       <p style={{ fontSize: '1rem', marginBottom: '1.5rem', textAlign: 'center', maxWidth: '600px', color: '#94a3b8' }}>
@@ -199,13 +199,14 @@ const InteractiveBingo = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #064e3b, #022c22)', borderRadius: '24px', padding: '3rem', color: 'white' }}>
+    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #064e3b, #022c22)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
       <Gamepad2 size={60} color="#10b981" style={{ marginBottom: '1rem' }} />
       <h2 style={{ fontSize: '3.5rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#10b981' }}>TOMBOLA ITALIANA</h2>
       <p style={{ fontSize: '1.5rem', color: '#6ee7b7', marginBottom: '3rem', textAlign: 'center' }}>Extracción en vivo para la comunidad</p>
       
-      <div style={{ display: 'flex', gap: '4rem', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+      <div className="tano-bingo-layout" style={{ display: 'flex', gap: '4rem', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
         <motion.div 
+          className="tano-bingo-ball"
           key={number}
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -284,7 +285,7 @@ const TanoMusicPlayer = () => {
   };
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #111827, #064e3b)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
+    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #111827, #064e3b)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
       <Radio size={60} color="#34d399" style={{ marginBottom: '1rem' }} />
       <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#34d399', textAlign: 'center' }}>Radio Didattica Tano</h2>
       <p style={{ fontSize: '1.2rem', color: '#6ee7b7', marginBottom: '2rem', textAlign: 'center', maxWidth: '600px' }}>
@@ -292,7 +293,7 @@ const TanoMusicPlayer = () => {
       </p>
 
       {/* Now Playing Widget */}
-      <div style={{ width: '100%', maxWidth: '600px', background: 'rgba(0,0,0,0.5)', padding: '2rem', borderRadius: '20px', border: '1px solid #34d399', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
+      <div className="tano-radio-now-playing" style={{ width: '100%', maxWidth: '600px', background: 'rgba(0,0,0,0.5)', padding: '2rem', borderRadius: '20px', border: '1px solid #34d399', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '2rem' }}>
         <div style={{ width: '100px', height: '100px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)', flexShrink: 0 }}>
           <Music size={40} color="white" />
         </div>
@@ -349,6 +350,8 @@ const TanoMusicPlayer = () => {
 };
 
 const InteractiveKaraoke = () => {
+  const [activeVideo, setActiveVideo] = useState(null);
+
   const songs = [
     { title: "Vivo Per Lei", artist: "Andrea Bocelli" },
     { title: "Volare (Nel Blu Dipinto Di Blu)", artist: "Domenico Modugno" },
@@ -356,26 +359,47 @@ const InteractiveKaraoke = () => {
   ];
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #7f1d1d, #450a0a)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
+    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(135deg, #7f1d1d, #450a0a)', borderRadius: '24px', padding: '3rem', color: 'white', overflowY: 'auto' }}>
       <Music size={60} color="#f87171" style={{ marginBottom: '1rem' }} />
-      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#f87171' }}>SALA KARAOKE VLS</h2>
+      <h2 style={{ fontSize: '3rem', fontWeight: 900, margin: '0 0 1rem 0', color: '#f87171', textAlign: 'center' }}>SALA KARAOKE VLS</h2>
       <p style={{ fontSize: '1.2rem', color: '#fca5a5', marginBottom: '3rem', textAlign: 'center' }}>Selecciona un clásico y practica tu pronunciación.</p>
       
-      <div style={{ display: 'grid', gap: '1.5rem', width: '100%', maxWidth: '800px' }}>
-        {songs.map((song, i) => (
-          <div key={i} style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(248, 113, 113, 0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{song.title}</h3>
-              <p style={{ margin: 0, color: '#fca5a5', fontSize: '1.1rem' }}>{song.artist}</p>
-            </div>
-            <button 
-              onClick={() => alert(`¡Preparando pista de ${song.title}! El módulo de Karaoke interactivo estará disponible en la próxima actualización.`)}
-              style={{ background: '#f87171', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
-              <Volume2 size={24} /> CANTAR
-            </button>
+      {activeVideo ? (
+        <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+          <div style={{ width: '100%', aspectRatio: '16/9', background: 'black', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src={`https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(activeVideo.title + ' ' + activeVideo.artist + ' karaoke')}&autoplay=1`}
+              title="YouTube video player" 
+              frameBorder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen
+            ></iframe>
           </div>
-        ))}
-      </div>
+          <button 
+            onClick={() => setActiveVideo(null)}
+            style={{ background: 'transparent', color: '#fca5a5', border: '1px solid #fca5a5', padding: '0.8rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.1rem', cursor: 'pointer', transition: 'all 0.3s' }}>
+            VOLVER A LA LISTA
+          </button>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gap: '1.5rem', width: '100%', maxWidth: '800px' }}>
+          {songs.map((song, i) => (
+            <div key={i} className="tano-karaoke-item" style={{ background: 'rgba(0,0,0,0.3)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(248, 113, 113, 0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <h3 style={{ fontSize: '1.8rem', margin: '0 0 0.5rem 0', fontWeight: 'bold' }}>{song.title}</h3>
+                <p style={{ margin: 0, color: '#fca5a5', fontSize: '1.1rem' }}>{song.artist}</p>
+              </div>
+              <button 
+                onClick={() => setActiveVideo(song)}
+                style={{ background: '#f87171', color: 'black', border: 'none', padding: '1rem 2rem', borderRadius: '12px', fontWeight: 'bold', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', transition: 'all 0.2s' }}>
+                <Volume2 size={24} /> CANTAR
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -581,10 +605,10 @@ const InteractiveTrivia = () => {
   const isEmoji = (str) => !str.includes('/');
 
   return (
-    <div style={{ width: '100%', height: '100%', display: 'flex', background: 'radial-gradient(circle at center, #1e3a8a 0%, #020617 100%)', borderRadius: '24px', color: 'white', overflow: 'hidden', position: 'relative' }}>
+    <div className="tano-trivia-layout" style={{ width: '100%', height: '100%', display: 'flex', background: 'radial-gradient(circle at center, #1e3a8a 0%, #020617 100%)', borderRadius: '24px', color: 'white', overflow: 'hidden', position: 'relative' }}>
       
       {/* Sidebar Score (Money Tree) */}
-      <div style={{ width: '250px', background: 'rgba(0,0,0,0.6)', borderRight: '2px solid rgba(59, 130, 246, 0.5)', display: 'flex', flexDirection: 'column-reverse', padding: '2rem 1rem', gap: '0.5rem' }}>
+      <div className="tano-trivia-sidebar" style={{ width: '250px', background: 'rgba(0,0,0,0.6)', borderRight: '2px solid rgba(59, 130, 246, 0.5)', display: 'flex', flexDirection: 'column-reverse', padding: '2rem 1rem', gap: '0.5rem', overflowY: 'auto' }}>
         {moneyTree.map((money, idx) => {
           const isActive = idx === currentQuestion && !showResult;
           const isPassed = idx < currentQuestion;
@@ -605,9 +629,9 @@ const InteractiveTrivia = () => {
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="tano-trivia-main" style={{ flex: 1, padding: '3rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', overflowY: 'auto' }}>
         
-        <h2 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#fbbf24', textShadow: '0 0 20px rgba(251, 191, 36, 0.5)' }}>CHI VUOL PARLARE ITALIANO?</h2>
+        <h2 className="tano-trivia-title" style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '2rem', textAlign: 'center', color: '#fbbf24', textShadow: '0 0 20px rgba(251, 191, 36, 0.5)' }}>CHI VUOL PARLARE ITALIANO?</h2>
         
         {showResult ? (
           <div style={{ textAlign: 'center', background: 'rgba(0,0,0,0.5)', padding: '4rem', borderRadius: '24px', border: '1px solid #fbbf24' }}>
@@ -624,7 +648,7 @@ const InteractiveTrivia = () => {
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: '800px' }}>
             
-            <div style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
+            <div className="tano-trivia-image" style={{ height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '2rem' }}>
               {isEmoji(questions[currentQuestion].image) ? (
                 <span style={{ fontSize: '100px', filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.2))' }}>{questions[currentQuestion].image}</span>
               ) : (
@@ -636,10 +660,11 @@ const InteractiveTrivia = () => {
               <h3 style={{ fontSize: '1.8rem', margin: 0, fontWeight: 'bold' }}>{questions[currentQuestion].question}</h3>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', width: '100%' }}>
+            <div className="tano-trivia-options" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', width: '100%' }}>
               {questions[currentQuestion].options.map((opt, i) => (
                 <button 
                   key={i} 
+                  className="tano-trivia-option-btn"
                   onClick={() => handleAnswer(opt)}
                   disabled={gameState !== 'playing'}
                   style={{ 
@@ -752,6 +777,20 @@ export default function TanoPortal() {
           .tano-content-header { flex-direction: column !important; text-align: center !important; gap: 1rem !important; }
           .tano-content-header h2 { font-size: 1.8rem !important; }
           .tano-viewer-header { padding: 1rem !important; flex-direction: column !important; gap: 1rem !important; text-align: center !important; }
+          .tano-interactive-container { padding: 1rem !important; overflow-y: auto !important; }
+          .tano-bingo-layout { flex-direction: column !important; gap: 2rem !important; }
+          .tano-bingo-ball { width: 150px !important; height: 150px !important; font-size: 5rem !important; border-width: 5px !important; }
+          .tano-radio-now-playing { flex-direction: column !important; text-align: center !important; gap: 1rem !important; padding: 1.5rem !important; }
+          .tano-radio-now-playing > div:first-child { width: 80px !important; height: 80px !important; margin: 0 auto !important; }
+          .tano-karaoke-item { flex-direction: column !important; text-align: center !important; gap: 1rem !important; padding: 1.5rem !important; }
+          .tano-trivia-layout { flex-direction: column !important; overflow-y: auto !important; }
+          .tano-trivia-sidebar { display: none !important; }
+          .tano-trivia-main { padding: 1rem !important; }
+          .tano-trivia-title { font-size: 1.5rem !important; margin-bottom: 1rem !important; }
+          .tano-trivia-image { height: 120px !important; margin-bottom: 1rem !important; }
+          .tano-trivia-image span { font-size: 80px !important; }
+          .tano-trivia-options { grid-template-columns: 1fr !important; gap: 0.5rem !important; }
+          .tano-trivia-option-btn { font-size: 1rem !important; padding: 1rem !important; }
         }
       `}</style>
 
@@ -794,12 +833,15 @@ export default function TanoPortal() {
         )}
       </AnimatePresence>
 
-      <header className="tano-header" style={{ padding: '2rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
-        <div>
-          <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
-            Italiano con Francesca
-          </h1>
-          <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arquitecta Francesca Vives</p>
+      <header className="tano-header" style={{ padding: '1rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <img src="/tano_assets/francesca.png" alt="Francesca Vives" style={{ height: '120px', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))', marginTop: '-10px', marginBottom: '-10px' }} onError={(e) => e.target.style.display = 'none'} />
+          <div>
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
+              Italiano con Francesca
+            </h1>
+            <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arquitecta Francesca&nbsp;Vives</p>
+          </div>
         </div>
         <div className="tano-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {user ? (
