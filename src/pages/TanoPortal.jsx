@@ -271,14 +271,20 @@ const TanoGlobalPlayer = () => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
       if (isPlaying) {
-        audioRef.current.play().catch(e => {
-          console.error("Autoplay prevented or error", e);
-          setIsPlaying(false);
-          setAudioError(true);
-        });
+        const playPromise = audioRef.current.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => {
+            // Ignore AbortError which happens if the user skips tracks quickly
+            if (e.name !== 'AbortError') {
+              console.error("Autoplay prevented or error", e);
+              setIsPlaying(false);
+              setAudioError(true);
+            }
+          });
+        }
       }
     }
-  }, [currentTrack]);
+  }, [currentTrack, isPlaying]);
 
   const handleNext = () => {
     setAudioError(false);
