@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   BookOpen, Play, FileText, Download, Award, Music, Coffee, Map, Gamepad2, 
