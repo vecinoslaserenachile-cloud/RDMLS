@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Palette, Droplet, Sun, Scissors, CheckCircle, ShieldAlert, Download, User } from 'lucide-react';
+import { Palette, Droplet, Sun, Scissors, CheckCircle, ShieldAlert, Download, User, ChevronRight, Sparkles, Droplets } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import confetti from 'canvas-confetti';
 import { logElearningActivity } from '../utils/elearningLogger';
+import { playCorrectSound, playErrorSound, playLevelUpSound, playStartSound } from '../utils/soundEffects';
 
 export default function MonicaSierra() {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function MonicaSierra() {
     const [userEmail, setUserEmail] = useState('');
     const [isLogged, setIsLogged] = useState(false);
     
-    const [phase, setPhase] = useState(1);
+    const [phase, setPhase] = useState(0);
     const [score, setScore] = useState(0);
     const [feedback, setFeedback] = useState(null);
 
@@ -30,6 +31,7 @@ export default function MonicaSierra() {
     const handleLogin = (e) => {
         e.preventDefault();
         if (userName.trim() && userEmail.trim()) {
+            playStartSound();
             setIsLogged(true);
             localStorage.setItem('monica_sierra_user', userName);
             localStorage.setItem('monica_sierra_email', userEmail);
@@ -38,12 +40,23 @@ export default function MonicaSierra() {
     };
 
     const handleAnswer = (isCorrect, explanation) => {
-        if (isCorrect) setScore(score + 1);
+        if (isCorrect) {
+            setScore(score + 1);
+            playCorrectSound();
+        } else {
+            playErrorSound();
+        }
+
         setFeedback({ isCorrect, text: explanation });
         
         setTimeout(() => {
             setFeedback(null);
-            if (isCorrect) setPhase(phase + 1);
+            if (isCorrect) {
+                if (phase === 3) {
+                    playLevelUpSound();
+                }
+                setPhase(phase + 1);
+            }
         }, 4000);
     };
 
@@ -89,8 +102,8 @@ export default function MonicaSierra() {
     if (!isLogged) {
         return (
             <div style={{ minHeight: '100vh', background: '#fdf2f8', color: '#1e293b', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: "'Outfit', sans-serif" }}>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'white', padding: '3rem', borderRadius: '30px', border: '1px solid rgba(236, 72, 153, 0.3)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', maxWidth: '450px', width: '90%', textAlign: 'center' }}>
-                    <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #ec4899, #db2777)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'white', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(236, 72, 153, 0.3)', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', maxWidth: '450px', width: '90%', textAlign: 'center' }}>
+                    <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #ec4899, #db2777)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 10px 20px rgba(236,72,153,0.3)' }}>
                         <Palette size={40} color="white" />
                     </div>
                     <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1rem', color: '#db2777' }}>Arte en Seda y Batik</h1>
@@ -101,59 +114,86 @@ export default function MonicaSierra() {
                             <input type="text" placeholder="Tu nombre..." value={userName} onChange={e => setUserName(e.target.value)} style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: '15px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#1e293b', boxSizing: 'border-box' }} required />
                         </div>
                         <input type="email" placeholder="Tu correo electrónico..." value={userEmail} onChange={e => setUserEmail(e.target.value)} style={{ width: '100%', padding: '1rem', borderRadius: '15px', border: '1px solid #e2e8f0', background: '#f8fafc', color: '#1e293b', boxSizing: 'border-box' }} required />
-                        <button type="submit" style={{ width: '100%', padding: '1rem', background: '#ec4899', color: 'white', border: 'none', borderRadius: '15px', fontWeight: '900', fontSize: '1.1rem', cursor: 'pointer', marginTop: '1rem' }}>ENTRAR AL TALLER</button>
+                        <motion.button whileTap={{ scale: 0.95 }} type="submit" style={{ width: '100%', padding: '1.2rem', background: 'linear-gradient(90deg, #ec4899, #db2777)', color: 'white', border: 'none', borderRadius: '15px', fontWeight: '900', fontSize: '1.1rem', cursor: 'pointer', marginTop: '1rem', boxShadow: '0 10px 20px rgba(236,72,153,0.3)' }}>
+                            ENTRAR AL TALLER
+                        </motion.button>
                     </form>
-                    <button type="button" onClick={() => navigate('/entrevecinas')} style={{ background: 'transparent', color: '#94a3b8', border: 'none', marginTop: '1rem', cursor: 'pointer', textDecoration: 'underline' }}>Volver al Hub</button>
+                    <button type="button" onClick={() => navigate('/entrevecinas')} style={{ background: 'transparent', color: '#94a3b8', border: 'none', marginTop: '1.5rem', cursor: 'pointer', textDecoration: 'underline' }}>Volver al Hub</button>
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#fdf2f8', color: '#1e293b', fontFamily: "'Outfit', sans-serif" }}>
-            <header style={{ padding: '1.5rem 2rem', background: 'white', borderBottom: '1px solid #fbcfe8', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', background: '#fdf2f8', color: '#1e293b', fontFamily: "'Outfit', sans-serif", overflowX: 'hidden' }}>
+            <header style={{ padding: '1rem 5%', background: 'white', borderBottom: '1px solid #fbcfe8', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10, boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <div style={{ background: '#ec4899', padding: '10px', borderRadius: '12px' }}><Palette size={24} color="white" /></div>
                     <div>
-                        <div style={{ fontSize: '1.2rem', fontWeight: '900' }}>TALLER DE BATIK</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '900', lineHeight: 1 }}>TALLER DE BATIK</div>
                         <div style={{ fontSize: '0.8rem', color: '#db2777' }}>Mónica Sierra</div>
                     </div>
                 </div>
-                <button onClick={() => navigate('/entrevecinas')} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>Salir al Hub</button>
+                <button onClick={() => navigate('/entrevecinas')} style={{ background: '#f1f5f9', border: '1px solid #e2e8f0', color: '#64748b', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontSize: '0.9rem' }}>Salir</button>
             </header>
 
-            <main style={{ maxWidth: '1000px', margin: '3rem auto', padding: '0 2rem' }}>
+            <main style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 5%' }}>
                 {/* Progress Bar */}
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '3rem' }}>
-                    {[1, 2, 3].map(p => (
-                        <div key={p} style={{ flex: 1, height: '8px', borderRadius: '4px', background: phase >= p ? '#ec4899' : '#fce7f3', transition: '0.3s' }} />
-                    ))}
-                </div>
+                {phase > 0 && phase < 4 && (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '2rem' }}>
+                        {[1, 2, 3].map(p => (
+                            <div key={p} style={{ flex: 1, height: '8px', borderRadius: '4px', background: phase >= p ? '#ec4899' : '#fce7f3', transition: '0.3s', boxShadow: phase >= p ? '0 0 10px rgba(236,72,153,0.5)' : 'none' }} />
+                        ))}
+                    </div>
+                )}
 
                 <AnimatePresence mode="wait">
                     {feedback && (
-                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ background: feedback.isCorrect ? '#dcfce7' : '#fee2e2', border: `1px solid ${feedback.isCorrect ? '#22c55e' : '#ef4444'}`, padding: '1.5rem', borderRadius: '15px', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            {feedback.isCorrect ? <CheckCircle size={30} color="#22c55e" /> : <ShieldAlert size={30} color="#ef4444" />}
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} style={{ background: feedback.isCorrect ? '#dcfce7' : '#fee2e2', border: `2px solid ${feedback.isCorrect ? '#22c55e' : '#ef4444'}`, padding: '1.5rem', borderRadius: '20px', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '15px', boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}>
+                            {feedback.isCorrect ? <CheckCircle size={40} color="#22c55e" style={{ flexShrink: 0 }} /> : <ShieldAlert size={40} color="#ef4444" style={{ flexShrink: 0 }} />}
                             <span style={{ fontSize: '1.1rem', color: feedback.isCorrect ? '#166534' : '#991b1b', fontWeight: 'bold' }}>{feedback.text}</span>
+                        </motion.div>
+                    )}
+
+                    {phase === 0 && (
+                        <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <div style={{ background: 'white', padding: '2.5rem 1.5rem', borderRadius: '30px', border: '1px solid #fbcfe8', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+                                <div style={{ background: '#fdf2f8', padding: '15px', borderRadius: '50%', display: 'inline-flex', marginBottom: '1rem' }}>
+                                    <Sparkles size={40} color="#ec4899" />
+                                </div>
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#1e293b' }}>Trivia Final</h2>
+                                <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                                    Demuestra lo que aprendiste sobre las técnicas milenarias del Batik. Responde correctamente para graduarte y obtener tu certificado.
+                                </p>
+                                <motion.button whileTap={{ scale: 0.95 }} onClick={() => { playStartSound(); setPhase(1); }} style={{ background: 'linear-gradient(90deg, #ec4899, #db2777)', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: '0 10px 20px rgba(236,72,153,0.3)' }}>
+                                    COMENZAR EXAMEN <ChevronRight size={24} />
+                                </motion.button>
+                            </div>
                         </motion.div>
                     )}
 
                     {phase === 1 && !feedback && (
                         <motion.div key="p1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'white', padding: '3rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#db2777' }}>1. La Reserva con Cera</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>El Batik es una técnica de teñido "por reserva". Antes de sumergir la seda en el tinte, ¿qué debes aplicar sobre la tela para crear tu diseño y que esa zona mantenga su color original?</p>
+                            <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#ec4899', padding: '12px', borderRadius: '15px' }}><Droplet size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', margin: 0 }}>Reserva con Cera</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>El Batik es una técnica de teñido "por reserva". Antes de sumergir la seda en el tinte, ¿qué debes aplicar sobre la tela para crear tu diseño y que esa zona mantenga su color original?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(false, "El pegamento arruinaría la seda permanentemente y no permite el craquelado característico del Batik.")} className="choice-btn">
-                                        Pegamento escolar sintético.
-                                    </button>
-                                    <button onClick={() => handleAnswer(true, "¡Exacto! La cera de abeja (a menudo mezclada con parafina) sella la tela. Cuando sumerjas la seda en el tinte, el color no entrará donde pintaste con cera.")} className="choice-btn correct">
-                                        Cera de abeja derretida (caliente).
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "La pintura acrílica es rígida y cubriría la tela, pero el Batik consiste en teñir la seda en baños de color, no en pintarla por encima.")} className="choice-btn">
-                                        Pintura acrílica blanca.
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "El pegamento arruinaría la seda permanentemente y no permite el craquelado característico del Batik.")} className="choice-btn">
+                                        <span>Pegamento escolar sintético.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Exacto! La cera de abeja (a menudo mezclada con parafina) sella la tela. Cuando sumerjas la seda en el tinte, el color no entrará donde pintaste con cera.")} className="choice-btn">
+                                        <span>Cera de abeja derretida (caliente).</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "La pintura acrílica es rígida y cubriría la tela, pero el Batik consiste en teñir la seda en baños de color, no en pintarla por encima.")} className="choice-btn">
+                                        <span>Pintura acrílica blanca.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -161,17 +201,22 @@ export default function MonicaSierra() {
 
                     {phase === 2 && !feedback && (
                         <motion.div key="p2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'white', padding: '3rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#db2777' }}>2. El Teñido en Frío</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>Has aplicado la cera y ahora vas a teñir la seda para darle el primer color de fondo. ¿A qué temperatura debe estar el baño de tinte?</p>
+                            <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#ec4899', padding: '12px', borderRadius: '15px' }}><Sun size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', margin: 0 }}>El Teñido en Frío</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>Has aplicado la cera y ahora vas a teñir la seda para darle el primer color de fondo. ¿A qué temperatura debe estar el baño de tinte?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(false, "¡Error fatal! Si el tinte está hirviendo, derretirá instantáneamente la cera de abeja y perderás todo tu diseño de reserva.")} className="choice-btn">
-                                        Hirviendo, para que el color fije más rápido.
-                                    </button>
-                                    <button onClick={() => handleAnswer(true, "¡Correcto! El tinte debe estar frío (o a temperatura ambiente baja) para no derretir la cera de abeja que aplicaste como reserva.")} className="choice-btn correct">
-                                        Frío, o a temperatura ambiente.
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "¡Error fatal! Si el tinte está hirviendo, derretirá instantáneamente la cera de abeja y perderás todo tu diseño de reserva.")} className="choice-btn">
+                                        <span>Hirviendo, para que el color fije más rápido.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Correcto! El tinte debe estar frío (o a temperatura ambiente baja) para no derretir la cera de abeja que aplicaste como reserva.")} className="choice-btn">
+                                        <span>Frío, o a temperatura ambiente.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -179,20 +224,26 @@ export default function MonicaSierra() {
 
                     {phase === 3 && !feedback && (
                         <motion.div key="p3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'white', padding: '3rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#db2777' }}>3. El Craquelado (La magia del Batik)</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>El Batik es famoso por esas "venitas" de color que cruzan las zonas protegidas por la cera. ¿Cómo se logra este efecto craquelado característico?</p>
+                            <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #fbcfe8', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#ec4899', padding: '12px', borderRadius: '15px' }}><Scissors size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: '#1e293b', margin: 0 }}>El Craquelado</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6' }}>El Batik es famoso por esas "venitas" de color que cruzan las zonas protegidas por la cera. ¿Cómo se logra este efecto craquelado característico?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(false, "Pintar rayitas finas a mano es otra técnica, pero no es el auténtico craquelado del Batik.")} className="choice-btn">
-                                        Pintando rayitas muy finas con un pincel sobre la cera.
-                                    </button>
-                                    <button onClick={() => handleAnswer(true, "¡Exacto! Al arrugar la tela, la cera seca se quiebra creando micro-fisuras. Cuando vuelves a teñir la tela, el color penetra por esas grietas creando el hermoso efecto de venas típico del Batik.")} className="choice-btn correct">
-                                        Arrugando ligeramente la tela engomada con cera seca antes de volver a teñirla, para que el color entre por las grietas.
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "Cortar la tela destruiría la pieza de seda.")} className="choice-btn">
-                                        Haciendo pequeños cortes con una tijera.
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "Pintar rayitas finas a mano es otra técnica, pero no es el auténtico craquelado del Batik.")} className="choice-btn">
+                                        <span>Pintando rayitas muy finas con un pincel sobre la cera.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Exacto! Al arrugar la tela, la cera seca se quiebra creando micro-fisuras. Cuando vuelves a teñir la tela, el color penetra por esas grietas creando el hermoso efecto de venas típico del Batik.")} className="choice-btn">
+                                        <span>Arrugando ligeramente la tela engomada con cera seca antes de volver a teñirla, para que el color entre por las grietas.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "Cortar la tela destruiría la pieza de seda.")} className="choice-btn">
+                                        <span>Haciendo pequeños cortes con una tijera.</span>
+                                        <ChevronRight size={20} color="#ec4899" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -200,17 +251,17 @@ export default function MonicaSierra() {
 
                     {phase === 4 && !feedback && (
                         <motion.div key="p4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-                            <div style={{ background: 'linear-gradient(135deg, #ec4899, #be185d)', padding: '4rem', borderRadius: '30px', border: '1px solid #f9a8d4', textAlign: 'center', boxShadow: '0 20px 50px rgba(236,72,153,0.3)' }}>
-                                <div style={{ width: '100px', height: '100px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
+                            <div style={{ background: 'linear-gradient(135deg, #ec4899, #be185d)', padding: '3rem 1.5rem', borderRadius: '30px', border: '2px solid #f9a8d4', textAlign: 'center', boxShadow: '0 20px 50px rgba(236,72,153,0.3)' }}>
+                                <div style={{ width: '100px', height: '100px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
                                     <Palette size={50} color="#be185d" />
                                 </div>
-                                <h2 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '1rem', color: 'white' }}>¡Obra Maestra!</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#fbcfe8', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem', lineHeight: '1.6' }}>
-                                    Has aprendido la paciencia, precisión y magia del teñido con cera. Como dice Mónica Sierra, el Batik es un arte de capas y tiempos, tan único como los colores de nuestro Valle del Elqui.
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: 'white', lineHeight: 1.1 }}>¡Obra Maestra!</h2>
+                                <p style={{ fontSize: '1.1rem', color: '#fbcfe8', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
+                                    Has aprendido la paciencia, precisión y magia del teñido con cera. Como dice Mónica Sierra, el Batik es un arte de capas y tiempos, tan único como nuestra región.
                                 </p>
-                                <button onClick={generateDiploma} style={{ background: 'white', color: '#be185d', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto' }}>
+                                <motion.button whileTap={{ scale: 0.95 }} onClick={generateDiploma} style={{ background: 'white', color: '#be185d', border: 'none', padding: '1.2rem 2rem', borderRadius: '50px', fontSize: '1.1rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', maxWidth: '350px', margin: '0 auto', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>
                                     <Download size={24} /> OBTENER DIPLOMA TEXTIL
-                                </button>
+                                </motion.button>
                             </div>
                         </motion.div>
                     )}
@@ -220,19 +271,25 @@ export default function MonicaSierra() {
             <style jsx>{`
                 .choice-btn {
                     background: #f8fafc;
-                    border: 1px solid #cbd5e1;
+                    border: 2px solid #e2e8f0;
                     color: #1e293b;
-                    padding: 1.5rem;
-                    border-radius: 15px;
-                    font-size: 1.1rem;
+                    padding: 1.2rem;
+                    border-radius: 20px;
+                    font-size: 1.05rem;
                     text-align: left;
                     cursor: pointer;
-                    transition: all 0.3s ease;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 15px;
+                    line-height: 1.4;
+                    width: 100%;
+                    box-sizing: border-box;
                 }
                 .choice-btn:hover {
                     background: #fdf2f8;
                     border-color: #ec4899;
-                    transform: translateX(10px);
                 }
             `}</style>
         </div>

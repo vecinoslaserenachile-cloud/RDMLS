@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Map, TreePine, Droplets, ArrowRight, CheckCircle, ShieldAlert, Waves, Leaf, Download, User } from 'lucide-react';
+import { Map, TreePine, CheckCircle, ShieldAlert, Leaf, Download, User, ChevronRight, Sparkles, Waves, ArrowUp, Droplets } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 import confetti from 'canvas-confetti';
 import { logElearningActivity } from '../utils/elearningLogger';
+import { playCorrectSound, playErrorSound, playLevelUpSound, playStartSound } from '../utils/soundEffects';
 
 export default function PaulinaGodoy() {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function PaulinaGodoy() {
     const [userEmail, setUserEmail] = useState('');
     const [isLogged, setIsLogged] = useState(false);
     
-    const [phase, setPhase] = useState(1);
+    const [phase, setPhase] = useState(0); // 0 = Intro, 1 = Q1, 2 = Q2, 3 = Q3, 4 = Diploma
     const [score, setScore] = useState(0);
     const [feedback, setFeedback] = useState(null);
 
@@ -30,6 +31,7 @@ export default function PaulinaGodoy() {
     const handleLogin = (e) => {
         e.preventDefault();
         if (userName.trim() && userEmail.trim()) {
+            playStartSound();
             setIsLogged(true);
             localStorage.setItem('paulina_godoy_user', userName);
             localStorage.setItem('paulina_godoy_email', userEmail);
@@ -38,12 +40,23 @@ export default function PaulinaGodoy() {
     };
 
     const handleAnswer = (isCorrect, explanation) => {
-        if (isCorrect) setScore(score + 1);
+        if (isCorrect) {
+            setScore(score + 1);
+            playCorrectSound();
+        } else {
+            playErrorSound();
+        }
+
         setFeedback({ isCorrect, text: explanation });
         
         setTimeout(() => {
             setFeedback(null);
-            if (isCorrect) setPhase(phase + 1);
+            if (isCorrect) {
+                if (phase === 3) {
+                    playLevelUpSound();
+                }
+                setPhase(phase + 1);
+            }
         }, 4000);
     };
 
@@ -89,8 +102,8 @@ export default function PaulinaGodoy() {
     if (!isLogged) {
         return (
             <div style={{ minHeight: '100vh', background: '#022c22', color: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: "'Outfit', sans-serif" }}>
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'rgba(6, 78, 59, 0.6)', padding: '3rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)', backdropFilter: 'blur(20px)', maxWidth: '450px', width: '90%', textAlign: 'center' }}>
-                    <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #10b981, #047857)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
+                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ background: 'rgba(6, 78, 59, 0.6)', padding: '2rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)', backdropFilter: 'blur(20px)', maxWidth: '450px', width: '90%', textAlign: 'center' }}>
+                    <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #10b981, #047857)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', boxShadow: '0 10px 20px rgba(16,185,129,0.3)' }}>
                         <TreePine size={40} color="white" />
                     </div>
                     <h1 style={{ fontSize: '2rem', fontWeight: '900', marginBottom: '1rem' }}>Humedal El Culebrón</h1>
@@ -98,62 +111,89 @@ export default function PaulinaGodoy() {
                     <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <div style={{ position: 'relative' }}>
                             <User size={20} color="#6ee7b7" style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)' }} />
-                            <input type="text" placeholder="Tu nombre..." value={userName} onChange={e => setUserName(e.target.value)} style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)', color: 'white', boxSizing: 'border-box' }} required />
+                            <input type="text" placeholder="Tu nombre completo..." value={userName} onChange={e => setUserName(e.target.value)} style={{ width: '100%', padding: '1rem 1rem 1rem 3rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)', color: 'white', boxSizing: 'border-box' }} required />
                         </div>
                         <input type="email" placeholder="Tu correo electrónico..." value={userEmail} onChange={e => setUserEmail(e.target.value)} style={{ width: '100%', padding: '1rem', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.3)', color: 'white', boxSizing: 'border-box' }} required />
-                        <button type="submit" style={{ width: '100%', padding: '1rem', background: '#10b981', color: 'white', border: 'none', borderRadius: '15px', fontWeight: '900', fontSize: '1.1rem', cursor: 'pointer', marginTop: '1rem' }}>ENTRAR AL PROYECTO</button>
+                        <motion.button whileTap={{ scale: 0.95 }} type="submit" style={{ width: '100%', padding: '1.2rem', background: 'linear-gradient(90deg, #10b981, #059669)', color: 'white', border: 'none', borderRadius: '15px', fontWeight: '900', fontSize: '1.1rem', cursor: 'pointer', marginTop: '1rem', boxShadow: '0 10px 20px rgba(16,185,129,0.4)' }}>
+                            ENTRAR A LA ACADEMIA
+                        </motion.button>
                     </form>
-                    <button type="button" onClick={() => navigate('/entrevecinas')} style={{ background: 'transparent', color: '#6ee7b7', border: 'none', marginTop: '1rem', cursor: 'pointer', textDecoration: 'underline' }}>Volver al Hub</button>
+                    <button type="button" onClick={() => navigate('/entrevecinas')} style={{ background: 'transparent', color: '#6ee7b7', border: 'none', marginTop: '1.5rem', cursor: 'pointer', textDecoration: 'underline' }}>Volver al Hub</button>
                 </motion.div>
             </div>
         );
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#064e3b', color: 'white', fontFamily: "'Outfit', sans-serif" }}>
-            <header style={{ padding: '1.5rem 2rem', background: 'rgba(0,0,0,0.4)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ minHeight: '100vh', background: '#064e3b', color: 'white', fontFamily: "'Outfit', sans-serif", overflowX: 'hidden' }}>
+            <header style={{ padding: '1rem 5%', background: 'rgba(0,0,0,0.4)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 10, backdropFilter: 'blur(10px)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <div style={{ background: '#10b981', padding: '10px', borderRadius: '12px' }}><Map size={24} color="white" /></div>
                     <div>
-                        <div style={{ fontSize: '1.2rem', fontWeight: '900' }}>PLAN MAESTRO URBANO</div>
+                        <div style={{ fontSize: '1.2rem', fontWeight: '900', lineHeight: 1 }}>PLAN MAESTRO</div>
                         <div style={{ fontSize: '0.8rem', color: '#6ee7b7' }}>Arq. Paulina Godoy</div>
                     </div>
                 </div>
-                <button onClick={() => navigate('/entrevecinas')} style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>Salir al Hub</button>
+                <button onClick={() => navigate('/entrevecinas')} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontSize: '0.9rem' }}>Salir</button>
             </header>
 
-            <main style={{ maxWidth: '1000px', margin: '3rem auto', padding: '0 2rem' }}>
+            <main style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 5%' }}>
                 {/* Progress Bar */}
-                <div style={{ display: 'flex', gap: '10px', marginBottom: '3rem' }}>
-                    {[1, 2, 3, 4].map(p => (
-                        <div key={p} style={{ flex: 1, height: '8px', borderRadius: '4px', background: phase >= p ? '#10b981' : 'rgba(255,255,255,0.1)', transition: '0.3s' }} />
-                    ))}
-                </div>
+                {phase > 0 && phase < 4 && (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '2rem' }}>
+                        {[1, 2, 3].map(p => (
+                            <div key={p} style={{ flex: 1, height: '8px', borderRadius: '4px', background: phase >= p ? '#10b981' : 'rgba(255,255,255,0.1)', transition: '0.3s', boxShadow: phase >= p ? '0 0 10px rgba(16,185,129,0.5)' : 'none' }} />
+                        ))}
+                    </div>
+                )}
 
                 <AnimatePresence mode="wait">
                     {feedback && (
-                        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} style={{ background: feedback.isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', border: `1px solid ${feedback.isCorrect ? '#10b981' : '#ef4444'}`, padding: '1.5rem', borderRadius: '15px', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            {feedback.isCorrect ? <CheckCircle size={30} color="#10b981" /> : <ShieldAlert size={30} color="#ef4444" />}
-                            <span style={{ fontSize: '1.1rem', color: feedback.isCorrect ? '#6ee7b7' : '#fca5a5' }}>{feedback.text}</span>
+                        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} style={{ background: feedback.isCorrect ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', border: `2px solid ${feedback.isCorrect ? '#10b981' : '#ef4444'}`, padding: '1.5rem', borderRadius: '20px', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '15px', boxShadow: '0 15px 30px rgba(0,0,0,0.3)' }}>
+                            {feedback.isCorrect ? <CheckCircle size={40} color="#10b981" style={{ flexShrink: 0 }} /> : <ShieldAlert size={40} color="#ef4444" style={{ flexShrink: 0 }} />}
+                            <span style={{ fontSize: '1.1rem', color: feedback.isCorrect ? '#a7f3d0' : '#fca5a5', fontWeight: 'bold' }}>{feedback.text}</span>
+                        </motion.div>
+                    )}
+
+                    {phase === 0 && (
+                        <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2.5rem 1.5rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+                                <div style={{ background: 'rgba(16,185,129,0.2)', padding: '15px', borderRadius: '50%', display: 'inline-flex', marginBottom: '1rem' }}>
+                                    <Sparkles size={40} color="#34d399" />
+                                </div>
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: 'white' }}>Trivia Final</h2>
+                                <p style={{ fontSize: '1.1rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6', maxWidth: '500px', margin: '0 auto 2rem' }}>
+                                    Demuestra lo que aprendiste sobre Infraestructura Verde. Deberás responder correctamente para graduarte y obtener tu certificado.
+                                </p>
+                                <motion.button whileTap={{ scale: 0.95 }} onClick={() => { playStartSound(); setPhase(1); }} style={{ background: 'linear-gradient(90deg, #10b981, #059669)', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: '0 10px 20px rgba(16,185,129,0.4)' }}>
+                                    COMENZAR EXAMEN <ChevronRight size={24} />
+                                </motion.button>
+                            </div>
                         </motion.div>
                     )}
 
                     {phase === 1 && !feedback && (
                         <motion.div key="p1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '3rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#34d399' }}>1. Defensa Costera</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>El Humedal El Culebrón enfrenta el riesgo constante de marejadas. Como urbanista, ¿cuál es la mejor forma de proteger la ciudad costera?</p>
+                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#10b981', padding: '12px', borderRadius: '15px' }}><Waves size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', margin: 0 }}>Defensa Costera</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>El Humedal El Culebrón enfrenta el riesgo constante de marejadas. Como urbanista, ¿cuál es la mejor forma de proteger la ciudad costera?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(false, "El hormigón rebota la energía de las olas y termina erosionando más la playa. Además, corta la conexión ecológica.")} className="choice-btn">
-                                        Levantar un gran muro de contención de hormigón a lo largo de la costa.
-                                    </button>
-                                    <button onClick={() => handleAnswer(true, "¡Exacto! Esta es la esencia de la infraestructura verde. El parque actúa como esponja, absorbiendo la energía del mar de forma natural y ofreciendo un espacio público de calidad.")} className="choice-btn correct">
-                                        Construir un "Parque Inundable" con bordes blandos y dunas restauradas.
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "El enrocado es rígido y poco amigable con el ecosistema. Funciona, pero arruina el valor paisajístico y ambiental del humedal.")} className="choice-btn">
-                                        Instalar un enrocado pesado (rompeolas de piedras gigantes) en la orilla.
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "El hormigón rebota la energía de las olas y termina erosionando más la playa. Además, corta la conexión ecológica.")} className="choice-btn">
+                                        <span>Levantar un gran muro de contención de hormigón a lo largo de la costa.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Exacto! Esta es la esencia de la infraestructura verde. El parque actúa como esponja, absorbiendo la energía del mar de forma natural y ofreciendo un espacio público de calidad.")} className="choice-btn">
+                                        <span>Construir un "Parque Inundable" con bordes blandos y dunas restauradas.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "El enrocado es rígido y poco amigable con el ecosistema. Funciona, pero arruina el valor paisajístico y ambiental del humedal.")} className="choice-btn">
+                                        <span>Instalar un enrocado pesado (rompeolas de piedras gigantes) en la orilla.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -161,20 +201,26 @@ export default function PaulinaGodoy() {
 
                     {phase === 2 && !feedback && (
                         <motion.div key="p2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '3rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#34d399' }}>2. Conectividad Social</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>Históricamente, Coquimbo le ha dado la espalda a su humedal. ¿Cómo logras que los vecinos vuelvan a apropiarse del lugar sin destruirlo?</p>
+                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#10b981', padding: '12px', borderRadius: '15px' }}><ArrowUp size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', margin: 0 }}>Conectividad Social</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>Históricamente, Coquimbo le ha dado la espalda a su humedal. ¿Cómo logras que los vecinos vuelvan a apropiarse del lugar sin destruirlo?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(true, "¡Correcto! Las pasarelas elevadas permiten el tránsito humano sin aplastar los nidos ni compactar el suelo, logrando un equilibrio perfecto.")} className="choice-btn correct">
-                                        Instalar pasarelas de madera elevadas y estaciones de avistamiento de aves.
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "Pavimentar el humedal destruye la infiltración de agua y ahuyenta a la fauna local. ¡No es sostenible!")} className="choice-btn">
-                                        Pavimentar un gran paseo peatonal con asfalto directamente sobre el barro.
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "Si cierras el humedal, los vecinos no lo valorarán. La conservación moderna requiere que la comunidad conozca y ame su entorno.")} className="choice-btn">
-                                        Cerrar completamente el humedal con mallas para que nadie pueda entrar.
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Correcto! Las pasarelas elevadas permiten el tránsito humano sin aplastar los nidos ni compactar el suelo, logrando un equilibrio perfecto.")} className="choice-btn">
+                                        <span>Instalar pasarelas de madera elevadas y estaciones de avistamiento de aves.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "Pavimentar el humedal destruye la infiltración de agua y ahuyenta a la fauna local. ¡No es sostenible!")} className="choice-btn">
+                                        <span>Pavimentar un gran paseo peatonal con asfalto directamente sobre el barro.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "Si cierras el humedal, los vecinos no lo valorarán. La conservación moderna requiere que la comunidad conozca y ame su entorno.")} className="choice-btn">
+                                        <span>Cerrar completamente el humedal con mallas para que nadie pueda entrar.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -182,20 +228,26 @@ export default function PaulinaGodoy() {
 
                     {phase === 3 && !feedback && (
                         <motion.div key="p3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
-                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '3rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
-                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: '#34d399' }}>3. Flora Resiliente</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>Para consolidar el Parque Inundable, necesitas plantar vegetación. ¿Qué tipo de plantas eliges para asegurar que el proyecto sobreviva a largo plazo?</p>
+                            <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#10b981', padding: '12px', borderRadius: '15px' }}><Droplets size={30} color="white" /></div>
+                                    <h2 style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', margin: 0 }}>Flora Resiliente</h2>
+                                </div>
+                                <p style={{ fontSize: '1.1rem', color: '#a7f3d0', marginBottom: '2rem', lineHeight: '1.6' }}>Para consolidar el Parque Inundable, necesitas plantar vegetación. ¿Qué tipo de plantas eliges para asegurar que el proyecto sobreviva a largo plazo?</p>
                                 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-                                    <button onClick={() => handleAnswer(false, "El césped requiere demasiada agua (que escasea) y no soporta bien la salinidad del estero ni de las marejadas.")} className="choice-btn">
-                                        Plantación masiva de césped ornamental para que se vea como un campo de golf.
-                                    </button>
-                                    <button onClick={() => handleAnswer(false, "Los eucaliptos y pinos secan el suelo y son especies exóticas invasoras. Destruirían el equilibrio del humedal.")} className="choice-btn">
-                                        Eucaliptos y Pinos de rápido crecimiento para generar sombra rápida.
-                                    </button>
-                                    <button onClick={() => handleAnswer(true, "¡Perfecto! Las plantas nativas costeras (como docas, totoras y arbustos locales) soportan la salinidad, requieren poca agua y afirman el suelo previniendo la erosión.")} className="choice-btn correct">
-                                        Flora nativa adaptada a la salinidad y al bajo consumo hídrico (flora endémica).
-                                    </button>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "El césped requiere demasiada agua (que escasea) y no soporta bien la salinidad del estero ni de las marejadas.")} className="choice-btn">
+                                        <span>Plantación masiva de césped ornamental para que se vea como un campo de golf.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(false, "Los eucaliptos y pinos secan el suelo y son especies exóticas invasoras. Destruirían el equilibrio del humedal.")} className="choice-btn">
+                                        <span>Eucaliptos y Pinos de rápido crecimiento para generar sombra rápida.</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
+                                    <motion.button whileTap={{ scale: 0.98 }} onClick={() => handleAnswer(true, "¡Perfecto! Las plantas nativas costeras (como docas, totoras y arbustos locales) soportan la salinidad, requieren poca agua y afirman el suelo previniendo la erosión.")} className="choice-btn">
+                                        <span>Flora nativa adaptada a la salinidad y al bajo consumo hídrico (flora endémica).</span>
+                                        <ChevronRight size={20} color="#10b981" style={{ flexShrink: 0 }} />
+                                    </motion.button>
                                 </div>
                             </div>
                         </motion.div>
@@ -203,17 +255,17 @@ export default function PaulinaGodoy() {
 
                     {phase === 4 && !feedback && (
                         <motion.div key="p4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
-                            <div style={{ background: 'linear-gradient(135deg, #064e3b, #022c22)', padding: '4rem', borderRadius: '30px', border: '1px solid #10b981', textAlign: 'center', boxShadow: '0 20px 50px rgba(16,185,129,0.2)' }}>
-                                <div style={{ width: '100px', height: '100px', background: '#10b981', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem' }}>
-                                    <Leaf size={50} color="white" />
+                            <div style={{ background: 'linear-gradient(135deg, #064e3b, #022c22)', padding: '3rem 1.5rem', borderRadius: '30px', border: '2px solid #10b981', textAlign: 'center', boxShadow: '0 20px 50px rgba(16,185,129,0.3)' }}>
+                                <div style={{ width: '100px', height: '100px', background: 'linear-gradient(135deg, #f59e0b, #d97706)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', boxShadow: '0 10px 20px rgba(245,158,11,0.4)' }}>
+                                    <Award size={50} color="white" />
                                 </div>
-                                <h2 style={{ fontSize: '3rem', fontWeight: '900', marginBottom: '1rem', color: 'white' }}>¡Plan Maestro Aprobado!</h2>
-                                <p style={{ fontSize: '1.2rem', color: '#6ee7b7', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 3rem', lineHeight: '1.6' }}>
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '900', marginBottom: '1rem', color: 'white', lineHeight: 1.1 }}>¡Examen Aprobado!</h2>
+                                <p style={{ fontSize: '1.1rem', color: '#6ee7b7', marginBottom: '3rem', maxWidth: '600px', margin: '0 auto 2rem', lineHeight: '1.6' }}>
                                     Has entendido a la perfección la visión de Paulina Godoy. Un humedal no es un patio trasero ni un problema; es infraestructura verde de alto valor que protege y embellece nuestra ciudad.
                                 </p>
-                                <button onClick={generateDiploma} style={{ background: '#f59e0b', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto' }}>
-                                    <Download size={24} /> OBTENER DIPLOMA URBANISTA
-                                </button>
+                                <motion.button whileTap={{ scale: 0.95 }} onClick={generateDiploma} style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)', color: 'white', border: 'none', padding: '1.2rem 2rem', borderRadius: '50px', fontSize: '1.1rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', width: '100%', maxWidth: '350px', margin: '0 auto', boxShadow: '0 10px 20px rgba(245,158,11,0.3)' }}>
+                                    <Download size={24} /> OBTENER DIPLOMA
+                                </motion.button>
                             </div>
                         </motion.div>
                     )}
@@ -222,20 +274,26 @@ export default function PaulinaGodoy() {
 
             <style jsx>{`
                 .choice-btn {
-                    background: rgba(255,255,255,0.05);
-                    border: 1px solid rgba(16, 185, 129, 0.3);
+                    background: rgba(0,0,0,0.5);
+                    border: 1px solid rgba(16, 185, 129, 0.4);
                     color: white;
-                    padding: 1.5rem;
-                    border-radius: 15px;
-                    font-size: 1.1rem;
+                    padding: 1.2rem;
+                    border-radius: 20px;
+                    font-size: 1.05rem;
                     text-align: left;
                     cursor: pointer;
-                    transition: all 0.3s ease;
+                    transition: all 0.2s ease;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 15px;
+                    line-height: 1.4;
+                    width: 100%;
+                    box-sizing: border-box;
                 }
                 .choice-btn:hover {
                     background: rgba(16, 185, 129, 0.2);
                     border-color: #10b981;
-                    transform: translateX(10px);
                 }
             `}</style>
         </div>
