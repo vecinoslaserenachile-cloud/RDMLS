@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Music, Star, MapPin, ShieldCheck, Ticket, Car, Zap, Users, AlertCircle, Calendar, Heart, Share2, Sun, Globe } from 'lucide-react';
+import { Music, Star, MapPin, ShieldCheck, Ticket, Car, Zap, Users, AlertCircle, Calendar, Heart, Share2, Sun, Globe, RefreshCw, ExternalLink } from 'lucide-react';
 
 const FESTIVAL_LINEUP = [
     { id: 1, name: 'SOPHIE ELLIS (International Node)', type: 'headliner', status: 'confirmed' },
@@ -26,6 +26,7 @@ const FESTIVAL_LINEUP = [
 
 export default function SmartEventsVLS({ onClose }) {
     const [selectedView, setSelectedView] = useState('planning');
+    const [iframeKey, setIframeKey] = useState(0);
 
     return (
         <div style={{ position: 'fixed', inset: 0, zIndex: 3000000, background: 'rgba(2, 6, 23, 0.95)', color: 'white', display: 'flex', flexDirection: 'column', fontFamily: "'Outfit', sans-serif" }}>
@@ -44,103 +45,188 @@ export default function SmartEventsVLS({ onClose }) {
                 <button onClick={onClose} style={{ background: 'transparent', color: 'white', border: '1px solid white', padding: '10px 25px', borderRadius: '12px', cursor: 'pointer', fontWeight: 'bold' }}>CERRAR CONSOLA</button>
             </div>
 
-            <div style={{ flex: 1, padding: '3rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', overflowY: 'auto' }}>
-                
-                {/* 1. ARTIST MARKETPLACE */}
-                <div className="glass-panel" style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
-                        <Music color="#fcd34d" size={20} />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>LINEUP ESTRATÉGICO</h3>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                        {FESTIVAL_LINEUP.map(artist => (
-                            <div key={artist.id} style={{ background: 'rgba(0,0,0,0.3)', padding: '1.2rem', borderRadius: '20px', border: '1px solid rgba(252, 211, 77, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <span style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block' }}>{artist.name}</span>
-                                    <span style={{ fontSize: '0.65rem', color: '#64748b' }}>{artist.type.toUpperCase()}</span>
+            {/* VLS TABS */}
+            <div style={{ display: 'flex', background: '#0b0f19', padding: '0.5rem 3rem', gap: '15px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                <button 
+                    onClick={() => setSelectedView('planning')}
+                    style={{
+                        padding: '8px 16px',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: selectedView === 'planning' ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                        color: selectedView === 'planning' ? '#60a5fa' : '#94a3b8',
+                        fontWeight: '900',
+                        fontSize: '0.7rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: '0.3s'
+                    }}
+                >
+                    <Calendar size={13} />
+                    CONSOLA PLANIFICACIÓN FESTIVAL (VERANO 2027)
+                </button>
+                <button 
+                    onClick={() => setSelectedView('serenito-app')}
+                    style={{
+                        padding: '8px 16px',
+                        borderRadius: '10px',
+                        border: 'none',
+                        background: selectedView === 'serenito-app' ? 'rgba(252, 211, 77, 0.15)' : 'transparent',
+                        color: selectedView === 'serenito-app' ? '#fcd34d' : '#94a3b8',
+                        fontWeight: '900',
+                        fontSize: '0.7rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: '0.3s'
+                    }}
+                >
+                    <Star size={13} />
+                    SERENITO APP: EVENTOS & PROTOCOLO (VERSIÓN EXTERNA)
+                </button>
+            </div>
+
+            {selectedView === 'planning' ? (
+                <>
+                    <div style={{ flex: 1, padding: '3rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2rem', overflowY: 'auto' }}>
+                        
+                        {/* 1. ARTIST MARKETPLACE */}
+                        <div className="glass-panel" style={{ background: 'rgba(255,255,255,0.03)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
+                                <Music color="#fcd34d" size={20} />
+                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>LINEUP ESTRATÉGICO</h3>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                {FESTIVAL_LINEUP.map((artist, idx) => (
+                                    <div key={idx} style={{ background: 'rgba(0,0,0,0.3)', padding: '1.2rem', borderRadius: '20px', border: '1px solid rgba(252, 211, 77, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div>
+                                            <span style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block' }}>{artist.name}</span>
+                                            <span style={{ fontSize: '0.65rem', color: '#64748b' }}>{artist.type.toUpperCase()}</span>
+                                        </div>
+                                        <span style={{ fontSize: '0.6rem', color: '#22c55e', fontWeight: 'bold' }}>{artist.status.toUpperCase()}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            <button style={{ width: '100%', marginTop: '1.5rem', padding: '15px', borderRadius: '15px', background: 'transparent', border: '1px solid #fcd34d', color: '#fcd34d', fontWeight: 'bold', fontSize: '0.8rem' }}>POSTULACIÓN TALENTO LOCAL</button>
+                        </div>
+
+                        {/* 2. VLS SMART PASS & BENEFITS */}
+                        <div className="glass-panel" style={{ background: 'rgba(56, 189, 248, 0.05)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
+                                <Ticket color="#38bdf8" size={20} />
+                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>BENEFICIOS VECINO/TURISTA</h3>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <Car color="#38bdf8" />
+                                    <div>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>PARKING SOBERANO</span>
+                                        <span style={{ fontSize: '0.7rem', color: '#38bdf8' }}>-50% con Fichas VLS</span>
+                                    </div>
                                 </div>
-                                <span style={{ fontSize: '0.6rem', color: '#22c55e', fontWeight: 'bold' }}>{artist.status.toUpperCase()}</span>
+                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <ShieldCheck color="#22c55e" />
+                                    <div>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>BOTÓN DE EMERGENCIA</span>
+                                        <span style={{ fontSize: '0.7rem', color: '#22c55e' }}>Conexión Directa Faro Centinel</span>
+                                    </div>
+                                </div>
+                                <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                    <Zap color="#fcd34d" />
+                                    <div>
+                                        <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>FAST-TRACK BYD</span>
+                                        <span style={{ fontSize: '0.7rem', color: '#fcd34d' }}>Transporte Eléctrico Gratuito</span>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                    <button style={{ width: '100%', marginTop: '1.5rem', padding: '15px', borderRadius: '15px', background: 'transparent', border: '1px solid #fcd34d', color: '#fcd34d', fontWeight: 'bold', fontSize: '0.8rem' }}>POSTULACIÓN TALENTO LOCAL</button>
-                </div>
+                        </div>
 
-                {/* 2. VLS SMART PASS & BENEFITS */}
-                <div className="glass-panel" style={{ background: 'rgba(56, 189, 248, 0.05)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(56, 189, 248, 0.2)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
-                        <Ticket color="#38bdf8" size={20} />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>BENEFICIOS VECINO/TURISTA</h3>
+                        {/* 3. ROI & IMPACT MONITOR */}
+                        <div className="glass-panel" style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
+                                <Users color="#10b981" size={20} />
+                                <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>MONITOR DE IMPACTO REAL</h3>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                 <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: '25px', background: 'rgba(0,0,0,0.2)' }}>
+                                    <span style={{ fontSize: '2rem', fontWeight: '900', color: '#10b981', display: 'block' }}>15,000</span>
+                                    <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>TURISTAS PROYECTADOS</span>
+                                 </div>
+                                 <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: '25px', background: 'rgba(0,0,0,0.2)' }}>
+                                    <span style={{ fontSize: '2rem', fontWeight: '900', color: '#fcd34d', display: 'block' }}>45.5M</span>
+                                    <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>RECAUDACIÓN ESTIMADA FICHAS VLS</span>
+                                 </div>
+                                 <button style={{ width: '100%', padding: '15px', borderRadius: '15px', background: '#10b981', color: '#000', fontWeight: '900', border: 'none', fontSize: '0.8rem' }}>ENVIAR DOSSIER AL GORE</button>
+                            </div>
+                        </div>
+
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <Car color="#38bdf8" />
+
+                    {/* MONITOR DE PRECEDENCIAS (REGLA DE LOS 4 PILARES) */}
+                    <div style={{ padding: '0 3rem 2rem 3rem' }}>
+                        <div className="glass-panel" style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: '32px', border: '2px solid #3b82f6', display: 'flex', alignItems: 'center', gap: '30px', justifyContent: 'space-between' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div style={{ background: '#3b82f6', padding: '10px', borderRadius: '50%' }}>
+                                    <ShieldCheck color="white" size={24} />
+                                </div>
+                                <div>
+                                    <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '900', color: 'white' }}>MONITOR DE PRECEDENCIAS (PROTOCOLO VLS)</h3>
+                                    <p style={{ margin: 0, fontSize: '0.7rem', color: '#94a3b8' }}>Orden de autoridades y vocerías soberanas en tiempo real para el verano 2027.</p>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                {['1. ALCALDE', '2. GOBERNADOR', '3. VECINO ANÓNIMO', '4. SERENITO'].map((rank, i) => (
+                                    <div key={i} style={{ padding: '10px 20px', background: '#000', borderRadius: '15px', border: '1px solid #3b82f6', fontSize: '0.75rem', fontWeight: 'bold' }}>
+                                        {rank}
+                                    </div>
+                                ))}
+                            </div>
+                            <button style={{ padding: '12px 25px', borderRadius: '15px', background: 'transparent', border: '1px solid #3b82f6', color: '#3b82f6', fontWeight: 'bold', fontSize: '0.8rem' }}>AUTORIZAR VOCERÍA</button>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1.5rem 3rem 2.5rem 3rem' }}>
+                    <div className="glass-panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem 1.5rem', borderRadius: '16px', background: 'rgba(255, 255, 255, 0.03)', border: '1px solid rgba(252, 211, 77, 0.2)', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <Globe size={18} color="#fcd34d" />
                             <div>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>PARKING SOBERANO</span>
-                                <span style={{ fontSize: '0.7rem', color: '#38bdf8' }}>-50% con Fichas VLS</span>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block' }}>Serenito App: Sistema de Eventos & Protocolo</span>
+                                <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Versión transmedia externa de gestión de eventos. Integrada vía Nodo Seguro.</span>
                             </div>
                         </div>
-                        <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <ShieldCheck color="#22c55e" />
-                            <div>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>BOTÓN DE EMERGENCIA</span>
-                                <span style={{ fontSize: '0.7rem', color: '#22c55e' }}>Conexión Directa Faro Centinel</span>
-                            </div>
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button 
+                                onClick={() => setIframeKey(k => k + 1)}
+                                style={{ padding: '8px 16px', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                            >
+                                <RefreshCw size={14} />
+                                Recargar
+                            </button>
+                            <button 
+                                onClick={() => window.open('https://vecinoslaserenachile-cloud.github.io/serenito-app/', '_blank')}
+                                style={{ padding: '8px 16px', borderRadius: '10px', background: '#3b82f6', border: 'none', color: 'white', fontSize: '0.75rem', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
+                            >
+                                <ExternalLink size={14} />
+                                Abrir en Nueva Pestaña
+                            </button>
                         </div>
-                        <div style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '1.5rem', borderRadius: '25px', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                            <Zap color="#fcd34d" />
-                            <div>
-                                <span style={{ fontSize: '0.8rem', fontWeight: 'bold', display: 'block' }}>FAST-TRACK BYD</span>
-                                <span style={{ fontSize: '0.7rem', color: '#fcd34d' }}>Transporte Eléctrico Gratuito</span>
-                            </div>
-                        </div>
+                    </div>
+                    
+                    <div style={{ flex: 1, position: 'relative', borderRadius: '24px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.1)', background: '#000' }}>
+                        <iframe 
+                            key={iframeKey}
+                            src="https://vecinoslaserenachile-cloud.github.io/serenito-app/"
+                            title="Serenito App - Eventos y Protocolo"
+                            style={{ width: '100%', height: '100%', border: 'none' }}
+                            allow="camera; microphone; geolocation"
+                        />
                     </div>
                 </div>
-
-                {/* 3. ROI & IMPACT MONITOR */}
-                <div className="glass-panel" style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '2rem', borderRadius: '32px', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '2rem' }}>
-                        <Users color="#10b981" size={20} />
-                        <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>MONITOR DE IMPACTO REAL</h3>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                         <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: '25px', background: 'rgba(0,0,0,0.2)' }}>
-                            <span style={{ fontSize: '2rem', fontWeight: '900', color: '#10b981', display: 'block' }}>15,000</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>TURISTAS PROYECTADOS</span>
-                         </div>
-                         <div style={{ textAlign: 'center', padding: '1.5rem', borderRadius: '25px', background: 'rgba(0,0,0,0.2)' }}>
-                            <span style={{ fontSize: '2rem', fontWeight: '900', color: '#fcd34d', display: 'block' }}>45.5M</span>
-                            <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>RECAUDACIÓN ESTIMADA FICHAS VLS</span>
-                         </div>
-                         <button style={{ width: '100%', padding: '15px', borderRadius: '15px', background: '#10b981', color: '#000', fontWeight: '900', border: 'none', fontSize: '0.8rem' }}>ENVIAR DOSSIER AL GORE</button>
-                    </div>
-                </div>
-
-            </div>
-
-            {/* MONITOR DE PRECEDENCIAS (REGLA DE LOS 4 PILARES) */}
-            <div style={{ padding: '0 3rem 2rem 3rem' }}>
-                <div className="glass-panel" style={{ background: 'rgba(59, 130, 246, 0.1)', padding: '1.5rem', borderRadius: '32px', border: '2px solid #3b82f6', display: 'flex', alignItems: 'center', gap: '30px', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                        <div style={{ background: '#3b82f6', padding: '10px', borderRadius: '50%' }}>
-                            <ShieldCheck color="white" size={24} />
-                        </div>
-                        <div>
-                            <h3 style={{ margin: 0, fontSize: '1rem', fontWeight: '900', color: 'white' }}>MONITOR DE PRECEDENCIAS (PROTOCOLO VLS)</h3>
-                            <p style={{ margin: 0, fontSize: '0.7rem', color: '#94a3b8' }}>Orden de autoridades y vocerías soberanas en tiempo real para el verano 2027.</p>
-                        </div>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        {['1. ALCALDE', '2. GOBERNADOR', '3. VECINO ANÓNIMO', '4. SERENITO'].map((rank, i) => (
-                            <div key={i} style={{ padding: '10px 20px', background: '#000', borderRadius: '15px', border: '1px solid #3b82f6', fontSize: '0.75rem', fontWeight: 'bold' }}>
-                                {rank}
-                            </div>
-                        ))}
-                    </div>
-                    <button style={{ padding: '12px 25px', borderRadius: '15px', background: 'transparent', border: '1px solid #3b82f6', color: '#3b82f6', fontWeight: 'bold', fontSize: '0.8rem' }}>AUTORIZAR VOCERÍA</button>
-                </div>
-            </div>
-
+            )}
 
             {/* STATUS FOOTER */}
             <div style={{ padding: '1rem 3rem', background: '#000', color: '#64748b', display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', fontWeight: 'bold' }}>

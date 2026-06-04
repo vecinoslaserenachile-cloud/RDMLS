@@ -132,7 +132,7 @@ export default function LegacyPortal() {
         },
         {
             id: 'faro', title: 'Inteligencia Faro Sentinel', subtitle: 'Monitoreo / Social Listening',
-            icon: BarChart4, color: '#8b5cf6', path: 'https://monitor-laserena.streamlit.app/', internal: false
+            icon: BarChart4, color: '#8b5cf6', path: 'https://app-smartcity-imls.streamlit.app/', internal: false
         },
         {
             id: 'induccion', title: 'Portal Inducción y E-Learning', subtitle: 'Funcionarios Internos IMLS',

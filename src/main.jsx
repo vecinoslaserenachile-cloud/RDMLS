@@ -36,6 +36,15 @@ const SuperAdminSetup = React.lazy(() => import('./pages/SuperAdminSetup.jsx'));
 const HomeLiviano = React.lazy(() => import('./pages/HomeLiviano.jsx'));
 const ProspeccionComercial = React.lazy(() => import('./pages/ProspeccionComercial.jsx'));
 const TanoPortal = React.lazy(() => import('./pages/TanoPortal.jsx'));
+const AstronomiaBeltrand = React.lazy(() => import('./pages/AstronomialBeltrand.jsx'));
+const HumedalesCampos = React.lazy(() => import('./pages/HumedalesCampos.jsx'));
+const AdobeVivo = React.lazy(() => import('./pages/AdobeVivo.jsx'));
+const RuinasLambert = React.lazy(() => import('./pages/RuinasLambert.jsx'));
+const PaulinaGodoy = React.lazy(() => import('./pages/PaulinaGodoy.jsx'));
+const AndreaTorrejon = React.lazy(() => import('./pages/AndreaTorrejon.jsx'));
+const LoretoNarbona = React.lazy(() => import('./pages/LoretoNarbona.jsx'));
+const DanielaOlmos = React.lazy(() => import('./pages/DanielaOlmos.jsx'));
+const MonicaSierra = React.lazy(() => import('./pages/MonicaSierra.jsx'));
 const FaritoHome = React.lazy(() => import('./pages/FaritoHome.jsx'));
 const FaritoInversores = React.lazy(() => import('./pages/FaritoInversores.jsx'));
 const BroadcastMaster = React.lazy(() => import('./pages/BroadcastMaster.jsx'));
@@ -271,7 +280,8 @@ const themeMode = (isRdmlsDns || isImlsDns || isRDMLS || isRadioVecinosDns) ? 'd
 const isDirectRdmls = host.includes('rdmls.cl') || host.includes('rdmk.cl');
 const isPuertaDns = host.includes('puertasmart.cl');
 const isEntrevecinasDns = host.includes('entrevecinas.cl');
-const isPirataDns = host.includes('comunasmart.cl') || host.includes('piratasmart.cl');
+const isPirataDns = host.includes('piratasmart.cl') || window.location.pathname.toLowerCase().includes('/quimbo') || window.location.hash.toLowerCase().includes('/quimbo');
+const isComunaDns = host.includes('comunasmart.cl') && !window.location.pathname.toLowerCase().includes('/quimbo') && !window.location.hash.toLowerCase().includes('/quimbo');
 const isProtocoloDns = host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
 const isPrendesDns = host.includes('prendes.cl') || host.includes('vls-hub.cl') || host.includes('prendes-vls') || host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('pren-vls');
 const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prendes.cl rebranding
@@ -286,8 +296,18 @@ const isPrendesLegacy = host.includes('vecinosmart.cl'); // Separate from prende
     const path = window.location.pathname;
     const isVecinosRoot = (host.includes('vecinoslaserena.cl') || host.includes('pages.dev')) && (path === '/' || path === '');
     if (isVecinosRoot && hash && hash.includes('access_token=')) {
-      // Token landed on wrong domain root → relay to entrevecinas.cl/tano
-      const target = 'https://www.entrevecinas.cl/tano' + hash;
+      // Check for specific relay target in query params
+      const params = new URLSearchParams(window.location.search);
+      const relayTarget = params.get('relay');
+      
+      let target;
+      if (relayTarget === 'vecinosmart') {
+        target = 'https://vecinosmart.cl/' + hash;
+      } else {
+        // Fallback for older Tano portal logins
+        target = 'https://www.entrevecinas.cl/tano' + hash;
+      }
+      
       window.location.replace(target);
       return; // Don't render anything — we're navigating away
     }
@@ -306,7 +326,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           {(!window.location.pathname.toLowerCase().match(/\/(fred|tano)(\/|$)/)) && (
             <Suspense fallback={null}>
               {/* En radiovecinos.cl el reproductor ARCHI propio aparece globalmente */}
-              {isRadioVecinosDns ? <ArchiRadioPlayer isVisible={true} /> : <RadioPlayer isVisible={true} />}
+              {isRadioVecinosDns ? (
+                <ArchiRadioPlayer isVisible={true} />
+              ) : (
+                !(isRdmlsDns || isDirectRdmls || isEntrevecinasDns || isPuertaDns || isPrendesLegacy) && <RadioPlayer isVisible={true} />
+              )}
             </Suspense>
           )}
           
@@ -324,6 +348,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/retail" element={<VLSNewsIan onClose={() => window.location.href = '/'} />} />
               <Route path="/alcaldesa" element={<App />}><Route index element={<HubDashboard />} /></Route>
               <Route path="/tano" element={<TanoPortal />} />
+              <Route path="/astronomia-beltrand" element={<AstronomiaBeltrand />} />
+              <Route path="/humedales-campos" element={<HumedalesCampos />} />
+              <Route path="/adobe-vivo" element={<AdobeVivo />} />
+              <Route path="/ruinas-lambert" element={<RuinasLambert />} />
+              <Route path="/paulina-godoy" element={<PaulinaGodoy />} />
+              <Route path="/andrea-torrejon" element={<AndreaTorrejon />} />
+              <Route path="/loreto-narbona" element={<LoretoNarbona />} />
+              <Route path="/daniela-olmos" element={<DanielaOlmos />} />
+              <Route path="/monica-sierra" element={<MonicaSierra />} />
               <Route path="/andacollo" element={<AndacolloPortal />} />
               <Route path="/vallenar" element={<VallenarPortal />} />
               <Route path="/juansoldado" element={<JuanSoldadoPortal />} />
@@ -416,6 +449,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               ) : isEntrevecinasDns ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<EntrevecinasHub />} />
+                  <Route path="tano" element={<TanoPortal />} />
+                  <Route path="astronomia-beltrand" element={<AstronomiaBeltrand />} />
+                  <Route path="humedales-campos" element={<HumedalesCampos />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRadioVecinosDns ? (
@@ -434,6 +470,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               ) : isPrendesLegacy ? (
                 <Route path="/" element={<App />}>
                   <Route index element={<SmartComunaEvolution />} />
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Route>
+              ) : isComunaDns ? (
+                <Route path="/" element={<App />}>
+                  <Route index element={<HubDashboard />} />
+                  <Route path="quimbo" element={<PirataSmart />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : (isPirataDns || isProtocoloDns) ? (

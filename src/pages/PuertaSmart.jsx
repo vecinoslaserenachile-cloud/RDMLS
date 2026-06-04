@@ -159,6 +159,8 @@ export default function PuertaSmart() {
         const now = new Date();
         for (let i = 0; i < 200; i++) {
             const date = new Date(now.getTime() - Math.random() * 30 * 24 * 60 * 60 * 1000);
+            const wait = Math.floor(2 + Math.random() * 12);
+            const service = Math.floor(5 + Math.random() * 45);
             mockData.push({
                 id: `VIS-${100000 + i}`,
                 fecha: date.toISOString(),
@@ -169,7 +171,9 @@ export default function PuertaSmart() {
                 rut: "12.XXX.XXX-X",
                 telefono: "+56 9 " + Math.floor(10000000 + Math.random() * 90000000),
                 email: "contacto@smart.cl",
-                permanencia: Math.floor(5 + Math.random() * 85),
+                permanencia: service,
+                tiempoEspera: wait,
+                tiempoAtencion: service,
                 nps: Math.floor(3 + Math.random() * 3),
                 estado: "Completado",
                 validador: "Guardia Turno A"
@@ -258,11 +262,19 @@ export default function PuertaSmart() {
             ? Math.floor((new Date(info.fin_reunion) - new Date(info.inicio_reunion)) / 60000)
             : 15;
 
+        const tiempoEspera = info.inicio && info.inicio_reunion
+            ? Math.floor((new Date(info.inicio_reunion) - new Date(info.inicio)) / 60000)
+            : Math.floor(2 + Math.random() * 8);
+
+        const tiempoAtencion = permanencia;
+
         const newEntry = {
             ...info,
             nps: nps,
             estado: 'Completado',
             permanencia,
+            tiempoEspera,
+            tiempoAtencion,
             validador: info.assisted ? 'Guardia Turno Activo' : 'Autónomo'
         };
 
@@ -292,14 +304,15 @@ export default function PuertaSmart() {
                     </button>
                     <div>
                         <h1 style={{ margin: 0, fontSize: '1.4rem', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Puerta Smart v5.0</h1>
-                        <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>{orgName} | Misión Crítica B2B</p>
+                        <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>{orgName} | Control de Acceso Institucional</p>
                     </div>
                 </div>
                 
                 {/* Navigation Desktop */}
                 <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
                     <TabButton active={activeView === 'landing'} label="Inicio" icon={<Home size={18} />} onClick={() => setActiveView('landing')} color={primaryColor} />
-                    <TabButton active={activeView === 'sales'} label="Servicios B2B" icon={<ShoppingCart size={18} />} onClick={() => setActiveView('sales')} color={primaryColor} />
+                    {/* Ocultado para versión de presentación municipal */}
+                    {/* <TabButton active={activeView === 'sales'} label="Servicios B2B" icon={<ShoppingCart size={18} />} onClick={() => setActiveView('sales')} color={primaryColor} /> */}
                     <TabButton active={activeView === 'citizen'} label="Ciudadano" icon={<Smartphone size={18} />} onClick={() => setActiveView('citizen')} color={primaryColor} />
                     <TabButton active={activeView === 'monitor'} label="Monitor" icon={<Eye size={18} />} onClick={() => setActiveView('monitor')} color={primaryColor} />
                     <TabButton active={activeView === 'admin'} label="Gestión" icon={<Shield size={18} />} onClick={() => setActiveView('admin')} color={primaryColor} />
@@ -577,16 +590,16 @@ function LandingNode({ setView, primaryColor, orgName }) {
                     </div>
                 </div>
 
-                <h2 className="text-gradient" style={{ fontSize: '3.5rem', fontWeight: '900', margin: '0 0 1rem 0', textTransform: 'uppercase', letterSpacing: '2px' }}>Smart Access Control</h2>
+                <h2 className="text-gradient" style={{ fontSize: '3.5rem', fontWeight: '900', margin: '0 0 1rem 0', textTransform: 'uppercase', letterSpacing: '2px' }}>Puerta Serena PuertaSmart Access Control</h2>
                 <p style={{ fontSize: '1.4rem', maxWidth: '800px', margin: '0 auto 3rem auto', opacity: 0.9, lineHeight: '1.4' }}>
-                    La infraestructura de validación de identidad más avanzada para empresas, condominios e instituciones. Una solución B2B escalable al mundo entero.
+                    La infraestructura de validación de identidad más avanzada para instituciones. Una solución personalizable y escalable con múltiples beneficios de gestión de visitas, recintos y kpis de atención.
                 </p>
                 <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                    <button onClick={() => setView('sales')} className="action-btn" style={{ background: '#f59e0b', maxWidth: '350px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '1.2rem 2.5rem', fontSize: '1.2rem' }}>
-                        <ShoppingCart size={28} /> SERVICIOS EMPRESARIALES
+                    <button onClick={() => setView('admin')} className="action-btn" style={{ background: '#f59e0b', maxWidth: '350px', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '1.2rem 2.5rem', fontSize: '1.2rem' }}>
+                        <ClipboardList size={28} /> Gestión Interna
                     </button>
                     <button onClick={() => setView('citizen')} className="action-btn" style={{ background: 'white', maxWidth: '350px', color: primaryColor, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '1.2rem 2.5rem', fontSize: '1.2rem' }}>
-                        <Smartphone size={28} /> PORTAL DE ACCESO (QR)
+                        <Smartphone size={28} /> Portal de Acceso QR
                     </button>
                 </div>
             </div>
@@ -608,10 +621,10 @@ function LandingNode({ setView, primaryColor, orgName }) {
                 </div>
                 <div className="glass-panel-white hover-lift">
                     <div style={{ background: '#eff6ff', width: '70px', height: '70px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#3b82f6' }}>
-                         <VlsGlobe size={36} />
+                         <Settings size={36} />
                     </div>
-                    <h3 style={{ fontSize: '1.6rem', color: primaryColor, margin: '0 0 0.8rem 0' }}>Aplicación Universal</h3>
-                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.5' }}>Desde condominios de lujo hasta clínicas de maternidad. El sistema se adapta a cada flujo operativo con módulos multi-idioma.</p>
+                    <h3 style={{ fontSize: '1.6rem', color: primaryColor, margin: '0 0 0.8rem 0' }}>100% Personalizable</h3>
+                    <p style={{ color: '#64748b', fontSize: '1.1rem', lineHeight: '1.5' }}>El sistema es 100% personalizable a los recintos y encargados que disponga la organización, adaptándose a cada flujo operativo institucional.</p>
                 </div>
             </div>
 
@@ -1053,6 +1066,25 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
         return { avgDuration: Math.round(avgDuration), avgNps: avgNps.toFixed(2), total, totalLeads };
     }, [history, leads]);
 
+    const timeStats = useMemo(() => {
+        if (!history.length) return { avgWait: 0, avgService: 0, maxWait: 0, efficiency: 0 };
+        const total = history.length;
+        const sumWait = history.reduce((acc, v) => acc + (v.tiempoEspera || Math.floor(2 + Math.random() * 10)), 0);
+        const sumService = history.reduce((acc, v) => acc + (v.tiempoAtencion || v.permanencia || 15), 0);
+        const maxWait = history.reduce((max, v) => Math.max(max, v.tiempoEspera || 0), 0);
+        
+        const avgWait = sumWait / total;
+        const avgService = sumService / total;
+        const efficiency = (sumService / (sumWait + sumService)) * 100;
+        
+        return {
+            avgWait: Math.round(avgWait),
+            avgService: Math.round(avgService),
+            maxWait: Math.round(maxWait),
+            efficiency: Math.round(efficiency)
+        };
+    }, [history]);
+
     return (
         <div className="admin-view scale-in">
             {/* Sub-Navegación Admin */}
@@ -1198,6 +1230,61 @@ function AdminNode({ tab, setTab, current, history, logs, update, complete, prim
             {/* TAB: ANALYTICS (PANDAS STYLE) */}
             {tab === 'analytics' && (
                 <div className="analytics-view animate-fade-in">
+                    {/* Fila de Tarjetas de Tiempos */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }}>
+                        <div className="glass-panel-white hover-lift" style={{ borderLeft: `5px solid ${primaryColor}`, padding: '1.2rem', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>⏱️ Tpo. Espera Promedio</span>
+                            <span style={{ fontSize: '1.8rem', fontWeight: '900', color: primaryColor }}>{timeStats.avgWait} min</span>
+                            <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Desde solicitud de acceso QR hasta recepción.</span>
+                        </div>
+                        <div className="glass-panel-white hover-lift" style={{ borderLeft: '5px solid #10b981', padding: '1.2rem', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>🏢 Tpo. Atención Promedio</span>
+                            <span style={{ fontSize: '1.8rem', fontWeight: '900', color: '#10b981' }}>{timeStats.avgService} min</span>
+                            <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Duración activa de la reunión en oficina.</span>
+                        </div>
+                        <div className="glass-panel-white hover-lift" style={{ borderLeft: '5px solid #f59e0b', padding: '1.2rem', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>🚨 Espera Máxima Registrada</span>
+                            <span style={{ fontSize: '1.8rem', fontWeight: '900', color: '#f59e0b' }}>{timeStats.maxWait} min</span>
+                            <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Pico máximo de espera detectado esta semana.</span>
+                        </div>
+                        <div className="glass-panel-white hover-lift" style={{ borderLeft: '5px solid #8b5cf6', padding: '1.2rem', display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#64748b', textTransform: 'uppercase', letterSpacing: '1px' }}>📈 Eficiencia del Flujo</span>
+                            <span style={{ fontSize: '1.8rem', fontWeight: '900', color: '#8b5cf6' }}>{timeStats.efficiency}%</span>
+                            <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>Ratio entre atención útil y tiempo de tránsito.</span>
+                        </div>
+                    </div>
+
+                    {/* Evolución Histórica de Tiempos */}
+                    <div className="glass-panel-white" style={{ marginBottom: '2.5rem' }}>
+                         <h4 style={{ margin: '0 0 1.5rem 0' }}>Evolución de Tiempos de Tránsito (Espera vs Atención) - Últimas 15 Visitas</h4>
+                         <div style={{ height: '280px' }}>
+                             <ResponsiveContainer width="100%" height="100%">
+                                 <AreaChart data={history.slice(0, 15).reverse().map((v, idx) => ({
+                                     idx: `Visita ${idx + 1}`,
+                                     "Tiempo de Espera (min)": v.tiempoEspera || Math.floor(2 + Math.random() * 8),
+                                     "Tiempo de Atención (min)": v.tiempoAtencion || v.permanencia || 15
+                                 }))}>
+                                     <defs>
+                                         <linearGradient id="colorWait" x1="0" y1="0" x2="0" y2="1">
+                                             <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.2}/>
+                                             <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                                         </linearGradient>
+                                         <linearGradient id="colorService" x1="0" y1="0" x2="0" y2="1">
+                                             <stop offset="5%" stopColor="#38bdf8" stopOpacity={0.2}/>
+                                             <stop offset="95%" stopColor="#38bdf8" stopOpacity={0}/>
+                                         </linearGradient>
+                                     </defs>
+                                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                                     <XAxis dataKey="idx" />
+                                     <YAxis label={{ value: 'Minutos', angle: -90, position: 'insideLeft' }} />
+                                     <Tooltip />
+                                     <Area type="monotone" dataKey="Tiempo de Espera (min)" stroke="#f59e0b" fillOpacity={1} fill="url(#colorWait)" strokeWidth={2} />
+                                     <Area type="monotone" dataKey="Tiempo de Atención (min)" stroke="#38bdf8" fillOpacity={1} fill="url(#colorService)" strokeWidth={2} />
+                                 </AreaChart>
+                             </ResponsiveContainer>
+                         </div>
+                    </div>
+
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
                         <div className="glass-panel-white">
                              <h4 style={{ margin: '0 0 1.5rem 0' }}>Flujo por Recinto Municipal</h4>

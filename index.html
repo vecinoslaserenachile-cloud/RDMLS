@@ -72,6 +72,10 @@
       document.title = "PuertaSmart · Control de Accesos y Seguridad";
       document.querySelector("meta[name='theme-color']").setAttribute('content', '#1e3a8a');
       document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/vls-crystal-icon.svg'));
+    } else if (window.location.hostname.includes('entrevecinas.cl')) {
+      document.title = "entrevecinas.cl";
+      document.querySelector("meta[name='theme-color']").setAttribute('content', '#0f766e');
+      document.querySelectorAll("link[rel='icon'], link[rel='apple-touch-icon']").forEach(el => el.setAttribute('href', '/entrevecinas_icon.svg'));
     }
   </script>
   <script>

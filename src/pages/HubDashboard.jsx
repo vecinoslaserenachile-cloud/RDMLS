@@ -58,6 +58,8 @@ import VLSConsoleSound from '../components/VLSConsoleSound';
 import PrecolombinoPortal from '../components/PrecolombinoPortal';
 import AmbientModeVLS from '../components/AmbientModeVLS';
 import CentralDifusionVLS from '../components/CentralDifusionVLS';
+import PdfViewerModal from '../components/PdfViewerModal';
+import { FileText } from 'lucide-react';
 import ParlamentoVecinal from '../components/Parlamento/ParlamentoVecinal';
 import SmartShare from '../components/SmartShare';
 import NavieraMonitor from '../components/NavieraMonitor';
@@ -128,6 +130,7 @@ export default function HubDashboard() {
 
     // 2. Environmental Constants & Storage
     const host = (window.location.host || window.location.hostname).toLowerCase();
+    const isComunaDns = host.includes('comunasmart.cl') && !window.location.pathname.toLowerCase().includes('/quimbo') && !window.location.hash.toLowerCase().includes('/quimbo');
     const isRDMLS = host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos'));
     const isVLS = !isRDMLS;
     const curTenant = localStorage.getItem('smart_tenant') || 'laserena';
@@ -136,6 +139,7 @@ export default function HubDashboard() {
 
     // 3. Core States
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [showPdfViewer, setShowPdfViewer] = useState(false);
     const [brandOrg, setBrandOrg] = useState(() => {
         return tenant === 'custom' && customConfig.orgName ? customConfig.orgName : 'La Serena';
     });
@@ -623,6 +627,7 @@ export default function HubDashboard() {
         window.addEventListener('open-analytics', handleAnalytics);
         window.addEventListener('open-plaza-vecinal', handleAnalytics);
         window.addEventListener('open-smart-admin', handleSmartAdmin);
+        window.addEventListener('open-pdf-viewer', () => setShowPdfViewer(true));
         window.addEventListener('open-vls-acciona', () => {
             closeAllPopups();
             window.dispatchEvent(new CustomEvent('open-vls-acciona')); // App.jsx will handle the modal
@@ -717,6 +722,7 @@ export default function HubDashboard() {
             window.removeEventListener('open-social-vision', handleSocialVision);
             window.removeEventListener('open-analytics', handleAnalytics);
             window.removeEventListener('open-smart-admin', handleSmartAdmin);
+            window.removeEventListener('open-pdf-viewer', () => setShowPdfViewer(true));
             window.removeEventListener('open-vls-acciona', () => {});
             window.removeEventListener('open-vls-investigacion', handleInvestigacion);
             window.removeEventListener('open-vls-semanasanta', handleSemanaSanta);
@@ -1253,6 +1259,10 @@ export default function HubDashboard() {
         {
             id: 'backoffice-movil', title: 'Backoffice Móvil (C5)', subtitle: 'Registro In Situ, Monitoreo y RRHH',
             icon: Camera, color: '#38bdf8', isEvent: 'open-backoffice-movil', active: true, badge: 'MÓVIL'
+        },
+        {
+            id: 'propuestas-graficas', title: 'Propuestas Gráficas', subtitle: 'Biblias visuales y modelos de campañas',
+            icon: FileText, color: '#f59e0b', isEvent: 'open-pdf-viewer', active: true, badge: 'NUEVO'
         },
         {
             id: 'vls-vial-back', title: 'Reporte Vial Directo', subtitle: 'Capture evidencias de baches en terreno',
@@ -1802,6 +1812,184 @@ export default function HubDashboard() {
                 description="La primera plataforma Smart City de la Región de Coquimbo. Radio, reportes vecinales, patrimonio 3D y servicios ciudadanos 24/7."
                 image="/vls-logo-premium.png"
             />
+            {isComunaDns && (
+                <style>{`
+                    :root {
+                        --bg-primary: #0f0303 !important;
+                        --bg-secondary: #1a0606 !important;
+                        --bg-tertiary: #260909 !important;
+                        --text-primary: #ffffff !important;
+                        --text-secondary: #cbd5e1 !important;
+                        --text-muted: #94a3b8 !important;
+                        --brand-primary: #a62c2b !important;
+                        --brand-primary-hover: #c94a49 !important;
+                        --glass-border: rgba(166, 44, 43, 0.4) !important;
+                        --glass-shadow: 0 0 15px rgba(166, 44, 43, 0.3), inset 0 0 10px rgba(166, 44, 43, 0.1) !important;
+                    }
+
+                    body, 
+                    #root, 
+                    .page-container, 
+                    .trencadis-guell {
+                        background: #0f0303 !important;
+                        background-color: #0f0303 !important;
+                    }
+
+                    /* 1. Deep dark background replacements (Hex & RGB) */
+                    [style*="background:#020617"],
+                    [style*="background: #020617"],
+                    [style*="background:rgb(2, 6, 23)"],
+                    [style*="background: rgb(2, 6, 23)"],
+                    [style*="background:rgb(2,6,23)"],
+                    [style*="background-color:#020617"],
+                    [style*="background-color: #020617"],
+                    [style*="background-color:rgb(2, 6, 23)"],
+                    [style*="background-color: rgb(2, 6, 23)"],
+                    [style*="background:#050b14"],
+                    [style*="background: #050b14"],
+                    [style*="background:rgb(5, 11, 20)"],
+                    [style*="background: rgb(5, 11, 20)"],
+                    [style*="background:#0a1128"],
+                    [style*="background: #0a1128"],
+                    [style*="background:rgb(10, 17, 40)"],
+                    [style*="background: rgb(10, 17, 40)"],
+                    [style*="background:#0f172a"],
+                    [style*="background: #0f172a"],
+                    [style*="background:rgb(15, 23, 42)"],
+                    [style*="background: rgb(15, 23, 42)"],
+                    [style*="background:#050d1a"],
+                    [style*="background: #050d1a"],
+                    [style*="background:rgb(5, 13, 26)"],
+                    [style*="background: rgb(5, 13, 26)"] {
+                        background: #0f0303 !important;
+                        background-color: #0f0303 !important;
+                    }
+
+                    /* 2. Linear Gradients replacements */
+                    [style*="linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)"],
+                    [style*="linear-gradient(90deg, #1e1b4b 0%,#312e81 100%)"],
+                    [style*="linear-gradient(90deg, rgb(30, 27, 75) 0%, rgb(49, 46, 129) 100%)"],
+                    [style*="linear-gradient(90deg,rgb(30, 27, 75) 0%,rgb(49, 46, 129) 100%)"] {
+                        background: linear-gradient(90deg, #450a0a 0%, #7f1d1d 100%) !important;
+                    }
+
+                    [style*="linear-gradient(135deg, #020617 0%, #0f172a 100%)"],
+                    [style*="linear-gradient(135deg, rgb(2, 6, 23) 0%, rgb(15, 23, 42) 100%)"] {
+                        background: linear-gradient(135deg, #0f0303 0%, #1a0606 100%) !important;
+                    }
+
+                    [style*="linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)"],
+                    [style*="linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(30, 58, 138) 100%)"] {
+                        background: linear-gradient(135deg, #1a0606 0%, #450a0a 100%) !important;
+                    }
+
+                    [style*="linear-gradient(90deg, #38bdf8, #1d4ed8)"],
+                    [style*="linear-gradient(90deg, rgb(56, 189, 248), rgb(29, 78, 216))"] {
+                        background: linear-gradient(90deg, #a62c2b, #7f1d1d) !important;
+                    }
+
+                    [style*="linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%)"],
+                    [style*="linear-gradient(135deg, rgb(30, 27, 75) 0%, rgb(15, 23, 42) 100%)"] {
+                        background: linear-gradient(135deg, #260909 0%, #0f0303 100%) !important;
+                    }
+
+                    /* 3. Text primary brand color (#38bdf8 / rgb(56, 189, 248)) overrides */
+                    [style*="color:#38bdf8"],
+                    [style*="color: #38bdf8"],
+                    [style*="color:rgb(56, 189, 248)"],
+                    [style*="color: rgb(56, 189, 248)"],
+                    [style*="color:rgb(56,189,248)"],
+                    [style*="color: var(--brand-primary)"],
+                    [style*="color:var(--brand-primary)"] {
+                        color: #a62c2b !important;
+                    }
+
+                    /* 4. Background primary brand color overrides */
+                    [style*="background:#38bdf8"],
+                    [style*="background: #38bdf8"],
+                    [style*="background:rgb(56, 189, 248)"],
+                    [style*="background: rgb(56, 189, 248)"],
+                    [style*="background:rgb(56,189,248)"],
+                    [style*="background-color:#38bdf8"],
+                    [style*="background-color: #38bdf8"],
+                    [style*="background-color:rgb(56, 189, 248)"],
+                    [style*="background-color: rgb(56, 189, 248)"],
+                    .btn-vls-action-light,
+                    .btn-vls-action-blue {
+                        background: #a62c2b !important;
+                        background-color: #a62c2b !important;
+                        color: #ffffff !important;
+                    }
+
+                    /* 5. Highlight boxes/borders */
+                    [style*="border: 1px solid #38bdf8"],
+                    [style*="border: 2px solid #38bdf8"],
+                    [style*="border:1px solid #38bdf8"],
+                    [style*="border:2px solid #38bdf8"],
+                    [style*="border-color: #38bdf8"],
+                    [style*="border-color:#38bdf8"],
+                    [style*="border: 1px solid rgb(56, 189, 248)"],
+                    [style*="border: 2px solid rgb(56, 189, 248)"],
+                    [style*="border-color: rgb(56, 189, 248)"] {
+                        border-color: #a62c2b !important;
+                    }
+
+                    /* 6. Transparencies / glass effects */
+                    [style*="background: rgba(56, 189, 248, 0.15)"],
+                    [style*="background:rgba(56, 189, 248, 0.15)"],
+                    [style*="background: rgba(56,189,248,0.15)"],
+                    [style*="background:rgba(56,189,248,0.15)"] {
+                        background: rgba(166, 44, 43, 0.15) !important;
+                        border-color: #a62c2b !important;
+                    }
+
+                    [style*="background: rgba(56, 189, 248, 0.1)"],
+                    [style*="background:rgba(56, 189, 248, 0.1)"],
+                    [style*="background: rgba(56,189,248,0.1)"],
+                    [style*="background:rgba(56,189,248,0.1)"] {
+                        background: rgba(166, 44, 43, 0.1) !important;
+                        border-color: #a62c2b !important;
+                    }
+
+                    /* 7. Glass panels */
+                    .glass-panel,
+                    [style*="background: rgba(10, 17, 40, 0.85)"],
+                    [style*="background:rgba(10, 17, 40, 0.85)"],
+                    [style*="background: rgba(15, 23, 42, 0.4)"],
+                    [style*="background:rgba(15, 23, 42, 0.4)"],
+                    [style*="background: rgba(255, 255, 255, 0.05)"],
+                    [style*="background:rgba(255, 255, 255, 0.05)"] {
+                        background: rgba(26, 7, 7, 0.85) !important;
+                        border-color: rgba(166, 44, 43, 0.4) !important;
+                        box-shadow: 0 0 15px rgba(166, 44, 43, 0.3), inset 0 0 10px rgba(166, 44, 43, 0.1) !important;
+                    }
+
+                    /* 8. Lucide icons */
+                    svg[color="#38bdf8"], svg[stroke="#38bdf8"], svg path[stroke="#38bdf8"] {
+                        color: #a62c2b !important;
+                        stroke: #a62c2b !important;
+                    }
+
+                    /* Títulos institucionales */
+                    .serena-title-glow {
+                        background: linear-gradient(90deg, #ffffff, #ffffff, #a62c2b) !important;
+                        -webkit-background-clip: text !important;
+                        background-clip: text !important;
+                        -webkit-text-fill-color: transparent !important;
+                    }
+
+                    /* Títulos generales */
+                    h1, h2, h3, h4, h5, h6,
+                    .title, .heading, [class*="title-"], [class*="heading-"] {
+                        color: #ffffff !important;
+                    }
+                    
+                    /* Textos gris claro */
+                    p, .desc, .text-secondary {
+                        color: #cbd5e1 !important;
+                    }
+                `}</style>
+            )}
             {/* ── MASTER EDITOR MODE UI (solo vecinoslaserenachile@gmail.com) ── */}
             {isMaster && (
                 <MasterEditorToggle
@@ -3112,12 +3300,7 @@ export default function HubDashboard() {
                                                                 position={[0, -1.8, 0]} 
                                                             />
                                                         </Suspense>
-                                                        <OrbitControls 
-                                                            enableZoom={false} 
-                                                            enablePan={false} 
-                                                            autoRotate 
-                                                            autoRotateSpeed={0.5} 
-                                                        />
+                                                        {/* OrbitControls removido temporalmente para evitar crash de addEventListener */}
                                                     </Canvas>
                                                 </div>
                                             </div>
@@ -4298,6 +4481,51 @@ export default function HubDashboard() {
 
 
                     {/* El render estático de VecinityPay fue eliminado para no bloquear el dashboard */}
+
+                    {/* SECCIÓN EXCLUSIVA VECINOSMART: RECUENTO DE DESARROLLOS MVP */}
+                    {host.includes('vecinosmart.cl') && (
+                        <div style={{ maxWidth: '1200px', margin: '4rem auto 2rem auto', width: '100%', padding: '0 1rem' }}>
+                            <div className="glass-panel" style={{ 
+                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(2, 6, 23, 0.9) 100%)',
+                                border: '2px solid #10b981',
+                                borderRadius: '30px',
+                                padding: '3rem',
+                                position: 'relative',
+                                overflow: 'hidden'
+                            }}>
+                                <div style={{ position: 'absolute', top: 0, right: 0, padding: '1rem 2rem', background: '#10b981', color: '#000', fontWeight: 900, borderBottomLeftRadius: '30px' }}>
+                                    RELEASE MVP 2026
+                                </div>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(2rem, 4vw, 3rem)', margin: '0 0 1rem 0', fontWeight: 950, letterSpacing: '-1px' }}>
+                                    Nuevas <span style={{ color: '#10b981' }}>Soluciones Implementadas</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.2rem', marginBottom: '2.5rem', maxWidth: '800px', lineHeight: 1.5 }}>
+                                    Recuento oficial de los últimos módulos integrados a la plataforma Smart Comuna durante el ciclo de desarrollo intensivo.
+                                </p>
+
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+                                    {[
+                                        { title: 'Seguridad Ciudadana', desc: 'Recomendaciones, autocuidado y números de emergencia (1457).', icon: ShieldAlert, color: '#ef4444', action: () => window.dispatchEvent(new CustomEvent('open-vls-seguridad')) },
+                                        { title: 'Cuadro de Distancias', desc: 'Mapeo georreferenciado con trazados en vivo.', icon: Map, color: '#3b82f6', action: () => window.dispatchEvent(new CustomEvent('open-distances')) },
+                                        { title: 'Paseo Histórico 3D', desc: 'Motor tanque con navegación inmersiva y avatares humanizados.', icon: Eye, color: '#f59e0b', action: () => window.dispatchEvent(new CustomEvent('open-3d-walk')) },
+                                        { title: 'Faro IA Assistant', desc: 'Asistente virtual conversacional sin redirecciones.', icon: ShieldCheck, color: '#a855f7', action: () => window.dispatchEvent(new CustomEvent('open-faro-ia')) },
+                                        { title: 'Backoffice Móvil', desc: 'Subida de reportes con acceso directo a cámara del dispositivo.', icon: Camera, color: '#14b8a6', action: () => window.dispatchEvent(new CustomEvent('open-smart-business')) },
+                                        { title: 'Retoque Smart PDF', desc: 'Herramienta de edición para limpieza de material didáctico.', icon: FileText, color: '#ec4899', action: () => navigate('/admin') },
+                                    ].map((feat, idx) => (
+                                        <div key={idx} onClick={feat.action} style={{ 
+                                            background: 'rgba(255,255,255,0.03)', border: `1px solid ${feat.color}40`, 
+                                            borderRadius: '20px', padding: '1.5rem', cursor: 'pointer', transition: 'all 0.3s' 
+                                        }} onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }} onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}>
+                                            <feat.icon size={30} color={feat.color} style={{ marginBottom: '1rem' }} />
+                                            <h4 style={{ color: 'white', fontSize: '1.1rem', margin: '0 0 0.5rem 0', fontWeight: 800 }}>{feat.title}</h4>
+                                            <p style={{ color: 'rgba(255,255,255,0.6)', margin: 0, fontSize: '0.9rem', lineHeight: 1.4 }}>{feat.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* HERRAMIENTAS INTERNAS (Sólo Autorizados o Portales Maestros) */}
                     {(isAuthorized || isRDMLS || host.includes('vecinosmart.cl')) && (
                         <div style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', width: '100%', padding: '0 1rem' }}>
@@ -4410,7 +4638,7 @@ export default function HubDashboard() {
                                                             position={[0, -2, 0]} 
                                                         />
                                                     </Suspense>
-                                                    <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
+                                                    {/* OrbitControls removido temporalmente para evitar crash de addEventListener */}
                                                 </Canvas>
                                             ) : (
                                                 <img src={char.img} alt={char.name} style={{ width: '85%', height: '85%', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(56,189,248,0.4))' }} loading="lazy" />
@@ -4560,6 +4788,7 @@ export default function HubDashboard() {
             {showAmbientMode && <AmbientModeVLS onClose={() => setShowAmbientMode(false)} />}
             {showPoll && <ParlamentoVecinal onClose={() => setShowPoll(false)} />}
             {showCentralDifusion && <CentralDifusionVLS onClose={() => setShowCentralDifusion(false)} />}
+            <PdfViewerModal isOpen={showPdfViewer} onClose={() => setShowPdfViewer(false)} />
             <Suspense fallback={<LoadingScreen />}>
                 {showInvestigacion && <VLSNewsInvestigacion onClose={() => setShowInvestigacion(false)} />}
                 {showSemanaSanta && <VLSNewsSemanaSanta onClose={() => setShowSemanaSanta(false)} />}

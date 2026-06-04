@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import VLSNotesGallery from '../components/VLSNotesGallery';
 import HechoEnChile from '../components/HechoEnChile';
-import { Home, Heart, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Radio as RadioIcon, Info, ChevronRight, Sparkles } from 'lucide-react';
+import { Home, Heart, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Radio as RadioIcon, Info, ChevronRight, Sparkles, BookOpen, Moon, Stars, GraduationCap, Video, Flame, Hammer, TreePine, Sun, Apple, Palette } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import EntrevecinasProposeModal from '../components/EntrevecinasProposeModal';
@@ -76,12 +76,7 @@ export default function EntrevecinasHub() {
 
     // Cargar YouTube API
     useEffect(() => {
-        const tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        window.onYouTubeIframeAPIReady = () => {
+        const initPlayer = () => {
             playerRef.current = new window.YT.Player('vls-radio-player', {
                 height: '100%',
                 width: '100%',
@@ -98,8 +93,32 @@ export default function EntrevecinasHub() {
                 },
                 events: {
                     'onReady': (event) => {
-                        event.target.playVideo();
+                        const savedState = JSON.parse(sessionStorage.getItem('vls_radio_state') || '{}');
+                        const startIdx = savedState.index || 0;
+                        const startSec = savedState.currentTime || 0;
+
+                        if (startIdx > 0 || startSec > 0) {
+                            event.target.loadPlaylist({
+                                playlist: playlist,
+                                index: startIdx,
+                                startSeconds: startSec
+                            });
+                        } else {
+                            event.target.playVideo();
+                        }
+                        
                         event.target.setVolume(volume);
+
+                        // Guardar estado de reproducción periódicamente
+                        if (window.vlsRadioInterval) clearInterval(window.vlsRadioInterval);
+                        window.vlsRadioInterval = setInterval(() => {
+                           if (event.target && event.target.getPlaylistIndex) {
+                               sessionStorage.setItem('vls_radio_state', JSON.stringify({
+                                   index: event.target.getPlaylistIndex(),
+                                   currentTime: event.target.getCurrentTime()
+                               }));
+                           }
+                        }, 3000);
                     },
                     'onStateChange': (event) => {
                         if (event.data === window.YT.PlayerState.PLAYING) {
@@ -113,9 +132,28 @@ export default function EntrevecinasHub() {
             });
         };
 
+        if (window.YT && window.YT.Player) {
+            initPlayer();
+        } else {
+            const tag = document.createElement('script');
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            window.onYouTubeIframeAPIReady = initPlayer;
+        }
+
         return () => {
+            if (window.vlsRadioInterval) clearInterval(window.vlsRadioInterval);
             if (playerRef.current) {
-                try { playerRef.current.destroy(); } catch(e) {}
+                try { 
+                    if (playerRef.current.getPlaylistIndex) {
+                        sessionStorage.setItem('vls_radio_state', JSON.stringify({
+                            index: playerRef.current.getPlaylistIndex(),
+                            currentTime: playerRef.current.getCurrentTime()
+                        }));
+                    }
+                    playerRef.current.destroy(); 
+                } catch(e) {}
             }
         };
     }, []);
@@ -485,6 +523,436 @@ export default function EntrevecinasHub() {
                         </motion.div>
                     </section>
 
+                    {/* SECCIÓN ACADEMIA ENTREVECINAS: ASTRONOMÍA E ITALIANO */}
+                    <section style={{ marginBottom: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+                        {/* TARJETA: ASTRONOMÍA CON CAMILA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(56, 189, 248, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#8b5cf6', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#a78bfa', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(139, 92, 246, 0.3)' }}>ACADEMIA ESTELAR</span>
+                                    <Moon size={18} color="#a78bfa" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Astronomía <br/><span style={{ color: '#a78bfa' }}>con Camila</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    La Cruzada por la Noche: Defendiendo el Derecho a las Estrellas. Obtén tu certificado de "Guardiana de los Cielos".
+                                </p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button 
+                                    onClick={() => navigate('/astronomia-beltrand')}
+                                    style={{ background: 'linear-gradient(90deg, #8b5cf6, #38bdf8)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'IUPiyBw6eSQ' })); }}
+                                    style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: ITALIANO CON FRANCESCA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(239, 68, 68, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#10b981', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#34d399', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(16, 185, 129, 0.3)' }}>IDIOMAS</span>
+                                    <BookOpen size={18} color="#34d399" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Aprende Italiano <br/><span style={{ color: '#34d399' }}>con Francesca</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    El idioma del arte y la arquitectura. Estudia, juega y certifícate desde la comodidad de tu hogar.
+                                </p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button 
+                                    onClick={() => navigate('/tano')}
+                                    style={{ background: 'linear-gradient(90deg, #10b981, #ef4444)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); navigate('/tano'); }}
+                                    style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <Stars size={18} /> VER MÓDULOS
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: HUMEDALES CON JAVIERA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.1), rgba(14, 165, 233, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(20, 184, 166, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#14b8a6', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(20, 184, 166, 0.2)', color: '#5eead4', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(20, 184, 166, 0.3)' }}>MEDIOAMBIENTE</span>
+                                    <BookOpen size={18} color="#5eead4" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Humedales <br/><span style={{ color: '#5eead4' }}>con Javiera</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    La Guardiana del Borde. Entiende la Ley 21.202 y certifica tus conocimientos ambientales.
+                                </p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button 
+                                    onClick={() => navigate('/humedales-campos')}
+                                    style={{ background: 'linear-gradient(90deg, #14b8a6, #0ea5e9)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw?start=1174' })); }}
+                                    style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+                        {/* TARJETA: ADOBE VIVO CON SOLANGE */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(217, 119, 6, 0.1), rgba(252, 211, 77, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(217, 119, 6, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#d97706', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(217, 119, 6, 0.2)', color: '#fcd34d', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(217, 119, 6, 0.3)' }}>ARQUITECTURA VIVA</span>
+                                    <Hammer size={18} color="#fcd34d" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Adobe Vivo <br/><span style={{ color: '#fcd34d' }}>con Solange</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Desmitifica el adobe. Descubre su inercia térmica, aprende a reforzarlo sísmicamente y certifícate.
+                                </p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button 
+                                    onClick={() => navigate('/adobe-vivo')}
+                                    style={{ background: 'linear-gradient(90deg, #d97706, #f59e0b)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw?start=1977' })); }}
+                                    style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: RUINAS LAMBERT CON MARGARITA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(234, 88, 12, 0.1), rgba(251, 146, 60, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(234, 88, 12, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#ea580c', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(234, 88, 12, 0.2)', color: '#fb923c', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(234, 88, 12, 0.3)' }}>PATRIMONIO INDUSTRIAL</span>
+                                    <Flame size={18} color="#fb923c" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Ruinas Lambert <br/><span style={{ color: '#fb923c' }}>con Margarita</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    El origen de la minería de cobre en Chile. Opera el horno de reverbero de 1840 y certifícate.
+                                </p>
+                            </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button 
+                                    onClick={() => navigate('/ruinas-lambert')}
+                                    style={{ background: 'linear-gradient(90deg, #ea580c, #f97316)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button 
+                                    onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw?start=54' })); }}
+                                    style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}
+                                >
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+                        {/* TARJETA: PAULINA GODOY */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(4, 120, 87, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#10b981', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#6ee7b7', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(16, 185, 129, 0.3)' }}>URBANISMO</span>
+                                    <TreePine size={18} color="#6ee7b7" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Infraestructura Verde <br/><span style={{ color: '#6ee7b7' }}>con Paulina</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Defensa costera y Plan Maestro. Transforma el Humedal El Culebrón y certifícate como Urbanista.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/paulina-godoy')} style={{ background: 'linear-gradient(90deg, #10b981, #059669)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'lgjba4j0Afo' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: ANDREA TORREJON */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#f59e0b', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fcd34d', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(245, 158, 11, 0.3)' }}>ENERGÍA</span>
+                                    <Sun size={18} color="#fcd34d" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Paneles Solares <br/><span style={{ color: '#fcd34d' }}>con Andrea</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Aprovecha el sol de Las Compañías. Ensambla tu sistema fotovoltaico y obtén tu diploma.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/andrea-torrejon')} style={{ background: 'linear-gradient(90deg, #f59e0b, #d97706)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR AL LABORATORIO
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: LORETO NARBONA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(244, 63, 94, 0.1), rgba(225, 29, 72, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(244, 63, 94, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#f43f5e', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(244, 63, 94, 0.2)', color: '#fda4af', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(244, 63, 94, 0.3)' }}>SALUD</span>
+                                    <Apple size={18} color="#fda4af" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Plato Saludable <br/><span style={{ color: '#fda4af' }}>con Loreto</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Nutrición de la Feria al Plato. Aprende las proporciones perfectas y certifícate.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/loreto-narbona')} style={{ background: 'linear-gradient(90deg, #f43f5e, #e11d48)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: DANIELA OLMOS */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(126, 34, 206, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(168, 85, 247, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#a855f7', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(168, 85, 247, 0.2)', color: '#d8b4fe', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(168, 85, 247, 0.3)' }}>BIOCLIMÁTICA</span>
+                                    <Home size={18} color="#d8b4fe" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Arquitectura Solar <br/><span style={{ color: '#d8b4fe' }}>con Daniela</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Orientación Norte y aislamiento. Transforma tu hogar en un espacio eficiente y cálido.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/daniela-olmos')} style={{ background: 'linear-gradient(90deg, #a855f7, #9333ea)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'EoIE7lVYWIw' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: MONICA SIERRA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(190, 24, 109, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(236, 72, 153, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#ec4899', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(236, 72, 153, 0.2)', color: '#fbcfe8', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(236, 72, 153, 0.3)' }}>ARTE TEXTIL</span>
+                                    <Palette size={18} color="#fbcfe8" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Taller de Batik <br/><span style={{ color: '#fbcfe8' }}>con Mónica</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Magia en cera y seda. Aprende la técnica milenaria del teñido por reserva.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/monica-sierra')} style={{ background: 'linear-gradient(90deg, #ec4899, #db2777)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR AL TALLER
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'IPeBSr9Tuq4' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+                    </section>
                     <VLSNotesGallery initialFilter="EntreVecinas" hideFilters={true} />
                 </div>
             </main>

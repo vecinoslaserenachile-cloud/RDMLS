@@ -7,6 +7,10 @@ import {
 } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import { useNavigate } from 'react-router-dom';
+import { TanoTranslator } from '../components/TanoTranslator';
+import { ItalyRegionsMap } from '../components/ItalyRegionsMap';
+import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import confetti from 'canvas-confetti';
 
 const TANO_MODULES = [
   {
@@ -15,7 +19,7 @@ const TANO_MODULES = [
     icon: BookOpen,
     desc: 'Bases del idioma italiano con la arquitecta Francesca Vives.',
     files: [
-      { id: 'f1', name: 'Introducción al Italiano', path: '/media/tano/Introducción_al_Italiano.pdf', type: 'pdf' }
+      { id: 'f1', name: 'Introducción al Italiano', path: '/media/tano/Introducción_al_Italiano.pdf?v=clean2', type: 'pdf' }
     ]
   },
   {
@@ -24,9 +28,9 @@ const TANO_MODULES = [
     icon: FileText,
     desc: 'Lección 2 y material gráfico de la Lección 4.',
     files: [
-      { id: 'f2', name: 'Lezione 2 (PDF)', path: '/media/tano/Lezione 2.pdf', type: 'pdf' },
-      { id: 'f3', name: 'Infografía Lezione 4', path: '/media/tano/Infografía Lezione 4.png', type: 'img' },
-      { id: 'f4', name: 'Infografía General', path: '/media/tano/Infografía.png', type: 'img' }
+      { id: 'f2', name: 'Lezione 2 (PDF)', path: '/media/tano/Lezione 2.pdf?v=clean3', type: 'pdf' },
+      { id: 'f3', name: 'Infografía Lezione 4', path: '/media/tano/Infografía Lezione 4.png?v=clean2', type: 'img' },
+      { id: 'f4', name: 'Infografía General', path: '/media/tano/Infografía.png?v=clean2', type: 'img' }
     ]
   },
   {
@@ -35,7 +39,7 @@ const TANO_MODULES = [
     icon: CheckCircle,
     desc: 'Lección 3: Aprendizaje Inclusivo y Pictográfico.',
     files: [
-      { id: 'f5', name: 'Lección 3 Inclusiva (PDF)', path: '/media/tano/Leccion_3_Inclusiva_Pictografica.pdf', type: 'pdf' }
+      { id: 'f5', name: 'Lección 3 Inclusiva (PDF)', path: '/media/tano/Leccion_3_Inclusiva_Pictografica.pdf?v=clean2', type: 'pdf' }
     ]
   },
   {
@@ -44,7 +48,7 @@ const TANO_MODULES = [
     icon: Coffee,
     desc: 'Vocabulario y situaciones en un restaurante italiano.',
     files: [
-      { id: 'f8', name: 'Infografía Ristorante', path: '/media/tano/Infografia Ristorante.png', type: 'img' },
+      { id: 'f8', name: 'Infografía Ristorante', path: '/media/tano/Infografia Ristorante.png?v=clean2', type: 'img' },
       { id: 'f6', name: 'Experiencia Ristorante (Interactivo)', type: 'interactive_ristorante' }
     ]
   },
@@ -54,12 +58,12 @@ const TANO_MODULES = [
     icon: Music,
     desc: 'Aprende italiano a través de las letras de sus grandes éxitos.',
     files: [
-      { id: 'm1', name: 'Bella Ciao', path: '/media/tano/Bella Ciao.pdf', type: 'pdf' },
-      { id: 'm2', name: "L'italiano", path: '/media/tano/L\'italiano.pdf', type: 'pdf' },
-      { id: 'm3', name: 'La Differenza Tra Me e Te', path: '/media/tano/La Differenza Tra Me e Te.pdf', type: 'pdf' },
-      { id: 'm4', name: 'Più Bella Cosa', path: '/media/tano/Più Bella Cosa.pdf', type: 'pdf' },
-      { id: 'm5', name: 'Torna a casa', path: '/media/tano/Torna a casa.pdf', type: 'pdf' },
-      { id: 'm6', name: 'Vivere la Vita', path: '/media/tano/Vivere la Vita.pdf', type: 'pdf' },
+      { id: 'm1', name: 'Bella Ciao', path: '/media/tano/Bella Ciao.pdf?v=clean2', type: 'pdf' },
+      { id: 'm2', name: "L'italiano", path: '/media/tano/L\'italiano.pdf?v=clean2', type: 'pdf' },
+      { id: 'm3', name: 'La Differenza Tra Me e Te', path: '/media/tano/La Differenza Tra Me e Te.pdf?v=clean2', type: 'pdf' },
+      { id: 'm4', name: 'Più Bella Cosa', path: '/media/tano/Più Bella Cosa.pdf?v=clean2', type: 'pdf' },
+      { id: 'm5', name: 'Torna a casa', path: '/media/tano/Torna a casa.pdf?v=clean2', type: 'pdf' },
+      { id: 'm6', name: 'Vivere la Vita', path: '/media/tano/Vivere la Vita.pdf?v=clean2', type: 'pdf' },
       { id: 'm7', name: 'Letras Interactivas (Karaoke VLS)', type: 'interactive_karaoke' }
     ]
   },
@@ -74,35 +78,105 @@ const TANO_MODULES = [
   },
   {
     id: 'cultura',
-    title: 'Cultura e Urbanismo',
+    title: 'Cultura e Geografia',
     icon: Map,
-    desc: 'Conecta la lengua con la historia y el entorno arquitectónico de Italia.',
+    desc: 'Explora Italia, su administración territorial, y su historia.',
     files: [
-      { id: 'c1', name: 'Italian Urban Blueprint', path: '/media/tano/Italian_Urban_Blueprint.pdf', type: 'pdf' },
-      { id: 'c2', name: 'Italy to the Stars', path: '/media/tano/Italy_to_the_Stars.pdf', type: 'pdf' }
+      { id: 'c1', name: 'Italian Urban Blueprint', path: '/media/tano/Italian_Urban_Blueprint.pdf?v=clean2', type: 'pdf' },
+      { id: 'c2', name: 'Italy to the Stars', path: '/media/tano/Italy_to_the_Stars.pdf?v=clean2', type: 'pdf' },
+      { id: 'c3', name: 'Mappa d\'Italia 2026 (Interactivo)', type: 'interactive_map' }
+    ]
+  },
+  {
+    id: 'traductor',
+    title: 'Traductor Chileno-Italiano',
+    icon: Volume2,
+    desc: 'Aprende los mejores modismos con pronunciación real.',
+    files: [
+      { id: 'tr1', name: 'Abrir Traductor Interactivo', type: 'interactive_translator' }
     ]
   },
   {
     id: 'juegos',
-    title: 'Giochi: Bingo Italiano',
+    title: 'Giochi: Bingo e Trivia',
     icon: Gamepad2,
-    desc: 'Cartillas para jugar y practicar vocabulario en comunidad.',
+    desc: 'Pon a prueba tus conocimientos en comunidad.',
     files: [
-      { id: 'j1', name: 'Jugar Bingo Italiano (Interactivo)', type: 'interactive_bingo' }
-    ]
-  },
-  {
-    id: 'trivia',
-    title: 'Trivia Culturale',
-    icon: Star,
-    desc: 'Pon a prueba tus conocimientos de cultura y vocabulario italiano.',
-    files: [
+      { id: 'j1', name: 'Jugar Bingo Italiano (Interactivo)', type: 'interactive_bingo' },
       { id: 't1', name: 'Jugar Trivia Interactiva', type: 'interactive_trivia' }
     ]
   }
 ];
 
 // --- COMPONENTES INTERACTIVOS (Sustitutos de descarga) ---
+
+const TanoMusicPlayer = () => {
+  const [currentSong, setCurrentSong] = useState(0);
+
+  const songs = [
+    { title: "Bella Ciao", artist: "Música Tradicional Italiana", youtubeId: "S_rXmvQzKo0", color: "#e11d48", pdf: "Bella Ciao.pdf" },
+    { title: "La Differenza Tra Me E Te", artist: "Tiziano Ferro", youtubeId: "pSuI2aZCPAE", color: "#3b82f6", pdf: "La Differenza Tra Me e Te.pdf" },
+    { title: "Più Bella Cosa", artist: "Eros Ramazzotti", youtubeId: "uXcl8tOS_3c", color: "#10b981", pdf: "Più Bella Cosa.pdf" },
+    { title: "Torna a casa", artist: "Måneskin", youtubeId: "kYQUdCPtvi0", color: "#a855f7", pdf: "Torna a casa.pdf" },
+    { title: "Vivere La Vita", artist: "Mannarino", youtubeId: "ezHjGdBh830", color: "#f59e0b", pdf: "Vivere la Vita.pdf" }
+  ];
+
+  return (
+    <div className="tano-interactive-container" style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg, #0f172a, #1e293b)', borderRadius: '24px', padding: '2rem', color: 'white', overflowY: 'auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '2.5rem', margin: 0, fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Radio Didattica Tano</h2>
+        <p style={{ color: '#94a3b8', fontSize: '1.1rem', marginTop: '0.5rem' }}>Escucha 5 canciones didácticas para aprender italiano cantando.</p>
+      </div>
+
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', flex: 1, justifyContent: 'center' }}>
+        {/* Reproductor de YouTube Embed */}
+        <div style={{ flex: '1 1 400px', maxWidth: '600px', background: 'rgba(0,0,0,0.4)', borderRadius: '20px', padding: '1rem', display: 'flex', flexDirection: 'column', border: `1px solid ${songs[currentSong].color}40`, boxShadow: `0 10px 30px ${songs[currentSong].color}20` }}>
+          <div style={{ position: 'relative', width: '100%', paddingTop: '56.25%', borderRadius: '12px', overflow: 'hidden', background: '#000' }}>
+            <iframe 
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+              src={`https://www.youtube.com/embed/${songs[currentSong].youtubeId}?autoplay=0&rel=0`}
+              title="YouTube video player" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowFullScreen>
+            </iframe>
+          </div>
+          <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+            <h3 style={{ margin: 0, fontSize: '1.5rem', color: songs[currentSong].color }}>{songs[currentSong].title}</h3>
+            <p style={{ margin: '0.5rem 0', color: '#94a3b8' }}>{songs[currentSong].artist}</p>
+            <a href={`/media/tano/${songs[currentSong].pdf}`} target="_blank" rel="noreferrer" style={{ display: 'inline-block', marginTop: '1rem', padding: '0.5rem 1.5rem', background: 'rgba(255,255,255,0.1)', color: 'white', textDecoration: 'none', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.2)', transition: 'all 0.3s' }}>
+              Abrir Letra (PDF)
+            </a>
+          </div>
+        </div>
+
+        {/* Lista de Canciones */}
+        <div style={{ flex: '1 1 300px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {songs.map((song, idx) => (
+            <div 
+              key={idx} 
+              onClick={() => setCurrentSong(idx)}
+              style={{ 
+                padding: '1rem 1.5rem', borderRadius: '16px', cursor: 'pointer',
+                background: currentSong === idx ? `${song.color}20` : 'rgba(255,255,255,0.05)',
+                border: `1px solid ${currentSong === idx ? song.color : 'rgba(255,255,255,0.1)'}`,
+                display: 'flex', alignItems: 'center', gap: '1rem', transition: 'all 0.3s',
+                transform: currentSong === idx ? 'scale(1.02)' : 'none'
+              }}
+            >
+              <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: song.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#fff' }}>
+                {idx + 1}
+              </div>
+              <div>
+                <h4 style={{ margin: 0, fontSize: '1.1rem', color: currentSong === idx ? song.color : 'white' }}>{song.title}</h4>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>{song.artist}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const InteractiveRistorante = () => {
   const [speaking, setSpeaking] = useState(null);
@@ -313,7 +387,7 @@ const TanoGlobalPlayer = () => {
   };
 
   return (
-    <div style={{ width: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', position: 'sticky', top: '92px', zIndex: 90 }}>
+    <div className="tano-radio-now-playing" style={{ width: '100%', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(16, 185, 129, 0.3)', padding: '1rem 2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', position: 'sticky', top: '0', zIndex: 90 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: '1 1 250px' }}>
         <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'linear-gradient(135deg, #10b981, #047857)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 15px rgba(16, 185, 129, 0.4)', flexShrink: 0 }}>
           <Music size={24} color="white" />
@@ -685,14 +759,74 @@ const InteractiveTrivia = () => {
 
 // -----------------------------------------------------------------------------
 
+const ProgressGuideModal = ({ completedIds, totalItems, progressPercent, onClose, onOpenViewer }) => {
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.9 }}
+        style={{ background: '#0f172a', borderRadius: '24px', width: '100%', maxWidth: '800px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', border: '1px solid rgba(255,255,255,0.1)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '2rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div>
+            <h2 style={{ margin: 0, fontSize: '2rem', fontWeight: 900, color: 'white' }}>Tu Guía de Progreso</h2>
+            <p style={{ margin: '0.5rem 0 0 0', color: '#10b981', fontSize: '1.2rem', fontWeight: 'bold' }}>{progressPercent}% Completado ({completedIds.length} de {totalItems} elementos)</p>
+          </div>
+          <button onClick={onClose} style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '0.8rem', borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <X size={24} />
+          </button>
+        </div>
+        <div style={{ padding: '2rem', overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          {TANO_MODULES.map(mod => (
+            <div key={mod.id}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem', color: 'white' }}>
+                <mod.icon size={20} color="#10b981" />
+                <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 'bold' }}>{mod.title}</h3>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1rem' }}>
+                {mod.files.map(file => {
+                  const isCompleted = completedIds.includes(file.id);
+                  return (
+                    <button 
+                      key={file.id}
+                      onClick={() => onOpenViewer(file)}
+                      style={{ 
+                        background: isCompleted ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)', 
+                        border: isCompleted ? '1px solid #10b981' : '1px solid rgba(255,255,255,0.1)', 
+                        padding: '1rem', borderRadius: '12px', textAlign: 'left', cursor: 'pointer', 
+                        display: 'flex', alignItems: 'center', gap: '1rem', color: 'white',
+                        opacity: isCompleted ? 0.7 : 1
+                      }}
+                    >
+                      <div style={{ width: '24px', height: '24px', borderRadius: '50%', border: isCompleted ? 'none' : '2px solid rgba(255,255,255,0.3)', background: isCompleted ? '#10b981' : 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {isCompleted && <CheckCircle size={16} color="white" />}
+                      </div>
+                      <div style={{ flex: 1, fontWeight: 'bold', fontSize: '0.9rem' }}>{file.name}</div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    </div>
+  );
+};
+
 export default function TanoPortal() {
   const navigate = useNavigate();
   const [activeModule, setActiveModule] = useState(TANO_MODULES[0]);
   const [viewerFile, setViewerFile] = useState(null);
   const [user, setUser] = useState(null);
-  const [progress, setProgress] = useState(0); 
+  const [completedIds, setCompletedIds] = useState([]); 
+  const [showProgressGuide, setShowProgressGuide] = useState(false);
   const [isWrongDomain, setIsWrongDomain] = useState(false);
   
+  const totalItems = TANO_MODULES.flatMap(m => m.files).length;
+  const progressPercent = Math.min(100, Math.floor((completedIds.length / totalItems) * 100));
+
   useEffect(() => {
     // Restricción de dominio
     const hostname = window.location.hostname;
@@ -714,9 +848,25 @@ export default function TanoPortal() {
   }, []);
 
   const loadProgress = async (userId) => {
-    // Start new users at 5% — increases as they open materials
-    const saved = localStorage.getItem(`tano_progress_${userId}`);
-    setProgress(saved ? parseInt(saved) : 5);
+    const saved = localStorage.getItem(`tano_progress_v2_${userId}`);
+    if (saved) {
+      try {
+        setCompletedIds(JSON.parse(saved));
+      } catch (e) {
+        setCompletedIds([]);
+      }
+    } else {
+      // Intentar migrar progreso antiguo
+      const oldSaved = localStorage.getItem(`tano_progress_${userId}`);
+      if (oldSaved) {
+        const oldPercent = parseInt(oldSaved);
+        const allIds = TANO_MODULES.flatMap(m => m.files.map(f => f.id));
+        const itemsToMigrate = Math.floor((oldPercent / 100) * totalItems);
+        const migratedIds = allIds.slice(0, itemsToMigrate);
+        setCompletedIds(migratedIds);
+        localStorage.setItem(`tano_progress_v2_${userId}`, JSON.stringify(migratedIds));
+      }
+    }
   };
 
   const handleLogin = async () => {
@@ -737,17 +887,94 @@ export default function TanoPortal() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
-    setProgress(0);
+    setCompletedIds([]);
+  };
+
+  const handleDownloadDiploma = async () => {
+    try {
+      const audio = new Audio('https://www.myinstants.com/media/sounds/final-fantasy-v-victory-fanfare.mp3');
+      audio.play().catch(e => console.log('Audio play failed', e));
+    } catch(e) {}
+
+    confetti({
+      particleCount: 150,
+      spread: 100,
+      origin: { y: 0.6 },
+      colors: ['#10b981', '#ffffff', '#ef4444', '#fcd34d']
+    });
+
+    try {
+      const pdfDoc = await PDFDocument.create();
+      const page = pdfDoc.addPage([800, 600]);
+      const { width, height } = page.getSize();
+      
+      page.drawRectangle({ x: 0, y: 0, width, height, color: rgb(0.95, 0.95, 0.93) });
+      page.drawRectangle({ x: 20, y: 20, width: width - 40, height: height - 40, borderColor: rgb(0.8, 0.6, 0), borderWidth: 5 });
+      page.drawRectangle({ x: 25, y: 25, width: width - 50, height: height - 50, borderColor: rgb(0.1, 0.5, 0.2), borderWidth: 2 });
+
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      const fontNormal = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const fontItalic = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+
+      page.drawText('Certificazione di Completamento', { x: 140, y: 450, size: 36, font, color: rgb(0.1, 0.5, 0.2) });
+      page.drawText('Italiano con Francesca', { x: 260, y: 400, size: 26, font: fontItalic, color: rgb(0.8, 0.2, 0.2) });
+      
+      const studentName = user?.email || 'Studente';
+      page.drawText('Si certifica che:', { x: 335, y: 330, size: 18, font: fontNormal, color: rgb(0, 0, 0) });
+      
+      const nameWidth = font.widthOfTextAtSize(studentName, 30);
+      page.drawText(studentName, { x: (width - nameWidth) / 2, y: 280, size: 30, font, color: rgb(0, 0, 0) });
+
+      page.drawText('Ha completato con successo il corso interattivo di lingua e cultura italiana.', { x: 120, y: 220, size: 16, font: fontNormal, color: rgb(0.3, 0.3, 0.3) });
+
+      page.drawText('Especialista Francesca Vives Figueroa', { x: 230, y: 120, size: 18, font, color: rgb(0, 0, 0) });
+      page.drawLine({ start: { x: 200, y: 110 }, end: { x: 600, y: 110 }, thickness: 1, color: rgb(0, 0, 0) });
+
+      try {
+        const fetchLogo = async (url) => {
+          const res = await fetch(url);
+          if (res.ok) return await res.arrayBuffer();
+          return null;
+        };
+
+        const [logo1Bytes, logo2Bytes] = await Promise.all([
+          fetchLogo('/media/logos/logo1.png'), // vecinoslaserena red
+          fetchLogo('/media/logos/logo4.png')  // entrevecinas dark
+        ]);
+
+        const targetHeight = 50;
+
+        if (logo1Bytes) {
+          const img1 = await pdfDoc.embedPng(logo1Bytes);
+          const dims1 = img1.scale(targetHeight / img1.height); 
+          page.drawImage(img1, { x: 50, y: height - dims1.height - 40, width: dims1.width, height: dims1.height });
+        }
+
+        if (logo2Bytes) {
+          const img2 = await pdfDoc.embedPng(logo2Bytes);
+          const dims2 = img2.scale(targetHeight / img2.height); 
+          page.drawImage(img2, { x: width - dims2.width - 50, y: height - dims2.height - 40, width: dims2.width, height: dims2.height });
+        }
+      } catch (err) {
+        console.error('Error embedding logos in PDF', err);
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const blobUrl = URL.createObjectURL(blob);
+      openViewer({ id: 'diploma', name: 'Diploma de Certificación', type: 'pdf', path: blobUrl });
+    } catch (e) {
+      console.error('Error generating diploma', e);
+    }
   };
 
   const openViewer = (file) => {
     setViewerFile(file);
-    if (user) {
-      setProgress(p => {
-        const next = Math.min(p + 5, 100);
-        localStorage.setItem(`tano_progress_${user.id}`, next.toString());
-        return next;
-      });
+    setShowProgressGuide(false);
+    if (user && file.id && !completedIds.includes(file.id)) {
+      const nextIds = [...completedIds, file.id];
+      setCompletedIds(nextIds);
+      localStorage.setItem(`tano_progress_v2_${user.id}`, JSON.stringify(nextIds));
     }
   };
 
@@ -785,8 +1012,9 @@ export default function TanoPortal() {
           .tano-interactive-container { padding: 1rem !important; overflow-y: auto !important; }
           .tano-bingo-layout { flex-direction: column !important; gap: 2rem !important; }
           .tano-bingo-ball { width: 150px !important; height: 150px !important; font-size: 5rem !important; border-width: 5px !important; }
-          .tano-radio-now-playing { flex-direction: column !important; text-align: center !important; gap: 1rem !important; padding: 1.5rem !important; }
-          .tano-radio-now-playing > div:first-child { width: 80px !important; height: 80px !important; margin: 0 auto !important; }
+          .tano-radio-now-playing { flex-direction: column !important; text-align: center !important; gap: 1rem !important; padding: 1.5rem !important; position: static !important; }
+          .tano-radio-now-playing > div:first-child { flex-direction: column !important; }
+          .tano-radio-now-playing > div:first-child > div:first-child { width: 80px !important; height: 80px !important; margin: 0 auto !important; }
           .tano-karaoke-item { flex-direction: column !important; text-align: center !important; gap: 1rem !important; padding: 1.5rem !important; }
           .tano-trivia-layout { flex-direction: column !important; overflow-y: auto !important; }
           .tano-trivia-sidebar { display: none !important; }
@@ -819,7 +1047,12 @@ export default function TanoPortal() {
             </div>
             <div style={{ flex: 1, padding: '2rem', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
               {viewerFile.type === 'pdf' ? (
-                <iframe src={viewerFile.path + '#toolbar=0'} style={{ width: '100%', height: '100%', border: 'none', borderRadius: '24px', background: 'white' }} title="PDF Viewer" />
+                <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <iframe src={viewerFile.id === 'diploma' ? viewerFile.path : viewerFile.path + '#toolbar=0'} style={{ width: '100%', flex: 1, border: 'none', borderRadius: '24px', background: 'white' }} title="PDF Viewer" />
+                  <a href={viewerFile.path} target="_blank" rel="noopener noreferrer" style={{ display: 'block', padding: '1rem', background: '#10b981', color: 'white', textAlign: 'center', borderRadius: '12px', fontWeight: 'bold', textDecoration: 'none' }}>
+                    📥 Si el documento no carga, pulsa aquí para abrirlo directamente
+                  </a>
+                </div>
               ) : viewerFile.type === 'img' ? (
                 <img src={viewerFile.path} alt={viewerFile.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', borderRadius: '24px', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }} />
               ) : viewerFile.type === 'interactive_ristorante' ? (
@@ -832,6 +1065,10 @@ export default function TanoPortal() {
                 <InteractiveTrivia />
               ) : viewerFile.type === 'interactive_radio' ? (
                 <TanoMusicPlayer />
+              ) : viewerFile.type === 'interactive_map' ? (
+                <ItalyRegionsMap />
+              ) : viewerFile.type === 'interactive_translator' ? (
+                <TanoTranslator />
               ) : null}
             </div>
           </motion.div>
@@ -840,10 +1077,12 @@ export default function TanoPortal() {
 
       <header className="tano-header" style={{ padding: '1rem 4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(20px)', position: 'sticky', top: 0, zIndex: 100 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-          <img src="/tano_assets/francesca_blanco.png" alt="Francesca Vives" style={{ height: '160px', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))', marginTop: '-20px', marginBottom: '-20px' }} onError={(e) => e.target.style.display = 'none'} />
+          <img src="/tano_assets/francesca_formal.png" alt="Francesca Vives" style={{ height: '160px', objectFit: 'contain', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))', marginTop: '-20px', marginBottom: '-20px' }} onError={(e) => e.target.style.display = 'none'} />
           <div>
-            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, background: 'linear-gradient(to right, #10b981, #fcd34d, #ef4444)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', letterSpacing: '-1px' }}>
-              Italiano con Francesca
+            <h1 style={{ margin: 0, fontSize: '3rem', fontWeight: 900, letterSpacing: '-1px' }}>
+              <span style={{ color: '#10b981' }}>Italiano</span>{' '}
+              <span style={{ color: '#ffffff' }}>con</span>{' '}
+              <span style={{ color: '#ef4444' }}>Francesca</span>
             </h1>
             <p style={{ margin: '0.5rem 0 0 0', color: '#9ca3af', fontSize: '1.2rem', fontWeight: 'bold' }}>Curso Básico Interactivo • Arquitecta Francesca&nbsp;Vives</p>
           </div>
@@ -851,11 +1090,27 @@ export default function TanoPortal() {
         <div className="tano-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
           {user ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem 1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <div 
+                onClick={() => setShowProgressGuide(true)}
+                style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', background: 'rgba(16, 185, 129, 0.1)', padding: '0.8rem 1.5rem', borderRadius: '20px', border: '1px solid rgba(16, 185, 129, 0.3)', cursor: 'pointer', transition: 'all 0.2s' }}
+                onMouseEnter={e => e.currentTarget.style.background='rgba(16, 185, 129, 0.2)'} 
+                onMouseLeave={e => e.currentTarget.style.background='rgba(16, 185, 129, 0.1)'}
+                title="Ver Guía de Progreso"
+              >
                 <User size={24} color="#10b981" />
                 <div>
                   <div style={{ fontSize: '0.9rem', fontWeight: '900', color: 'white' }}>{user.email}</div>
-                  <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold' }}>Progreso: {progress}%</div>
+                  <div style={{ fontSize: '0.8rem', color: '#10b981', fontWeight: 'bold' }}>
+                    Progreso: {progressPercent}% 
+                    {progressPercent >= 100 && (
+                      <span 
+                        onClick={(e) => { e.stopPropagation(); handleDownloadDiploma(); }}
+                        style={{ marginLeft: '0.5rem', textDecoration: 'underline', cursor: 'pointer', color: '#fcd34d' }}
+                      >
+                        - ¡Descarga tu certificado!
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <button onClick={handleLogout} style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#ef4444', padding: '0.8rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background='rgba(239, 68, 68, 0.2)'} onMouseLeave={e => e.currentTarget.style.background='rgba(239, 68, 68, 0.1)'} title="Cerrar sesión">
@@ -941,11 +1196,32 @@ export default function TanoPortal() {
         
         {/* Sidebar Nav */}
         <aside className="tano-sidebar" style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
+          
+          <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2rem', borderRadius: '25px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <span style={{ fontWeight: '900', color: '#94a3b8' }}>TU PROGRESO</span>
+              <span style={{ fontSize: '1.2rem', fontWeight: '900', color: '#34d399' }}>{progressPercent}%</span>
+            </div>
+            <div style={{ width: '100%', height: '10px', background: 'rgba(0,0,0,0.5)', borderRadius: '5px', overflow: 'hidden', marginBottom: '1rem' }}>
+              <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercent}%` }} style={{ height: '100%', background: '#10b981' }} />
+            </div>
+            <div style={{ fontSize: '0.8rem', color: '#6ee7b7' }}>
+              {progressPercent === 100 ? "¡Academia completada!" : `Continúa explorando los módulos`}
+            </div>
+          </div>
+
           <h2 style={{ fontSize: '1.2rem', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '3px', margin: '0 0 1rem 0', flexShrink: 0 }}>Módulos de Aprendizaje</h2>
           {TANO_MODULES.map((mod) => (
             <button
               key={mod.id}
-              onClick={() => setActiveModule(mod)}
+              onClick={() => {
+                setActiveModule(mod);
+                if (window.innerWidth <= 768) {
+                  setTimeout(() => {
+                    document.querySelector('.tano-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 100);
+                }
+              }}
               style={{
                 display: 'flex', alignItems: 'center', gap: '1.5rem', width: '100%', textAlign: 'left',
                 padding: '1.5rem', borderRadius: '20px', cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -968,8 +1244,10 @@ export default function TanoPortal() {
             <h3 style={{ margin: '0 0 1rem 0', color: 'white', fontSize: '1.8rem', fontWeight: 900 }}>Certificación Entre Vecinas</h3>
             <p style={{ fontSize: '1rem', color: '#d1d5db', marginBottom: '2rem', lineHeight: 1.5 }}>Completa todo el material interactivo de la Profesora Francesca Vives para obtener tu diploma digital.</p>
             {user ? (
-              <button style={{ width: '100%', padding: '1rem', background: progress >= 100 ? '#f59e0b' : 'rgba(255,255,255,0.1)', border: progress >= 100 ? 'none' : '1px solid rgba(255,255,255,0.2)', color: progress >= 100 ? 'black' : '#9ca3af', borderRadius: '12px', fontWeight: '900', cursor: progress >= 100 ? 'pointer' : 'not-allowed', fontSize: '1.1rem' }}>
-                {progress >= 100 ? 'DESCARGAR DIPLOMA' : `EN PROGRESO (${progress}%)`}
+              <button 
+                onClick={progressPercent >= 100 ? handleDownloadDiploma : undefined}
+                style={{ width: '100%', padding: '1rem', background: progressPercent >= 100 ? '#f59e0b' : 'rgba(255,255,255,0.1)', border: progressPercent >= 100 ? 'none' : '1px solid rgba(255,255,255,0.2)', color: progressPercent >= 100 ? 'black' : '#9ca3af', borderRadius: '12px', fontWeight: '900', cursor: progressPercent >= 100 ? 'pointer' : 'not-allowed', fontSize: '1.1rem' }}>
+                {progressPercent >= 100 ? 'DESCARGAR DIPLOMA' : `EN PROGRESO (${progressPercent}%)`}
               </button>
             ) : (
               <button onClick={handleLogin} style={{ width: '100%', padding: '1rem', background: '#3b82f6', border: 'none', color: 'white', borderRadius: '12px', fontWeight: '900', cursor: 'pointer', fontSize: '1.1rem', boxShadow: '0 10px 20px rgba(59, 130, 246, 0.3)' }}>
@@ -1063,6 +1341,18 @@ export default function TanoPortal() {
         </section>
 
       </main>
+
+      <AnimatePresence>
+        {showProgressGuide && (
+          <ProgressGuideModal 
+            completedIds={completedIds} 
+            totalItems={totalItems} 
+            progressPercent={progressPercent} 
+            onClose={() => setShowProgressGuide(false)} 
+            onOpenViewer={openViewer} 
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

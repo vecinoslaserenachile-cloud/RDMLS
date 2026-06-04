@@ -8,6 +8,8 @@ $Email = "Vecinoslaserenachile@gmail.com"
 $Key = "bb53aaa5c29acc38c183291529a1dd8937d18"
 $ZoneId = "f0daa77e49659c39fe7fd3f9b4abab35"
 $PagesUrl = "https://www.vecinoslaserena.cl/"
+$env:CLOUDFLARE_API_TOKEN="cfut_77iJjU8iL9OeSVwKUIsHYTSMWsxQUbZiCPTuXTbY639ca9d4"
+$env:CLOUDFLARE_ACCOUNT_ID="f106b65228e370b7be63060b3ac84dee"
 
 $Headers = @{
     "X-Auth-Email" = $Email
@@ -31,7 +33,7 @@ Write-Host " Ejecutando compilación crítica (npm run build)..." -ForegroundCol
 npm.cmd run build
 Write-Host " Inyectando a vecinoslaserena.cl (Wrangler)..." -ForegroundColor Yellow
 # npx wrangler pages deploy dist --project-name vecinos-la-serena
-npx.cmd wrangler pages deploy dist --project-name vecinos-la-serena --branch main
+npx.cmd wrangler pages deploy dist --project-name vecinos-la-serena --branch main --commit-dirty=true
 Write-Host " (!) Recuerda ejecutar manualmente los comandos superiores si el sync de GitHub falla." -ForegroundColor Red
 
 Write-Host "`n[3/4] PURGANDO CACHÉ GLOBAL DE CLOUDFLARE (ANTI-ERRORES ROJOS)..." -ForegroundColor Cyan

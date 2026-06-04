@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 const LoadingScreen = ({ isSyncing = false }) => {
@@ -7,9 +7,22 @@ const LoadingScreen = ({ isSyncing = false }) => {
   const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || window.location.pathname.includes('/radio') || (host.includes('localhost') && (window.location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   const isPeregrino = host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('nuevo-peregrino') || window.location.pathname.includes('/peregrino');
   const isPrendesLegacy = host.includes('vecinosmart.cl');
+  const isTano = window.location.href.toLowerCase().includes('tano');
+  const isVLS = host.includes('vecinoslaserena.cl') || host.includes('vls.cl') || host.includes('entrevecinas.cl');
+
+  const [showPisa, setShowPisa] = useState(false);
+
+  useEffect(() => {
+    if (isTano && isVLS) {
+      const timer = setTimeout(() => setShowPisa(true), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isTano, isVLS]);
 
   // ── VECINOSMART: Showroom Evolution Loader (SIN FARO) ────────────────
   if (isPrendesLegacy) {
+// ... keeping existing lines for legacy/rdmls/peregrino exactly ...
+// wait, I can just replace from line 1 to 224!
     return (
       <div style={{
         height: '100vh', width: '100%', display: 'flex', flexDirection: 'column',
@@ -17,7 +30,7 @@ const LoadingScreen = ({ isSyncing = false }) => {
         color: 'white', fontFamily: 'Outfit, sans-serif'
       }}>
         <div style={{ color: '#38bdf8', fontSize: '2.5rem', fontWeight: 950, letterSpacing: '8px', marginBottom: '1rem', textAlign: 'center' }}>
-          SMART COMUNA
+          vecinosmart.cl
         </div>
         <div style={{ fontSize: '0.8rem', color: 'rgba(56, 189, 248, 0.6)', letterSpacing: '4px', fontWeight: 700, marginBottom: '3rem', textAlign: 'center' }}>
           EVOLUTION SHOWROOM
@@ -107,8 +120,6 @@ const LoadingScreen = ({ isSyncing = false }) => {
   }
 
   // ── VLS / Entrevecinas: Loader con Faro Institucional ─────────────────
-  const isVLS = host.includes('vecinoslaserena.cl') || host.includes('vls.cl') || host.includes('entrevecinas.cl');
-
   if (isVLS) {
     return (
       <div style={{ 
@@ -117,18 +128,10 @@ const LoadingScreen = ({ isSyncing = false }) => {
         color: 'white', fontFamily: 'Inter, sans-serif', position: 'relative', overflow: 'hidden'
       }}>
         
-        {/* Animación de Faro Institucional VLS */}
+        {/* Contenedor del ícono SVG */}
         <div style={{ position: 'relative', zIndex: 1, width: '144px', height: '176px', marginBottom: '2rem' }}>
             <svg viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                 <defs>
-                     <linearGradient id="beamGradientHorizontal" x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse">
-                         <stop offset="0%" stopColor="white" stopOpacity="0.9" />
-                         <stop offset="100%" stopColor="white" stopOpacity="0" />
-                     </linearGradient>
-                     <filter id="strongGlow">
-                         <feGaussianBlur stdDeviation="6" result="blur"/>
-                         <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                     </filter>
                      <radialGradient id="lampGlow" cx="50%" cy="50%" r="50%">
                          <stop offset="0%" stopColor="white" stopOpacity="1" />
                          <stop offset="60%" stopColor="#38bdf8" stopOpacity="0.5" />
@@ -147,78 +150,118 @@ const LoadingScreen = ({ isSyncing = false }) => {
                          <stop offset="100%" stopColor="white" stopOpacity="0" />
                      </linearGradient>
                  </defs>
+
+                 {/* 🇮🇹 TORRE DE PISA (Se muestra si es Tano y pasaron 2s) */}
+                 {isTano && (
+                    <motion.g
+                       initial={{ opacity: 0, rotate: 0 }}
+                       animate={{ opacity: showPisa ? 1 : 0, rotate: showPisa ? 7 : 0 }}
+                       transition={{ duration: 1.5, ease: "easeInOut" }}
+                       style={{ transformOrigin: "50px 100px" }}
+                    >
+                       {/* Base y cuerpo de la Torre */}
+                       <path d="M 35 100 L 65 100 L 62 20 L 38 20 Z" fill="transparent" stroke="white" strokeWidth="3" />
+                       
+                       {/* Lineas divisorias de pisos */}
+                       {[30, 45, 60, 75, 90].map(y => (
+                           <path key={'line'+y} d={`M 37 ${y} L 63 ${y}`} stroke="white" strokeWidth="2" opacity="0.8" />
+                       ))}
+                       
+                       {/* Arcos decorativos de los pisos */}
+                       {[35, 50, 65, 80].map(y => (
+                           <g key={'arc'+y} fill="white">
+                               <rect x="41" y={y} width="4" height="6" rx="2" />
+                               <rect x="48" y={y} width="4" height="6" rx="2" />
+                               <rect x="55" y={y} width="4" height="6" rx="2" />
+                           </g>
+                       ))}
+                       
+                       {/* Campanil superior */}
+                       <path d="M 42 20 L 58 20 L 56 8 L 44 8 Z" stroke="white" strokeWidth="2" fill="transparent" />
+                       <rect x="46" y="11" width="3" height="5" fill="white" rx="1" />
+                       <rect x="51" y="11" width="3" height="5" fill="white" rx="1" />
+                       
+                       {/* Base inferior escalonada */}
+                       <path d="M 32 100 L 68 100 L 68 105 L 32 105 Z" fill="white" />
+                    </motion.g>
+                 )}
   
-                 {/* OLA DE MAR */}
-                 <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-                    <motion.path 
-                       d="M 120 115 Q 100 110 80 115 Q 65 120 58 115"
-                       stroke="url(#waveGrad)" strokeWidth="1.5" strokeLinecap="round"
-                       animate={{ x: [10, -30], opacity: [0, 1, 0] }}
-                       transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                    />
-                 </motion.g>
-  
-                 {/* Cuerpo del Faro */}
-                 <motion.path
-                     d="M 40 25 L 60 25 L 64 100 L 36 100 Z"
-                     stroke="white" strokeWidth="4" strokeLinecap="round"
-                     initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
-                     transition={{ duration: 0.8, ease: "easeOut" }}
-                 />
-                 
-                 {/* Ventanas */}
-                 {[40, 55, 70, 85].map((y, i) => (
-                   <motion.rect 
-                       key={y} x="47" y={y} width="6" height="6"
-                       initial={{ opacity: 0 }}
-                       animate={{ opacity: [0.3, 1, 0.3] }}
-                       transition={{ delay: i * 0.2, duration: 2, repeat: Infinity }}
-                       fill="white"
-                   />
-                 ))}
-                 
-                 {/* Cúpula y Fanal Superior */}
-                 <motion.path
-                     d="M 37 25 L 63 25 M 38 20 L 62 20 L 62 25 L 38 25 Z M 44 20 L 56 20 L 56 15 L 44 15 Z"
-                     stroke="white" strokeWidth="2"
-                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                 />
-  
-                 {/* Base Monumental */}
-                 <motion.path
-                     d="M 15 100 L 85 100 L 90 115 L 10 115 Z"
-                     stroke="white" strokeWidth="3"
-                     initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-                 />
-  
-                  {/* Motor de Luz */}
-                  <g transform="translate(50, 17.5)">
-                      <g>
-                           <path d="M 0 0 L 500 -60 L 500 60 Z" fill="url(#beamGradientRight)" />
-                           <path d="M 0 0 L -450 -50 L -450 50 Z" fill="url(#beamGradientLeft)" />
-                           <animateTransform 
-                               attributeName="transform" 
-                               type="rotate" 
-                               values="0; 18; -18; 0" 
-                               keyTimes="0; 0.25; 0.75; 1"
-                               dur="8s" 
-                               repeatCount="indefinite"
-                           />
+                 {/* 🌊 FARO ORIGINAL (Se oculta si es Tano y pasaron 2s) */}
+                 <motion.g
+                     initial={{ opacity: 1 }}
+                     animate={{ opacity: (isTano && showPisa) ? 0 : 1 }}
+                     transition={{ duration: 1 }}
+                 >
+                     {/* OLA DE MAR */}
+                     <motion.g initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
+                        <motion.path 
+                           d="M 120 115 Q 100 110 80 115 Q 65 120 58 115"
+                           stroke="url(#waveGrad)" strokeWidth="1.5" strokeLinecap="round"
+                           animate={{ x: [10, -30], opacity: [0, 1, 0] }}
+                           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        />
+                     </motion.g>
+      
+                     {/* Cuerpo del Faro */}
+                     <motion.path
+                         d="M 40 25 L 60 25 L 64 100 L 36 100 Z"
+                         stroke="white" strokeWidth="4" strokeLinecap="round"
+                         initial={{ pathLength: 0 }} animate={{ pathLength: 1 }}
+                         transition={{ duration: 0.8, ease: "easeOut" }}
+                     />
+                     
+                     {/* Ventanas */}
+                     {[40, 55, 70, 85].map((y, i) => (
+                       <motion.rect 
+                           key={'win'+y} x="47" y={y} width="6" height="6"
+                           initial={{ opacity: 0 }}
+                           animate={{ opacity: [0.3, 1, 0.3] }}
+                           transition={{ delay: i * 0.2, duration: 2, repeat: Infinity }}
+                           fill="white"
+                       />
+                     ))}
+                     
+                     {/* Cúpula y Fanal Superior */}
+                     <motion.path
+                         d="M 37 25 L 63 25 M 38 20 L 62 20 L 62 25 L 38 25 Z M 44 20 L 56 20 L 56 15 L 44 15 Z"
+                         stroke="white" strokeWidth="2"
+                     />
+      
+                     {/* Base Monumental */}
+                     <motion.path
+                         d="M 15 100 L 85 100 L 90 115 L 10 115 Z"
+                         stroke="white" strokeWidth="3"
+                     />
+      
+                      {/* Motor de Luz */}
+                      <g transform="translate(50, 17.5)">
+                          <g>
+                               <path d="M 0 0 L 500 -60 L 500 60 Z" fill="url(#beamGradientRight)" />
+                               <path d="M 0 0 L -450 -50 L -450 50 Z" fill="url(#beamGradientLeft)" />
+                               <animateTransform 
+                                   attributeName="transform" 
+                                   type="rotate" 
+                                   values="0; 18; -18; 0" 
+                                   keyTimes="0; 0.25; 0.75; 1"
+                                   dur="8s" 
+                                   repeatCount="indefinite"
+                               />
+                          </g>
                       </g>
-                  </g>
-  
-                 {/* Linterna pulsante */}
-                 <motion.circle 
-                     cx="50" cy="17.5" r="4" fill="white"
-                     animate={{ scale: [1, 1.8, 1], opacity: [0.9, 1, 0.9] }}
-                     transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                 />
-                 {/* Halo */}
-                 <motion.circle 
-                     cx="50" cy="17.5" r="9" fill="url(#lampGlow)"
-                     animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
-                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                 />
+      
+                     {/* Linterna pulsante */}
+                     <motion.circle 
+                         cx="50" cy="17.5" r="4" fill="white"
+                         animate={{ scale: [1, 1.8, 1], opacity: [0.9, 1, 0.9] }}
+                         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                     />
+                     {/* Halo */}
+                     <motion.circle 
+                         cx="50" cy="17.5" r="9" fill="url(#lampGlow)"
+                         animate={{ scale: [1, 1.4, 1], opacity: [0.5, 1, 0.5] }}
+                         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                     />
+                 </motion.g>
             </svg>
         </div>
   
@@ -226,8 +269,8 @@ const LoadingScreen = ({ isSyncing = false }) => {
           <span style={{ fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '0.6em', color: 'white', opacity: 1, display: 'block', marginBottom: '1.2rem', textShadow: '0 0 20px white' }}>
             SOBERANÍA DIGITAL — CIELO PROTEGIDO — v4.5
           </span>
-          <h2 style={{ fontSize: '1.6rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em', color: 'white', marginBottom: '2rem' }}>
-            {isEntrevecinas ? 'Entrevecinas: Sintonizando...' : 'Iniciando Red Vecinal...'}
+          <h2 style={{ fontSize: '1.6rem', fontWeight: 900, textTransform: 'none', letterSpacing: '0.2em', color: 'white', marginBottom: '2rem' }}>
+            {isEntrevecinas ? 'entrevecinas.cl' : 'INICIANDO RED VECINAL...'}
           </h2>
           
           <div style={{ width: '350px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '15px', overflow: 'hidden', marginInline: 'auto', boxShadow: '0 0 25px rgba(0,0,0,0.8)' }}>

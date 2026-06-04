@@ -222,7 +222,7 @@ const QUESTIONS = [
 // ── MÓDULOS DE LA MALLA ───────────────────────────────────────────────
 const MODULOS = [
   { id:'adn', icon:'🏛️', label:'ADN Municipal 2025', desc:'Misión, Visión y 5 Valores',
-    img: 'https://raw.githubusercontent.com/vecinoslaserenachile-cloud/juego-serenito/main/memorial/cuturrufo/municipalidad_serena_frontis.png',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Plaza_de_Armas_La_Serena.JPG/960px-Plaza_de_Armas_La_Serena.JPG',
     content:[
       { k:'Misión',  v:'Servicios municipales cercanos, amables y de calidad para mejorar la vida de los vecinos.' },
       { k:'Visión',  v:'Municipio moderno, creíble, transparente e informado. Líder en gestión Smart Comuna.' },
@@ -231,7 +231,7 @@ const MODULOS = [
     quiz:{ q:'¿Cuál es la misión central de la IMLS?', opts:['Maximizar ingresos tributarios','Servicios cercanos y de calidad para los vecinos','Gestionar concesiones privadas'], ans:1, exp:'La misión es clara: servicio cercano, amable y de calidad a cada vecino de La Serena.' }},
 
   { id:'gestion', icon:'⚙️', label:'Cerebro DAF/SECPLAN', desc:'Decreto 1730 · Gestión y Planificación',
-    img: '/smart_city_serena_2025_png_1774894743323.png',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Plaza_de_Armas_La_Serena.JPG/960px-Plaza_de_Armas_La_Serena.JPG',
     content:[
       { k:'Decreto 1730', v:'Regula la estructura orgánica de la Ilustre Municipalidad de La Serena.' },
       { k:'SECPLAN',      v:'Planificación Comunal, Presupuesto e Inversión Pública.' },
@@ -240,16 +240,16 @@ const MODULOS = [
     quiz:{ q:'¿Qué unidad gestiona la Planificación Comunal y el Presupuesto?', opts:['DAF','SECPLAN','Alcaldía'], ans:1, exp:'SECPLAN (Secretaría Comunal de Planificación) articula el presupuesto y la inversión pública.' }},
 
   { id:'karin', icon:'🛡️', label:'Ley Karin 21.643', desc:'Protocolo de Prevención y Denuncia',
-    img: '/smart_city_serena_2025_png_1774894743323.png',
+    img: '/serenito_security_guard_close_up_1773392164475.png',
     content:[
-      { k:'Objetivo',  v:'Prevenir, investigar y sancionar el acoso laboral, sexual y la violencia en el trabajo.' },
+      { k:'Objetivo',  v:'Prevenir, investigate y sancionar el acoso laboral, sexual y la violencia en el trabajo.' },
       { k:'Protocolo', v:'Mecanismo interno confidencial de investigación. Tolerancia cero. Un acto basta.' },
       { k:'Denuncia',  v:'denuncias@laserena.cl · Intranet Municipal (Canal Confidencial).' },
     ],
     quiz:{ q:'¿Cuántos actos de acoso se necesitan para activar la Ley Karin?', opts:['Tres o más','Dos comprobados','Un solo acto grave es suficiente'], ans:2, exp:'La Ley Karin establece tolerancia cero: un único acto grave ya activa el protocolo de investigación.' }},
 
   { id:'riesgos', icon:'🚨', label:'Prevención Ley 16.744', desc:'Seguridad y Plan de Emergencias',
-    img: '/smart_city_serena_2025_png_1774894743323.png',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Av._del_Mar%2C_La_Serena-Chile.JPG/960px-Av._del_Mar%2C_La_Serena-Chile.JPG',
     content:[
       { k:'Seguro',  v:'Seguro social obligatorio contra accidentes del trabajo y enfermedades profesionales.' },
       { k:'Acción',  v:'Ante accidente: informar a jefatura directa y acudir al centro de salud en convenio.' },
@@ -258,7 +258,7 @@ const MODULOS = [
     quiz:{ q:'Ante un sismo fuerte en La Serena, ¿cuál es la zona de evacuación correcta?', opts:['Permanecer en el edificio','Cota 30, Av. Cisternas','Plaza de Armas'], ans:1, exp:'La Cota 30 (Av. Cisternas) es la zona segura ante tsunami. Es la ruta oficial del Plan de Evacuación Municipal.' }},
 
   { id:'patrimonio', icon:'⚜️', label:'Historia Local', desc:'Patrimonio de La Serena',
-    img: '/faro_monumental_premium_png_1774894700995.png',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Faro_Monumental_de_La_Serena._09.12.2022.jpg/960px-Faro_Monumental_de_La_Serena._09.12.2022.jpg',
     content:[
       { k:'Faro',     v:'Ícono nacional y monumental de la bahía serenense.' },
       { k:'Iglesias', v:'Ciudad de los campanarios. Riqueza arquitectónica y religiosa única.' },
@@ -267,7 +267,7 @@ const MODULOS = [
     quiz:{ q:'¿Qué monumento es el ícono absoluto del patrimonio arquitectónico de La Serena a nivel nacional?', opts:['El Reloj Monumental','El Faro Monumental','La Recova Norte'], ans:1, exp:'El Faro Monumental de La Serena, declarado Monumento Nacional, es el emblema que nos proyecta hacia el turismo nacional e internacional.' }},
 
   { id:'turismo', icon:'🤝', label:'Atención Pública', desc:'Empatía y Resolución Ciudadana',
-    img: '/smart_city_serena_2025_png_1774894743323.png',
+    img: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Recova_La_Serena.JPG/960px-Recova_La_Serena.JPG',
     content:[
       { k:'Empatía',   v:'Escucha activa ante vecinos exaltados o frustrados.' },
       { k:'Rapidez',   v:'Resolución ágil usando tecnologías como "Smart Comuna".' },

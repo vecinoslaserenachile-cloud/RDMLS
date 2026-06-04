@@ -4,7 +4,7 @@
     "links_externos": {
         "puertaSerena": "https://puertaserena.streamlit.app/",
         "honorarios": "https://honorarios-ls-me.streamlit.app/",
-        "faroSentinel": "https://monitor-laserena.streamlit.app/",
+        "faroSentinel": "https://app-smartcity-imls.streamlit.app/",
         "induccion": "https://vecinoslaserenachile-cloud.github.io/portal-induccion-imls/",
         "protocolo": "https://vecinoslaserenachile-cloud.github.io/serenito-app/",
         "game": "/mi_juego.html"

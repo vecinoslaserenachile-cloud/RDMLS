@@ -213,6 +213,7 @@ const SOVEREIGN_NAMES = [
 
 const MartinSecurityShield = lazy(() => import('./components/MartinSecurityShield'));
 const LegacyVLSAppendix = lazy(() => import('./components/LegacyVLSAppendix'));
+import { VecinoSmartLogin } from './components/VecinoSmartLogin';
 const NetSpeedMonitor = lazy(() => import('./components/NetSpeedMonitor'));
 const SerenitoSecurityGuard = lazy(() => import('./components/SerenitoSecurityGuard'));
 const KioskoDiarios = lazy(() => import('./components/KioskoDiarios'));
@@ -494,9 +495,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const isAcademy = host.includes('vecinosmart.cl') || host.includes('prendes.cl'); // Entorno Comercial de Venta de Know-how
   const isVLS = !isRDMLS && !isAcademy && (host.includes('vecinos') || host.includes('vls.cl') || host.includes('localhost'));
   const isMasterDomain = isAcademy || host.includes('vls.cl') || host.includes('smartcomuna.cl') || host.includes('prendes.cl');
-  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('radiovecinos.cl') || host.includes('radiovecinos') || host.includes('archinuevaenergia') || host.includes('pages.dev');
+  const isDirectDomain = host.includes('vecinoslaserena.cl') || host.includes('rdmls.cl') || host.includes('rdmk.cl') || host.includes('entrevecinas.cl') || host.includes('vecinoschile.cl') || host.includes('prendes.cl') || host.includes('sonicev.cl') || host.includes('radiovecinos.cl') || host.includes('radiovecinos') || host.includes('archinuevaenergia') || host.includes('pages.dev') || host.includes('puertasmart.cl') || host.includes('comunasmart.cl') || host.includes('piratasmart.cl') || host.includes('eventosmart.cl') || host.includes('protocolosmart.cl');
   const isChile = host.includes('vecinoschile.cl');
   const isNational = isChile;
+  const isEntreVecinasHost = host.includes('entrevecinas.cl') || location.pathname.match(/^\/entrevecinas/i) || location.search.includes('mock=entrevecinas');
   const isInduccion = location.pathname.includes('/induccion') || location.pathname.includes('/induccion_imls');
   const isVLSabes = location.pathname.includes('/vlsabes');
   const isTribute = location.pathname.includes('/agua');
@@ -839,7 +841,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
   useEffect(() => {
     // Título y Favicon Dinámico
-    let pageTitle = 'vecinoslaserena.cl';
+    let pageTitle = 'LA❤️SERENA — Smart Ciudad · Tecnología Municipal Autónoma';
     let favIconUrl = '/vls-crystal-icon.svg';
 
     const currentHost = window.location.hostname.toLowerCase();
@@ -852,13 +854,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
       pageTitle = 'Academia Smart - Entrenamiento de Elite';
       favIconUrl = '/academy_icon.png';
     } else if (isMasterDomain) {
-      pageTitle = 'VecinoSmart - Red Inteligente';
+      pageTitle = 'vecinosmart.cl';
       favIconUrl = '/vls-logo-3d.png';
     } else if (isRDMLS) {
       pageTitle = 'RDMLS - Red Digital La Serena';
       favIconUrl = '/rdmls_favicon.png';
     } else if (host.includes('entrevecinas')) {
-      pageTitle = 'Entre Vecinas - VLS Network';
+      pageTitle = 'entrevecinas.cl';
       favIconUrl = '/entrevecinas_icon.png';
     } else if (host.includes('vecinoschile')) {
       pageTitle = 'Vecinos Chile - Red Republicana 2025';
@@ -961,7 +963,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.addEventListener('open-vls-redcine', handleRedCine);
       window.addEventListener('open-smart-citizens', () => window.open('https://www.puertasmart.cl', '_blank'));
       window.addEventListener('open-smart-administration', () => window.open('https://www.rdmls.cl/imls/induccion', '_blank'));
-      window.addEventListener('open-smart-events', () => window.open('https://vecinoslaserenachile-cloud.github.io/serenito-app/', '_blank'));
+      window.addEventListener('open-smart-events', () => setShowSmartEvents(true));
       window.addEventListener('open-smart-listening', handleOpenSentinelApex);
       window.addEventListener('open-pulso-ciudadano', () => setShowPulsoCiudadano(true));
       // Reset Modals on Route Change (Soberanía de Navegación v5.8)
@@ -1146,7 +1148,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     const handleSpeak = () => setShowVLSpeak(true);
     const handleAlcaldes = () => { setShowAlcaldes(true); window.scrollTo({ top:0, behavior: 'smooth' }); };
     const handleEntrevecinas = () => setShowEntreVecinas(true);
-    const handleReportes = () => window.open('https://www.puertasmart.cl', '_blank');
+    const handleReportes = () => window.dispatchEvent(new CustomEvent('open-smart-report'));
     const handleParliamentary = () => setShowParliamentary(true);
     const handleInduccionFixed = () => setShowSmartAdmin(true);
     const handleSeguridad = () => setShowSeguridadVecinal(true);
@@ -1268,20 +1270,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const handleOpenMarketplace = () => setShowMarketplace(true);
   const handleOpenSentinelMini = () => setShowSentinelMini(true);
   const handleOpenSentinelApex = () => {
-    if ((currentUser && ALLOWED_ADMINS.includes(currentUser.email.toLowerCase())) || localStorage.getItem('master_bypass') === 'true') {
-      setShowSentinelApex(true);
-    } else {
-      const notif = {
-        id: Date.now(),
-        title: 'ACCESO BLOQUEADO 🔒',
-        body: 'Módulo Estratégico Protegido. Se requiere perfil Directivo/Admin para Sentinel Apex.',
-        read: false,
-        timestamp: new Date().toLocaleTimeString()
-      };
-      setNotifications(prev => [notif, ...prev]);
-      // No forzar apertura del panel automáticamente
-      alert("SISTEMA DE SEGURIDAD MARTIN SHIELD:\n\nAcceso denegado a Información Estratégica. Su identidad ha sido registrada pero no posee permisos de 'Zero Trust' para este módulo.");
-    }
+    // MARTIN SHIELD DESACTIVADO POR SOLICITUD - APEX ES DE ACCESO LIBRE AHORA
+    setShowSentinelApex(true);
   };
   const handleOpenEmbajadas = () => setShowEmbajadas(true);
   const handleOpenFaroIA = () => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowChat(true); };
@@ -1845,8 +1835,6 @@ function AppContent({ setShowCoquiSmartCRM }) {
       setShowGame(true);
     }
   }, [location.pathname]);
-
-  const isEntreVecinasHost = host.includes('entrevecinas.cl') || location.pathname.match(/^\/entrevecinas/i);
   if (!authInitialized && !isRDMLS && !isMediaPortal && !isEvolutionShowroom && !isPeregrinoHost && !isEntreVecinasHost) {
     return (
       <div style={{ background: '#020617', height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -1879,6 +1867,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
   }
 
   if (isEvolutionShowroom) {
+    if (!currentUser && !localStorage.getItem('vls_admin_bypass')) {
+      return <VecinoSmartLogin />;
+    }
+    
     return (
       <div style={{ background: '#020617', minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
         <Suspense fallback={<LoadingScreen />}>
@@ -1890,6 +1882,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
 
   if (isEntreVecinasHost) {
+    const isSubPage = location.pathname.includes('/tano') || location.pathname.includes('/comunidades') || location.pathname.includes('/astronomia-beltrand') || location.pathname.includes('/humedales-campos') || location.pathname.includes('/adobe-vivo') || location.pathname.includes('/ruinas-lambert');
+    
+    if (isSubPage) {
+      return (
+        <Suspense fallback={<div style={{ height: '100vh', background: '#07010a' }} />}>
+          <Outlet />
+        </Suspense>
+      );
+    }
+
     return (
       <div style={{ background: '#07010a', minHeight: '100vh', width: '100vw', overflowX: 'hidden' }}>
         <Suspense fallback={
@@ -1906,6 +1908,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
               navigate('/');
             }
           }} />
+          <VLSQuantumWatch />
         </Suspense>
       </div>
     );
@@ -2066,7 +2069,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
                   ) : isRadioVecinos ? (
                     <span className="hide-on-mobile" style={{ color: '#38bdf8' }}>www.radiovecinos.cl</span>
                   ) : (
-                    <span className="hide-on-mobile">www.vecinoslaserena.cl</span>
+                    <span className="hide-on-mobile" style={{ fontWeight: '900', letterSpacing: '-0.5px' }}>LA<span style={{color:'#ef4444'}}>❤️</span>SERENA &mdash; Smart Ciudad</span>
                   )}
                   {(currentUser || isGuest) && (
                     <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(56, 189, 248, 0.15)', padding: '2px 10px', borderRadius: '50px', border: '1px solid rgba(56, 189, 248, 0.4)' }}>
@@ -2102,18 +2105,22 @@ function AppContent({ setShowCoquiSmartCRM }) {
                
                {/* 4 PILARES SMART CITY */}
                <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                 <button onClick={() => window.open('https://www.puertasmart.cl', '_blank')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#38bdf8', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-sky-900/40 transition-colors" title="Acceso a reportes, Registro de Accesos y monitoreo ambiental">
+                 <button onClick={() => window.dispatchEvent(new CustomEvent('open-smart-report'))} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#38bdf8', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-sky-900/40 transition-colors" title="Acceso a reportes, Registro de Accesos y monitoreo ambiental">
                     SMART CITIZENS
                  </button>
-                 <button onClick={() => window.open('https://www.rdmls.cl/imls/induccion', '_blank')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#10b981', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-emerald-900/40 transition-colors" title="Gestión interna, E-learning y firmas digitales">
-                    SMART ADMINISTRATION
-                 </button>
-                 <button onClick={() => window.open('https://vecinoslaserenachile-cloud.github.io/serenito-app/', '_blank')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#f59e0b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-amber-900/40 transition-colors" title="Protocolo y monitor de precedencias">
-                    SMART EVENTS
-                 </button>
-                 <button onClick={handleOpenSentinelApex} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px', letterSpacing: '0.5px' }} className="hover:bg-red-900/40 transition-colors" title="Social listening e inteligencia artificial Sentinel Apex">
-                    <div className="pulse-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} /> SMART LISTENING
-                 </button>
+                 {isRDMLS && (
+                   <>
+                     <button onClick={() => window.open('https://www.rdmls.cl/imls/induccion', '_blank')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#10b981', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-emerald-900/40 transition-colors" title="Gestión interna, E-learning y firmas digitales">
+                        SMART ADMINISTRATION
+                     </button>
+                     <button onClick={() => setShowSmartEvents(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#f59e0b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-amber-900/40 transition-colors" title="Protocolo y monitor de precedencias">
+                        SMART EVENTS
+                     </button>
+                     <button onClick={handleOpenSentinelApex} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ef4444', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '4px', letterSpacing: '0.5px' }} className="hover:bg-red-900/40 transition-colors" title="Social listening e inteligencia artificial Sentinel Apex">
+                        <div className="pulse-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: '#ef4444' }} /> SMART LISTENING
+                     </button>
+                   </>
+                 )}
                  <button onClick={() => setShowMemorial(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#ec4899', background: 'rgba(236, 72, 153, 0.1)', border: '1px solid rgba(236, 72, 153, 0.4)', cursor: 'pointer', borderRadius: '200px', display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '6px', letterSpacing: '0.5px' }} className="hover:bg-pink-900/40 transition-colors">
                     <Heart size={12} fill="#ec4899" /> ALTARES
                  </button>
@@ -2163,7 +2170,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
             {/* CTA REPORTE VECINAL (TOP) - Universal Visibility */}
             <button 
-              onClick={() => window.open('https://www.puertasmart.cl', '_blank')}
+              onClick={() => window.dispatchEvent(new CustomEvent('open-smart-report'))}
               className="glass-panel animate-pulse"
               style={{
                 padding: isMobile ? '0.35rem 0.6rem' : '0.4rem 1rem',
@@ -2348,16 +2355,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
       <Suspense fallback={null}>
         {/* MARTIN SHIELD REMOVIDO POR SOLICITUD RDMLS */}
         {/* {!isMediaPortal && <MartinSecurityShield />} */}
-        {!isZeroDistraction && !isRDMLS && <NetSpeedMonitor />}
-        {!showVLSNewsIan && !isMediaPortal && <SerenitoSecurityGuard />}
+        {!isZeroDistraction && !isRDMLS && !isPuertaSmart && <NetSpeedMonitor />}
+        {!showVLSNewsIan && !isMediaPortal && !isPuertaSmart && <SerenitoSecurityGuard />}
         <SecurityHoneypot />
         <SmartShare renderAsHiddenObserver={true} />
-        {!isZeroDistraction && !isRDMLS && <FloatingActionPanel />}
+        {!isZeroDistraction && !isRDMLS && !isPuertaSmart && <FloatingActionPanel />}
         <ErrorCollector />
       </Suspense>
 
       {/* Módulo Vertical RRSS (Transversal) */}
-      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && (
+      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isPuertaSmart && !isRadioVecinos && !location.pathname.toLowerCase().includes('/afiches') && (
         <button
           onClick={() => {
             window.dispatchEvent(new CustomEvent('open-vls-feed'));
@@ -2383,7 +2390,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       )}
 
       {/* VLSound — Transversal para VLS y RDMLS */}
-      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && (
+      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isPuertaSmart && !isRadioVecinos && !location.pathname.toLowerCase().includes('/afiches') && (
         <VLSConsoleSound
           onOpenRadio={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRadio(true); }}
           onOpenTV={() => { window.dispatchEvent(new CustomEvent('stop-all-audio')); setShowRetroTV(true); }}
@@ -2440,13 +2447,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
         )}
       </AnimatePresence>
 
-      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev') ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: isZeroDistraction ? 0 : (isRDMLS ? '60px' : '100px'), background: isRDMLS ? '#0a0a0a' : '#020617', minHeight: '100vh' }}>
+      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev') ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: (isZeroDistraction || isPuertaSmart) ? 0 : (isRDMLS ? '60px' : '100px'), background: isRDMLS ? '#0a0a0a' : '#020617', minHeight: '100vh' }}>
         <ErrorBoundary>
           <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS, handleLogin, handleLogout }} />
         </ErrorBoundary>
         {!isZeroDistraction && (
           <footer style={{ marginTop: '4rem', padding: '2rem', textAlign: 'center', borderTop: '1px solid rgba(255,215,0,0.1)', color: '#94a3b8', fontSize: '0.9rem' }}>
-            <p>© 2026 {isRadioVecinos ? 'ARCHI NUEVA ENERGÍA' : isRDMLS ? 'RDMLS.CL · RADIO DIGITAL MUNICIPAL LA SERENA' : 'VECINOSLASERENA.CL · INNOVACIÓN CIUDADANA'}</p>
+            <p>© 2026 {isRadioVecinos ? 'ARCHI NUEVA ENERGÍA' : isRDMLS ? 'RDMLS.CL · RADIO DIGITAL MUNICIPAL LA SERENA' : 'LA❤️SERENA — Smart Ciudad · Tecnología Municipal Autónoma'}</p>
             {isRadioVecinos ? (
               <p>Contacto: <a href="/#registro-cta" onClick={() => { if(window.location.pathname !== '/') { window.location.href = '/#registro-cta'; } }} style={{ color: '#FFD700', textDecoration: 'underline', fontWeight: 'bold' }}>SÚMATE A LA LISTA</a></p>
             ) : (
@@ -2457,7 +2464,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
-      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isRadioVecinos && <SmartToolbox />}
+      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isRadioVecinos && !isPuertaSmart && <SmartToolbox />}
 
       {/* Chat Botón y Panel */}
       {showChat && (

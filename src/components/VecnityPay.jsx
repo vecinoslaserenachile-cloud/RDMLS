@@ -139,12 +139,12 @@ export default function VecnityPay({ onClose, currentUser, initialOrder }) {
                 items: initialOrder.items,
                 engine, // Required by backend validation
                 userId: currentUser?.uid || 'guest', // Required by backend validation
-                email: currentUser?.email || 'guest@farito.cl'
+                email: currentUser?.email || 'invitado@vecinoslaserena.cl'
             } : {
                 itemId: selected.id,
                 engine,
                 userId: currentUser?.uid || 'guest',
-                email: currentUser?.email || 'guest@farito.cl',
+                email: currentUser?.email || 'invitado@vecinoslaserena.cl',
                 amountCLP: finalCLP,
                 amountUSD: Number(finalUSD.toFixed(2)),
                 type: tab,

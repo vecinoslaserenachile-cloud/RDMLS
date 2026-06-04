@@ -157,7 +157,7 @@ const NuevoPeregrinoPortal = ({ onClose }) => {
                         <ShieldAlert size={14} /> <span className="hide-on-mobile">ADMINISTRATION</span>
                     </button>
                     <button 
-                        onClick={() => window.open('https://vecinoslaserenachile-cloud.github.io/serenito-app/', '_blank')}
+                        onClick={() => window.dispatchEvent(new CustomEvent('open-smart-events'))}
                         style={{ background: 'transparent', border: 'none', color: '#fbbf24', fontSize: '0.65rem', fontWeight: '900', letterSpacing: '1px', padding: '8px 12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
                         <Award size={14} /> <span className="hide-on-mobile">EVENTS</span>

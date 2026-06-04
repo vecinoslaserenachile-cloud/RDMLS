@@ -16,6 +16,8 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     const path = window.location.pathname.toLowerCase();
     const isRDMLS = isRDMLS_prop ?? (host.includes('rdmls') || (host.includes('laserena.cl') && !host.includes('vecinos')));
     const isArchi = host.includes('archi') || host.includes('radiovecinos') || path.includes('/archi');
+    const isPuerta = host.includes('puertasmart.cl') || path.includes('/puertasmart') || path.includes('/puerta');
+    const isEntrevecinas = host.includes('entrevecinas.cl') || path.includes('/entrevecinas');
     const [time, setTime] = useState(new Date());
     const [blink, setBlink] = useState(true);
     const [isMinimized, setIsMinimized] = useState(() =>
@@ -72,6 +74,7 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     };
 
     const themes = [
+        { id: 'entrevecinas', bg: 'linear-gradient(135deg, #1e1b4b 0%, #3b0764 100%)', text: '#f9a8d4', sub: '#c084fc', pin: '#d946ef' },
         { id: 'blue',   bg: 'linear-gradient(180deg,#0ea5e9 0%,#0369a1 100%)', text: 'white',    sub: '#bae6fd', pin: '#0ea5e9' },
         { id: 'green',  bg: 'linear-gradient(180deg,#22c55e 0%,#15803d 100%)', text: 'white',    sub: '#bbf7d0', pin: '#22c55e' },
         { id: 'red',    bg: 'linear-gradient(180deg,#ef4444 0%,#b91c1c 100%)', text: '#fee2e2',  sub: '#fecaca', pin: '#ef4444' },
@@ -83,7 +86,8 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     const [themeId, setThemeId] = useState(() =>
         localStorage.getItem('vls_quantum_theme') || 'blue'
     );
-    const theme = themes.find(themeItem => themeItem.id === themeId) || themes[0];
+    const effectiveThemeId = isEntrevecinas ? 'entrevecinas' : themeId;
+    const theme = themes.find(themeItem => themeItem.id === effectiveThemeId) || themes[0];
 
     const setTheme = (id, e) => {
         e && e.stopPropagation();
@@ -184,20 +188,26 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                          gap:'6px',
                          background: isArchi
                              ? 'linear-gradient(135deg, rgba(251,191,36,0.15), rgba(4,9,20,0.97))'
+                             : isPuerta
+                             ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 58, 138, 0.6))'
                              : 'linear-gradient(145deg,#1e293b,#0f172a)',
-                         border: isArchi ? '1.5px solid rgba(251,191,36,0.6)' : `1.5px solid ${theme.pin}60`,
+                         border: isArchi ? '1.5px solid rgba(251,191,36,0.6)' : isPuerta ? '1.5px solid rgba(255, 255, 255, 0.2)' : `1.5px solid ${theme.pin}60`,
                          borderRadius:'50px',
                          padding:'4px 10px',
                          boxShadow: isArchi
                              ? '0 4px 14px rgba(0,0,0,0.6), 0 0 12px rgba(251,191,36,0.2)'
+                             : isPuerta
+                             ? '0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05)'
                              : `0 4px 14px rgba(0,0,0,0.6), 0 0 0 1px ${theme.pin}30`,
                          filter:'drop-shadow(0 4px 8px rgba(0,0,0,0.4))' }}
                 whileTap={{ cursor:'grabbing' }}
             >
                 {isArchi
                     ? <span style={{ fontSize: '0.6rem' }}>📻</span>
+                    : isPuerta
+                    ? <span style={{ fontSize: '0.75rem', color: '#38bdf8' }}>🔒</span>
                     : <Zap size={10} color="#fde047" fill="#fde047" style={{ animation:'pulse 1s infinite' }} />}
-                <span style={{ fontFamily: isArchi ? '"Outfit",sans-serif' : '"Courier New",monospace',
+                <span style={{ fontFamily: (isArchi || isPuerta) ? '"Outfit",sans-serif' : '"Courier New",monospace',
                                fontSize:'0.85rem', fontWeight:900,
                                color: isArchi ? '#fbbf24' : 'white',
                                letterSpacing:'1px', lineHeight:1 }}>
@@ -205,14 +215,15 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                     {!is24h && <span style={{ fontSize: '0.45rem', marginLeft: '2px', opacity: 0.8 }}>{isPM ? 'PM':'AM'}</span>}
                 </span>
                 {isArchi && <span style={{ fontSize: '0.5rem', color: '#f59e0b', fontWeight: 900, letterSpacing: '0.5px' }}>NE</span>}
+                {isPuerta && <span style={{ fontSize: '0.55rem', color: '#38bdf8', fontWeight: 900, letterSpacing: '0.5px' }}>GATE</span>}
                 <button onClick={toggleMin} title="Expandir reloj"
                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
-                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : '#94a3b8' }}>
+                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : isPuerta ? '#38bdf8' : '#94a3b8' }}>
                     <Maximize2 size={12} />
                 </button>
                 <button onClick={openCalendar} title="Abrir calendario"
                     style={{ background:'none', border:'none', cursor:'pointer', padding:0,
-                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : '#94a3b8' }}>
+                             display:'flex', alignItems:'center', color: isArchi ? '#fbbf24' : isPuerta ? '#38bdf8' : '#94a3b8' }}>
                     <Calendar size={12} />
                 </button>
             </motion.div>
@@ -399,6 +410,138 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
     }
 
     /* ─── Modo expandido estándar (no ARCHI) ─── */
+    if (isPuerta) {
+        return (
+            <motion.div
+                drag dragMomentum={false}
+                id="vls-quantum-watch-container"
+                style={{ position:'fixed', top: isMobile ? '70px' : '220px', left: isMobile ? '50%' : '20px', transform: isMobile ? 'translateX(-50%) scale(0.85)' : 'none', zIndex:9999999,
+                         cursor:'grab', userSelect:'none', width:'210px',
+                         filter:'drop-shadow(0 20px 40px rgba(0, 0, 0, 0.55))' }}
+                animate={{ y:[0,-5,0] }}
+                transition={{ y:{ duration:5, repeat:Infinity, ease:'easeInOut' } }}
+                whileHover={{ scale:1.03 }}
+                whileTap={{ cursor:'grabbing', scale:0.97 }}
+            >
+                <div style={{
+                    background: 'linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 58, 138, 0.45) 100%)',
+                    backdropFilter: 'blur(16px)',
+                    borderRadius: '16px', padding: '12px 14px',
+                    border: '1.5px solid rgba(255, 255, 255, 0.15)',
+                    boxShadow: '0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1)',
+                    fontFamily: '"Outfit", sans-serif'
+                }}>
+                    {/* Barra superior: logo + controles */}
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'8px', position:'relative', zIndex:1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <span style={{ fontSize: '0.85rem', color: '#38bdf8' }}>⚡</span>
+                            <span style={{ fontSize:'0.7rem', fontWeight:900, color:'#38bdf8', letterSpacing:'1px', textTransform:'uppercase' }}>SECURE GATE</span>
+                        </div>
+                        <div style={{ display:'flex', gap:'5px', alignItems:'center' }}>
+                            <button onClick={toggle24h}
+                                style={{ background:'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', padding:'1px 5px', borderRadius:'4px', cursor:'pointer', fontSize:'0.5rem', fontWeight:'bold', color:'white' }}>
+                                {is24h ? '24H' : '12H'}
+                            </button>
+                            <button onClick={toggleMin} title="Cerrar / Minimizar"
+                                style={{ background:'rgba(239,68,68,0.15)', border:'1px solid rgba(239,68,68,0.3)', borderRadius: '4px', cursor:'pointer', padding:'2px', display:'flex', alignItems:'center', color:'#ef4444' }}>
+                                <X size={12} strokeWidth={3} />
+                            </button>
+                            <button onClick={openCalendar} title="Calendario"
+                                style={{ background:'none', border:'none', cursor:'pointer', padding:0, display:'flex', alignItems:'center', color:'rgba(255,255,255,0.5)' }}>
+                                <Calendar size={11} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Fecha */}
+                    <div style={{ textAlign:'center', marginBottom:'6px', position:'relative', zIndex:1 }}>
+                        <span style={{ fontSize:'0.7rem', fontWeight:700, color:'rgba(255,255,255,0.5)', letterSpacing:'1.5px', textTransform:'uppercase' }}>
+                            {dayStr} {dayNum} {monStr} 2026
+                        </span>
+                    </div>
+
+                    {/* HORA PRINCIPAL */}
+                    <div style={{ minHeight: '55px', display: 'flex', flexDirection: 'column', justifyContent: 'center', position:'relative', zIndex:1 }}>
+                        {mode === 'time' && (
+                            <div style={{ textAlign:'center' }}>
+                                <div style={{ display:'flex', alignItems:'baseline', justifyContent:'center' }}>
+                                    <span style={{ fontSize:'2rem', fontWeight:900, color:'white', letterSpacing:'1.5px', lineHeight:1 }}>{H}</span>
+                                    <span style={{ fontSize:'2rem', fontWeight:900, color:'#38bdf8', margin:'0 1px', lineHeight:1,
+                                        opacity:blink?1:0.3, transition:'opacity 0.1s' }}>:</span>
+                                    <span style={{ fontSize:'2rem', fontWeight:900, color:'white', letterSpacing:'1.5px', lineHeight:1 }}>{M}</span>
+                                    <div style={{ display:'flex', flexDirection:'column', gap:'2px', marginLeft:'5px', alignSelf:'flex-end', marginBottom:'2px' }}>
+                                        <span style={{ fontSize:'0.85rem', fontWeight:700, color:'rgba(255,255,255,0.6)' }}>{S}</span>
+                                        {!is24h && <span style={{ fontSize:'0.45rem', background:'rgba(56,189,248,0.15)', padding:'1px 3px', borderRadius:'4px', color:'#38bdf8', textAlign:'center', fontWeight:'bold' }}>{isPM?'PM':'AM'}</span>}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {mode === 'stopwatch' && (
+                            <div style={{ textAlign:'center' }}>
+                                <div style={{ fontSize:'1.4rem', fontWeight:900, color:'white', letterSpacing:'1px' }}>
+                                    {formatStopwatch(stopwatchTime)}
+                                </div>
+                                <div style={{ display:'flex', justifyContent:'center', gap:'10px', marginTop:'6px' }}>
+                                    <button onClick={(e) => { e.stopPropagation(); setIsStopwatchRunning(!isStopwatchRunning); playBeep(600); }}
+                                        style={{ background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', borderRadius:'4px', padding:'2px 8px', cursor:'pointer' }}>
+                                        {isStopwatchRunning ? <Pause size={12}/> : <Play size={12}/>}
+                                    </button>
+                                    <button onClick={(e) => { e.stopPropagation(); setStopwatchTime(0); setIsStopwatchRunning(false); playBeep(400); }}
+                                        style={{ background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', borderRadius:'4px', padding:'2px 8px', cursor:'pointer' }}>
+                                        <RotateCcw size={12}/>
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                        {mode === 'alarm' && (
+                            <div style={{ textAlign:'center', position:'relative' }}>
+                                <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'5px' }}>
+                                    <input type="time" value={alarmTime}
+                                        onClick={(e) => e.stopPropagation()}
+                                        onChange={(e) => { setAlarmTime(e.target.value); localStorage.setItem('vls_quantum_alarm', e.target.value); }}
+                                        style={{ background:'rgba(0,0,0,0.4)', border:'1px solid rgba(255,255,255,0.2)', color:'white', fontSize:'1.1rem', fontFamily:'"Outfit",sans-serif', borderRadius:'4px', padding:'2px', outline:'none' }}
+                                    />
+                                    <button onClick={(e) => { e.stopPropagation(); const next=!isAlarmSet; setIsAlarmSet(next); localStorage.setItem('vls_quantum_alarm_set',String(next)); playBeep(next?1000:500); if(isAlarmRinging)setIsAlarmRinging(false); }}
+                                        style={{ background:isAlarmSet?'#38bdf8':'rgba(255,255,255,0.08)', border:'1px solid rgba(255,255,255,0.15)', color:isAlarmSet?'black':'white', borderRadius:'4px', padding:'5px', cursor:'pointer' }}>
+                                        <Bell size={14} fill={isAlarmSet?'currentColor':'none'}/>
+                                    </button>
+                                </div>
+                                {isAlarmRinging && (
+                                    <button onClick={(e) => { e.stopPropagation(); setIsAlarmRinging(false); }}
+                                        style={{ position:'absolute', inset:-10, zIndex:10, background:'rgba(56,189,248,0.95)', border:'none', color:'#0f172a', fontSize:'0.75rem', fontWeight:900, cursor:'pointer', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'5px', borderRadius: '12px' }}>
+                                        <Bell size={24} style={{ animation:'bounce 0.5s infinite' }}/>
+                                        DETENER ALARMA
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Selector MODOS */}
+                    <div style={{ display:'flex', justifyContent:'center', gap:'8px', marginTop:'6px', borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:'6px' }}>
+                        <button onClick={(e) => { e.stopPropagation(); setMode('time'); playBeep(800); }}
+                            style={{ background:mode==='time'?'rgba(255,255,255,0.15)':'none', border:'none', color:'white', padding:'3px 6px', borderRadius:'4px', cursor:'pointer' }}><Clock size={12}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); setMode('stopwatch'); playBeep(800); }}
+                            style={{ background:mode==='stopwatch'?'rgba(255,255,255,0.15)':'none', border:'none', color:'white', padding:'3px 6px', borderRadius:'4px', cursor:'pointer' }}><Timer size={12}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); setMode('alarm'); playBeep(800); }}
+                            style={{ background:mode==='alarm'?'rgba(255,255,255,0.15)':'none', border:'none', color:'white', padding:'3px 6px', borderRadius:'4px', cursor:'pointer' }}><Bell size={12}/></button>
+                    </div>
+
+                    {/* Branding */}
+                    <div style={{ marginTop:'6px', borderTop:'1px solid rgba(255,255,255,0.1)', paddingTop:'6px', textAlign:'center', position:'relative', zIndex:1 }}>
+                        <div style={{ fontSize:'0.55rem', fontWeight:900, color:'rgba(255,255,255,0.5)', letterSpacing:'1.5px', textTransform:'uppercase' }}>
+                            SISTEMA PUERTASMART
+                        </div>
+                        <div style={{ fontSize:'0.5rem', color:'#38bdf8', fontWeight:'bold', marginTop:'2px', letterSpacing:'0.5px' }}>
+                            SECURE ACCESS CONTROL
+                        </div>
+                    </div>
+                </div>
+            </motion.div>
+        );
+    }
+
+    /* ─── Modo expandido estándar (no ARCHI) ─── */
     return (
         <motion.div
             drag dragMomentum={false}
@@ -516,14 +659,14 @@ export default function VLSQuantumWatch({ onCalendarClick, isRDMLS: isRDMLS_prop
                         {/* Branding + dots */}
                         <div style={{ marginTop:'4px', borderTop:'1px solid rgba(255,255,255,0.2)', paddingTop:'4px', display:'flex', flexDirection:'column', alignItems:'center', position:'relative', zIndex:1, gap:'4px' }}>
                             <div style={{ fontSize: '0.55rem', fontWeight: 'bold', color: theme.sub, letterSpacing: '1px', textTransform: 'uppercase' }}>
-                                {isRDMLS ? 'HORA OFICIAL RDMLS.CL' : 'VLS QUANTUM'}
+                                {isRDMLS ? 'HORA OFICIAL RDMLS.CL' : (isEntrevecinas ? 'ENTREVECINAS.CL' : 'VLS QUANTUM')}
                             </div>
                             <div style={{ display:'flex', gap:'10px', alignItems:'center', background: 'rgba(0,0,0,0.3)', padding:'5px 15px', borderRadius:'20px', flexWrap: 'wrap', justifyContent: 'center' }}>
                                 {themes.map(themeItem => (
                                     <button key={themeItem.id}
                                         onClick={(e) => { e.stopPropagation(); setTheme(themeItem.id); playBeep(1200, 0.05); }}
                                         title={`Color ${themeItem.id}`}
-                                        style={{ width:'14px', height:'14px', borderRadius:'50%', background:themeItem.pin, padding:0, cursor:'pointer', border: themeId === themeItem.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)', boxShadow: themeId === themeItem.id ? `0 0 12px ${themeItem.pin}` : 'none', transform: themeId === themeItem.id ? 'scale(1.2)' : 'scale(1)', transition:'all 0.2s' }}
+                                        style={{ width:'14px', height:'14px', borderRadius:'50%', background:themeItem.pin, padding:0, cursor:'pointer', border: effectiveThemeId === themeItem.id ? '2px solid white' : '1px solid rgba(0,0,0,0.3)', boxShadow: effectiveThemeId === themeItem.id ? `0 0 12px ${themeItem.pin}` : 'none', transform: effectiveThemeId === themeItem.id ? 'scale(1.2)' : 'scale(1)', transition:'all 0.2s' }}
                                     />
                                 ))}
                             </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Code2, Terminal, Globe, Server, Cpu, Database, Share2, Layers, Key, Rocket, TrendingUp, Users, ShieldAlert, BookOpen, ExternalLink, Zap } from 'lucide-react';
+import { Code2, Terminal, Globe, Server, Cpu, Database, Share2, Layers, Key, Rocket, TrendingUp, Users, ShieldAlert, BookOpen, ExternalLink, Zap, ShieldCheck } from 'lucide-react';
 
 const API_ENDPOINTS = [
     { name: 'GET /soberania/clima', desc: 'Sincronización clima regional La Serena', status: 'active' },

@@ -9,6 +9,10 @@ $AccountId  = "f106b65228e370b7be63060b3ac84dee"
 $VlsZoneId  = "f0daa77e49659c39fe7fd3f9b4abab35"
 $RdmlsZoneId = "165c0c9a9631b72cd8d314232bc2f1f1"
 
+$env:CLOUDFLARE_API_TOKEN="cfut_77iJjU8iL9OeSVwKUIsHYTSMWsxQUbZiCPTuXTbY639ca9d4"
+$env:CLOUDFLARE_ACCOUNT_ID="f106b65228e370b7be63060b3ac84dee"
+$env:NODE_OPTIONS="--dns-result-order=ipv4first"
+
 $Headers = @{
     "X-Auth-Email" = $Email
     "X-Auth-Key"   = $Key
@@ -17,19 +21,17 @@ $Headers = @{
 
 Write-Host "`n[DEPLOY DIRECTO VLS] Iniciando..." -ForegroundColor Cyan
 
-# Paso 1: Verificar que el dist existe
-if (-not (Test-Path "dist")) {
-    Write-Host " Compilando primero..." -ForegroundColor Yellow
-    npm.cmd run build
-    if ($LASTEXITCODE -ne 0) { Write-Error "BUILD FALLIDO."; exit 1 }
-}
+# Paso 1: Compilar para produccion
+Write-Host " Compilando aplicacion..." -ForegroundColor Yellow
+npm.cmd run build
+if ($LASTEXITCODE -ne 0) { Write-Error "BUILD FALLIDO."; exit 1 }
 
 # Paso 2: Intentar Wrangler con reintentos
 Write-Host "`n[1/3] Intentando Wrangler (3 intentos)..." -ForegroundColor Cyan
 $deployed = $false
 for ($i = 1; $i -le 3; $i++) {
     Write-Host "  Intento $i/3..." -ForegroundColor Yellow
-    npx.cmd wrangler pages deploy dist --project-name vecinos-la-serena --branch main --commit-dirty=true 2>&1
+    npx.cmd wrangler@latest pages deploy dist --project-name vecinos-la-serena --branch main --commit-dirty=true 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host " OK: Deploy exitoso en intento $i" -ForegroundColor Green
         $deployed = $true

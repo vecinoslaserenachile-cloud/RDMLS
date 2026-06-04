@@ -4,7 +4,7 @@ import {
   Radio, MapPin, Share2, Download, Music, Users, 
   Globe, Shield, TrendingUp, Cpu, FileText, Phone,
   MessageCircle, Link as LinkIcon, CheckCircle, 
-  AlertCircle, Send, Loader, ChevronRight, X
+  AlertCircle, Send, Loader, ChevronRight, X, Play
 } from 'lucide-react';
 
 
@@ -310,6 +310,67 @@ const ArchiCampaign = () => {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ── SPOT OFICIAL DE CAMPAÑA ── */}
+      <section style={{ 
+        padding: isMobile ? '4rem 1.5rem' : '6rem 3rem', 
+        background: '#002D8B', 
+        borderTop: '1px solid rgba(255,255,255,0.05)', 
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Glow de fondo */}
+        <div style={{ 
+          position: 'absolute', 
+          top: '-10%', 
+          left: '50%', 
+          transform: 'translateX(-50%)', 
+          width: '600px', 
+          height: '600px', 
+          background: 'radial-gradient(circle, rgba(212, 175, 55, 0.08) 0%, transparent 70%)', 
+          pointerEvents: 'none',
+          filter: 'blur(50px)'
+        }} />
+
+        <div style={{ maxWidth: '900px', margin: '0 auto', textAlign: 'center', position: 'relative', zIndex: 10 }}>
+          <div style={{ ...sectionLabel, margin: '0 auto 1.5rem' }}>
+            <Play size={16} fill="#d4af37" /> SPOT OFICIAL
+          </div>
+          <h3 style={{ color: 'white', fontSize: isMobile ? '2.2rem' : '3.2rem', fontWeight: 900, marginBottom: '1.2rem', lineHeight: 1.1 }}>
+            Nuestra Campaña en <span style={{ color: '#d4af37' }}>Video</span>
+          </h3>
+          <p style={{ color: '#94a3b8', fontSize: isMobile ? '1rem' : '1.15rem', lineHeight: 1.6, marginBottom: '3rem', maxWidth: '700px', margin: '0 auto 3rem' }}>
+            Conoce a los candidatos del Directorio de la Lista <strong>Nueva Energía</strong> y descubre en detalle nuestras propuestas para impulsar la radiodifusión en todo el territorio nacional.
+          </p>
+
+          <div style={{ 
+            background: 'rgba(7, 15, 32, 0.6)', 
+            border: '2px solid rgba(212, 175, 55, 0.3)', 
+            borderRadius: '28px', 
+            padding: isMobile ? '8px' : '16px', 
+            boxShadow: '0 25px 60px rgba(0,0,0,0.6)',
+            backdropFilter: 'blur(20px)',
+            maxWidth: '680px',
+            margin: '0 auto',
+            overflow: 'hidden'
+          }}>
+            <video 
+              src="/archi-media/archi_clip_compressed.mp4" 
+              controls 
+              playsInline
+              preload="metadata"
+              style={{ 
+                width: '100%', 
+                borderRadius: '20px', 
+                display: 'block', 
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+                aspectRatio: '720/708',
+                objectFit: 'cover'
+              }}
+            />
+          </div>
         </div>
       </section>
 

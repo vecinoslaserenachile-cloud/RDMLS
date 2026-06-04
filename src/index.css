@@ -580,4 +580,4 @@ select:focus {
   background-color: #f97316;
   border-color: #fdba74;
   color: white;
-}
+}@media (max-width: 768px) { .hidden-mobile { display: none !important; } }

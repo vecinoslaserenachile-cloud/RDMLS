@@ -1,9 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { motion } from 'framer-motion';
+import { Canvas } from '@react-three/fiber';
+import { Environment, OrbitControls } from '@react-three/drei';
+import UniversalSerenito from '../../components/UniversalSerenito';
 import { 
     Home, Radio, Clock, CloudSun, Calendar, MessageCircle, Music, Info, MonitorPlay, Gamepad2, 
     Volume2, VolumeX, Maximize, ExternalLink, Download, Settings, FileText, GraduationCap, 
-    Youtube, ChevronUp, ChevronDown, Activity, GripHorizontal, Globe, Play, Pause, RefreshCw, Zap
+    Youtube, ChevronUp, ChevronDown, Activity, GripHorizontal, Globe, Play, Pause, RefreshCw, Zap,
+    Shield, Users, Database
 } from 'lucide-react';
 import OldTVModal from '../../components/OldTVModal';
 import VhsTVModal from '../../components/VhsTVModal';
@@ -114,6 +118,15 @@ export default function CentroRadio({ isDevMode = false }) {
     const [streamError, setStreamError] = useState(false);
 
     const handleStreamError = () => {
+        // Ignoramos errores si la estación actual es de video o playlist (YouTube iframe)
+        if (currentStation?.isVideo || currentStation?.isPlaylist) {
+            return;
+        }
+        // Ignoramos si la URL es vacía o nula
+        if (!streamUrl || streamUrl === "") {
+            return;
+        }
+
         if (streamUrl === RDMLS_MAIN_STREAM) {
             console.warn("[RDMLS] Señal principal falló, activando redundancia...");
             setStreamUrl(RDMLS_FALLBACK_STREAM);
@@ -128,7 +141,7 @@ export default function CentroRadio({ isDevMode = false }) {
     const [djImageError, setDjImageError] = useState(false);
     const [showArcade, setShowArcade] = useState(false);
     const [msgIndex, setMsgIndex] = useState(0);
-    const [eqMode, setEqMode] = useState('90s'); // flat, claro, oscuro, 90s (90s default for punch)
+    const [eqMode, setEqMode] = useState('flat'); // flat default for maximum high-fidelity
     const [is24h, setIs24h] = useState(() => localStorage.getItem('vls_time_format') === '24h');
     const [showAdmin, setShowAdmin] = useState(false);
     const [selectedNews, setSelectedNews] = useState(null);
@@ -140,79 +153,81 @@ export default function CentroRadio({ isDevMode = false }) {
 
     const CONCEJO_ARCHIVE = [
         {
-            id: 'track_01',
+            id: 'track_2026_05_25',
             title: "Concejo Comunal La Serena",
-            date: "19 de noviembre de 2025",
+            date: "25 de mayo de 2026",
+            videoId: "d-OSV6A8nm0",
+            duration: "1:45:20",
             points: [
-                "Inicio de la sesión ordinaria número 1416 y modificaciones en la tabla",
-                "Discusión técnica y legal sobre la Ley 21.411 para el cierre de pasajes (Marcial Martínez)"
-            ],
-            duration: "45:12"
+                "Atención y catastro de pacientes electrodependientes en la comuna",
+                "Plan de Invierno municipal: podas de seguridad e inspección eléctrica preventiva",
+                "Recuperación y comodato de la Casa Piñera por la Universidad de La Serena"
+            ]
         },
         {
-            id: 'track_02',
+            id: 'track_2026_05_13',
             title: "Concejo Comunal La Serena",
-            date: "04 de junio de 2025",
+            date: "13 de mayo de 2026",
+            videoId: "EeyX0RpTCP8",
+            duration: "2:10:15",
             points: [
-                "Presentación del Plan Invierno 2025: Limpieza de sumideros en Las Compañías",
-                "Convenio 40ª Feria del Libro: Suplemento de 35 millones de pesos"
-            ],
-            duration: "38:45"
+                "Inauguración del Centro de Atención Virtual IPS en el sector de La Antena",
+                "Firma del Convenio de Capital de Trabajo Silvoagropecuario INDAP para agricultores",
+                "Nueva Ordenanza de Patentes Comerciales Exprés (otorgadas en menos de 24 horas)"
+            ]
         },
         {
-            id: 'track_03',
+            id: 'track_2026_04_13',
             title: "Concejo Comunal La Serena",
-            date: "05 de marzo de 2025",
+            date: "13 de abril de 2026",
+            videoId: "u2LUl_a7x4M",
+            duration: "1:28:40",
             points: [
-                "Transferencia Pro-Empleo: 825 millones para áreas verdes y aseo",
-                "Adjudicación Proyecto 'Pórtico Seguro': Barrio El Romeral"
-            ],
-            duration: "52:10"
+                "Sesión Extraordinaria de planificación estratégica y desarrollo urbano",
+                "Firma de nuevos convenios de desarrollo territorial y habitabilidad comunal"
+            ]
         },
         {
-            id: 'track_04',
+            id: 'track_2026_04_08',
             title: "Concejo Comunal La Serena",
-            date: "07 de mayo de 2025",
+            date: "08 de abril de 2026",
+            videoId: "2MvtJ64EG70",
+            duration: "2:04:30",
             points: [
-                "Exposición 'Punto Cultura Comunitaria' y actualización Plan de Cultura",
-                "Ordenanza Municipal: Retiro de cables aéreos en desuso en el Casco Histórico"
-            ],
-            duration: "41:30"
+                "Sesión ordinaria de control administrativo y actas de comisiones sectoriales",
+                "Revisión y aprobación presupuestaria para mejoras en vialidad local"
+            ]
         },
         {
-            id: 'track_05',
+            id: 'track_2026_03_18',
             title: "Concejo Comunal La Serena",
-            date: "10 de diciembre de 2025",
+            date: "18 de marzo de 2026",
+            videoId: "7NSBYS-uN8Y",
+            duration: "1:52:10",
             points: [
-                "Convenio GORE: Adquisición de camiones y equipos de mantenimiento",
-                "Reposición vehículos traslado pacientes diálisis (206 millones)",
-                "Adjudicación 'Quiero mi Barrio': Área verde Colo Colo (La Antena)"
-            ],
-            duration: "58:00"
-        },
-        {
-            id: 'track_06',
-            title: "Cuenta Pública La Serena",
-            date: "Gestión 2024",
-            points: [
-                "Rendición en Aula Magna ULS - Gestión 2024 completa",
-                "Ejecución 'Plan Serena Mayor': Atenciones domiciliarias integrales"
-            ],
-            duration: "1:15:20"
-        },
-        {
-            id: 'track_07',
-            title: "Desfile 481 Aniversario",
-            date: "26 de agosto de 2025",
-            points: [
-                "Anuncio recuperación: Parque Pedro de Valdivia, Coll y La Recoba",
-                "Medalla Ciudad de La Serena a ciudadanos destacados"
-            ],
-            duration: "2:05:00"
+                "Aprobación de fondo de subvenciones vecinales para agrupaciones comunales",
+                "Estado y avance de licitaciones públicas para infraestructura vial y deportiva"
+            ]
         }
     ];
 
     const [selectedCouncilTrack, setSelectedCouncilTrack] = useState(CONCEJO_ARCHIVE[0]);
+    const [selectedLocalTrackId, setSelectedLocalTrackId] = useState(null);
+
+    const handleSelectLocalTrack = (track) => {
+        setSelectedLocalTrackId(track.id);
+        setStreamUrl(track.url);
+        
+        if (isPlaying && audioRef.current) {
+            audioRef.current.src = track.url;
+            audioRef.current.load();
+            syncAudioVolume();
+            const p = audioRef.current.play();
+            if (p !== undefined) {
+                p.catch(err => console.warn("Error playing selected local track:", err));
+            }
+        }
+    };
 
     const radioStations = [
         { 
@@ -233,7 +248,13 @@ export default function CentroRadio({ isDevMode = false }) {
             url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", 
             color: '#ef4444',
             logo: '/escudo.png',
-            badge: 'MUNICIPAL'
+            badge: 'MUNICIPAL',
+            localTracks: [
+                { id: 'cultura_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", isLive: true },
+                { id: 'vals_mis_recuerdos', title: "Vals Mis Recuerdos", artist: "Patrimonio Serenense", url: "/music/vals_mis_recuerdos.mp3" },
+                { id: 'linda_provinciana', title: "Linda Provinciana", artist: "Radio VLS Originals", url: "/music/linda_provinciana.mp3" },
+                { id: 'eres_serena', title: "Eres Serena", artist: "Radio VLS Originals", url: "/music/eres_serena.mp3" }
+            ]
         },
         { 
             id: 'informativa',
@@ -243,7 +264,14 @@ export default function CentroRadio({ isDevMode = false }) {
             url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", 
             color: '#38bdf8',
             logo: '/logo_municipio.png',
-            badge: 'OFICIAL'
+            badge: 'OFICIAL',
+            localTracks: [
+                { id: 'informativa_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", isLive: true },
+                { id: 'estiempodelaserena', title: "Es Tiempo de La Serena", artist: "Campaña Serenito", url: "/music/estiempodelaserena.mp3" },
+                { id: 'mujer', title: "Mujer", artist: "Radio VLS Originals", url: "/music/mujer.mp3" },
+                { id: 'serenito_rap', title: "Serenito Rap", artist: "Campaña Serenito", url: "/music/serenito_rap.mp3" },
+                { id: 'serenitoinvita', title: "Serenito Invita", artist: "Campaña Serenito", url: "/music/serenitoinvita.MP3" }
+            ]
         },
         { 
             id: 'eventos',
@@ -253,52 +281,62 @@ export default function CentroRadio({ isDevMode = false }) {
             url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", 
             color: '#10b981',
             logo: '/escudo.png',
-            badge: 'VIVO'
+            badge: 'VIVO',
+            localTracks: [
+                { id: 'eventos_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", isLive: true },
+                { id: 'himno_la_serena_jazz', title: "Himno La Serena en Jazz Blues", artist: "Ensambles Locales", url: "/music/himno_la_serena_jazz.mp3" },
+                { id: 'es_amor_por_la_serena', title: "Es Amor por La Serena", artist: "Radio VLS Exclusivo", url: "/music/es_amor_por_la_serena.mp3" }
+            ]
         },
-        ...(isDevMode ? [
-             { 
-                id: 'tv-concejo',
-                name: 'TV CONCEJO MUNICIPAL (Live)',
-                dialLabel: 'TV_CONCEJO',
-                slogan: 'TRANSMISIÓN EN VIVO - SESIÓN CONCEJO MUNICIPAL', 
-                url: "https://www.youtube.com/embed/live_stream?channel=UCvly2C2WzVvL5G_P9sA3Tig", 
-                color: '#ef4444',
-                badge: 'TV CONCEJO',
-                isVideo: true
-            },
-            { 
-                id: 'audio-concejo',
-                name: 'ARCHIVO CONCEJO (On-Demand)',
-                dialLabel: 'CONCEJO',
-                slogan: 'DIFUSIÓN SESIÓN PROCESADA - BROADCAST STANDARD', 
-                url: null, 
-                color: '#6366f1',
-                badge: 'AUDIO',
-                isPlaylist: true
-            }
-        ] : [])
+        { 
+            id: 'tv-concejo',
+            name: 'TV CONCEJO MUNICIPAL (Live)',
+            dialLabel: 'TV_CONCEJO',
+            slogan: 'SESIONES GRABADAS Y EN VIVO - CONCEJO MUNICIPAL', 
+            url: "https://www.youtube.com/embed/live_stream?channel=UCvly2C2WzVvL5G_P9sA3Tig", 
+            color: '#ef4444',
+            badge: 'TV CONCEJO',
+            isVideo: true,
+            isPlaylist: true
+        },
+        { 
+            id: 'audio-concejo',
+            name: 'ARCHIVO CONCEJO (On-Demand)',
+            dialLabel: 'CONCEJO',
+            slogan: 'DIFUSIÓN SESIÓN PROCESADA - BROADCAST STANDARD', 
+            url: null, 
+            color: '#6366f1',
+            badge: 'AUDIO',
+            isPlaylist: true
+        }
     ];
 
     const [currentStation, setCurrentStation] = useState(radioStations[0]);
 
     // Handle station change by knob or buttons
-    // weather fetch removed from here (handled below with correct temp extraction)
-
     const changeStation = (station) => {
         if (!station) return;
         // Si ya está seleccionada, forzamos un pequeño "re-trigger" de la animación si el usuario hace click
         if (station.id === currentStation?.id) {
-            // Trigger pulses or visual feedbacks here if needed
             return;
         }
         
         setCurrentStation(station);
-        if (!station.isVideo) {
-            setStreamUrl(station.url);
+        setStreamError(false); // Reset stream error on station change!
+        
+        if (station.localTracks) {
+            setSelectedLocalTrackId(station.localTracks[0].id);
+            setStreamUrl(station.localTracks[0].url);
+            setIsPlaying(false);
+        } else if (station.isVideo || station.isPlaylist) {
+            setStreamUrl(""); // No audio stream for videos/playlists
+            setIsPlaying(true); // Se abre directo!
+            setSelectedLocalTrackId(null);
         } else {
-            setStreamUrl(""); // No audio stream for videos
+            setStreamUrl(station.url);
+            setIsPlaying(false);
+            setSelectedLocalTrackId(null);
         }
-        setIsPlaying(false);
         // Play click sound
         try {
             const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -521,6 +559,14 @@ export default function CentroRadio({ isDevMode = false }) {
     // Cuando cambia la estación (streamUrl), actualizar el src pero NO auto-reproducir
     useEffect(() => {
         if (!audioRef.current) return;
+        
+        // Si no hay streamUrl o es estación de video/playlist, aseguramos pausar y limpiar src
+        if (!streamUrl || streamUrl === "" || currentStation?.isVideo || currentStation?.isPlaylist) {
+            audioRef.current.pause();
+            audioRef.current.removeAttribute('src');
+            return;
+        }
+
         audioRef.current.src = streamUrl;
         audioRef.current.load();
         if (isPlaying && streamUrl) {
@@ -812,6 +858,9 @@ export default function CentroRadio({ isDevMode = false }) {
 
     // --- BYPASS RENDER AFTER ALL HOOKS ---
     const isInduccionPath = location.pathname.toLowerCase().includes('/imls/induccion') || location.pathname.toLowerCase().includes('/induccion');
+    const activeLocalTrack = currentStation?.localTracks?.find(t => t.id === selectedLocalTrackId);
+    const isPlayingLocalSong = activeLocalTrack && !activeLocalTrack.isLive && isPlaying;
+
     if (mode === 'aprende' || mode === 'induccion' || isInduccionPath) {
         return <Aprende isRDMLS={isRDMLS} />;
     }
@@ -884,12 +933,6 @@ export default function CentroRadio({ isDevMode = false }) {
 
                 {/* Solo dejamos links oficiales de Noticias y Contacto */}
                 <div style={{ display: 'flex', gap: '1.2rem', alignItems: 'center' }}>
-                    <div className="hide-mobile" style={{ display: 'flex', gap: '1rem', marginRight: '1rem', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '1rem' }}>
-                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#38bdf8', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>CITIZENS</button>
-                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#22c55e', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>ADMIN</button>
-                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#f59e0b', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>EVENTS</button>
-                        <button onClick={() => { document.getElementById('pillars-section')?.scrollIntoView({ behavior: 'smooth' }); }} style={{ background: 'transparent', border: 'none', color: '#10b981', fontSize: '0.7rem', fontWeight: '900', cursor: 'pointer' }}>LISTENING</button>
-                    </div>
                     <div style={{ display: 'flex', gap: '1.5rem', background: 'rgba(0,0,0,0.3)', padding: '0.8rem 1.5rem', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)' }}>
                         <a href="https://www.laserena.cl/noticias" target="_blank" rel="noopener noreferrer" style={{ color: '#FFD700', fontSize: '0.75rem', fontWeight: '900', textDecoration: 'none', letterSpacing: '1px' }}>NOTICIAS</a>
                         <span style={{ color: 'rgba(255,255,255,0.2)' }}>•</span>
@@ -903,8 +946,8 @@ export default function CentroRadio({ isDevMode = false }) {
                 flex: 1, 
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '2.5rem',
-                padding: isMobile ? '1rem' : '2.5rem', 
+                gap: '1rem',
+                padding: isMobile ? '0.5rem' : '1rem 2rem', 
                 maxWidth: '1200px',
                 margin: '0 auto',
                 width: '100%',
@@ -917,24 +960,24 @@ export default function CentroRadio({ isDevMode = false }) {
                     display: 'flex', 
                     flexDirection: 'column',
                     alignItems: 'center', 
-                    gap: '1rem',
+                    gap: '0.4rem',
                     width: '100%',
                     borderBottom: '1px solid rgba(255,255,255,0.1)',
-                    paddingBottom: '1.5rem'
+                    paddingBottom: '0.6rem'
                 }}>
                     <div className="glass-panel" style={{ 
-                        padding: '1.5rem 3rem',
-                        borderRadius: '50px',
+                        padding: '0.5rem 2rem',
+                        borderRadius: '25px',
                         background: 'rgba(0,0,0,0.4)',
                         border: '2px solid #FFD700',
-                        boxShadow: '0 0 30px rgba(255,215,0,0.2)',
+                        boxShadow: '0 0 20px rgba(255,215,0,0.2)',
                         textAlign: 'center'
                     }}>
-                        <div style={{ fontSize: '0.85rem', fontWeight: 'bold', color: '#FFD700', letterSpacing: '3px', marginBottom: '0.5rem' }}>HORASERENA de rdmls.cl</div>
-                        <div style={{ fontSize: isMobile ? '3rem' : '4.5rem', fontWeight: '900', fontFamily: 'monospace', color: 'white', textShadow: '0 0 20px rgba(255,255,255,0.3)' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#FFD700', letterSpacing: '2px', marginBottom: '0.2rem' }}>HORASERENA de rdmls.cl</div>
+                        <div style={{ fontSize: isMobile ? '2.2rem' : '3.2rem', fontWeight: '900', fontFamily: 'monospace', color: 'white', textShadow: '0 0 15px rgba(255,255,255,0.3)' }}>
                             {time.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                         </div>
-                        <div style={{ fontSize: '1rem', opacity: 0.8, fontWeight: 'bold', marginTop: '0.5rem', textTransform: 'uppercase' }}>
+                        <div style={{ fontSize: '0.85rem', opacity: 0.8, fontWeight: 'bold', marginTop: '0.2rem', textTransform: 'uppercase' }}>
                             {time.toLocaleDateString('es-CL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
                         </div>
                     </div>
@@ -1014,20 +1057,20 @@ export default function CentroRadio({ isDevMode = false }) {
                         <div className="radio-console-body" style={{
                             width: '100%',
                             background: 'linear-gradient(180deg, #2a2a2a 0%, #0a0a0a 100%)',
-                            padding: isMobile ? '1.2rem' : '2rem',
+                            padding: isMobile ? '1rem' : '1.2rem 1.5rem',
                             borderRadius: '30px',
                             border: `6px solid ${currentStation.color}33`,
-                            boxShadow: `0 30px 80px rgba(0,0,0,0.95), inset 0 0 30px rgba(255,255,255,0.02), 0 0 40px ${currentStation.color}11`,
+                            boxShadow: `0 20px 60px rgba(0,0,0,0.95), inset 0 0 20px rgba(255,255,255,0.02), 0 0 30px ${currentStation.color}11`,
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '1.5rem',
+                            gap: '1rem',
                             transition: 'border 0.5s ease, box-shadow 0.5s ease'
                         }}>
 
                             {/* Dial de Frecuencia */}
                             <div className="radio-dial-glass" style={{
                                 background: '#050505',
-                                height: '120px',
+                                height: '95px',
                                 borderRadius: '12px',
                                 border: '6px solid #1a1a1a',
                                 position: 'relative',
@@ -1035,7 +1078,7 @@ export default function CentroRadio({ isDevMode = false }) {
                                 boxShadow: 'inset 0 0 60px rgba(0,0,0,0.95), 0 0 15px rgba(255,215,0,0.15)'
                             }}>
                                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(rgba(255,215,0,0.04) 0%, transparent 50%, rgba(255,215,0,0.04) 100%)', zIndex: 1 }}></div>
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '12px 35px', color: '#00ff41', fontFamily: 'monospace', fontWeight: 'bold', zIndex: 2 }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '8px 30px', color: '#00ff41', fontFamily: 'monospace', fontWeight: 'bold', zIndex: 2 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', opacity: 0.6, fontSize: '0.65rem' }}>
                                         <span>AM</span>
                                         <span>540</span><span>600</span><span>700</span><span>800</span><span>1000</span><span>1200</span><span>1600</span>
@@ -1118,7 +1161,7 @@ export default function CentroRadio({ isDevMode = false }) {
                                 
                                 <div style={{
                                     flex: 1, 
-                                    height: currentStation.isVideo ? '240px' : '140px', 
+                                    height: (currentStation.isVideo || (currentStation.isPlaylist && selectedCouncilTrack?.videoId)) ? '240px' : '140px', 
                                     background: '#030303', 
                                     borderRadius: '16px',
                                     border: `3px solid ${currentStation.color}`,
@@ -1131,13 +1174,13 @@ export default function CentroRadio({ isDevMode = false }) {
                                     transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
                                     zIndex: 5
                                 }}>
-                                    {currentStation.isVideo ? (
+                                    {(currentStation.isVideo || (currentStation.isPlaylist && selectedCouncilTrack?.videoId)) ? (
                                         <div style={{ width: '100%', height: '100%', position: 'relative' }}>
                                             {isPlaying ? (
                                                 <iframe 
                                                     width="100%" 
                                                     height="100%" 
-                                                    src={currentStation.url} 
+                                                    src={(currentStation.id === 'tv-concejo' && selectedCouncilTrack?.videoId) ? `https://www.youtube.com/embed/${selectedCouncilTrack.videoId}?autoplay=1` : (currentStation.isVideo ? currentStation.url : `https://www.youtube.com/embed/${selectedCouncilTrack.videoId}?autoplay=1`)} 
                                                     title="YouTube video player" 
                                                     frameBorder="0" 
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
@@ -1154,7 +1197,9 @@ export default function CentroRadio({ isDevMode = false }) {
                                                 }}>
                                                     <div className="pulse-fast" style={{ fontSize: '3rem', opacity: 0.8 }}>🗳️</div>
                                                     <div>
-                                                        <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#ef4444', letterSpacing: '1px' }}>TRANSMISIÓN CONCEJO MUNICIPAL</div>
+                                                        <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: currentStation.color, letterSpacing: '1px' }}>
+                                                            {currentStation.isVideo ? 'TRANSMISIÓN CONCEJO MUNICIPAL (VIVO)' : `ARCHIVO CONCEJO: ${selectedCouncilTrack?.date || ''}`}
+                                                        </div>
                                                         <div style={{ fontSize: '0.65rem', opacity: 0.6, marginTop: '4px' }}>Pulse PLAY para conectar señal audiovisual</div>
                                                     </div>
                                                 </div>
@@ -1162,46 +1207,95 @@ export default function CentroRadio({ isDevMode = false }) {
                                             {/* Efecto Scanlines */}
                                             <div style={{ position: 'absolute', inset: 0, background: 'repeating-linear-gradient(0deg, rgba(0,0,0,0.1) 0px, rgba(0,0,0,0.1) 1px, transparent 2px)', pointerEvents: 'none', opacity: 0.3 }}></div>
                                         </div>
-                                    ) : currentStation.isPlaylist ? (
-                                        <div style={{ width: '100%', height: '100%', overflowY: 'auto', padding: '1rem', background: '#020617', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                            <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', marginBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <div className="blink" style={{ width: '8px', height: '8px', background: '#38bdf8', borderRadius: '50%' }}></div>
-                                                    <span style={{ fontSize: '0.7rem', fontWeight: '900', color: '#38bdf8', letterSpacing: '1px' }}>SINTONIZADOR ARCHIVO_CONCEJO</span>
+                                    ) : isPlayingLocalSong ? (
+                                        <div style={{
+                                            width: '100%',
+                                            height: '100%',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-around',
+                                            background: '#090d16',
+                                            padding: '10px 15px',
+                                            boxSizing: 'border-box',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}>
+                                            {/* Vinyl Disc Container */}
+                                            <div style={{
+                                                width: '110px',
+                                                height: '110px',
+                                                borderRadius: '50%',
+                                                background: 'linear-gradient(45deg, #0d0d0d, #1f1f1f, #050505, #0f0f0f)',
+                                                position: 'relative',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                boxShadow: '0 4px 15px rgba(0,0,0,0.6), inset 0 0 5px rgba(255,255,255,0.1)',
+                                                border: '1.5px solid #222',
+                                                animation: 'spin 4s linear infinite',
+                                                flexShrink: 0
+                                            }}>
+                                                {/* Grooves */}
+                                                <div style={{ position: 'absolute', width: '90px', height: '90px', borderRadius: '50%', border: '0.8px solid #1c1c1c' }}></div>
+                                                <div style={{ position: 'absolute', width: '70px', height: '70px', borderRadius: '50%', border: '0.8px solid #141414' }}></div>
+                                                
+                                                {/* Center Label */}
+                                                <div style={{
+                                                    width: '38px',
+                                                    height: '38px',
+                                                    background: `linear-gradient(135deg, ${currentStation.color}, #000)`,
+                                                    borderRadius: '50%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    color: 'white',
+                                                    fontWeight: 'bold',
+                                                    fontSize: '0.35rem',
+                                                    textAlign: 'center',
+                                                    lineHeight: '1.1',
+                                                    boxShadow: 'inset 0 0 5px rgba(0,0,0,0.6)'
+                                                }}>
+                                                    <div style={{ transform: 'scale(0.8)' }}>
+                                                        RDMLS<br/>MUNI
+                                                    </div>
                                                 </div>
-                                                <span style={{ fontSize: '0.55rem', color: '#64748b' }}>TOTAL: {CONCEJO_ARCHIVE.length} TRACKS</span>
+                                                {/* Spindle hole */}
+                                                <div style={{ position: 'absolute', width: '5px', height: '5px', background: 'silver', borderRadius: '50%', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.8)' }}></div>
                                             </div>
-                                            {CONCEJO_ARCHIVE.map(track => (
-                                                <div 
-                                                    key={track.id} 
-                                                    onClick={() => setSelectedCouncilTrack(track)}
-                                                    style={{ 
-                                                        padding: '10px', 
-                                                        borderRadius: '8px', 
-                                                        background: selectedCouncilTrack.id === track.id ? 'rgba(99, 102, 241, 0.2)' : 'rgba(255,255,255,0.03)',
-                                                        border: `1px solid ${selectedCouncilTrack.id === track.id ? '#6366f1' : 'transparent'}`,
-                                                        cursor: 'pointer',
-                                                        transition: '0.2s'
-                                                    }}
-                                                >
-                                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                                                        <div style={{ fontSize: '0.8rem', fontWeight: 'bold', color: 'white' }}>{track.date}</div>
-                                                        <div style={{ fontSize: '0.65rem', color: '#6366f1', fontWeight: 'bold' }}>{track.duration}</div>
-                                                    </div>
-                                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', lineHeight: '1.4' }}>
-                                                        {track.points[0].substring(0, 60)}...
-                                                    </div>
-                                                    {selectedCouncilTrack.id === track.id && (
-                                                        <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} style={{ marginTop: '8px', overflow: 'hidden' }}>
-                                                            {track.points.map((p, idx) => (
-                                                                <div key={idx} style={{ fontSize: '0.65rem', color: '#38bdf8', display: 'flex', gap: '6px', marginBottom: '4px' }}>
-                                                                    <span>•</span><span>{p}</span>
-                                                                </div>
-                                                            ))}
-                                                        </motion.div>
-                                                    )}
+
+                                            {/* Tonearm */}
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '15px',
+                                                left: '120px',
+                                                width: '6px',
+                                                height: '75px',
+                                                background: 'linear-gradient(90deg, #d4d4d4, #f5f5f5, #a3a3a3)',
+                                                borderRadius: '3px',
+                                                transformOrigin: 'top center',
+                                                transform: 'rotate(22deg)',
+                                                transition: 'transform 0.8s ease',
+                                                boxShadow: '-2px 4px 6px rgba(0,0,0,0.4)',
+                                                zIndex: 10
+                                            }}>
+                                                {/* Headshell */}
+                                                <div style={{ position: 'absolute', bottom: '-8px', left: '-2px', width: '10px', height: '16px', background: '#222', borderRadius: '2px', transform: 'rotate(-15deg)' }}></div>
+                                            </div>
+
+                                            {/* Track details (Right side) */}
+                                            <div style={{ flex: 1, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '4px', zIndex: 5, overflow: 'hidden' }}>
+                                                <span style={{ fontSize: '0.55rem', fontWeight: '900', color: currentStation.color, letterSpacing: '1px', textTransform: 'uppercase' }}>PLAYING FROM TORNAMESA</span>
+                                                <h4 style={{ margin: 0, fontSize: '0.85rem', fontWeight: 'bold', color: 'white', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {activeLocalTrack.title}
+                                                </h4>
+                                                <span style={{ fontSize: '0.65rem', color: '#94a3b8' }}>
+                                                    @{activeLocalTrack.artist || 'Radio Municipal'}
+                                                </span>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+                                                    <div className="pulse-fast" style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></div>
+                                                    <span style={{ fontSize: '0.55rem', color: '#10b981', fontWeight: 'bold', letterSpacing: '0.5px' }}>ANALOG HI-FI MODE</span>
                                                 </div>
-                                            ))}
+                                            </div>
                                         </div>
                                     ) : (
                                         <>
@@ -1218,6 +1312,125 @@ export default function CentroRadio({ isDevMode = false }) {
                                     <VUMeter label="R" needleRef={vuRightRef} />
                                 </div>
                             </div>
+
+                            {/* Playlist selector for localTracks (Cultura, Eventos, Informativa) */}
+                            {currentStation.localTracks && (
+                                <div style={{ 
+                                    display: 'flex', 
+                                    flexDirection: 'column', 
+                                    gap: '6px', 
+                                    width: '100%', 
+                                    background: 'rgba(0,0,0,0.3)', 
+                                    borderRadius: '12px', 
+                                    padding: '10px', 
+                                    border: `1px solid ${currentStation.color}33`,
+                                    boxSizing: 'border-box'
+                                }}>
+                                    <div style={{ fontSize: '0.65rem', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Music size={12} className="pulse-fast" style={{ color: currentStation.color }} />
+                                        <span>Selección de Audio / Programación:</span>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px', scrollbarWidth: 'thin' }}>
+                                        {currentStation.localTracks.map(track => {
+                                            const isSelected = selectedLocalTrackId === track.id;
+                                            return (
+                                                <button 
+                                                    key={track.id}
+                                                    onClick={() => handleSelectLocalTrack(track)}
+                                                    style={{
+                                                        background: isSelected ? currentStation.color : 'rgba(255,255,255,0.05)',
+                                                        color: isSelected ? '#000' : '#fff',
+                                                        border: `1px solid ${isSelected ? currentStation.color : 'rgba(255,255,255,0.1)'}`,
+                                                        borderRadius: '20px',
+                                                        fontSize: '0.65rem',
+                                                        fontWeight: isSelected ? '900' : 'normal',
+                                                        padding: '6px 12px',
+                                                        cursor: 'pointer',
+                                                        whiteSpace: 'nowrap',
+                                                        transition: 'all 0.2s',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '4px'
+                                                    }}
+                                                >
+                                                    {track.isLive ? '🔴' : '🎵'} {track.title}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Playlist selector for audio-concejo */}
+                            {currentStation.isPlaylist && (
+                                <div style={{ 
+                                    width: '100%', 
+                                    background: '#020617', 
+                                    borderRadius: '16px', 
+                                    border: '1px solid rgba(99, 102, 241, 0.3)',
+                                    padding: '1rem',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '10px',
+                                    maxHeight: '200px',
+                                    overflowY: 'auto',
+                                    boxSizing: 'border-box'
+                                }}>
+                                    <div style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <div className="blink" style={{ width: '8px', height: '8px', background: '#6366f1', borderRadius: '50%' }}></div>
+                                            <span style={{ fontSize: '0.7rem', fontWeight: '900', color: '#818cf8', letterSpacing: '1px', textTransform: 'uppercase' }}>Sesiones Concejo Comunal (La Serena)</span>
+                                        </div>
+                                        <span style={{ fontSize: '0.55rem', color: '#64748b' }}>TOTAL: {CONCEJO_ARCHIVE.length} TRACKS</span>
+                                    </div>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        {CONCEJO_ARCHIVE.map(track => {
+                                            const isSelected = selectedCouncilTrack.id === track.id;
+                                            return (
+                                                <div 
+                                                    key={track.id} 
+                                                    onClick={() => {
+                                                        setSelectedCouncilTrack(track);
+                                                        if (isPlaying) {
+                                                            // frame already re-renders
+                                                        } else {
+                                                            setIsPlaying(true);
+                                                        }
+                                                    }}
+                                                    style={{ 
+                                                        padding: '10px', 
+                                                        borderRadius: '10px', 
+                                                        background: isSelected ? 'rgba(99, 102, 241, 0.15)' : 'rgba(255,255,255,0.02)',
+                                                        border: `1px solid ${isSelected ? '#6366f1' : 'rgba(255,255,255,0.05)'}`,
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s',
+                                                        display: 'flex',
+                                                        flexDirection: 'column',
+                                                        gap: '4px'
+                                                    }}
+                                                >
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                        <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: isSelected ? '#a5b4fc' : '#e2e8f0' }}>🗓️ {track.date}</div>
+                                                        <div style={{ fontSize: '0.65rem', color: '#6366f1', fontWeight: 'bold', background: 'rgba(99,102,241,0.2)', padding: '2px 6px', borderRadius: '4px' }}>{track.duration}</div>
+                                                    </div>
+                                                    <div style={{ fontSize: '0.68rem', color: '#94a3b8', lineHeight: '1.4' }}>
+                                                        {track.points[0]}
+                                                    </div>
+                                                    {isSelected && (
+                                                        <div style={{ marginTop: '6px', borderTop: '1px dashed rgba(99,102,241,0.2)', paddingTop: '6px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                                            {track.points.map((p, idx) => (
+                                                                <div key={idx} style={{ fontSize: '0.65rem', color: '#38bdf8', display: 'flex', gap: '6px' }}>
+                                                                    <span>•</span><span>{p}</span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
 
                             {/* EQ Buttons */}
                             <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
@@ -1478,93 +1691,7 @@ export default function CentroRadio({ isDevMode = false }) {
                 </section>
                 )}
 
-                {/* 6. LOS 4 PILARES DE SMART CITY (IMLS 2025) */}
-                <section id="pillars-section" style={{ padding: '2rem 0' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', borderBottom: '2px solid #FFD700', paddingBottom: '1rem' }}>
-                        <Shield size={32} color="#FFD700" />
-                        <div>
-                            <h2 style={{ margin: 0, fontSize: isMobile ? '1.5rem' : '2.2rem', color: 'white', fontWeight: '900', letterSpacing: '-1px' }}>SMART COMUNA: 4 PILARES ESTRATÉGICOS</h2>
-                            <p style={{ margin: 0, color: '#FFD700', fontSize: '0.8rem', fontWeight: 'bold', letterSpacing: '2px' }}>INFRAESTRUCTURA DIGITAL SOBERANA</p>
-                        </div>
-                    </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)', gap: '1.5rem' }}>
-                        {/* Smart Citizens */}
-                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(56, 189, 248, 0.1)', borderRadius: '24px', border: '1px solid rgba(56, 189, 248, 0.3)', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                                <div style={{ background: '#38bdf8', padding: '10px', borderRadius: '12px' }}><Users color="white" /></div>
-                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART CITIZENS</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Atención Ciudadana: Registro digital, reportes vecinales georreferenciados y monitoreo urbano/ambiental.</p>
-                            <button onClick={() => navigate('/citizens')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #38bdf8', color: '#38bdf8', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>ACCEDER PORTAL</button>
-                        </div>
-
-                        {/* Smart Administration */}
-                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(34, 197, 94, 0.1)', borderRadius: '24px', border: '1px solid rgba(34, 197, 94, 0.3)', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                                <div style={{ background: '#22c55e', padding: '10px', borderRadius: '12px' }}><Database color="white" /></div>
-                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART ADMINISTRATION</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Gestión Interna: E-learning con certificación digital y digitalización de informes con firma electrónica.</p>
-                            <button onClick={() => navigate('/induccion')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #22c55e', color: '#22c55e', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>MODULO RRHH</button>
-                        </div>
-
-                        {/* Smart Events */}
-                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(245, 158, 11, 0.1)', borderRadius: '24px', border: '1px solid rgba(245, 158, 11, 0.3)', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                                <div style={{ background: '#f59e0b', padding: '10px', borderRadius: '12px' }}><Calendar color="white" /></div>
-                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART EVENTS</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Protocolo & Actos: Gestión automatizada de eventos y monitor de precedencias en tiempo real.</p>
-                            <button onClick={() => navigate('/protocolo')} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #f59e0b', color: '#f59e0b', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>GIRAS & EVENTOS</button>
-                        </div>
-
-                        {/* Smart Listening */}
-                        <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '24px', border: '1px solid rgba(16, 185, 129, 0.3)', position: 'relative', overflow: 'hidden' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                                <div style={{ background: '#10b981', padding: '10px', borderRadius: '12px' }}><Zap color="white" /></div>
-                                <h3 style={{ margin: 0, color: 'white', fontWeight: '900' }}>SMART LISTENING</h3>
-                            </div>
-                            <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: '1.6' }}>Inteligencia: Centinel Faro para monitoreo de redes y análisis de video mediante IA avanzada.</p>
-                            <button onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))} style={{ marginTop: '1rem', background: 'transparent', border: '1px solid #10b981', color: '#10b981', padding: '8px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' }}>ANALIZAR DATOS</button>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 7. ASISTENTE VIRTUAL (SERENITO 3D) */}
-                <section style={{ 
-                    background: 'linear-gradient(135deg, rgba(15,23,42,0.9), rgba(2,6,23,1))', 
-                    borderRadius: '32px', 
-                    padding: '2.5rem', 
-                    display: 'flex', 
-                    flexDirection: isMobile ? 'column' : 'row', 
-                    alignItems: 'center', 
-                    gap: '2rem',
-                    border: '1px solid rgba(255,215,0,0.3)',
-                    boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
-                }}>
-                    <div style={{ width: isMobile ? '100%' : '300px', height: '300px', borderRadius: '20px', overflow: 'hidden', background: '#000' }}>
-                        <Canvas camera={{ position: [0, 1.5, 4], fov: 40 }}>
-                            <Suspense fallback={null}>
-                                <UniversalSerenito />
-                                <Environment preset="city" />
-                                <OrbitControls enableZoom={false} />
-                            </Suspense>
-                        </Canvas>
-                    </div>
-                    <div style={{ flex: 1 }}>
-                        <h2 style={{ fontSize: '2rem', color: 'white', fontWeight: '900', margin: '0 0 1rem 0' }}>¿NECESITAS AYUDA?</h2>
-                        <p style={{ color: '#94a3b8', fontSize: '1.1rem', lineHeight: '1.6', margin: '0 0 1.5rem 0' }}>
-                            Soy Serenito, tu guía inteligente. Estoy aquí para resolver tus dudas sobre trámites municipales, eventos y servicios en tiempo real.
-                        </p>
-                        <button 
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))}
-                            style={{ background: '#FFD700', color: 'black', padding: '12px 35px', borderRadius: '30px', border: 'none', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}
-                        >
-                            <MessageCircle size={20} /> INICIAR CHAT CON SERENITO
-                        </button>
-                    </div>
-                </section>
 
             </main>
 

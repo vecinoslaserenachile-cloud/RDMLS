@@ -78,36 +78,84 @@ const candidatesData = [
     text: 'Vota por la Lista Nueva Energía. Juntos renovaremos la voz de la radiodifusión en Chile.'
   },
   {
-    id: 'pilar1',
-    name: 'Soberanía Digital',
-    role: 'PILAR 1',
-    image: '/archi-media/3d/pillar1.png',
-    pillar: 'Soberanía Digital y Código Abierto',
-    text: 'Fin a la dependencia. Entregaremos a las emisoras locales herramientas multiplataforma de código abierto para streaming y publicidad.'
+    id: 'prop-oip',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: OIP',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Observatorio de Inversión Pública',
+    text: 'Garantizar que el 40% del avisaje estatal se destine a radios regionales y locales, monitoreado por el OIP para asegurar una distribución equitativa.'
   },
   {
-    id: 'pilar2',
-    name: 'OIP y Equidad',
-    role: 'PILAR 2',
-    image: '/archi-media/3d/pillar2.png',
-    pillar: 'OIP y Equidad Territorial',
-    text: 'Creación del Observatorio de Inversión Pública (OIP). Asegurando que el 40% del avisaje estatal se destine mayoritariamente a medios regionales.'
+    id: 'prop-escudo',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Escudo Civil',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Escudo Radial de Emergencias',
+    text: 'Consolidar la infraestructura de transmisión crítica regional. La radio es el único medio que salva vidas y permanece activo en catástrofes.'
   },
   {
-    id: 'pilar3',
-    name: 'Motor Económico',
-    role: 'PILAR 3',
-    image: '/archi-media/3d/pillar3.png',
-    pillar: 'El Motor Económico de las Regiones',
-    text: 'La radio es la inversión transaccional más rentable del retail local, movilizando la Economía Naranja con gran agilidad.'
+    id: 'prop-transparencia',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Transparencia',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Gestión de Puertas Abiertas',
+    text: 'Transparencia total y auditoría periódica de recursos en la Archi. Cuentas claras y procesos abiertos para todos los radiodifusores.'
   },
   {
-    id: 'pilar4',
-    name: 'Escudo Civil',
-    role: 'PILAR 4',
-    image: '/archi-media/3d/pillar4.png',
-    pillar: 'Soporte en emergencias',
-    text: 'La única red a prueba de apagones. La radio es la infraestructura crítica de seguridad nacional que salva vidas en emergencias.'
+    id: 'prop-soberania',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Soberanía Digital',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Código Abierto Gremial',
+    text: 'Independencia tecnológica para las emisoras locales: entregaremos herramientas de código abierto para streaming, servidores y control publicitario.'
+  },
+  {
+    id: 'prop-defensa',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Blindaje Legal',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Defensa de Concesiones',
+    text: 'Creación de un equipo legal experto permanente en Archi para defender y agilizar los trámites de renovación de espectro y concesión en todo Chile.'
+  },
+  {
+    id: 'prop-naranja',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Economía Naranja',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Motor del Retail Local',
+    text: 'La radio es el medio transaccional más rentable y ágil para movilizar el comercio y el desarrollo local de las provincias.'
+  },
+  {
+    id: 'prop-equidad',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Equidad Territorial',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Descentralización Publicitaria',
+    text: 'Terminar con el centralismo que concentra la pauta publicitaria nacional. Lucharemos por un avisaje estatal verdaderamente descentralizado.'
+  },
+  {
+    id: 'prop-capacitacion',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Innovación',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Capacitación Multiplataforma',
+    text: 'Desarrollo de aulas digitales E-Learning de formación continua para tecnificar y guiar a las radios de regiones en el ecosistema digital.'
+  },
+  {
+    id: 'prop-democracia',
+    name: 'Directiva Nueva Energía',
+    role: 'Propuesta: Pluralismo',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Voz Gremial Democrática',
+    text: 'Garantizar y proteger el pluralismo informativo regional frente a monopolios y legislaciones perjudiciales para la libertad de expresión.'
+  },
+  {
+    id: 'prop-liderazgo',
+    name: 'Solange Gómez Presidenta',
+    role: 'Propuesta: Lista Completa',
+    image: '/archi-media/fotos/Mesa postula ARCHI.png',
+    pillar: 'Nueva Energía para la Archi',
+    text: 'Vota Lista Nueva Energía: un equipo multidisciplinario con visión de futuro para una Archi descentralizada, representativa y unida.'
   }
 ];
 

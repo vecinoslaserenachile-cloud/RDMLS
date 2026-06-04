@@ -5,13 +5,15 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { supabase } from '../utils/supabase';
 import { socket } from '../utils/socket';
-import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users, LayoutGrid, Database } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users, LayoutGrid, Database, BookOpen } from 'lucide-react';
 import RadioBackofficeModal from '../components/RadioBackofficeModal';
 import MartinSecurityShield from '../components/MartinSecurityShield';
 import OmniBackofficeDesk from '../components/OmniBackofficeDesk';
 import { db } from '../utils/firebase';
 import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
 import OmniFeedBackoffice from '../components/OmniFeedBackoffice';
+import SmartPDFStudio from '../components/SmartPDFStudio';
+import ElearningDashboard from '../components/ElearningDashboard';
 
 // Fix para los iconos de Leaflet en React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -78,6 +80,8 @@ export default function Backoffice() {
     const [showNewsCodesManager, setShowNewsCodesManager] = useState(false); // Refiere al OmniBackofficeDesk
     const [showCitizenReports, setShowCitizenReports] = useState(true);
     const [showOmniFeed, setShowOmniFeed] = useState(false);
+    const [showSmartPDFStudio, setShowSmartPDFStudio] = useState(false);
+    const [showElearningLogs, setShowElearningLogs] = useState(false);
 
     // Auth States
     const [user, setUser] = useState(null);
@@ -408,9 +412,17 @@ export default function Backoffice() {
                     <button
                         className={`btn ${showOmniFeed ? 'btn-primary' : 'btn-glass'}`}
                         style={{ width: '100%', padding: '0.5rem', fontSize: '0.85rem', background: showOmniFeed ? 'linear-gradient(45deg, #d4af37, #b45309)' : 'rgba(212, 175, 55, 0.1)', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid #d4af37', fontWeight: 'bold' }}
-                        onClick={() => { setShowOmniFeed(!showOmniFeed); setShowPowerOutageMap(false); setShowCitizenReports(!showOmniFeed ? false : true); }}
+                        onClick={() => { setShowOmniFeed(!showOmniFeed); setShowPowerOutageMap(false); setShowElearningLogs(false); setShowCitizenReports(!showOmniFeed ? false : true); }}
                     >
                         <Zap size={14} style={{ display: 'inline', marginRight: '4px' }} /> GRAN CEREBRO VLS
+                    </button>
+
+                    <button
+                        className={`btn ${showElearningLogs ? 'btn-primary' : 'btn-glass'}`}
+                        style={{ width: '100%', padding: '0.5rem', fontSize: '0.85rem', background: showElearningLogs ? 'linear-gradient(45deg, #8b5cf6, #4c1d95)' : 'rgba(139, 92, 246, 0.1)', borderRadius: '8px', marginTop: '0.5rem', border: '1px solid #8b5cf6', fontWeight: 'bold' }}
+                        onClick={() => { setShowElearningLogs(!showElearningLogs); setShowOmniFeed(false); setShowPowerOutageMap(false); setShowCitizenReports(!showElearningLogs ? false : true); }}
+                    >
+                        <BookOpen size={14} style={{ display: 'inline', marginRight: '4px' }} /> Registros E-Learning
                     </button>
 
                     <button
@@ -492,6 +504,14 @@ export default function Backoffice() {
                             >
                                 <Database size={20} color="#38bdf8" />
                                 <span>Backoffice Desk</span>
+                            </button>
+                            <button
+                                className="btn btn-glass pulse-slow"
+                                style={{ padding: '0.8rem 0.5rem', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', border: '1px solid #c084fc', background: 'rgba(192, 132, 252, 0.1)' }}
+                                onClick={() => setShowSmartPDFStudio(true)}
+                            >
+                                <LayoutGrid size={20} color="#c084fc" />
+                                <span>Smart PDF Studio</span>
                             </button>
                         </div>
                     </div>
@@ -657,6 +677,10 @@ export default function Backoffice() {
                 {showOmniFeed ? (
                     <div className="fade-in" style={{ flex: 1, padding: '1rem', background: '#020617' }}>
                         <OmniFeedBackoffice />
+                    </div>
+                ) : showElearningLogs ? (
+                    <div className="fade-in" style={{ flex: 1, padding: '1rem', background: '#020617' }}>
+                        <ElearningDashboard />
                     </div>
                 ) : (
                     <>
@@ -959,6 +983,10 @@ export default function Backoffice() {
 
             {showRadioBackoffice && (
                 <RadioBackofficeModal onClose={() => setShowRadioBackoffice(false)} />
+            )}
+
+            {showSmartPDFStudio && (
+                <SmartPDFStudio onClose={() => setShowSmartPDFStudio(false)} />
             )}
 
             {showSecurityShield && (

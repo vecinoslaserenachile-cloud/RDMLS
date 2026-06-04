@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Video, Mic, Radio, Zap, Settings, CreditCard, Clock, Activity, Monitor } from 'lucide-react';
+import { X, Video, Mic, Radio, Zap, Settings, CreditCard, Clock, Activity, Monitor, ShieldCheck } from 'lucide-react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';

@@ -83,58 +83,83 @@ export default function ArchiPosterCard({ data }) {
           position: 'absolute', top: '-20%', right: '-20%', width: '70%', height: '70%',
           background: `radial-gradient(circle, rgba(212,175,55,0.15) 0%, transparent 70%)`,
           zIndex: 0
-        }} />
-
-        {/* TOP: Branding */}
-        <div style={{ padding: '20px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
-          <div style={{ color: gold, fontFamily: '"Outfit", sans-serif', fontWeight: 900, letterSpacing: '2px', fontSize: '1.2rem', textTransform: 'uppercase' }}>
+        }} />        {/* TOP: Branding sin sellos duplicados para ganar espacio y limpieza */}
+        <div style={{ padding: '14px 14px 10px 14px', position: 'relative', zIndex: 1, textAlign: 'center' }}>
+          <div style={{ color: gold, fontFamily: '"Outfit", sans-serif', fontWeight: 900, letterSpacing: '2px', fontSize: '1.15rem', textTransform: 'uppercase' }}>
             ARCHI <span style={{ color: 'white' }}>Nueva Energía</span>
           </div>
-          <div style={{ width: '50px', height: '2px', background: gold, margin: '8px auto 0' }} />
+          <div style={{ width: '40px', height: '2px', background: gold, margin: '6px auto 0' }} />
         </div>
 
-        {/* MIDDLE: Foto y Pilar */}
-        <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', alignItems: 'center' }}>
-          
+        {/* MIDDLE: Foto del candidato / directiva maximizada al ancho del afiche */}
+        <div style={{ 
+          width: '100%', 
+          height: '225px', 
+          position: 'relative', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          overflow: 'hidden',
+          flexShrink: 0
+        }}>
           {/* FOTO */}
           <div style={{ 
-            position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', 
-            width: '90%', height: '110%', 
+            width: '100%', 
+            height: '100%', 
             backgroundImage: `url('${data.image}')`,
             backgroundSize: 'contain',
-            backgroundPosition: 'bottom center',
+            backgroundPosition: 'center center',
             backgroundRepeat: 'no-repeat',
             zIndex: 1
           }} />
+        </div>
 
-          {/* GRADIANTE PARA TEXTO INFERIOR (encima de la foto) */}
-          <div style={{
-            position: 'absolute', bottom: 0, width: '100%', height: '60%',
-            background: 'linear-gradient(to top, #020617 10%, rgba(2,6,23,0.8) 50%, transparent 100%)',
-            zIndex: 2
-          }} />
-
-          {/* CONTENIDO TEXTUAL */}
-          <div style={{ position: 'relative', zIndex: 3, padding: '20px', textAlign: 'center', width: '100%' }}>
-            <div style={{ 
-              display: 'inline-block',
-              background: `linear-gradient(90deg, ${primaryBlue}, ${darkBlue})`,
-              padding: '6px 15px', borderRadius: '30px', 
-              color: 'white', fontWeight: 'bold', fontSize: '0.8rem',
-              border: `1px solid ${gold}`, marginBottom: '10px',
-              textTransform: 'uppercase', letterSpacing: '1px'
-            }}>
-              {data.role}
-            </div>
-            
-            <h2 style={{ color: 'white', margin: '0 0 5px 0', fontSize: '1.6rem', fontFamily: '"Outfit", sans-serif', fontWeight: 900, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
-              {data.name}
-            </h2>
-            
-            <h3 style={{ color: gold, margin: 0, fontSize: '1.1rem', fontWeight: 600, fontStyle: 'italic', textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
-              "{data.pillar}"
-            </h3>
+        {/* BOTTOM: Contenido Textual y Propuesta */}
+        <div style={{ 
+          padding: '12px 16px 14px 16px', 
+          textAlign: 'center', 
+          width: '100%', 
+          background: 'rgba(2, 6, 23, 0.45)', 
+          borderTop: `1px solid rgba(212,175,55,0.15)`,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+          zIndex: 2,
+          flex: 1,
+          justifyContent: 'center'
+        }}>
+          <div style={{ 
+            display: 'inline-block',
+            background: `linear-gradient(90deg, ${primaryBlue}, ${darkBlue})`,
+            padding: '3px 10px', borderRadius: '30px', 
+            color: 'white', fontWeight: 'bold', fontSize: '0.65rem',
+            border: `1px solid ${gold}`, marginBottom: '3px',
+            textTransform: 'uppercase', letterSpacing: '1px'
+          }}>
+            {data.role}
           </div>
+          
+          <h2 style={{ color: 'white', margin: 0, fontSize: '1.2rem', fontFamily: '"Outfit", sans-serif', fontWeight: 900, textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+            {data.name}
+          </h2>
+          
+          <h3 style={{ color: gold, margin: 0, fontSize: '0.9rem', fontWeight: 600, fontStyle: 'italic', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+            "{data.pillar}"
+          </h3>
+          
+          {data.text && (data.id === 'mesa-completa' || (data.role && data.role.toLowerCase().includes('propuesta'))) && (
+            <p style={{
+              color: '#e2e8f0', fontSize: '0.68rem', lineHeight: '1.35',
+              margin: '5px auto 0', maxWidth: '320px',
+              textShadow: '0 2px 8px rgba(0,0,0,0.9)',
+              fontWeight: 'normal',
+              fontFamily: '"Outfit", sans-serif',
+              opacity: 0.95
+            }}>
+              {data.text}
+            </p>
+          )}
         </div>
 
         {/* BOTTOM: Footer web */}
