@@ -143,7 +143,7 @@ export default function AstronomiaBeltrand() {
 
       const dateStr = new Date().toLocaleDateString('es-CL');
       page.drawText(`Fecha: ${dateStr}`, { x: 100, y: 80, size: 12, font, color: rgb(0.5, 0.5, 0.5) });
-      page.drawText('Firmado: Camila Beltrand (OPCC)', { x: 500, y: 80, size: 12, font, color: rgb(0.5, 0.5, 0.5) });
+      page.drawText('Firma: Entrevecinas', { x: 500, y: 80, size: 12, font, color: rgb(0.5, 0.5, 0.5) });
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });

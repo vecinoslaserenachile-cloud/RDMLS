@@ -52,7 +52,7 @@ export default function DanielaOlmos() {
         setTimeout(() => {
             setFeedback(null);
             if (isCorrect) {
-                if (phase === 3) {
+                if (phase === 4) {
                     playLevelUpSound();
                 }
                 setPhase(phase + 1);
@@ -80,7 +80,7 @@ export default function DanielaOlmos() {
             
             const date = new Date().toLocaleDateString();
             page.drawText(`Fecha: ${date}`, { x: 100, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
-            page.drawText('Firma: Daniela Olmos (Virtual)', { x: 500, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
+            page.drawText('Firma: Entrevecinas', { x: 500, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
 
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -139,9 +139,9 @@ export default function DanielaOlmos() {
 
             <main style={{ maxWidth: '800px', margin: '2rem auto', padding: '0 5%' }}>
                 {/* Progress Bar */}
-                {phase > 0 && phase < 4 && (
+                {phase > 1 && phase < 5 && (
                     <div style={{ display: 'flex', gap: '8px', marginBottom: '2rem' }}>
-                        {[1, 2, 3].map(p => (
+                        {[2, 3, 4].map(p => (
                             <div key={p} style={{ flex: 1, height: '8px', borderRadius: '4px', background: phase >= p ? '#a855f7' : '#e9d5ff', transition: '0.3s', boxShadow: phase >= p ? '0 0 10px rgba(168,85,247,0.5)' : 'none' }} />
                         ))}
                     </div>
@@ -156,6 +156,34 @@ export default function DanielaOlmos() {
                     )}
 
                     {phase === 0 && (
+                        <motion.div key="teoria" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
+                            <div style={{ background: 'white', padding: '2.5rem 1.5rem', borderRadius: '30px', border: '1px solid #e9d5ff', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ background: '#f3e8ff', padding: '15px', borderRadius: '20px' }}>
+                                        <Sun size={35} color="#a855f7" />
+                                    </div>
+                                    <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#1e293b', margin: 0 }}>El Poder del Sol</h2>
+                                </div>
+                                <p style={{ fontSize: '1.15rem', color: '#475569', marginBottom: '1.5rem', lineHeight: '1.7' }}>
+                                    El <strong>Diseño Bioclimático</strong> consiste en construir o adaptar las viviendas teniendo en cuenta las condiciones climáticas del entorno, para lograr el mayor confort térmico interior con el menor consumo de energía posible.
+                                </p>
+                                <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '20px', border: '1px solid #e2e8f0', marginBottom: '2rem' }}>
+                                    <h3 style={{ fontSize: '1.3rem', color: '#7e22ce', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '10px' }}><Map size={24} /> Orientación Estratégica</h3>
+                                    <p style={{ color: '#64748b', lineHeight: '1.6', marginBottom: '1rem' }}>En el hemisferio sur, como en La Serena, el recorrido del sol hace que la <strong>fachada Norte</strong> sea la que recibe la mayor cantidad de radiación solar durante el día. Orientar nuestras ventanas principales hacia el norte nos permite calentar la casa de manera natural en invierno.</p>
+                                    
+                                    <h3 style={{ fontSize: '1.3rem', color: '#7e22ce', marginBottom: '1rem', marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}><Thermometer size={24} /> Aislamiento y Ventilación</h3>
+                                    <p style={{ color: '#64748b', lineHeight: '1.6' }}>Captar el calor no sirve de nada si se escapa rápidamente. Usar termopaneles y aislar los muros/techos es fundamental. Además, en verano, la <strong>ventilación cruzada</strong> (abrir ventanas en muros opuestos) permite crear una corriente de aire que extrae el calor y refresca la vivienda sin necesidad de aire acondicionado.</p>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                    <motion.button whileTap={{ scale: 0.95 }} onClick={() => { setPhase(1); }} style={{ background: 'linear-gradient(90deg, #a855f7, #7e22ce)', color: 'white', border: 'none', padding: '1.2rem 2.5rem', borderRadius: '50px', fontSize: '1.1rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 10px 20px rgba(168,85,247,0.3)' }}>
+                                        ENTENDIDO <ChevronRight size={20} />
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {phase === 1 && (
                         <motion.div key="intro" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}>
                             <div style={{ background: 'white', padding: '2.5rem 1.5rem', borderRadius: '30px', border: '1px solid #e9d5ff', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.05)' }}>
                                 <div style={{ background: '#f3e8ff', padding: '15px', borderRadius: '50%', display: 'inline-flex', marginBottom: '1rem' }}>
@@ -165,14 +193,14 @@ export default function DanielaOlmos() {
                                 <p style={{ fontSize: '1.1rem', color: '#64748b', marginBottom: '2rem', lineHeight: '1.6', maxWidth: '500px', margin: '0 auto 2rem' }}>
                                     Demuestra lo que aprendiste sobre orientación solar y eficiencia térmica. Responde correctamente para graduarte y obtener tu certificado.
                                 </p>
-                                <motion.button whileTap={{ scale: 0.95 }} onClick={() => { playStartSound(); setPhase(1); }} style={{ background: 'linear-gradient(90deg, #a855f7, #7e22ce)', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: '0 10px 20px rgba(168,85,247,0.3)' }}>
+                                <motion.button whileTap={{ scale: 0.95 }} onClick={() => { playStartSound(); setPhase(2); }} style={{ background: 'linear-gradient(90deg, #a855f7, #7e22ce)', color: 'white', border: 'none', padding: '1.2rem 3rem', borderRadius: '50px', fontSize: '1.2rem', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: '0 10px 20px rgba(168,85,247,0.3)' }}>
                                     COMENZAR EXAMEN <ChevronRight size={24} />
                                 </motion.button>
                             </div>
                         </motion.div>
                     )}
 
-                    {phase === 1 && !feedback && (
+                    {phase === 2 && !feedback && (
                         <motion.div key="p1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                             <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #e9d5ff', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
@@ -199,7 +227,7 @@ export default function DanielaOlmos() {
                         </motion.div>
                     )}
 
-                    {phase === 2 && !feedback && (
+                    {phase === 3 && !feedback && (
                         <motion.div key="p2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                             <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #e9d5ff', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
@@ -226,7 +254,7 @@ export default function DanielaOlmos() {
                         </motion.div>
                     )}
 
-                    {phase === 3 && !feedback && (
+                    {phase === 4 && !feedback && (
                         <motion.div key="p3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
                             <div style={{ background: 'white', padding: '2rem 1.5rem', borderRadius: '30px', border: '1px solid #e9d5ff', boxShadow: '0 10px 30px rgba(0,0,0,0.05)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
@@ -253,7 +281,7 @@ export default function DanielaOlmos() {
                         </motion.div>
                     )}
 
-                    {phase === 4 && !feedback && (
+                    {phase === 5 && !feedback && (
                         <motion.div key="p4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}>
                             <div style={{ background: 'linear-gradient(135deg, #a855f7, #7e22ce)', padding: '3rem 1.5rem', borderRadius: '30px', border: '2px solid #d8b4fe', textAlign: 'center', boxShadow: '0 20px 50px rgba(168,85,247,0.3)' }}>
                                 <div style={{ width: '100px', height: '100px', background: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', boxShadow: '0 10px 20px rgba(0,0,0,0.2)' }}>

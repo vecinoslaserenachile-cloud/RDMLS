@@ -89,10 +89,11 @@ const VLSNewsBencinazo = lazy(() => import('../components/VLSNewsBencinazo'));
 const VLSNewsSentinel = lazy(() => import('../components/VLSNewsSentinel'));
 const VLSNewsPoduje = lazy(() => import('../components/VLSNewsPoduje'));
 const VLSNewsAguasValle = lazy(() => import('../components/VLSNewsAguasValle'));
-// const VLSNewsArtemis = lazy(() => import('../components/VLSNewsArtemis'));
+const VLSNewsArtemis = lazy(() => import('../components/VLSNewsArtemis'));
 // const VLSNewsChequia = lazy(() => import('../components/VLSNewsChequia'));
-// const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
+const VLSNewsIglesiasPiedra = lazy(() => import('../components/VLSNewsIglesiasPiedra'));
 // const VLSNewsAvalancha = lazy(() => import('../components/VLSNewsAvalancha'));
+const VisitaKastReport = lazy(() => import('../components/VisitaKastReport'));
 const VLSNotesGallery = lazy(() => import('../components/VLSNotesGallery'));
 // const SerenitoVLS = lazy(() => import('../components/SerenitoVLS'));
 import VLSRoadmap from '../components/VLSRoadmap';
@@ -320,13 +321,14 @@ export default function HubDashboard() {
     const [showVialNews, setShowVialNews] = useState(false);
     const [showVLSNewsTimeChange, setShowVLSNewsTimeChange] = useState(false);
     const [showArquiartista, setShowArquiartista] = useState(false);
-    const [showVLSNewsArtemis, setShowVLSNewsArtemis] = useState(location.pathname.toLowerCase().includes('/artemis') || location.pathname.toLowerCase().includes('/artemisa'));
-    const [showVLSNewsUcen, setShowVLSNewsUcen] = useState(location.pathname.toLowerCase().includes('/ucen'));
+    const [showVLSNewsArtemis, setShowVLSNewsArtemis] = useState(window.location.pathname.toLowerCase().includes('/artemis') || window.location.pathname.toLowerCase().includes('/artemisa'));
+    const [showVLSNewsUcen, setShowVLSNewsUcen] = useState(window.location.pathname.toLowerCase().includes('/ucen'));
     const [showAguasValle, setShowAguasValle] = useState(false);
     const [showSeguridadVecinal, setShowSeguridadVecinal] = useState(false);
     const [showChequia, setShowChequia] = useState(false);
     const [showIglesias, setShowIglesias] = useState(false);
     const [showNewsAvalancha, setShowNewsAvalancha] = useState(false);
+    const [showKast, setShowKast] = useState(window.location.pathname.toLowerCase().includes('/kast'));
     const [showJuanSoldado, setShowJuanSoldado] = useState(false);
     const [showParliamentary, setShowParliamentary] = useState(false);
     const [showRequestPortal, setShowRequestPortal] = useState(false);
@@ -615,7 +617,7 @@ export default function HubDashboard() {
         window.addEventListener('open-vls-juansoldado', handleJuanSoldado);
         window.addEventListener('open-vls-andacollo', handleAndacollo);
         window.addEventListener('open-vls-vallenar', handleVallenar);
-        window.addEventListener('open-vls-domeyko', (e) => handleDomeyko(e.detail?.tab));
+        window.addEventListener('open-domeyko-portal', (e) => handleDomeyko(e.detail?.tab));
         window.addEventListener('open-vls-chequia', handleChequia);
         window.addEventListener('open-vls-avalancha', handleAvalancha);
         window.addEventListener('open-vls-motors', handleMotors);
@@ -2851,6 +2853,89 @@ export default function HubDashboard() {
 
                     <div className="vls-perf-section" style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
                         
+                        {/* CARD KAST (TOP HIGHLIGHT 1) */}
+                        <motion.div 
+                            initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                            whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            onClick={() => setShowKast(true)}
+                            style={{ 
+                                position: 'relative', minHeight: isMobile ? '300px' : '600px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '3px solid rgba(239, 68, 68, 0.6)', boxShadow: '0 40px 80px rgba(239, 68, 68, 0.3)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: '1 / -1',
+                                marginBottom: '1rem'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 }, boxShadow: '0 50px 100px rgba(239, 68, 68, 0.5)' }}
+                        >
+                            <img src="/kast_visita.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.8 }} alt="Visita Presidente Kast" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.6) 50%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, right: window.innerWidth < 768 ? 15 : 30, 
+                                background: '#ef4444', padding: window.innerWidth < 768 ? '0.5rem 1.2rem' : '0.8rem 2rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 1rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '3px', 
+                                zIndex: 20, boxShadow: '0 10px 25px rgba(239, 68, 68, 0.6)' 
+                            }}>
+                                🛑 COBERTURA ESPECIAL
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '2rem' : '4rem', zIndex: 10, maxWidth: '1100px', paddingTop: window.innerWidth < 768 ? '6rem' : '4rem' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 6vw, 4.5rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
+                                   CUMBRE EN LA SERENA:<br/>
+                                   <span style={{ color: '#ef4444' }}>KAST Y ALCALDES<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> DEFINEN AGENDA</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', marginTop: '1.2rem', fontWeight: 400, maxWidth: '900px', lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                                   Entre manifestaciones masivas y tensión política, el Presidente anuncia el "Plan Escudo Norte" y un fondo especial para municipalidades. Reacciones en exclusiva.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: window.innerWidth < 768 ? '2rem' : '2.5rem', background: '#ef4444', color: 'white', border: 'none', padding: window.innerWidth < 768 ? '1rem 2rem' : '1.2rem 3rem', fontSize: window.innerWidth < 768 ? '1rem' : '1.2rem', fontWeight: 900, borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                    VER REPORTE COMPLETO
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* CARD FAYOGA (TOP HIGHLIGHT 2) */}
+                        <motion.div 
+                            initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                            whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            onClick={() => navigate('/fayoga')}
+                            style={{ 
+                                position: 'relative', minHeight: isMobile ? '300px' : '600px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '3px solid rgba(16, 185, 129, 0.6)', boxShadow: '0 40px 80px rgba(16, 185, 129, 0.3)',
+                                cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                gridColumn: '1 / -1', // SPANS THE ENTIRE FIRST ROW!
+                                marginBottom: '1rem'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 }, boxShadow: '0 50px 100px rgba(16, 185, 129, 0.5)' }}
+                        >
+                            <img src="/fayoga_coliseo.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.8 }} alt="Día del Yoga La Serena" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.6) 50%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, right: window.innerWidth < 768 ? 15 : 30, 
+                                background: '#10b981', padding: window.innerWidth < 768 ? '0.5rem 1.2rem' : '0.8rem 2rem', borderRadius: '30px', 
+                                color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 1rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '3px', 
+                                zIndex: 20, boxShadow: '0 10px 25px rgba(16, 185, 129, 0.6)' 
+                            }}>
+                                🧘‍♀️ BIENESTAR VLS
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '2rem' : '4rem', zIndex: 10, maxWidth: '1100px', paddingTop: window.innerWidth < 768 ? '6rem' : '4rem' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 6vw, 4.5rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
+                                   DÍA INTERNACIONAL DEL YOGA:<br/>
+                                   <span style={{ color: '#10b981' }}>ENCUENTRO EN EL COLISEO<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> MUNICIPAL</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', marginTop: '1.2rem', fontWeight: 400, maxWidth: '900px', lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                                   La Serena se une en un mega evento gratuito de bienestar integral. Prácticas para todas las edades, bioferia consciente y reconexión espiritual junto a FAYOGA Bienestar.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: window.innerWidth < 768 ? '2rem' : '2.5rem', background: '#10b981', color: 'white', border: 'none', padding: window.innerWidth < 768 ? '1rem 2rem' : '1.2rem 3rem', fontSize: window.innerWidth < 768 ? '1rem' : '1.2rem', fontWeight: 900, borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                   LEER COMUNICADO OFICIAL <ArrowRight size={20} />
+                                </button>
+                            </div>
+                        </motion.div>
                         {/* CARD 0: SALUD LA SERENA (TOP HIGHLIGHT) */}
                         <motion.div 
                             initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
@@ -4796,9 +4881,11 @@ export default function HubDashboard() {
                 {showSentinelNote && <VLSNewsSentinel onClose={() => setShowSentinelNote(false)} />}
                 {showPoduje && <VLSNewsPoduje onClose={() => setShowPoduje(false)} />}
                 {showAguasValle && <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />}
-                {/* {showChequia && <VLSNewsChequia onClose={() => setShowChequia(false)} />}
+                {/* {showChequia && <VLSNewsChequia onClose={() => setShowChequia(false)} />} */}
                 {showIglesias && <VLSNewsIglesiasPiedra onClose={() => setShowIglesias(false)} />}
-                {showNewsAvalancha && <VLSNewsAvalancha onClose={() => setShowNewsAvalancha(false)} />} */}
+                {/* {showNewsAvalancha && <VLSNewsAvalancha onClose={() => setShowNewsAvalancha(false)} />} */}
+                {showVLSNewsArtemis && <VLSNewsArtemis onClose={() => setShowVLSNewsArtemis(false)} />}
+                {showKast && <VisitaKastReport onClose={() => setShowKast(false)} />}
             </Suspense>
             
             {/* MODALS RENDERED IN APP.JSX (GLOBAL EVENT BUS) */}

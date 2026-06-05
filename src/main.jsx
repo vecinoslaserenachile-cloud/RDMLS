@@ -45,6 +45,8 @@ const AndreaTorrejon = React.lazy(() => import('./pages/AndreaTorrejon.jsx'));
 const LoretoNarbona = React.lazy(() => import('./pages/LoretoNarbona.jsx'));
 const DanielaOlmos = React.lazy(() => import('./pages/DanielaOlmos.jsx'));
 const MonicaSierra = React.lazy(() => import('./pages/MonicaSierra.jsx'));
+const AntoniaRodriguez = React.lazy(() => import('./pages/AntoniaRodriguez.jsx'));
+const AuroraPortal = React.lazy(() => import('./pages/AuroraPortal.jsx'));
 const FaritoHome = React.lazy(() => import('./pages/FaritoHome.jsx'));
 const FaritoInversores = React.lazy(() => import('./pages/FaritoInversores.jsx'));
 const BroadcastMaster = React.lazy(() => import('./pages/BroadcastMaster.jsx'));
@@ -127,6 +129,7 @@ const ArchiCampaign = React.lazy(() => import('./pages/ArchiCampaign.jsx'));
 const ArchiNewsAdmin = React.lazy(() => import('./pages/ArchiNewsAdmin.jsx'));
 const ArchiWapHub = React.lazy(() => import('./pages/ArchiWapHub.jsx'));
 const ArchiSocialHub = React.lazy(() => import('./pages/ArchiSocialHub.jsx'));
+const FayogaNews = React.lazy(() => import('./pages/FayogaNews.jsx'));
 
 // Configuración de rutas (React Router v6)
 // const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
@@ -357,6 +360,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/loreto-narbona" element={<LoretoNarbona />} />
               <Route path="/daniela-olmos" element={<DanielaOlmos />} />
               <Route path="/monica-sierra" element={<MonicaSierra />} />
+              <Route path="/antonia-rodriguez" element={<AntoniaRodriguez />} />
+              <Route path="/aurora-portal" element={<AuroraPortal />} />
               <Route path="/andacollo" element={<AndacolloPortal />} />
               <Route path="/vallenar" element={<VallenarPortal />} />
               <Route path="/juansoldado" element={<JuanSoldadoPortal />} />
@@ -452,6 +457,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="tano" element={<TanoPortal />} />
                   <Route path="astronomia-beltrand" element={<AstronomiaBeltrand />} />
                   <Route path="humedales-campos" element={<HumedalesCampos />} />
+                  <Route path="paulina-godoy" element={<PaulinaGodoy />} />
+                  <Route path="andrea-torrejon" element={<AndreaTorrejon />} />
+                  <Route path="loreto-narbona" element={<LoretoNarbona />} />
+                  <Route path="daniela-olmos" element={<DanielaOlmos />} />
+                  <Route path="monica-sierra" element={<MonicaSierra />} />
+                  <Route path="antonia-rodriguez" element={<AntoniaRodriguez />} />
+                  <Route path="aurora-portal" element={<AuroraPortal />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRadioVecinosDns ? (
@@ -488,6 +500,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="/" element={<App />}>
                     <Route index element={<HubDashboard />} />
                     {/* --- rutas del portal principal VLS --- */}
+                    <Route path="fayoga" element={<FayogaNews />} />
                     <Route path="punto" element={<PuntoVecinal />} />
                   <Route path="vecinos" element={<VecinoDashboard />} />
                   <Route path="citizens" element={<Citizens />} />
@@ -536,8 +549,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="seguridad" element={<SeguridadVecinal />} />
                     <Route path="agua" element={<MasterMiguelMelendez3D onClose={() => window.location.href = '/'} />} />
                     <Route path="sitemap" element={<Sitemap />} />
-                    <Route path="altar" element={<TributePage />} />
-                    <Route path="altar/:id" element={<TributePage />} />
+                    <Route path="altares" element={<TributePage />} />
+                    <Route path="altares/:id" element={<TributePage />} />
                     <Route path="fichas" element={<HubDashboard />} />
                     <Route path="media/ian" element={<VLSNewsIan onClose={() => window.history.back()} />} />
                     <Route path="mundo/chequia" element={<HubDashboard />} />

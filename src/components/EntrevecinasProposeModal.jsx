@@ -85,10 +85,34 @@ export default function EntrevecinasProposeModal({ isOpen, onClose }) {
     const handleSubmit = async () => {
         setIsSubmitting(true);
         try {
-            // Simulamos el envío a la nube por 2 segundos para evitar el error de JSON
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Send email via Resend API
+            const RESEND_KEY = localStorage.getItem('vls_resend_key') || "re_BxWBivzx_3CpokEvr9UbCKFzFXyfT3VYn";
+            await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${RESEND_KEY}` },
+                body: JSON.stringify({
+                    from: 'Entrevecinas VLS <onboarding@resend.dev>',
+                    to: [formData.email, 'vecinoslaserenachile@gmail.com'],
+                    subject: `Tu propuesta ha sido recibida - Entrevecinas.cl`,
+                    html: `
+                        <h2>¡Hola ${formData.name || 'Vecina'}!</h2>
+                        <p>Hemos recibido con éxito tu relato/propuesta para el portal Entrevecinas.cl.</p>
+                        <h3>Resumen de tu propuesta:</h3>
+                        <p><b>Asistente:</b> ${assistant.name} (${assistant.role})</p>
+                        <p><b>Tu relato:</b></p>
+                        <blockquote style="border-left: 4px solid #ec4899; padding-left: 15px; margin-left: 0; color: #4b5563;">
+                            ${formData.aiDraft || formData.rawIdea}
+                        </blockquote>
+                        <p><b>Archivos adjuntos:</b> ${selectedFiles.length} (${formData.hasVideo ? 'Incluye video' : 'Solo fotos'})</p>
+                        <br/>
+                        <p>Nuestro equipo editorial revisará el material y nos pondremos en contacto contigo pronto.</p>
+                        <p>¡Gracias por cocrear con nosotras!</p>
+                        <p><b>Equipo Entrevecinas - Smart Comuna VLS</b></p>
+                    `
+                })
+            });
             
-            // Aquí iría la lógica real de Supabase o Cloudflare Workers
+            // Aquí iría la lógica real de Supabase o Cloudflare Workers para subir los archivos
             console.log("Datos enviados:", {
                 name: formData.name,
                 email: formData.email,
@@ -101,7 +125,7 @@ export default function EntrevecinasProposeModal({ isOpen, onClose }) {
             setStep(5);
         } catch (error) {
             console.error("Submission error:", error);
-            alert("Hubo un problema de conexión con la señal vecinal.");
+            alert("Hubo un problema de conexión con la señal vecinal al intentar enviar el correo.");
         } finally {
             setIsSubmitting(false);
         }

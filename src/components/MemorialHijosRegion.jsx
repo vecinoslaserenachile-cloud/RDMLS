@@ -257,7 +257,7 @@ export const FIGURAS_MEMORIAL = [
         birth: '300 a.C.',
         death: '700 d.C.',
         legacy: 'Fueron los primeros en practicar la agricultura y la alfarería en la zona. Su legado de tembetás y metalurgia en cobre marca el inicio de la civilización en nuestros valles.',
-        image: '/vls-logo-3d.png',
+        image: '/vls_molle_animas_3d_1774012579587.png',
         category: 'Historia',
         location: 'Valles del Elqui y Limarí',
         icon: Landmark,
@@ -320,7 +320,7 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
 
     const handleShareFigure = (figura) => {
         // Nueva URL directa para compartir (Regla: cada homenaje tiene su propio enlace)
-        const directUrl = `${window.location.origin}/altar/${figura.id}`;
+        const directUrl = `${window.location.origin}/altares/${figura.id}`;
         const shareData = {
             title: `Homenaje: ${figura.name} - ComunaSmart`,
             text: `VLS rinde tributo a ${figura.name}. ${figura.legacy.substring(0, 120)}... Conoce su historia en:`,
@@ -466,7 +466,7 @@ export default function MemorialHijosRegion({ onClose, tributeId }) {
                 <span style={{ fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold' }}>
                     © 2026 ARCHIVO DE LA MEMORIA PROVINCIA DE ELQUI — VLS SOBERANO
                 </span>
-                <button className="btn-vls-action-light" style={{ background: '#ec4899', border: 'none', color: 'white', padding: '8px 15px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-contact'))} className="btn-vls-action-light" style={{ background: '#ec4899', border: 'none', color: 'white', padding: '8px 15px', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Plus size={16} /> SUBIR RECUERDO
                 </button>
             </div>

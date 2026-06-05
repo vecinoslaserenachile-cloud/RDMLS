@@ -101,7 +101,7 @@ export default function HumedalesCampos() {
       
       const date = new Date().toLocaleDateString();
       page.drawText(`Fecha: ${date}`, { x: 100, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
-      page.drawText('Firma: Javiera Campos (Virtual)', { x: 550, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
+      page.drawText('Firma: Entrevecinas', { x: 550, y: 100, size: 12, font: helveticaRegular, color: rgb(0.5, 0.5, 0.5) });
 
       const pdfBytes = await pdfDoc.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });

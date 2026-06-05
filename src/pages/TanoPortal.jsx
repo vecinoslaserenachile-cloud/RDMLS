@@ -823,9 +823,17 @@ export default function TanoPortal() {
   const [completedIds, setCompletedIds] = useState([]); 
   const [showProgressGuide, setShowProgressGuide] = useState(false);
   const [isWrongDomain, setIsWrongDomain] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(true);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   
   const totalItems = TANO_MODULES.flatMap(m => m.files).length;
   const progressPercent = Math.min(100, Math.floor((completedIds.length / totalItems) * 100));
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     // Restricción de dominio
@@ -1195,7 +1203,7 @@ export default function TanoPortal() {
         </div>
         
         {/* Sidebar Nav */}
-        <aside className="tano-sidebar" style={{ flex: '1 1 350px', display: 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
+        <aside className="tano-sidebar" style={{ flex: '1 1 350px', display: isMobile && !showMobileMenu ? 'none' : 'flex', flexDirection: 'column', gap: '1.5rem', maxHeight: '90vh', overflowY: 'auto', paddingRight: '0.5rem' }}>
           
           <div style={{ background: 'rgba(0,0,0,0.4)', padding: '2rem', borderRadius: '25px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1217,6 +1225,7 @@ export default function TanoPortal() {
               onClick={() => {
                 setActiveModule(mod);
                 if (window.innerWidth <= 768) {
+                  setShowMobileMenu(false);
                   setTimeout(() => {
                     document.querySelector('.tano-content')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }, 100);
@@ -1258,7 +1267,7 @@ export default function TanoPortal() {
         </aside>
 
         {/* Content Area */}
-        <section className="tano-content" style={{ flex: '2 1 700px' }}>
+        <section className="tano-content" style={{ flex: '2 1 700px', display: isMobile && showMobileMenu ? 'none' : 'block' }}>
           <AnimatePresence mode="wait">
             <motion.div
               className="tano-content-card"
@@ -1268,8 +1277,13 @@ export default function TanoPortal() {
               exit={{ opacity: 0, x: -20 }}
               style={{ background: 'rgba(0,0,0,0.4)', padding: '4rem', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}
             >
-              <div className="tano-content-header" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
-                <div style={{ padding: '1.5rem', background: 'rgba(16, 185, 129, 0.2)', borderRadius: '24px', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+              <div className="tano-content-header" style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem', position: 'relative' }}>
+                {isMobile && (
+                  <button onClick={() => setShowMobileMenu(true)} style={{ position: 'absolute', top: '-1rem', left: 0, background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '0.5rem 1rem', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer', zIndex: 10 }}>
+                    ← Volver a Módulos
+                  </button>
+                )}
+                <div style={{ padding: '1.5rem', background: 'rgba(16, 185, 129, 0.2)', borderRadius: '24px', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', marginTop: isMobile ? '2rem' : 0 }}>
                   <activeModule.icon size={50} />
                 </div>
                 <div>

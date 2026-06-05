@@ -32,7 +32,8 @@ export default function EntrevecinasHub() {
         "B3xxKc6Y3eo", // Daniela Olmos
         "Y2KW_QhGj5I", // Loreto Narbona
         "IUPiyBw6eSQ", // Camila Beltrand
-        "jWmaGafzEuk"  // Camila Sabando
+        "jWmaGafzEuk",  // Camila Sabando
+        "3Qr6w83Iqaw"  // La Gran Aurora
     ];
 
     // Configuración de Favicon y Título (Soberanía Vecinal)
@@ -797,6 +798,78 @@ export default function EntrevecinasHub() {
                             </div>
                         </motion.div>
 
+                        {/* TARJETA: LA GRAN AURORA */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#8b5cf6', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#c084fc', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(139, 92, 246, 0.3)' }}>CULTURA VECINAL</span>
+                                    <Stars size={18} color="#c084fc" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    La Gran Aurora <br/><span style={{ color: '#c084fc' }}>Sabiduría Viva</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Un viaje a las raíces de nuestra identidad comunal. Escucha, aprende y pasa tu evaluación cultural.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/aurora-portal')} style={{ background: 'linear-gradient(90deg, #8b5cf6, #d946ef)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR A LA ACADEMIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: ANTONIA MOUNTAINBIKE */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(245, 158, 11, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#f59e0b', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(245, 158, 11, 0.2)', color: '#fbbf24', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(245, 158, 11, 0.3)' }}>DEPORTES EXTREMOS</span>
+                                    <Activity size={18} color="#fbbf24" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Mountainbike <br/><span style={{ color: '#fbbf24' }}>con Antonia</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Esquiva los obstáculos y demuestra tu habilidad sobre las dos ruedas. ¡Acepta el desafío ciclista!
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/antonia-rodriguez')} style={{ background: 'linear-gradient(90deg, #f59e0b, #ef4444)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> JUGAR DESAFÍO
+                                </button>
+                            </div>
+                        </motion.div>
+
                         {/* TARJETA: ANDREA TORREJON */}
                         <motion.div 
                             whileHover={{ y: -5 }}
@@ -952,7 +1025,168 @@ export default function EntrevecinasHub() {
                                 </button>
                             </div>
                         </motion.div>
+
+                        {/* TARJETA: ANTONIA RODRIGUEZ */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(194, 65, 12, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(249, 115, 22, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#f97316', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(249, 115, 22, 0.2)', color: '#fed7aa', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(249, 115, 22, 0.3)' }}>DEPORTE</span>
+                                    <Sparkles size={18} color="#fed7aa" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    Mountain Bike <br/><span style={{ color: '#fed7aa' }}>con Antonia</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Naturaleza en movimiento. Supera los obstáculos de la ruta y obtén tu diploma deportivo.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/antonia-rodriguez')} style={{ background: 'linear-gradient(90deg, #f97316, #ea580c)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> IR A LA PISTA
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: 'hdVC1pCSeJ4' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* TARJETA: AURORA PORTAL */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(91, 33, 182, 0.1))',
+                                borderRadius: '35px',
+                                border: '1px solid rgba(139, 92, 246, 0.3)',
+                                padding: '2.5rem',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                        >
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#8b5cf6', filter: 'blur(100px)', opacity: 0.1, pointerEvents: 'none' }} />
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(139, 92, 246, 0.2)', color: '#ddd6fe', padding: '5px 12px', borderRadius: '50px', fontSize: '0.7rem', fontWeight: '900', border: '1px solid rgba(139, 92, 246, 0.3)' }}>CULTURA</span>
+                                    <Stars size={18} color="#ddd6fe" />
+                                </div>
+                                <h3 style={{ fontSize: '2.2rem', fontWeight: '900', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    La Gran <br/><span style={{ color: '#ddd6fe' }}>Aurora</span>
+                                </h3>
+                                <p style={{ color: '#94a3b8', lineHeight: '1.5', marginBottom: '2rem', fontSize: '1rem' }}>
+                                    Entrevista exclusiva y sabiduría local. Evalúa tus conocimientos y sé un apreciador cultural.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <button onClick={() => navigate('/aurora-portal')} style={{ background: 'linear-gradient(90deg, #8b5cf6, #5b21b6)', color: 'white', border: 'none', padding: '1rem', borderRadius: '15px', fontWeight: '900', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <GraduationCap size={20} /> INGRESAR A LA SESIÓN
+                                </button>
+                                <button onClick={(e) => { e.stopPropagation(); window.dispatchEvent(new CustomEvent('open-vls-note', { detail: '3Qr6w83Iqaw' })); }} style={{ background: 'rgba(255,255,255,0.05)', color: '#cbd5e1', border: '1px solid rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '15px', fontWeight: 'bold', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: '0.2s' }}>
+                                    <Video size={18} /> VER ENTREVISTA PREVIA
+                                </button>
+                            </div>
+                        </motion.div>
+                    {/* PROMOTIONAL BANNER 3D (inside grid to fill remaining space) */}
+                        <style>{`
+                            .promo-banner-span { grid-column: span 2; }
+                            @media (max-width: 800px) {
+                                .promo-banner-span { grid-column: span 1; }
+                            }
+                        `}</style>
+                        <motion.div 
+                            className="promo-banner-span"
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(236, 72, 153, 0.1))',
+                                borderRadius: '40px',
+                                border: '1px solid rgba(249, 115, 22, 0.3)',
+                                overflow: 'hidden',
+                                display: 'grid',
+                                gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+                                alignItems: 'center',
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                                position: 'relative',
+                                cursor: 'pointer',
+                                height: '100%'
+                            }}
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                        >
+                            {/* Glow effects */}
+                            <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '300px', height: '300px', background: '#f97316', filter: 'blur(150px)', opacity: 0.15, pointerEvents: 'none' }} />
+                            <div style={{ position: 'absolute', bottom: '-100px', right: '-100px', width: '300px', height: '300px', background: '#ec4899', filter: 'blur(150px)', opacity: 0.15, pointerEvents: 'none' }} />
+
+                            {/* 3D Image */}
+                            <div style={{ position: 'relative', height: '100%', minHeight: '300px' }}>
+                                <img 
+                                    src="/entrevecinas_3d_promo.png?v=3" 
+                                    alt="Comunidad 3D" 
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        position: 'absolute',
+                                        inset: 0
+                                    }}
+                                />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent, rgba(2, 6, 23, 1))', pointerEvents: 'none' }} className="hide-on-mobile" />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, rgba(2, 6, 23, 1))', pointerEvents: 'none', display: 'none' }} />
+                                <style>{`
+                                    @media (max-width: 800px) {
+                                        .mobile-gradient-overlay { display: block !important; }
+                                    }
+                                `}</style>
+                                <div className="mobile-gradient-overlay" style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent, rgba(2, 6, 23, 1))', pointerEvents: 'none', display: 'none' }} />
+                            </div>
+
+                            {/* Content */}
+                            <div style={{ padding: '2.5rem', zIndex: 5, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+                                    <span style={{ background: 'rgba(249, 115, 22, 0.2)', color: '#f97316', padding: '5px 15px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: '900', border: '1px solid rgba(249, 115, 22, 0.3)' }}>NUEVA PLATAFORMA VECINAL</span>
+                                </div>
+                                <h2 style={{ fontSize: '2.4rem', fontWeight: '950', color: 'white', marginBottom: '1.5rem', lineHeight: '1.1' }}>
+                                    Encuentra conocimiento y experiencias en el espacio de <br/>
+                                    <span style={{ background: 'linear-gradient(90deg, #f97316, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Entre Vecinas</span>
+                                </h2>
+                                <p style={{ fontSize: '1.2rem', color: '#cbd5e1', lineHeight: '1.6', marginBottom: '2rem' }}>
+                                    <strong>entrevecinas.cl</strong><br/><br/>
+                                    Aprende, interactúa y certifícate con nuestros módulos de última generación. Avatares 3D, entornos inmersivos y conocimiento al alcance de un clic.
+                                </p>
+                                
+                                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <GraduationCap size={20} color="#38bdf8" />
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>Diplomas</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <Sparkles size={20} color="#a855f7" />
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>Interactivo</span>
+                                    </div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '10px 15px', borderRadius: '15px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                                        <RadioIcon size={20} color="#22c55e" />
+                                        <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>Entrevistas</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
                     </section>
+
                     <VLSNotesGallery initialFilter="EntreVecinas" hideFilters={true} />
                 </div>
             </main>
