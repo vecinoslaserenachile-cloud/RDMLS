@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from '../context/LanguageContext';
 import { getVLSLocution } from '../utils/vlsNewsEngine';
+import { ServerlessRadioEngine } from '../utils/ServerlessRadioEngine';
 
 const AnalogVUMeter = ({ label, needleRef }) => (
     <div style={{
@@ -64,6 +65,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const meterLevelsRef = useRef({ left: -45, right: -45 });
     const [hasProxyFallback, setHasProxyFallback] = useState(false);
     
+    const serverlessEngineRef = useRef(null);
+    const [serverlessMetadata, setServerlessMetadata] = useState(null);
+    
     // Audio Engine Refs
     const audioContextRef = useRef(null);
     const analyserRef = useRef(null);
@@ -79,7 +83,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     const stations = isArchi ? [
         { id: 99, type: 'radio', sub: 'archi', name: 'Jingle Oficial Archi', stream: '/archi-media/jingle_remastered.mp3', isLive: false, isMain: true, desc: 'Campaña Nueva Energía' }
     ] : isRDMLS ? [
-        { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'https://az11.yesstreaming.net:8590/radio.mp3', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
+        { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'serverless', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
     ] : [
         { id: 1, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
         { id: 14, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones vecinoslaserena.cl' },
@@ -222,6 +226,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             currentStation: currentStation || stations[0],
             volume: volume * 100,
             mode: playerMode,
+            metadata: serverlessMetadata,
             timestamp: Date.now()
         };
         syncChannel.current.postMessage({ type: 'STATE_SYNC', state });
@@ -267,8 +272,14 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
 
     useEffect(() => {
         const updateVoices = () => setHumanVoice(findBestVoice());
-        window.speechSynthesis.onvoiceschanged = updateVoices;
-        updateVoices();
+        if (window.speechSynthesis) {
+            try {
+                window.speechSynthesis.onvoiceschanged = updateVoices;
+            } catch (e) {
+                console.warn("speechSynthesis.onvoiceschanged not supported", e);
+            }
+            updateVoices();
+        }
     }, []);
 
     const broadcastSchedule = [
@@ -429,7 +440,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     }, [currentStation, hasProxyFallback]);
 
     // ─── LÓGICA VLS NATIVE HTML5 STREAMING 2026 ─────────
-    const setupStreamAndPlay = () => {
+    const setupStreamAndPlay = async () => {
         if (!audioRef.current) return;
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
         
@@ -438,6 +449,43 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
 
         audioRef.current.pause();
         audioRef.current.removeAttribute('crossorigin'); // Bypass CORS completely
+
+        if (streamUrl === 'serverless') {
+            if (!serverlessEngineRef.current) {
+                serverlessEngineRef.current = new ServerlessRadioEngine('/radio_playlist.json');
+                await serverlessEngineRef.current.init();
+            }
+            const state = serverlessEngineRef.current.getCurrentState();
+            if (state) {
+                audioRef.current.src = state.track.url;
+                audioRef.current.load();
+                
+                audioRef.current.onloadedmetadata = () => {
+                    audioRef.current.currentTime = state.offset;
+                    const playPromise = audioRef.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            setIsPlaying(true);
+                            audioRef.current.volume = volume;
+                            startVULoop();
+                        }).catch(e => {
+                            setIsPlaying(false);
+                            console.warn("VLS Serverless Autoplay Bloqueado.");
+                        });
+                    }
+                };
+                
+                audioRef.current.onended = () => {
+                    if (isPlaying) setupStreamAndPlay();
+                };
+                
+                setServerlessMetadata(serverlessEngineRef.current.getMetadata());
+            } else {
+                console.error("VLS Serverless Engine no pudo obtener el estado.");
+            }
+            return;
+        }
+
         audioRef.current.src = streamUrl;
         audioRef.current.load();
         

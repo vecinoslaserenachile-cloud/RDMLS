@@ -44,6 +44,7 @@
     "lucide-react": "^0.577.0",
     "midi-player-js": "^2.0.17",
     "motion": "^12.38.0",
+    "music-metadata": "^11.12.3",
     "pdf-lib": "^1.17.1",
     "postcss": "^8.5.8",
     "qrcode.react": "^4.2.0",

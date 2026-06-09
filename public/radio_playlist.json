@@ -1,0 +1,65 @@
+{
+  "totalDuration": 2377,
+  "tracks": [
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/Entre Maestros.mp3",
+      "duration": 229,
+      "title": "Entre Maestros"
+    },
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/Guitarra de versos.mp3",
+      "duration": 252,
+      "title": "Guitarra de versos"
+    },
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/Lo nuestro es pasar.mp3",
+      "duration": 183,
+      "title": "Lo nuestro es pasar"
+    },
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/Nunca buscamos a Gloria.mp3",
+      "duration": 217,
+      "title": "Nunca buscamos a Gloria"
+    },
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/Poetas del Rock.mp3",
+      "duration": 268,
+      "title": "Poetas"
+    },
+    {
+      "url": "/patrimonio/radioPlazaPoetasVLS/todo queda en La Serena.mp3",
+      "duration": 199,
+      "title": "todo queda en La Serena"
+    },
+    {
+      "url": "/peregrino/peregrinos_tema.mp3",
+      "duration": 314,
+      "title": "P E R E G R I N O S"
+    },
+    {
+      "url": "/stella/Stella_Colorina.mp3",
+      "duration": 242,
+      "title": "Stella Colorina"
+    },
+    {
+      "url": "/stella/Poeta_de_Fuego_1.mp3",
+      "duration": 175,
+      "title": "Poeta de Fuego"
+    },
+    {
+      "url": "/tano_assets/audio/cancion_cortesia.mp3",
+      "duration": 77,
+      "title": "Palabras De Cortezía"
+    },
+    {
+      "url": "/tano_assets/audio/cancion_familia.mp3",
+      "duration": 104,
+      "title": "La Nonna Siede"
+    },
+    {
+      "url": "/UCEN/mp3s Radio propia encuentro ASFAE42 UCEN La Serena/Congreso ASFAE 42.mp3",
+      "duration": 117,
+      "title": "Congreso ASFAE 42"
+    }
+  ]
+}

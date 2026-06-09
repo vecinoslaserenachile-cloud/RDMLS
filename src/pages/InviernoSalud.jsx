@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Volume2, VolumeX, Heart, ShieldAlert, CheckCircle2, XCircle, Info, Stethoscope, Star, ArrowLeft } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Heart, ShieldAlert, CheckCircle2, XCircle, Info, Stethoscope, Star, ArrowLeft, X, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import confetti from 'canvas-confetti';
 
 const TRIVIA_QUESTIONS = [
     {
@@ -42,6 +43,42 @@ const TRIVIA_QUESTIONS = [
     }
 ];
 
+// Helper para sonidos UI
+const playTone = (frequency, type, duration, vol=0.1) => {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + duration);
+    } catch(e) {
+        console.error("Audio API not supported");
+    }
+};
+
+const playCorrectSound = () => {
+    playTone(600, 'sine', 0.1);
+    setTimeout(() => playTone(800, 'sine', 0.2), 100);
+};
+
+const playIncorrectSound = () => {
+    playTone(300, 'sawtooth', 0.2, 0.05);
+    setTimeout(() => playTone(200, 'sawtooth', 0.3, 0.05), 150);
+};
+
+const playWinSound = () => {
+    playTone(400, 'sine', 0.1);
+    setTimeout(() => playTone(500, 'sine', 0.1), 100);
+    setTimeout(() => playTone(600, 'sine', 0.1), 200);
+    setTimeout(() => playTone(800, 'sine', 0.4), 300);
+};
+
 export default function InviernoSalud() {
     const navigate = useNavigate();
     const playerRef = useRef(null);
@@ -50,6 +87,9 @@ export default function InviernoSalud() {
     const [volume, setVolume] = useState(100);
     const [ytReady, setYtReady] = useState(false);
     
+    // Image Modal State
+    const [selectedImage, setSelectedImage] = useState(null);
+
     // Trivia State
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [score, setScore] = useState(0);
@@ -143,6 +183,7 @@ export default function InviernoSalud() {
     
     const handleAnswerSelect = (index) => {
         if (isAnswerChecked) return;
+        playTone(300 + (index*50), 'sine', 0.05);
         setSelectedAnswer(index);
     };
     
@@ -151,6 +192,15 @@ export default function InviernoSalud() {
         setIsAnswerChecked(true);
         if (selectedAnswer === TRIVIA_QUESTIONS[currentQuestion].correctAnswer) {
             setScore(prev => prev + 1);
+            playCorrectSound();
+            confetti({
+                particleCount: 50,
+                spread: 60,
+                origin: { y: 0.8 },
+                colors: ['#10b981', '#34d399']
+            });
+        } else {
+            playIncorrectSound();
         }
     };
     
@@ -161,6 +211,13 @@ export default function InviernoSalud() {
             setIsAnswerChecked(false);
         } else {
             setShowTriviaResult(true);
+            playWinSound();
+            confetti({
+                particleCount: 150,
+                spread: 100,
+                origin: { y: 0.5 },
+                colors: ['#eab308', '#f59e0b', '#10b981', '#3b82f6']
+            });
         }
     };
     
@@ -255,9 +312,9 @@ export default function InviernoSalud() {
                             </p>
                             
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                <img src="/invierno/invierno_protocolo_rojo.jpg" alt="Rojo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)' }} />
-                                <img src="/invierno/invierno_protocolo_amarillo.jpg" alt="Amarillo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)' }} />
-                                <img src="/invierno/invierno_prevenir.jpg" alt="Prevenir" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)' }} />
+                                <img src="/invierno/invierno_protocolo_rojo.jpg" alt="Rojo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_rojo.jpg")} />
+                                <img src="/invierno/invierno_protocolo_amarillo.jpg" alt="Amarillo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_amarillo.jpg")} />
+                                <img src="/invierno/invierno_prevenir.jpg" alt="Prevenir" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_prevenir.jpg")} />
                             </div>
                         </div>
 
@@ -336,15 +393,19 @@ export default function InviernoSalud() {
                         
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
                             {[
-                                { src: "/invierno/invierno_entrevista_portada.jpg", title: "Campaña Oficial", desc: "Entrevista en profundidad" },
-                                { src: "/invierno/invierno_prevenir.jpg", title: "Prevención", desc: "Medidas clave en casa" },
-                                { src: "/invierno/invierno_protocolo_amarillo.jpg", title: "Alerta Amarilla", desc: "Cuándo ir al CESFAM" },
-                                { src: "/invierno/invierno_protocolo_rojo.jpg", title: "Alerta Roja", desc: "Urgencia Inmediata" }
+                                { src: "/invierno/invierno_entrevista_portada.jpg", title: "Campaña Oficial", desc: "Haz clic para ampliar" },
+                                { src: "/invierno/invierno_prevenir.jpg", title: "Prevención", desc: "Haz clic para ampliar" },
+                                { src: "/invierno/invierno_protocolo_amarillo.jpg", title: "Alerta Amarilla", desc: "Haz clic para ampliar" },
+                                { src: "/invierno/invierno_protocolo_rojo.jpg", title: "Alerta Roja", desc: "Haz clic para ampliar" }
                             ].map((item, index) => (
                                 <motion.div 
                                     key={index}
                                     whileHover={{ scale: 1.05, y: -10 }}
                                     whileTap={{ scale: 0.95 }}
+                                    onClick={() => {
+                                        playTone(700, 'sine', 0.1);
+                                        setSelectedImage(item.src);
+                                    }}
                                     style={{ 
                                         position: 'relative', 
                                         borderRadius: '20px', 
@@ -371,8 +432,8 @@ export default function InviernoSalud() {
                                     >
                                         <h4 style={{ margin: '0 0 5px 0', fontSize: '1.2rem', fontWeight: '900', color: 'white' }}>{item.title}</h4>
                                         <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>{item.desc}</p>
-                                        <div style={{ marginTop: '10px', background: 'rgba(255,255,255,0.2)', width: 'fit-content', padding: '5px 15px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                            Explorar
+                                        <div style={{ marginTop: '10px', background: 'rgba(59,130,246,0.5)', width: 'fit-content', padding: '5px 15px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                                            Ampliar
                                         </div>
                                     </div>
                                 </motion.div>
@@ -395,11 +456,16 @@ export default function InviernoSalud() {
                                 <div style={{ width: '50px', height: '50px', background: '#eab308', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 20px rgba(234, 179, 8, 0.3)' }}>
                                     <Star size={24} color="white" />
                                 </div>
-                                <h3 style={{ fontSize: '1.8rem', fontWeight: '900', margin: 0 }}>Trivia VLS</h3>
+                                <h3 style={{ fontSize: '1.8rem', fontWeight: '900', margin: 0 }}>Trivia Lúdica</h3>
                             </div>
-                            <div style={{ background: 'rgba(0,0,0,0.5)', padding: '5px 15px', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)', color: '#eab308', fontWeight: 'bold', fontSize: '0.8rem' }}>
-                                {score} PUNTOS
-                            </div>
+                            <motion.div 
+                                animate={{ scale: [1, 1.1, 1] }} 
+                                transition={{ repeat: Infinity, duration: 2 }}
+                                style={{ background: 'rgba(0,0,0,0.5)', padding: '5px 15px', borderRadius: '50px', border: '1px solid rgba(255,255,255,0.1)', color: '#eab308', fontWeight: 'bold', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '5px' }}
+                            >
+                                <Award size={16} />
+                                {score} PTS
+                            </motion.div>
                         </div>
 
                         {!showTriviaResult ? (
@@ -523,15 +589,17 @@ export default function InviernoSalud() {
                                 style={{ textAlign: 'center', padding: '2rem 0' }}
                             >
                                 <div style={{ width: '100px', height: '100px', background: 'linear-gradient(135deg, #10b981, #3b82f6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', boxShadow: '0 20px 40px rgba(16, 185, 129, 0.4)' }}>
-                                    <Heart size={50} color="white" />
+                                    <Award size={50} color="white" />
                                 </div>
-                                <h4 style={{ fontSize: '2.5rem', fontWeight: '900', color: 'white', marginBottom: '1rem' }}>¡Completado!</h4>
+                                <h4 style={{ fontSize: '2.5rem', fontWeight: '900', color: 'white', marginBottom: '1rem' }}>¡Misión Cumplida!</h4>
                                 <p style={{ fontSize: '1.2rem', color: '#cbd5e1', marginBottom: '2rem' }}>
-                                    Obtuviste <span style={{ color: '#eab308', fontWeight: 'bold' }}>{score}</span> de {TRIVIA_QUESTIONS.length} respuestas correctas.
+                                    Obtuviste <span style={{ color: '#eab308', fontWeight: 'bold' }}>{score}</span> de {TRIVIA_QUESTIONS.length} estrellas de aprendizaje.
                                 </p>
                                 <button 
                                     onClick={resetTrivia}
-                                    style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 30px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer' }}
+                                    style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 30px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
+                                    onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+                                    onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
                                 >
                                     Jugar de nuevo
                                 </button>
@@ -541,6 +609,49 @@ export default function InviernoSalud() {
                 </div>
 
             </main>
+
+            {/* Image Fullscreen Modal */}
+            <AnimatePresence>
+                {selectedImage && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedImage(null)}
+                        style={{
+                            position: 'fixed',
+                            inset: 0,
+                            background: 'rgba(0,0,0,0.9)',
+                            backdropFilter: 'blur(10px)',
+                            zIndex: 9999,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            padding: '2rem',
+                            cursor: 'zoom-out'
+                        }}
+                    >
+                        <button 
+                            onClick={() => setSelectedImage(null)}
+                            style={{ position: 'absolute', top: '30px', right: '30px', background: 'rgba(255,255,255,0.1)', border: 'none', color: 'white', width: '50px', height: '50px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.3s' }}
+                            onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.5)'}
+                            onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                        >
+                            <X size={24} />
+                        </button>
+                        <motion.img 
+                            initial={{ scale: 0.8, y: 50 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.8, y: 50 }}
+                            src={selectedImage}
+                            alt="Ampliada"
+                            style={{ maxWidth: '100%', maxHeight: '90vh', borderRadius: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.8)', objectFit: 'contain' }}
+                            onClick={(e) => e.stopPropagation()}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
         </div>
     );
 }

@@ -18,6 +18,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import VLSInduccion from '../VLSInduccion';
 import Induccion25 from '../Induccion25';
 import Aprende from '../Aprende';
+import { ServerlessRadioEngine } from '../../utils/ServerlessRadioEngine';
+import { QRCodeSVG } from 'qrcode.react';
 
 const VUMeter = ({ label, needleRef }) => (
     <div style={{
@@ -82,6 +84,84 @@ export default function CentroRadio({ isDevMode = false }) {
     const isMobile = window.innerWidth < 1024;
     const isVLS = false; // Forza false para mantener compatibilidad con codigo viejo si quedó algo
     const isRDMLS = true; // Hardcoded ya que esta app solo corre aca
+    const serverlessEngineRef = useRef(null);
+    const [isDjTalking, setIsDjTalking] = useState(false);
+    const [djMessage, setDjMessage] = useState("");
+    const [currentTipIndex, setCurrentTipIndex] = useState(0);
+
+    const [humanVoice, setHumanVoice] = useState(null);
+
+    const findBestVoice = () => {
+        const voices = window.speechSynthesis.getVoices();
+        const latAmVoices = voices.filter(v => 
+            (v.lang.includes('es-CL') || v.lang.includes('es-MX') || v.lang.includes('es-AR') || v.lang.includes('es-US') || v.lang.includes('es-CO') || v.lang.includes('es-419')) 
+            && !v.lang.includes('es-ES')
+            && !v.name.includes('Spain') 
+            && !v.name.includes('España')
+        );
+        const priorities = ['Sabina', 'Paulina', 'es-CL', 'Javier', 'Raul', 'Helena', 'Zira'];
+        for (const p of priorities) {
+            const found = latAmVoices.find(v => v.name.includes(p) || v.lang.includes(p));
+            if (found) return found;
+        }
+        return latAmVoices[0] || voices.find(v => v.lang.includes('es') && !v.lang.includes('es-ES')) || voices[0];
+    };
+
+    useEffect(() => {
+        const updateVoices = () => setHumanVoice(findBestVoice());
+        if (window.speechSynthesis) {
+            try {
+                window.speechSynthesis.onvoiceschanged = updateVoices;
+            } catch (e) {
+                console.warn("speechSynthesis.onvoiceschanged not supported", e);
+            }
+            updateVoices();
+        }
+    }, []);
+
+    const fadeVolume = (target, duration = 600) => {
+        if (!audioRef.current) return;
+        const startVol = audioRef.current.volume;
+        const diff = target - startVol;
+        const steps = 20;
+        const stepTime = duration / steps;
+        let currentStep = 0;
+        const interval = setInterval(() => {
+            currentStep++;
+            audioRef.current.volume = Math.max(0, Math.min(1, startVol + (diff * (currentStep / steps))));
+            if (currentStep >= steps) {
+                clearInterval(interval);
+                audioRef.current.volume = target;
+            }
+        }, stepTime);
+    };
+
+    const injectAIDJ = (msg) => {
+        if (localStorage.getItem('vls_locution_enabled') === 'false') return;
+        if (!window.speechSynthesis) return;
+        setIsDjTalking(true);
+        setDjMessage(msg);
+        fadeVolume(volume * 0.1, 800);
+        const utt = new SpeechSynthesisUtterance(msg);
+        const voice = findBestVoice();
+        if (voice) utt.voice = voice;
+        utt.lang = (voice && voice.lang) ? voice.lang : 'es-MX';
+        utt.rate = 0.98;
+        utt.pitch = 1.05;
+        utt.volume = 0.9;
+        const textToSpeak = msg.split('. ').join('... ').split(', ').join('... ');
+        utt.text = textToSpeak; 
+        utt.onend = () => {
+            fadeVolume(volume, 1000);
+            setIsDjTalking(false);
+            setDjMessage("");
+        };
+        utt.onerror = () => {
+            fadeVolume(volume, 500);
+            setIsDjTalking(false);
+        };
+        window.speechSynthesis.speak(utt);
+    };
 
 
     useEffect(() => {
@@ -111,8 +191,8 @@ export default function CentroRadio({ isDevMode = false }) {
     
     // ── CONFIGURACIÓN DE SEÑALES (Soberanía Digital RDMLS) ──────────────────
     // Se utiliza redundancia de endpoints para asegurar la escucha continua.
-    const RDMLS_MAIN_STREAM = 'https://az11.yesstreaming.net/listen/rdmls/radio.mp3';
-    const RDMLS_FALLBACK_STREAM = 'https://az11.yesstreaming.net:8590/radio.mp3';
+    const RDMLS_MAIN_STREAM = 'serverless';
+    const RDMLS_FALLBACK_STREAM = 'serverless';
     
     const [streamUrl, setStreamUrl] = useState(RDMLS_MAIN_STREAM);
     const [streamError, setStreamError] = useState(false);
@@ -245,12 +325,11 @@ export default function CentroRadio({ isDevMode = false }) {
             name: 'RDMLS CULTURA & PATRIMONIO',
             dialLabel: 'CULTURA',
             slogan: 'DIFUSIÓN CULTURAL MUNICIPAL - LA SERENA', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", 
+            url: 'serverless', 
             color: '#ef4444',
             logo: '/escudo.png',
             badge: 'MUNICIPAL',
             localTracks: [
-                { id: 'cultura_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=cultura", isLive: true },
                 { id: 'vals_mis_recuerdos', title: "Vals Mis Recuerdos", artist: "Patrimonio Serenense", url: "/music/vals_mis_recuerdos.mp3" },
                 { id: 'linda_provinciana', title: "Linda Provinciana", artist: "Radio VLS Originals", url: "/music/linda_provinciana.mp3" },
                 { id: 'eres_serena', title: "Eres Serena", artist: "Radio VLS Originals", url: "/music/eres_serena.mp3" }
@@ -261,12 +340,11 @@ export default function CentroRadio({ isDevMode = false }) {
             name: 'RDMLS INFORMATIVA 24/7',
             dialLabel: 'RADIO INFO',
             slogan: 'BOLETINES Y GESTIÓN EN TERRENO', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", 
+            url: 'serverless', 
             color: '#38bdf8',
             logo: '/logo_municipio.png',
             badge: 'OFICIAL',
             localTracks: [
-                { id: 'informativa_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=info", isLive: true },
                 { id: 'estiempodelaserena', title: "Es Tiempo de La Serena", artist: "Campaña Serenito", url: "/music/estiempodelaserena.mp3" },
                 { id: 'mujer', title: "Mujer", artist: "Radio VLS Originals", url: "/music/mujer.mp3" },
                 { id: 'serenito_rap', title: "Serenito Rap", artist: "Campaña Serenito", url: "/music/serenito_rap.mp3" },
@@ -278,12 +356,11 @@ export default function CentroRadio({ isDevMode = false }) {
             name: 'RDMLS EVENTOS & PROTOCOLO',
             dialLabel: 'PROTOCOL',
             slogan: 'PROTOCOLOS Y ACTOS INSTITUCIONALES', 
-            url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", 
+            url: 'serverless', 
             color: '#10b981',
             logo: '/escudo.png',
             badge: 'VIVO',
             localTracks: [
-                { id: 'eventos_live', title: "Señal en Vivo AzuraCast", url: "https://az11.yesstreaming.net:8590/radio.mp3?rel=protocol", isLive: true },
                 { id: 'himno_la_serena_jazz', title: "Himno La Serena en Jazz Blues", artist: "Ensambles Locales", url: "/music/himno_la_serena_jazz.mp3" },
                 { id: 'es_amor_por_la_serena', title: "Es Amor por La Serena", artist: "Radio VLS Exclusivo", url: "/music/es_amor_por_la_serena.mp3" }
             ]
@@ -324,11 +401,7 @@ export default function CentroRadio({ isDevMode = false }) {
         setCurrentStation(station);
         setStreamError(false); // Reset stream error on station change!
         
-        if (station.localTracks) {
-            setSelectedLocalTrackId(station.localTracks[0].id);
-            setStreamUrl(station.localTracks[0].url);
-            setIsPlaying(false);
-        } else if (station.isVideo || station.isPlaylist) {
+        if (station.isVideo || station.isPlaylist) {
             setStreamUrl(""); // No audio stream for videos/playlists
             setIsPlaying(true); // Se abre directo!
             setSelectedLocalTrackId(null);
@@ -366,6 +439,31 @@ export default function CentroRadio({ isDevMode = false }) {
             return () => clearInterval(interval);
         }
     }, [isPlaying]);
+
+    useEffect(() => {
+        const intervalTime = 600000;
+        const djInterval = setInterval(() => {
+            if (!isDjTalking && (isPlaying || Math.random() > 0.6)) {
+                const hours = new Date().getHours();
+                const minutes = new Date().getMinutes().toString().padStart(2, '0');
+                const tips = [
+                    `Radio Municipal informa: Son las ${hours} con ${minutes}. Les acompañamos en el bloque informativo oficial.`,
+                    "En nuestro portal buscamos facilitar el acceso a trámites y servicios municipales de forma coordinada. Una herramienta para su día a día.",
+                    "Queremos que su experiencia al reportar incidencias urbanas sea eficiente. Gracias por su compromiso con nuestra comuna.",
+                    "¿Busca profundizar sus conocimientos? El portal de inducción elearning está a su disposición para el crecimiento profesional.",
+                    "Le invitamos a conocer el Paseo Histórico de nuestra ciudad. Un recorrido virtual por la identidad serenense.",
+                    "Nuestros observatorios son ventanas al universo. La Serena, capital mundial de la astronomía, le saluda.",
+                    "Fomentamos el desarrollo económico local. Conozca las iniciativas de fomento productivo en nuestro portal estratégico.",
+                    "El aprendizaje continuo es clave en la gestión digital. Explore nuestros módulos de capacitación para funcionarios y ciudadanos.",
+                    "Saludamos a la red de comunicadores regionales. Gracias por ser parte de esta señal oficial."
+                ];
+                const nextIndex = (currentTipIndex + 1) % tips.length;
+                setCurrentTipIndex(nextIndex);
+                injectAIDJ(tips[nextIndex]);
+            }
+        }, intervalTime);
+        return () => clearInterval(djInterval);
+    }, [isPlaying, isDjTalking, currentStation, volume, currentTipIndex]);
 
 
     // Equalizer Visualizer & Filter Update Logic
@@ -557,6 +655,39 @@ export default function CentroRadio({ isDevMode = false }) {
     }, [volume, isMuted]);
 
     // Cuando cambia la estación (streamUrl), actualizar el src pero NO auto-reproducir
+    const setupServerlessStream = async () => {
+        if (!serverlessEngineRef.current) {
+            serverlessEngineRef.current = new ServerlessRadioEngine('/radio_playlist.json');
+            await serverlessEngineRef.current.init();
+        }
+        const state = serverlessEngineRef.current.getCurrentState();
+        if (state) {
+            const wasPlaying = !audioRef.current.paused;
+            audioRef.current.removeAttribute('crossorigin');
+            audioRef.current.src = state.track.url;
+            audioRef.current.load();
+            
+            audioRef.current.onloadedmetadata = () => {
+                // Ensure we don't seek past duration
+                audioRef.current.currentTime = Math.min(state.offset, audioRef.current.duration - 0.5);
+                // We use our local ref to check if it was playing to resume it seamlessly
+                if (wasPlaying || audioRef.current.autoplay || window.radioWantsToPlay) {
+                    const p = audioRef.current.play();
+                    if (p !== undefined) {
+                        p.then(() => syncAudioVolume()).catch(() => {
+                            // Autoplay block
+                        });
+                    }
+                }
+            };
+            
+            audioRef.current.onended = () => {
+                // Immediately fetch next
+                setupServerlessStream();
+            };
+        }
+    };
+
     useEffect(() => {
         if (!audioRef.current) return;
         
@@ -564,9 +695,17 @@ export default function CentroRadio({ isDevMode = false }) {
         if (!streamUrl || streamUrl === "" || currentStation?.isVideo || currentStation?.isPlaylist) {
             audioRef.current.pause();
             audioRef.current.removeAttribute('src');
+            audioRef.current.onended = null;
             return;
         }
 
+        if (streamUrl === 'serverless') {
+            window.radioWantsToPlay = isPlaying;
+            setupServerlessStream();
+            return;
+        }
+
+        audioRef.current.onended = null;
         audioRef.current.src = streamUrl;
         audioRef.current.load();
         if (isPlaying && streamUrl) {
@@ -661,13 +800,22 @@ export default function CentroRadio({ isDevMode = false }) {
 
         if (isPlaying) {
             // PARAR
+            window.radioWantsToPlay = false;
             audio.pause();
             audio.currentTime = 0;
+            audio.onended = null; // Detener el auto-reproductor del servidor
             setIsPlaying(false);
         } else {
             // REPRODUCIR
             if (currentStation.isVideo) {
                 setIsPlaying(true);
+                return;
+            }
+
+            if (streamUrl === 'serverless') {
+                window.radioWantsToPlay = true;
+                setIsPlaying(true);
+                setupServerlessStream();
                 return;
             }
 
@@ -1731,16 +1879,14 @@ export default function CentroRadio({ isDevMode = false }) {
 
                     {/* Columna derecha — QR */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.8rem', flexShrink: 0 }}>
-                        <div style={{ background: 'white', padding: '12px', borderRadius: '16px', boxShadow: '0 0 30px rgba(255,215,0,0.3)' }}>
-                            <img
-                                src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=https%3A%2F%2Fwww.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl&color=8B1D19&bgcolor=ffffff&qzone=1&margin=0`}
-                                alt={isVLS ? "QR VLS" : "QR RDMLS"}
-                                width="160" height="160"
-                                style={{ display: 'block', borderRadius: '8px' }}
-                                onError={e => {
-                                    // Fallback a otro proveedor de QR
-                                    e.target.src = `https://quickchart.io/qr?text=https%3A%2F%2Fwww.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl&size=160&margin=2&ecLevel=M&dark=8B1D19&light=ffffff`;
-                                }}
+                        <div className="bg-white p-2 rounded-xl mb-4 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+                            <QRCodeSVG 
+                                value={`https://www.${isVLS ? 'vecinoslaserena' : 'rdmls'}.cl`}
+                                size={160}
+                                fgColor="#8B1D19"
+                                bgColor="#ffffff"
+                                level="M"
+                                marginSize={1}
                             />
                         </div>
                         <p style={{ margin: 0, fontSize: '0.72rem', opacity: 0.6, textAlign: 'center', letterSpacing: '0.5px' }}>

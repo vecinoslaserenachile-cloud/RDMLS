@@ -1,6 +1,17 @@
+import React, { useState, useEffect } from 'react';
+import { Radio as RadioIcon, Tv, ExternalLink, Music, X, Save, Zap, Settings, FileText, Brain, Sparkles, Clock, Mic, CheckCircle } from 'lucide-react';
+
 // --- PANELES DEL STUDIO ---
 function RadioStudioContent({ activeStudio, role, title, setTitle, content, setContent, category, setCategory, handleAIGen, handleSentinelScan, isAIGenerating, isSentinelScanning, handleGenerateVoice, isPlayingVoice, handleSubir, marquees, newMarquee, setNewMarquee, handleAddMarquee, handleRemoveMarquee, pendingNotes, handleAprobar }) {
-    
+    const [playlist, setPlaylist] = useState([]);
+
+    useEffect(() => {
+        fetch('/radio_playlist.json')
+            .then(res => res.json())
+            .then(data => setPlaylist(data.tracks || []))
+            .catch(err => console.error("Error cargando playlist", err));
+    }, []);
+
     if (activeStudio === 'video') {
         return (
             <div className="animate-fade-in" style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '2rem' }}>
@@ -98,18 +109,20 @@ function RadioStudioContent({ activeStudio, role, title, setTitle, content, setC
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                          <div className="glass-panel" style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem', flex: 1 }}>
                             <h4 style={{ color: '#38bdf8', marginTop: 0, marginBottom: '1rem', fontSize: '0.9rem' }}>📻 PROGRAMACIÓN SIGUIENTE</h4>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                                {[1, 2, 3].map(i => (
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', maxHeight: '400px', overflowY: 'auto' }}>
+                                {playlist.length > 0 ? playlist.map((track, i) => (
                                     <div key={i} style={{ display: 'flex', gap: '1rem', alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '0.8rem', borderRadius: '12px' }}>
                                         <div style={{ width: '40px', height: '40px', background: '#334155', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                             <Music size={18} color="#94a3b8" />
                                         </div>
                                         <div>
-                                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>Cápsula Informativa vecinoslaserena.cl #{i}</div>
-                                            <div style={{ fontSize: '0.7rem', color: '#64748b' }}>IA Narradora | 02:45</div>
+                                            <div style={{ fontSize: '0.85rem', fontWeight: 'bold' }}>{track.title || 'Pista Desconocida'}</div>
+                                            <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{track.artist || 'Artista Desconocido'} | 03:00</div>
                                         </div>
                                     </div>
-                                ))}
+                                )) : (
+                                    <div style={{ padding: '1rem', color: '#64748b', fontSize: '0.85rem' }}>Cargando playlist o sin pistas...</div>
+                                )}
                             </div>
                          </div>
                     </div>
@@ -393,6 +406,3 @@ export default function RadioBackofficeModal({ onClose }) {
         </div>
     );
 }
-
-import { Radio as RadioIcon, Tv, ExternalLink, Music, X } from 'lucide-react';
-

@@ -188,11 +188,17 @@ export default function GlobalAnnouncer() {
     useEffect(() => {
         // Inicializar voces (algunos navegadores necesitan esto)
         const loadVoices = () => {
-            window.speechSynthesis.getVoices();
+            if (window.speechSynthesis) {
+                window.speechSynthesis.getVoices();
+            }
         };
         
-        if (window.speechSynthesis.onvoiceschanged !== undefined) {
-            window.speechSynthesis.onvoiceschanged = loadVoices;
+        if (window.speechSynthesis) {
+            try {
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+            } catch (e) {
+                console.warn("speechSynthesis.onvoiceschanged not supported", e);
+            }
         }
         loadVoices();
         
