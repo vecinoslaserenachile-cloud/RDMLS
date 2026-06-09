@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
 import VLSNotesGallery from '../components/VLSNotesGallery';
 import HechoEnChile from '../components/HechoEnChile';
-import { Home, Heart, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Radio as RadioIcon, Info, ChevronRight, Sparkles, BookOpen, Moon, Stars, GraduationCap, Video, Flame, Hammer, TreePine, Sun, Apple, Palette, ShieldAlert } from 'lucide-react';
+import { Home, Heart, Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Radio as RadioIcon, Info, ChevronRight, Sparkles, BookOpen, Moon, Stars, GraduationCap, Video, Flame, Hammer, TreePine, Sun, Apple, Palette, ShieldAlert, Activity } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import EntrevecinasProposeModal from '../components/EntrevecinasProposeModal';
