@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 const LoadingScreen = ({ isSyncing = false }) => {
   const host = (window.location.hostname || window.location.host || '').toLowerCase();
   const isEntrevecinas = host.includes('entrevecinas.cl');
+  const isInvierno = window.location.pathname.toLowerCase().includes('invierno');
   const isRDMLS = host.includes('rdmls') || host.includes('rdmk') || host.includes('imls') || host.includes('rds') || (host.includes('laserena.cl') && !host.includes('vecinos') && !host.includes('prendes')) || host.includes('prendes-vls') || window.location.pathname.includes('/radio') || (host.includes('localhost') && (window.location.pathname.includes('/radio') || window.location.search.includes('rdmls'))) || window.location.search.includes('rdmls');
   const isPeregrino = host.includes('peregrino') || host.includes('nuevoperegrino.cl') || host.includes('nuevo-peregrino') || window.location.pathname.includes('/peregrino');
   const isPrendesLegacy = host.includes('vecinosmart.cl');
@@ -288,6 +289,82 @@ const LoadingScreen = ({ isSyncing = false }) => {
             VLS_OS_GLOBAL_ENGINE_v4.2.7_SINGLE_INSTANCE_INSTANT
           </div>
         )}
+
+        {/* ===== AMBULANCIA INVIERNO — solo aparece en ruta /invierno ===== */}
+        {isInvierno && (
+          <div style={{
+            position: 'absolute',
+            bottom: '130px',
+            left: 0,
+            right: 0,
+            height: '60px',
+            overflow: 'hidden',
+            pointerEvents: 'none',
+            zIndex: 3
+          }}>
+            <style>{`
+              @keyframes ambulanceDrive {
+                0%   { transform: translateX(-220px); }
+                100% { transform: translateX(110vw); }
+              }
+            `}</style>
+            <svg
+              viewBox="0 0 220 60"
+              style={{
+                width: '220px',
+                height: '60px',
+                animation: 'ambulanceDrive 3.2s cubic-bezier(0.25,0.1,0.25,1) 0.6s 1 forwards',
+                position: 'absolute',
+                bottom: '0'
+              }}
+            >
+              {/* Cuerpo blanco */}
+              <rect x="20" y="10" width="160" height="38" rx="8" fill="white" />
+              {/* Cabina */}
+              <rect x="10" y="18" width="38" height="30" rx="6" fill="#e2e8f0" />
+              {/* Ventana cabina */}
+              <rect x="13" y="21" width="22" height="16" rx="3" fill="#7dd3fc" opacity="0.85" />
+              {/* Cruz roja */}
+              <rect x="90" y="20" width="6" height="20" rx="2" fill="#ef4444" />
+              <rect x="82" y="27" width="22" height="6" rx="2" fill="#ef4444" />
+              {/* Franja roja */}
+              <rect x="10" y="36" width="170" height="6" rx="0" fill="#ef4444" />
+              {/* Texto */}
+              <text x="115" y="34" textAnchor="middle" fill="#1e3a8a" fontSize="9" fontWeight="900" fontFamily="Arial" letterSpacing="2">AMBULANCIA</text>
+              {/* Baliza */}
+              <rect x="85" y="3" width="50" height="10" rx="4" fill="#1e293b" />
+              <rect x="90" y="3" width="18" height="10" rx="3">
+                <animate attributeName="fill" values="#ef4444;#3b82f6;#ef4444" dur="0.35s" repeatCount="indefinite" />
+              </rect>
+              <rect x="112" y="3" width="18" height="10" rx="3">
+                <animate attributeName="fill" values="#3b82f6;#ef4444;#3b82f6" dur="0.35s" repeatCount="indefinite" />
+              </rect>
+              {/* Halo baliza */}
+              <ellipse cx="99" cy="3" rx="10" ry="6" fill="#ef4444" opacity="0.25">
+                <animate attributeName="opacity" values="0.25;0.6;0.25" dur="0.35s" repeatCount="indefinite" />
+              </ellipse>
+              <ellipse cx="121" cy="3" rx="10" ry="6" fill="#3b82f6" opacity="0.25">
+                <animate attributeName="opacity" values="0.6;0.25;0.6" dur="0.35s" repeatCount="indefinite" />
+              </ellipse>
+              {/* Rueda delantera */}
+              <circle cx="46" cy="48" r="10" fill="#1e293b" />
+              <circle cx="46" cy="48" r="5" fill="#94a3b8">
+                <animateTransform attributeName="transform" type="rotate" from="0 46 48" to="360 46 48" dur="0.4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="46" cy="48" r="2" fill="#cbd5e1" />
+              {/* Rueda trasera */}
+              <circle cx="158" cy="48" r="10" fill="#1e293b" />
+              <circle cx="158" cy="48" r="5" fill="#94a3b8">
+                <animateTransform attributeName="transform" type="rotate" from="0 158 48" to="360 158 48" dur="0.4s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="158" cy="48" r="2" fill="#cbd5e1" />
+              {/* Faro delantero */}
+              <ellipse cx="13" cy="32" rx="4" ry="7" fill="#fef9c3" opacity="0.9" />
+              <ellipse cx="6" cy="32" rx="6" ry="3" fill="#fef08a" opacity="0.4" />
+            </svg>
+          </div>
+        )}
+
       </div>
     );
   }

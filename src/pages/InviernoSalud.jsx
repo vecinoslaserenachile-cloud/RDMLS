@@ -1,45 +1,114 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Pause, Volume2, VolumeX, Heart, ShieldAlert, CheckCircle2, XCircle, Info, Stethoscope, Star, ArrowLeft, X, Award } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Heart, ShieldAlert, CheckCircle2, XCircle, Info, Stethoscope, Star, ArrowLeft, X, Award, MessageSquare, Send, Trash2, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
+import { supabase } from '../utils/supabase';
 
 const TRIVIA_QUESTIONS = [
     {
         id: 1,
-        question: "¿Cuál es una de las medidas principales para prevenir enfermedades respiratorias en invierno?",
+        question: "¿Cuál es la medida MÁS importante para prevenir enfermedades respiratorias en invierno?",
         options: [
-            "Evitar vacunarse",
+            "Evitar salir de casa en todo momento",
             "Lavado frecuente de manos",
-            "Mantener ventanas siempre cerradas todo el día",
-            "Consumir bebidas muy heladas"
+            "Mantener ventanas siempre cerradas",
+            "Tomar vitaminas todos los días"
         ],
         correctAnswer: 1,
-        explanation: "El lavado frecuente de manos elimina virus y bacterias que causan infecciones respiratorias."
+        explanation: "¡Correcto! El lavado frecuente de manos elimina virus y bacterias que causan infecciones respiratorias. Es la medida más efectiva y económica.",
+        emoji: "🧼"
     },
     {
         id: 2,
-        question: "Según el Protocolo Rojo, ¿qué síntoma requiere acudir de inmediato a Urgencias (SAPU u Hospital)?",
+        question: "Según el Protocolo Verde (síntomas leves), ¿qué rango de fiebre se considera dentro de lo manejable en casa?",
         options: [
-            "Tos leve ocasional",
-            "Hundimiento profundo debajo de las costillas al respirar",
-            "Resfrío de 1 día de evolución",
-            "Dolor de cabeza leve"
+            "Menos de 35°C",
+            "Entre 36°C y 38°C por menos de 3 días",
+            "Más de 39°C por cualquier tiempo",
+            "No puede haber fiebre en síntomas leves"
         ],
         correctAnswer: 1,
-        explanation: "El hundimiento de costillas (tiraje) es un signo de dificultad respiratoria grave (Riesgo Vital)."
+        explanation: "El Protocolo Verde indica fiebre entre 36°-38°C que dura MENOS de 3 días. Si supera 38°C o dura más, se debe consultar al médico.",
+        emoji: "🟢"
     },
     {
         id: 3,
-        question: "¿Qué nos indica el Protocolo Amarillo frente a síntomas moderados como tos intensa por más de 3 días?",
+        question: "¿Cuántas respiraciones por minuto en niños mayores de 6 meses son señal de alarma (Protocolo Amarillo)?",
         options: [
-            "Esperar en casa a que pase solo",
-            "Ir inmediatamente al Hospital Regional",
-            "Consulta médica necesaria a la brevedad en el CESFAM",
-            "Tomar antibióticos que sobraron del año pasado"
+            "Más de 60",
+            "Más de 20",
+            "40 o más respiraciones por minuto",
+            "Solo cuando no respira"
         ],
         correctAnswer: 2,
-        explanation: "Para síntomas moderados, se debe acudir al consultorio o CESFAM para evaluación y tratamiento adecuado, evitando saturar Urgencias."
+        explanation: "40 o más respiraciones por minuto en niños mayores de 6 meses es señal de Protocolo Amarillo. Puedes medirlo poniendo la mano en la guatita y contando cuántas veces sube en un minuto.",
+        emoji: "🟡"
+    },
+    {
+        id: 4,
+        question: "Según el Protocolo Rojo, ¿qué significa si los labios o uñas se ponen de color morado/azul?",
+        options: [
+            "Es normal en invierno por el frío",
+            "Indica que la persona tiene frío",
+            "Es signo de falta de oxígeno: urgencia vital",
+            "Puede esperar hasta el día siguiente"
+        ],
+        correctAnswer: 2,
+        explanation: "¡Señal de alarma máxima! El cambio de coloración en labios o uñas es un signo de falta de oxígeno. Acudir inmediatamente a Urgencias (SAPU u Hospital). Es riesgo vital.",
+        emoji: "🔴"
+    },
+    {
+        id: 5,
+        question: "¿Cuál es el número de Salud Responde que funciona 24/7 para consultas de salud respiratoria?",
+        options: [
+            "600-800-5000",
+            "600-720-7700",
+            "133",
+            "600-360-7777"
+        ],
+        correctAnswer: 3,
+        explanation: "¡El número es 600-360-7777! Salud Responde funciona las 24 horas, los 7 días de la semana. Si tienes dudas sobre si ir o no a urgencias, llama primero.",
+        emoji: "📞"
+    },
+    {
+        id: 6,
+        question: "¿Por qué es malo abrigar DEMASIADO a los niños en invierno, según la Dra. Paulina Fleite?",
+        options: [
+            "Porque el abrigo es muy caro",
+            "Porque los niños no tienen frío",
+            "Porque juegan, transpiran y esa transpiración fría empeora su salud",
+            "No tiene ningún efecto negativo"
+        ],
+        correctAnswer: 2,
+        explanation: "Los niños son más activos y al jugar transpiran. Si están muy abrigados, esa transpiración se enfría y puede empeorar su salud. Lo ideal es vestirlos por capas que se puedan ir retirando.",
+        emoji: "🧥"
+    },
+    {
+        id: 7,
+        question: "¿Qué vacuna ha logrado que en Chile no haya fallecidos por VRS (virus respiratorio sincicial) en menores de 1 año?",
+        options: [
+            "Vacuna triple viral",
+            "Nirsevimab",
+            "Vacuna influenza",
+            "BCG"
+        ],
+        correctAnswer: 1,
+        explanation: "¡El Nirsevimab! Gracias a esta estrategia, durante 2 años no hubo fallecimientos por VRS en menores de 1 año. Nuestra región está sobre el 90% de cobertura. ¡Un gran logro!",
+        emoji: "💉"
+    },
+    {
+        id: 8,
+        question: "¿En qué horario funciona el SAPU los fines de semana y festivos?",
+        options: [
+            "Solo los sábados de 9 a 18 hrs",
+            "No funcionan en festivos",
+            "De 08:00 a 24:00 horas",
+            "Las 24 horas sin excepción"
+        ],
+        correctAnswer: 2,
+        explanation: "Los SAPU funcionan sábados, domingos y festivos de 08:00 a 24:00 hrs. De lunes a jueves de 17:00 a 24:00 hrs y viernes de 16:00 a 24:00 hrs. Para síntomas más leves, es mejor el SAPU que Urgencias de Hospital.",
+        emoji: "🏥"
     }
 ];
 
@@ -79,7 +148,276 @@ const playWinSound = () => {
     setTimeout(() => playTone(800, 'sine', 0.4), 300);
 };
 
+// ============================================================
+//  COMPONENTE: ZONA DE COMENTARIOS — guarda en Supabase
+//  Tabla: invierno_comentarios (pública, con RLS permisivo para inserts anónimos)
+// ============================================================
+function ComentariosInvierno() {
+    const [comentarios, setComentarios] = useState([]);
+    const [nombre, setNombre] = useState('');
+    const [mensaje, setMensaje] = useState('');
+    const [cargando, setCargando] = useState(true);
+    const [enviando, setEnviando] = useState(false);
+    const [error, setError] = useState('');
+    const [exito, setExito] = useState(false);
+    const listaRef = useRef(null);
+
+    // Cargar comentarios aprobados al montar
+    useEffect(() => {
+        cargarComentarios();
+        // Suscripción realtime para actualizaciones
+        if (!supabase) return;
+        const channel = supabase
+            .channel('invierno_comentarios_rt')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'invierno_comentarios' }, (payload) => {
+                if (payload.new.aprobado !== false) {
+                    setComentarios(prev => [payload.new, ...prev].slice(0, 50));
+                }
+            })
+            .subscribe();
+        return () => supabase.removeChannel(channel);
+    }, []);
+
+    async function cargarComentarios() {
+        setCargando(true);
+        if (!supabase) { setCargando(false); return; }
+        const { data, error: err } = await supabase
+            .from('invierno_comentarios')
+            .select('id, nombre, mensaje, created_at, emoji')
+            .eq('aprobado', true)
+            .order('created_at', { ascending: false })
+            .limit(30);
+        if (!err && data) setComentarios(data);
+        setCargando(false);
+    }
+
+    async function enviarComentario(e) {
+        e.preventDefault();
+        if (!nombre.trim() || !mensaje.trim()) {
+            setError('Por favor completa tu nombre y mensaje.');
+            return;
+        }
+        if (mensaje.trim().length < 5) {
+            setError('El mensaje es muy corto. Escribe al menos 5 caracteres.');
+            return;
+        }
+        setEnviando(true);
+        setError('');
+
+        const emojis = ['❄️', '🏥', '🌿', '💙', '🩺', '🤝', '⭐', '🌟', '👏', '🙌'];
+        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+
+        if (!supabase) {
+            setError('No hay conexión con la base de datos.');
+            setEnviando(false);
+            return;
+        }
+
+        const { error: err } = await supabase
+            .from('invierno_comentarios')
+            .insert([{
+                nombre: nombre.trim().slice(0, 60),
+                mensaje: mensaje.trim().slice(0, 500),
+                emoji,
+                aprobado: true,        // auto-aprobado (puedes cambiar a false para moderación)
+                seccion: 'invierno',
+                origen: window.location.hostname
+            }]);
+
+        if (err) {
+            // Si la tabla no existe aún, mostramos instrucción
+            if (err.code === '42P01') {
+                setError('La tabla invierno_comentarios aún no existe en Supabase. Créala con el SQL del panel.');
+            } else {
+                setError('Error al enviar: ' + err.message);
+            }
+        } else {
+            setExito(true);
+            setNombre('');
+            setMensaje('');
+            setTimeout(() => setExito(false), 4000);
+            cargarComentarios();
+        }
+        setEnviando(false);
+    }
+
+    const formatFecha = (iso) => {
+        if (!iso) return '';
+        const d = new Date(iso);
+        return d.toLocaleDateString('es-CL', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    };
+
+    return (
+        <section style={{ margin: '3rem auto', maxWidth: '900px', padding: '0 2rem' }}>
+            <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                style={{
+                    background: 'linear-gradient(135deg, rgba(59,130,246,0.08), rgba(15,23,42,0.85))',
+                    borderRadius: '35px',
+                    padding: '2.5rem',
+                    border: '1px solid rgba(59,130,246,0.2)',
+                    backdropFilter: 'blur(20px)'
+                }}
+            >
+                {/* Header */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
+                    <div style={{ width: '50px', height: '50px', background: 'linear-gradient(135deg, #3b82f6, #1d4ed8)', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 20px rgba(59,130,246,0.35)', flexShrink: 0 }}>
+                        <MessageSquare size={24} color="white" />
+                    </div>
+                    <div>
+                        <h3 style={{ fontSize: '1.6rem', fontWeight: '900', margin: 0, color: 'white' }}>Opiniones Vecinales</h3>
+                        <p style={{ margin: 0, fontSize: '0.85rem', color: '#64748b' }}>Deja tu mensaje sobre la campaña de salud invierno ❄️</p>
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'start' }}>
+
+                    {/* Formulario */}
+                    <form onSubmit={enviarComentario} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: '#94a3b8', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '1px' }}>Tu nombre</label>
+                            <input
+                                type="text"
+                                value={nombre}
+                                onChange={e => setNombre(e.target.value)}
+                                placeholder="Ej: María González"
+                                maxLength={60}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255,255,255,0.06)',
+                                    border: '1px solid rgba(59,130,246,0.3)',
+                                    borderRadius: '14px',
+                                    padding: '12px 16px',
+                                    color: 'white',
+                                    fontSize: '1rem',
+                                    outline: 'none',
+                                    boxSizing: 'border-box',
+                                    transition: 'border 0.2s'
+                                }}
+                                onFocus={e => e.target.style.border = '1px solid #3b82f6'}
+                                onBlur={e => e.target.style.border = '1px solid rgba(59,130,246,0.3)'}
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: '#94a3b8', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '1px' }}>Tu comentario</label>
+                            <textarea
+                                value={mensaje}
+                                onChange={e => setMensaje(e.target.value)}
+                                placeholder="¿Qué te pareció la entrevista? ¿Aprendiste algo nuevo sobre la prevención respiratoria?"
+                                maxLength={500}
+                                rows={4}
+                                style={{
+                                    width: '100%',
+                                    background: 'rgba(255,255,255,0.06)',
+                                    border: '1px solid rgba(59,130,246,0.3)',
+                                    borderRadius: '14px',
+                                    padding: '12px 16px',
+                                    color: 'white',
+                                    fontSize: '0.95rem',
+                                    outline: 'none',
+                                    resize: 'vertical',
+                                    minHeight: '100px',
+                                    fontFamily: 'inherit',
+                                    lineHeight: '1.5',
+                                    boxSizing: 'border-box',
+                                    transition: 'border 0.2s'
+                                }}
+                                onFocus={e => e.target.style.border = '1px solid #3b82f6'}
+                                onBlur={e => e.target.style.border = '1px solid rgba(59,130,246,0.3)'}
+                            />
+                            <div style={{ textAlign: 'right', fontSize: '0.75rem', color: '#475569', marginTop: '4px' }}>{mensaje.length}/500</div>
+                        </div>
+
+                        {error && (
+                            <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px', padding: '10px 14px', color: '#fca5a5', fontSize: '0.85rem' }}>
+                                <AlertCircle size={16} />{error}
+                            </motion.div>
+                        )}
+
+                        {exito && (
+                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(16,185,129,0.15)', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '12px', padding: '10px 14px', color: '#6ee7b7', fontSize: '0.85rem', fontWeight: '700' }}>
+                                <CheckCircle2 size={16} />¡Comentario publicado! Gracias por participar 🎉
+                            </motion.div>
+                        )}
+
+                        <motion.button
+                            type="submit"
+                            disabled={enviando}
+                            whileHover={!enviando ? { scale: 1.03, y: -2 } : {}}
+                            whileTap={!enviando ? { scale: 0.97 } : {}}
+                            style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                                background: enviando ? 'rgba(59,130,246,0.3)' : 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                                color: 'white', border: 'none', padding: '14px 24px', borderRadius: '50px',
+                                fontWeight: '800', fontSize: '1rem', cursor: enviando ? 'wait' : 'pointer',
+                                boxShadow: enviando ? 'none' : '0 10px 20px rgba(59,130,246,0.35)',
+                                transition: 'all 0.3s', width: '100%'
+                            }}
+                        >
+                            {enviando ? (
+                                <><div style={{ width: '18px', height: '18px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: 'white', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />Enviando...</>
+                            ) : (
+                                <><Send size={18} />Publicar comentario</>
+                            )}
+                        </motion.button>
+                    </form>
+
+                    {/* Lista de comentarios */}
+                    <div ref={listaRef} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '380px', overflowY: 'auto', paddingRight: '4px' }}>
+                        {cargando ? (
+                            <div style={{ textAlign: 'center', padding: '2rem', color: '#475569' }}>
+                                <div style={{ width: '32px', height: '32px', border: '3px solid rgba(59,130,246,0.2)', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }} />
+                                Cargando comentarios...
+                            </div>
+                        ) : comentarios.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '2.5rem 1rem', color: '#475569' }}>
+                                <MessageSquare size={36} style={{ margin: '0 auto 1rem', opacity: 0.4 }} />
+                                <p style={{ margin: 0, fontSize: '0.95rem' }}>¡Sé el primero en comentar!</p>
+                                <p style={{ margin: '5px 0 0', fontSize: '0.8rem' }}>Tu opinión sobre la campaña de salud invierno importa.</p>
+                            </div>
+                        ) : (
+                            comentarios.map((c, i) => (
+                                <motion.div
+                                    key={c.id || i}
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: i * 0.05 }}
+                                    style={{
+                                        background: 'rgba(255,255,255,0.04)',
+                                        border: '1px solid rgba(255,255,255,0.07)',
+                                        borderRadius: '18px',
+                                        padding: '14px 16px',
+                                        flexShrink: 0
+                                    }}
+                                >
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                                        <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem', flexShrink: 0 }}>
+                                            {c.emoji || '💬'}
+                                        </div>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <div style={{ fontWeight: '800', fontSize: '0.9rem', color: 'white', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.nombre}</div>
+                                            <div style={{ fontSize: '0.7rem', color: '#475569' }}>{formatFecha(c.created_at)}</div>
+                                        </div>
+                                    </div>
+                                    <p style={{ margin: 0, fontSize: '0.88rem', color: '#cbd5e1', lineHeight: '1.5', wordBreak: 'break-word' }}>{c.mensaje}</p>
+                                </motion.div>
+                            ))
+                        )}
+                    </div>
+                </div>
+            </motion.div>
+        </section>
+    );
+}
+
 export default function InviernoSalud() {
+
     const navigate = useNavigate();
     const playerRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -112,7 +450,7 @@ export default function InviernoSalud() {
                         controls: 0,
                         rel: 0,
                         modestbranding: 1,
-                        fs: 0
+                        fs: 1
                     },
                     events: {
                         onReady: (event) => {
@@ -506,41 +844,71 @@ export default function InviernoSalud() {
                                             style={{ width: '100px', accentColor: '#10b981', cursor: 'pointer' }}
                                         />
                                     </div>
+
+                                    {/* Botón Pantalla Completa */}
+                                    <button
+                                        onClick={() => {
+                                            const container = document.getElementById('invierno-player')?.closest('[style*="aspect-ratio"]') ||
+                                                              document.getElementById('invierno-player')?.parentElement;
+                                            if (!container) return;
+                                            if (!document.fullscreenElement) {
+                                                container.requestFullscreen && container.requestFullscreen();
+                                            } else {
+                                                document.exitFullscreen && document.exitFullscreen();
+                                            }
+                                            // Habilitar controles nativos YT en pantalla completa
+                                            if (playerRef.current && playerRef.current.getIframe) {
+                                                const iframe = playerRef.current.getIframe();
+                                                if (iframe) iframe.style.pointerEvents = 'auto';
+                                            }
+                                        }}
+                                        title="Pantalla completa"
+                                        style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: '4px' }}
+                                    >
+                                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <polyline points="15 3 21 3 21 9"/>
+                                            <polyline points="9 21 3 21 3 15"/>
+                                            <line x1="21" y1="3" x2="14" y2="10"/>
+                                            <line x1="3" y1="21" x2="10" y2="14"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                {/* Main Content Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '3rem' }}>
+                {/* Main Content Grid - Rediseñado */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', alignItems: 'start' }}>
                     
-                    {/* Material Section */}
+                    {/* Material Section - Compact 3-col thumbnail grid */}
                     <div style={{
                         background: 'linear-gradient(135deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.4))',
                         borderRadius: '35px',
-                        padding: '2.5rem',
+                        padding: '2rem',
                         border: '1px solid rgba(255,255,255,0.05)',
                         backdropFilter: 'blur(20px)'
                     }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
-                            <div style={{ width: '50px', height: '50px', background: '#3b82f6', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 10px 20px rgba(59, 130, 246, 0.3)' }}>
-                                <Info size={24} color="white" />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>
+                            <div style={{ width: '44px', height: '44px', background: '#3b82f6', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)', flexShrink: 0 }}>
+                                <Info size={22} color="white" />
                             </div>
-                            <h3 style={{ fontSize: '1.8rem', fontWeight: '900', margin: 0 }}>Material Interactivo</h3>
+                            <h3 style={{ fontSize: '1.4rem', fontWeight: '900', margin: 0 }}>Material Interactivo</h3>
                         </div>
+                        <p style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '1.2rem' }}>Haz clic en cada lámina para ampliarla</p>
                         
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.8rem' }}>
                             {[
-                                { src: "/invierno/invierno_entrevista_portada.jpg", title: "Campaña Oficial", desc: "Haz clic para ampliar" },
-                                { src: "/invierno/invierno_prevenir.jpg", title: "Prevención", desc: "Haz clic para ampliar" },
-                                { src: "/invierno/invierno_protocolo_verde.jpg", title: "Alerta Verde", desc: "Haz clic para ampliar" },
-                                { src: "/invierno/invierno_protocolo_amarillo.jpg", title: "Alerta Amarilla", desc: "Haz clic para ampliar" },
-                                { src: "/invierno/invierno_protocolo_rojo.jpg", title: "Alerta Roja", desc: "Haz clic para ampliar" }
+                                { src: "/invierno/invierno_entrevista_portada.jpg", title: "Campaña", color: '#3b82f6' },
+                                { src: "/invierno/invierno_prevenir.jpg", title: "Prevenir", color: '#10b981' },
+                                { src: "/invierno/invierno_protocolo_verde.jpg", title: "🟢 Verde", color: '#16a34a' },
+                                { src: "/invierno/invierno_protocolo_amarillo.jpg", title: "🟡 Amarillo", color: '#eab308' },
+                                { src: "/invierno/invierno_protocolo_rojo.jpg", title: "🔴 Rojo", color: '#ef4444' },
+                                { src: "/invierno/invierno_prevenir.jpg", title: "600-360-7777", color: '#8b5cf6' }
                             ].map((item, index) => (
                                 <motion.div 
                                     key={index}
-                                    whileHover={{ scale: 1.05, y: -10 }}
+                                    whileHover={{ scale: 1.08, y: -5 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => {
                                         playTone(700, 'sine', 0.1);
@@ -548,33 +916,28 @@ export default function InviernoSalud() {
                                     }}
                                     style={{ 
                                         position: 'relative', 
-                                        borderRadius: '20px', 
+                                        borderRadius: '14px', 
                                         overflow: 'hidden', 
-                                        boxShadow: '0 15px 30px rgba(0,0,0,0.4)', 
+                                        boxShadow: '0 8px 20px rgba(0,0,0,0.4)', 
                                         cursor: 'pointer',
-                                        border: '2px solid rgba(255,255,255,0.05)'
+                                        border: `2px solid ${item.color}44`,
+                                        aspectRatio: '16/9'
                                     }}
                                 >
-                                    <img src={item.src} alt={item.title} style={{ width: '100%', display: 'block', transition: 'transform 0.5s' }} />
+                                    <img src={item.src} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                                     <div style={{
                                         position: 'absolute',
-                                        inset: 0,
-                                        background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, transparent 100%)',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'flex-end',
-                                        padding: '1.5rem',
-                                        opacity: 0,
-                                        transition: 'opacity 0.3s ease-in-out'
-                                    }}
-                                    onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                                    onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-                                    >
-                                        <h4 style={{ margin: '0 0 5px 0', fontSize: '1.2rem', fontWeight: '900', color: 'white' }}>{item.title}</h4>
-                                        <p style={{ margin: 0, fontSize: '0.9rem', color: '#94a3b8' }}>{item.desc}</p>
-                                        <div style={{ marginTop: '10px', background: 'rgba(59,130,246,0.5)', width: 'fit-content', padding: '5px 15px', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 'bold' }}>
-                                            Ampliar
-                                        </div>
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        background: `linear-gradient(to top, ${item.color}ee, transparent)`,
+                                        padding: '8px 10px 6px',
+                                        fontSize: '0.7rem',
+                                        fontWeight: '800',
+                                        color: 'white',
+                                        textShadow: '0 1px 3px rgba(0,0,0,0.5)'
+                                    }}>
+                                        {item.title}
                                     </div>
                                 </motion.div>
                             ))}
@@ -748,6 +1111,9 @@ export default function InviernoSalud() {
                     </div>
                 </div>
 
+
+            {/* ===== SECCIÓN COMENTARIOS VECINOS /invierno ===== */}
+            <ComentariosInvierno />
 
             {/* ===== SECCIÓN COMPARTIR EXCLUSIVA /invierno ===== */}
             <section style={{
