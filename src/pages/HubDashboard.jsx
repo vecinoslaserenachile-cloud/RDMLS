@@ -2425,7 +2425,7 @@ export default function HubDashboard() {
                             </div>
                         </motion.div>
                     )}
-                    )}
+
 
             {/* ══════════════════════════════════════════════════════════ */}
             {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Kast & Yoga)             */}

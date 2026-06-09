@@ -447,36 +447,62 @@ export default function EntrevecinasHub() {
 
                     {/* TARJETA GRÁFICA: CAMPAÑA INVIERNO */}
                     <section style={{ marginBottom: '4rem' }}>
-                        <div 
+                        <motion.div 
+                            whileHover={{ y: -10 }}
                             onClick={() => navigate('/invierno')}
-                            className="group cursor-pointer relative rounded-[40px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-slate-700 transition-all hover:border-emerald-500 bg-slate-900"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
+                                borderRadius: '40px',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                padding: '0',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'stretch',
+                                cursor: 'pointer',
+                                position: 'relative',
+                                overflow: 'hidden',
+                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+                                backdropFilter: 'blur(30px)'
+                            }}
                         >
-                            <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] bg-emerald-500 blur-[150px] opacity-20 pointer-events-none" />
+                            <div style={{ position: 'absolute', top: '-100px', left: '-100px', width: '300px', height: '300px', background: '#10b981', filter: 'blur(150px)', opacity: 0.15, pointerEvents: 'none' }} />
                             
-                            <div className="grid grid-cols-1 md:grid-cols-2 items-center">
-                                <div className="h-64 md:h-[400px] w-full relative">
-                                    <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent"></div>
-                                </div>
-                                <div className="p-8 md:p-12 relative z-10 space-y-6">
-                                    <div className="flex items-center gap-3">
-                                        <span className="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider border border-emerald-500/30 flex items-center gap-2">
-                                            <ShieldAlert size={14} /> Salud Pública
-                                        </span>
-                                        <span className="text-slate-400 text-sm font-medium">Campaña Invierno 2026</span>
+                            <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
+                                <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '300px' }} />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent, rgba(15, 23, 42, 0.8) 90%, rgba(15, 23, 42, 1) 100%)' }}></div>
+                            </div>
+
+                            <div style={{ flex: '1.5', minWidth: '350px', padding: '3rem', position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1.5rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', padding: '8px 16px', borderRadius: '50px' }}>
+                                        <ShieldAlert size={16} color="#10b981" />
+                                        <span style={{ color: '#10b981', fontSize: '0.8rem', fontWeight: '900', letterSpacing: '1px' }}>SALUD PÚBLICA</span>
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
-                                        ¿Cuál es el mejor <br/> <span className="text-emerald-400">tratamiento?</span>
-                                    </h2>
-                                    <p className="text-lg text-slate-300 leading-relaxed">
-                                        Entrevista especial con el Servicio de Salud Coquimbo. Conoce el protocolo de urgencia, medidas preventivas y juega a nuestra trivia interactiva.
-                                    </p>
-                                    <button className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] group-hover:translate-x-2">
-                                        <Play size={20} /> VER ENTREVISTA Y TRIVIA
+                                    <span style={{ color: '#94a3b8', fontSize: '0.9rem', fontWeight: 'bold' }}>Campaña Invierno 2026</span>
+                                </div>
+                                
+                                <h2 style={{ fontSize: '2.5rem', fontWeight: '950', color: 'white', marginBottom: '1.5rem', lineHeight: '1.1' }}>
+                                    ¿Cuál es el mejor <br/> <span style={{ color: '#10b981' }}>tratamiento?</span>
+                                </h2>
+                                
+                                <p style={{ fontSize: '1.1rem', color: '#cbd5e1', lineHeight: '1.6', marginBottom: '2.5rem' }}>
+                                    Entrevista especial con el Servicio de Salud Coquimbo. Conoce el protocolo de urgencia, medidas preventivas y juega a nuestra nueva trivia interactiva.
+                                </p>
+                                
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                    <button style={{ 
+                                        display: 'flex', alignItems: 'center', gap: '10px', 
+                                        background: '#10b981', color: 'white', border: 'none', 
+                                        padding: '15px 30px', borderRadius: '20px', 
+                                        fontWeight: '900', fontSize: '1rem', cursor: 'pointer',
+                                        boxShadow: '0 10px 25px rgba(16, 185, 129, 0.4)',
+                                        transition: 'transform 0.3s'
+                                    }}>
+                                        <Play size={20} fill="currentColor" /> VER ENTREVISTA Y TRIVIA
                                     </button>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </section>
 
                     {/* TARJETA GRÁFICA: INVITACIÓN MILAGROS (SOLICITADO POR USUARIO) */}
