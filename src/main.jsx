@@ -130,6 +130,7 @@ const ArchiNewsAdmin = React.lazy(() => import('./pages/ArchiNewsAdmin.jsx'));
 const ArchiWapHub = React.lazy(() => import('./pages/ArchiWapHub.jsx'));
 const ArchiSocialHub = React.lazy(() => import('./pages/ArchiSocialHub.jsx'));
 const FayogaNews = React.lazy(() => import('./pages/FayogaNews.jsx'));
+const InviernoSalud = React.lazy(() => import('./pages/InviernoSalud.jsx'));
 
 // Configuración de rutas (React Router v6)
 // const MarruecosPage = React.lazy(() => import('./pages/Marruecos.jsx'));
@@ -544,6 +545,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <Route path="plaza" element={<PlazaVecinal />} />
                     <Route path="serenametplus" element={<SerenaMetPlus />} />
                     <Route path="entrevecinas" element={<EntrevecinasHub />} />
+                    <Route path="invierno" element={<InviernoSalud />} />
                     <Route path="muralismo" element={<MuralismoVecinal />} />
                     <Route path="reportes" element={<VLSRequestPortal onClose={() => window.history.back()} isPage={true} />} />
                     <Route path="seguridad" element={<SeguridadVecinal />} />

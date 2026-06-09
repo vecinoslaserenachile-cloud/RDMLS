@@ -445,6 +445,40 @@ export default function EntrevecinasHub() {
                         </div>
                     </section>
 
+                    {/* TARJETA GRÁFICA: CAMPAÑA INVIERNO */}
+                    <section style={{ marginBottom: '4rem' }}>
+                        <div 
+                            onClick={() => navigate('/invierno')}
+                            className="group cursor-pointer relative rounded-[40px] overflow-hidden shadow-[0_25px_50px_-12px_rgba(0,0,0,0.5)] border border-slate-700 transition-all hover:border-emerald-500 bg-slate-900"
+                        >
+                            <div className="absolute top-[-100px] right-[-100px] w-[300px] h-[300px] bg-emerald-500 blur-[150px] opacity-20 pointer-events-none" />
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 items-center">
+                                <div className="h-64 md:h-[400px] w-full relative">
+                                    <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent"></div>
+                                </div>
+                                <div className="p-8 md:p-12 relative z-10 space-y-6">
+                                    <div className="flex items-center gap-3">
+                                        <span className="bg-emerald-600/20 text-emerald-400 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-wider border border-emerald-500/30 flex items-center gap-2">
+                                            <ShieldAlert size={14} /> Salud Pública
+                                        </span>
+                                        <span className="text-slate-400 text-sm font-medium">Campaña Invierno 2026</span>
+                                    </div>
+                                    <h2 className="text-3xl md:text-5xl font-black text-white leading-tight">
+                                        ¿Cuál es el mejor <br/> <span className="text-emerald-400">tratamiento?</span>
+                                    </h2>
+                                    <p className="text-lg text-slate-300 leading-relaxed">
+                                        Entrevista especial con el Servicio de Salud Coquimbo. Conoce el protocolo de urgencia, medidas preventivas y juega a nuestra trivia interactiva.
+                                    </p>
+                                    <button className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] group-hover:translate-x-2">
+                                        <Play size={20} /> VER ENTREVISTA Y TRIVIA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
                     {/* TARJETA GRÁFICA: INVITACIÓN MILAGROS (SOLICITADO POR USUARIO) */}
                     <section style={{ marginBottom: '4rem' }}>
                         <motion.div 

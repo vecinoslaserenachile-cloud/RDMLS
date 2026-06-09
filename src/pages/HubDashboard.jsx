@@ -2223,9 +2223,36 @@ export default function HubDashboard() {
                     {/* ══════════════════════════════════════════════════════════ */}
                     {/* RADAR MUNDIAL: NOTICIAS INTERNACIONALES (SIEMPRE VISIBLE)  */}
                     {/* ══════════════════════════════════════════════════════════ */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {/* RADAR MUNDIAL: NOTICIAS INTERNACIONALES (SIEMPRE VISIBLE)  */}
+                    {/* ══════════════════════════════════════════════════════════ */}
                     <div style={{ width: '100%', maxWidth: '1200px', margin: '1rem auto 0', padding: '0 2rem' }}>
                         {/* <WorldNewsTablets /> */}
                         {/* <LocalNewsGrid /> */}
+                        
+                        {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
+                        <div 
+                            onClick={() => navigate('/invierno')}
+                            className="group cursor-pointer relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700 transition-all hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-slate-900 mt-4 mb-4"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-3 items-center">
+                                <div className="md:col-span-1 h-48 md:h-full w-full relative">
+                                    <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent"></div>
+                                </div>
+                                <div className="md:col-span-2 p-6 md:p-8 relative z-10 space-y-4">
+                                    <div className="flex items-center gap-2">
+                                        <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><ShieldAlert size={12}/> Salud Pública</span>
+                                        <span className="text-slate-400 text-xs font-medium flex items-center gap-1"><Clock size={12}/> Campaña Invierno 2026</span>
+                                    </div>
+                                    <h3 className="text-2xl md:text-3xl font-black text-white group-hover:text-emerald-400 transition-colors">¿Cuál es el mejor tratamiento? PREVENIR</h3>
+                                    <p className="text-slate-300">Conoce el protocolo oficial de acción frente a los síntomas respiratorios y cuida a tu familia con la Entrevista Especial del Servicio de Salud Coquimbo.</p>
+                                    <div className="flex items-center text-emerald-400 font-bold group-hover:translate-x-2 transition-transform">
+                                        VER ENTREVISTA Y TRIVIA <ArrowRight className="ml-2 w-5 h-5" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
                     {/* ══════════════════════════════════════════════════════════ */}
@@ -2398,6 +2425,102 @@ export default function HubDashboard() {
                             </div>
                         </motion.div>
                     )}
+                    )}
+
+            {/* ══════════════════════════════════════════════════════════ */}
+            {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Kast & Yoga)             */}
+            {/* ══════════════════════════════════════════════════════════ */}
+            <div style={{ padding: '3rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+                <div className="vls-perf-section" style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
+                    
+                    {/* CARD KAST (TOP HIGHLIGHT 1) */}
+                    <motion.div 
+                        initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                        whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        onClick={() => setShowKast(true)}
+                        style={{ 
+                            position: 'relative', minHeight: isMobile ? '300px' : '600px', borderRadius: '40px', overflow: 'hidden', 
+                            border: '3px solid rgba(239, 68, 68, 0.6)', boxShadow: '0 40px 80px rgba(239, 68, 68, 0.3)',
+                            cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                            gridColumn: '1 / -1',
+                            marginBottom: '1rem'
+                        }}
+                        whileHover={{ y: -10, transition: { duration: 0.3 }, boxShadow: '0 50px 100px rgba(239, 68, 68, 0.5)' }}
+                    >
+                        <img src="/kast_visita.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.8 }} alt="Visita Presidente Kast" />
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.6) 50%, transparent 100%)' }} />
+                        
+                        <div style={{ 
+                            position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, right: window.innerWidth < 768 ? 15 : 30, 
+                            background: '#ef4444', padding: window.innerWidth < 768 ? '0.5rem 1.2rem' : '0.8rem 2rem', borderRadius: '30px', 
+                            color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 1rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '3px', 
+                            zIndex: 20, boxShadow: '0 10px 25px rgba(239, 68, 68, 0.6)' 
+                        }}>
+                            🛑 COBERTURA ESPECIAL
+                        </div>
+
+                        <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '2rem' : '4rem', zIndex: 10, maxWidth: '1100px', paddingTop: window.innerWidth < 768 ? '6rem' : '4rem' }}>
+                            <h2 style={{ color: 'white', fontSize: 'clamp(1.8rem, 6vw, 4.5rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
+                               CUMBRE EN LA SERENA:<br/>
+                               <span style={{ color: '#ef4444' }}>KAST Y ALCALDES<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> DEFINEN AGENDA</span>
+                            </h2>
+                            <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(1rem, 2.5vw, 1.5rem)', marginTop: '1.2rem', fontWeight: 400, maxWidth: '900px', lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                               Entre manifestaciones masivas y tensión política, el Presidente anuncia el "Plan Escudo Norte" y un fondo especial para municipalidades. Reacciones en exclusiva.
+                            </p>
+                            <div style={{ marginTop: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div style={{ background: '#ef4444', color: 'white', padding: '12px 24px', borderRadius: '50px', fontWeight: 900, display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: 'clamp(0.8rem, 2vw, 1rem)', letterSpacing: '1px' }}>
+                                    LEER REPORTE VECINAL <ArrowRight size={18} />
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+
+                    {/* CARD FAYOGA (TOP HIGHLIGHT 2) */}
+                    <motion.div 
+                        initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                        whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.2 }}
+                        onClick={() => navigate('/fayoga')}
+                        style={{ 
+                            position: 'relative', minHeight: isMobile ? '300px' : '400px', borderRadius: '40px', overflow: 'hidden', 
+                            border: '3px solid rgba(16, 185, 129, 0.6)', boxShadow: '0 20px 60px rgba(16, 185, 129, 0.2)',
+                            cursor: 'pointer', background: '#020617', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                            gridColumn: '1 / -1',
+                            marginBottom: '1rem'
+                        }}
+                        whileHover={{ y: -10, transition: { duration: 0.3 }, boxShadow: '0 30px 80px rgba(16, 185, 129, 0.4)' }}
+                    >
+                        <img src="/fayoga_coliseo.png" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.8 }} alt="Día del Yoga La Serena" />
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(2, 6, 23, 1) 0%, rgba(2, 6, 23, 0.4) 60%, transparent 100%)' }} />
+                        
+                        <div style={{ 
+                            position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, left: window.innerWidth < 768 ? 15 : 30, 
+                            background: '#10b981', padding: window.innerWidth < 768 ? '0.5rem 1.2rem' : '0.8rem 2rem', borderRadius: '30px', 
+                            color: 'white', fontWeight: 950, fontSize: 'clamp(0.7rem, 2vw, 1rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '3px', 
+                            zIndex: 20, boxShadow: '0 10px 25px rgba(16, 185, 129, 0.6)' 
+                        }}>
+                            🧘‍♀️ FAYOGA EN EL COLISEO
+                        </div>
+
+                        <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '2rem' : '3rem', zIndex: 10, maxWidth: '900px' }}>
+                            <h2 style={{ color: 'white', fontSize: 'clamp(1.5rem, 4vw, 3rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.1 }}>
+                               MILES CELEBRAN EL DÍA DEL YOGA<br/>EN LA SERENA
+                            </h2>
+                            <p style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(0.9rem, 2vw, 1.2rem)', marginTop: '1rem', fontWeight: 400, lineHeight: 1.4, textShadow: '0 2px 10px rgba(0,0,0,0.5)' }}>
+                               La Serena se une en un mega evento gratuito de bienestar integral. Prácticas para todas las edades, bioferia consciente y reconexión espiritual junto a FAYOGA Bienestar.
+                            </p>
+                            <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <div style={{ background: '#10b981', color: 'white', padding: '10px 20px', borderRadius: '50px', fontWeight: 900, display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: 'clamp(0.7rem, 1.5vw, 0.9rem)', letterSpacing: '1px' }}>
+                                    VER PROGRAMA Y ACTIVIDADES <ArrowRight size={16} />
+                                </div>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
 
             {/* ═════════════════════════════════════════════════════════════ */}
             {/* PORTALES MAESTROS (ARRIBA): ARCADE, ALTAR & JUEGOS           */}
