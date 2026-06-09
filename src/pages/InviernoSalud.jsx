@@ -435,8 +435,11 @@ export default function InviernoSalud() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isAnswerChecked, setIsAnswerChecked] = useState(false);
     
-    // Transcript State
     const [showTranscript, setShowTranscript] = useState(false);
+    
+    // Diploma State
+    const [diplomaName, setDiplomaName] = useState('');
+    const [showDiploma, setShowDiploma] = useState(false);
     
     useEffect(() => {
         window.scrollTo(0,0);
@@ -568,6 +571,8 @@ export default function InviernoSalud() {
         setShowTriviaResult(false);
         setSelectedAnswer(null);
         setIsAnswerChecked(false);
+        setDiplomaName('');
+        setShowDiploma(false);
     };
 
     return (
@@ -1098,14 +1103,84 @@ export default function InviernoSalud() {
                                 <p style={{ fontSize: '1.2rem', color: '#cbd5e1', marginBottom: '2rem' }}>
                                     Obtuviste <span style={{ color: '#eab308', fontWeight: 'bold' }}>{score}</span> de {TRIVIA_QUESTIONS.length} estrellas de aprendizaje.
                                 </p>
-                                <button 
-                                    onClick={resetTrivia}
-                                    style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 30px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
-                                    onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
-                                    onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
-                                >
-                                    Jugar de nuevo
-                                </button>
+                                
+                                {!showDiploma ? (
+                                    <div style={{ background: 'rgba(255,255,255,0.05)', padding: '2rem', borderRadius: '20px', maxWidth: '400px', margin: '0 auto 2rem' }}>
+                                        <h5 style={{ fontSize: '1.1rem', marginBottom: '1rem', fontWeight: 'bold' }}>¿Quieres tu certificado virtual?</h5>
+                                        <input 
+                                            type="text" 
+                                            placeholder="Ingresa tu nombre..." 
+                                            value={diplomaName}
+                                            onChange={(e) => setDiplomaName(e.target.value)}
+                                            style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.5)', color: 'white', marginBottom: '1rem', fontSize: '1rem' }}
+                                        />
+                                        <button 
+                                            onClick={() => { if(diplomaName.trim()) setShowDiploma(true) }}
+                                            disabled={!diplomaName.trim()}
+                                            style={{ width: '100%', background: diplomaName.trim() ? '#10b981' : 'rgba(255,255,255,0.1)', color: 'white', border: 'none', padding: '12px', borderRadius: '10px', fontWeight: 'bold', cursor: diplomaName.trim() ? 'pointer' : 'not-allowed', transition: 'all 0.3s' }}
+                                        >
+                                            Generar Diploma
+                                        </button>
+                                        <button 
+                                            onClick={resetTrivia}
+                                            style={{ width: '100%', background: 'transparent', color: '#94a3b8', border: 'none', padding: '12px', marginTop: '0.5rem', cursor: 'pointer', textDecoration: 'underline' }}
+                                        >
+                                            Solo jugar de nuevo
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <motion.div 
+                                        initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                                        style={{ 
+                                            background: '#fff', 
+                                            color: '#0f172a', 
+                                            padding: '3rem', 
+                                            borderRadius: '20px', 
+                                            maxWidth: '600px', 
+                                            margin: '0 auto 2rem',
+                                            border: '8px double #10b981',
+                                            boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+                                            position: 'relative',
+                                            overflow: 'hidden'
+                                        }}
+                                    >
+                                        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'repeating-linear-gradient(45deg, rgba(16,185,129,0.03) 0, rgba(16,185,129,0.03) 2px, transparent 2px, transparent 10px)', pointerEvents: 'none' }}></div>
+                                        <Award size={60} color="#eab308" style={{ margin: '0 auto 1rem' }} />
+                                        <h2 style={{ fontSize: '2rem', fontWeight: '900', color: '#1e293b', marginBottom: '0.5rem', fontFamily: 'serif' }}>CERTIFICADO DE APROBACIÓN</h2>
+                                        <p style={{ fontSize: '1rem', color: '#64748b', marginBottom: '2rem', textTransform: 'uppercase', letterSpacing: '2px' }}>Campaña Invierno y Salud La Serena</p>
+                                        
+                                        <p style={{ fontSize: '1.2rem', color: '#334155', marginBottom: '1rem' }}>Se otorga el presente reconocimiento a:</p>
+                                        <h3 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#10b981', margin: '0 0 2rem 0', fontFamily: 'serif', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.5rem', display: 'inline-block', minWidth: '80%' }}>
+                                            {diplomaName}
+                                        </h3>
+                                        <p style={{ fontSize: '1rem', color: '#475569', lineHeight: '1.6', marginBottom: '2rem' }}>
+                                            Por haber completado satisfactoriamente la Trivia de Prevención y Salud Respiratoria, demostrando conocimientos clave para el cuidado de nuestra comunidad.
+                                        </p>
+                                        
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '3rem', padding: '0 2rem' }}>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <div style={{ borderBottom: '1px solid #94a3b8', width: '150px', marginBottom: '0.5rem' }}></div>
+                                                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>La Serena Smart City</p>
+                                            </div>
+                                            <img src="/vls-logo-3d.png" alt="Sello" style={{ width: '60px', filter: 'grayscale(100%) opacity(50%)' }} />
+                                            <div style={{ textAlign: 'center' }}>
+                                                <div style={{ borderBottom: '1px solid #94a3b8', width: '150px', marginBottom: '0.5rem', fontSize: '0.9rem', color: '#334155', fontWeight: 'bold' }}>{new Date().toLocaleDateString('es-CL')}</div>
+                                                <p style={{ fontSize: '0.8rem', color: '#64748b', margin: 0 }}>Fecha de Emisión</p>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {showDiploma && (
+                                    <button 
+                                        onClick={resetTrivia}
+                                        style={{ background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '12px 30px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s' }}
+                                        onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'}
+                                        onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}
+                                    >
+                                        Jugar de nuevo
+                                    </button>
+                                )}
                             </motion.div>
                         )}
                     </div>

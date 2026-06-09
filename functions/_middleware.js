@@ -17,6 +17,17 @@ export async function onRequest(context) {
       return response;
     }
 
+    if (url.pathname.toLowerCase().includes('/invierno')) {
+      // OG tags para campaña invierno (cualquier dominio)
+      return new HTMLRewriter()
+        .on('meta[property="og:title"]', { element(e) { e.setAttribute('content', 'Campaña Invierno y Salud - La Serena'); } })
+        .on('meta[property="og:description"]', { element(e) { e.setAttribute('content', 'Infórmate sobre vacunación, virus respiratorios y protocolos de salud para cuidarnos este invierno.'); } })
+        .on('meta[name="description"]', { element(e) { e.setAttribute('content', 'Infórmate sobre vacunación, virus respiratorios y protocolos de salud para cuidarnos este invierno.'); } })
+        .on('meta[property="og:image"]', { element(e) { e.setAttribute('content', 'https://vecinoslaserena.cl/invierno/invierno_share_card.jpg'); } })
+        .on('title', { element(e) { e.setInnerContent('Invierno Saludable - La Serena'); } })
+        .transform(response);
+    }
+
     if (host.includes('radiovecinos') || host.includes('archi')) {
       // Reescribir OG tags para ARCHI / RADIO
       return new HTMLRewriter()
