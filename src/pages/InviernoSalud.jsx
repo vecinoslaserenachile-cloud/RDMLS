@@ -345,33 +345,91 @@ export default function InviernoSalud() {
                                         style={{ overflow: 'hidden', marginBottom: '2rem' }}
                                     >
                                         <div style={{
-                                            background: 'rgba(0,0,0,0.3)',
+                                            background: '#e5ddd5',
                                             border: '1px solid rgba(255,255,255,0.1)',
                                             borderRadius: '15px',
-                                            padding: '1.5rem',
-                                            maxHeight: '300px',
-                                            overflowY: 'auto',
-                                            color: '#cbd5e1',
-                                            fontSize: '0.95rem',
-                                            lineHeight: '1.7'
+                                            height: '400px',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            overflow: 'hidden',
+                                            boxShadow: '0 10px 25px rgba(0,0,0,0.5)'
                                         }}>
-                                            <p><strong>Especialista Paulina Fleite:</strong> "...lavado de manos, ambientes saludables, cuidar las vías aéreas con bandana, bufanda, para evitar cambios de temperatura, evitar calefacciones tóxicas. Exacto. Y evitar el sobreabrigo. No lo mencioné, pero eso es super importante porque a veces pasa, cuesta aquí saber con qué vestirse así. Y con los niños, por ejemplo, las mamás tienden a vestirlos como que fueran a cruzar el polo... y los niños llegan al jardín y juegan, se mueven, entonces transpiran y esa transpiración se enfría y finalmente hace peor."</p>
-                                            
-                                            <p><strong>Entrevistadora:</strong> "Sí, sobre todo pasa con los niños porque insisto, ellos son más inquietos... Ya, Paulina, y lo otro, ahora que se vienen las vacaciones y hay aglomeraciones, ¿qué podemos recomendar ahí para evitar los contagios?"</p>
-                                            
-                                            <p><strong>Especialista:</strong> "Evitar las aglomeraciones, o sea, por ejemplo, mall, supermercado, cine, tienden a ser espacios cerrados que favorecen el contagio. Son invitaciones a la naturaleza total, ojalá... Si alguien está resfriado en la casa, ojalá usar mascarilla, que los niños, las personas mayores eviten el contacto con personas enfermas y por sobre todo vacunarse en tiempo."</p>
-                                            
-                                            <p><strong>Entrevistadora:</strong> "Paulina, si algún vecino o vecina tiene algún tema en salud respiratoria, ¿qué es lo que debe hacer?"</p>
-                                            
-                                            <p><strong>Especialista:</strong> "Existen distintos niveles de acción. Por ejemplo, en caso de presentar síntomas leves (Protocolo Verde), un resfrío que puede aparecer con aumento de temperatura entre 36 a 38 grados, congestión... siempre observar aumento de líquidos, mantener la ropa liviana y en el caso de los niños, un buen aseo nasal... Cuando supera los 38ºC y vemos que se asocia a dolor de oídos, dolor de garganta, diarrea, consultar."</p>
-                                            
-                                            <p>"Ahora, si vemos síntomas moderados (Protocolo Amarillo), aquí sí o sí una consulta médica en el CESFAM, por ejemplo... por un resfrío con una tos intensa que dure más de 3 días, aumento en la frecuencia respiratoria... o decaimiento."</p>
+                                            {/* WhatsApp Header */}
+                                            <div style={{
+                                                background: '#075e54',
+                                                padding: '10px 15px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '15px',
+                                                color: 'white'
+                                            }}>
+                                                <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                                                    <Stethoscope size={24} color="#075e54" />
+                                                </div>
+                                                <div>
+                                                    <h4 style={{ margin: 0, fontSize: '1rem', fontWeight: 'bold' }}>Dra. Paulina Fleite</h4>
+                                                    <p style={{ margin: 0, fontSize: '0.75rem', opacity: 0.8 }}>en línea</p>
+                                                </div>
+                                            </div>
 
-                                            <p>"Y en el caso de presentaciones más graves (Protocolo Rojo), aquí sí o sí se debe recurrir a Urgencia: una tos que le dificulte la respiración, que se ahogue, hundimiento de las costillas, cambio de coloración en los labios o uñas... o silbidos en el pecho audibles a distancia."</p>
-
-                                            <p><strong>Entrevistadora:</strong> "¿Algo más que le quieras comentar a los vecinos de La Serena el día de hoy?"</p>
-
-                                            <p><strong>Especialista:</strong> "Que la prevención es tarea de todos. Por lo tanto, todas estas medidas preventivas la idea es utilizarlas a nuestro favor y protegernos desde ya, prepararnos... preparar los techos, canaletas, evitar la humedad dentro de los domicilios va a hacer la diferencia."</p>
+                                            {/* WhatsApp Messages Area */}
+                                            <div style={{
+                                                flex: 1,
+                                                padding: '20px',
+                                                overflowY: 'auto',
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                gap: '10px',
+                                                backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
+                                                backgroundSize: 'contain'
+                                            }}>
+                                                {[
+                                                    { sender: "Francesca", text: "¡Hola Paulina! Hablemos de prevención. ¿Cuáles son las medidas principales?", time: "10:00" },
+                                                    { sender: "Paulina", text: "Hola Francesca. Lo principal es el lavado de manos, ambientes saludables y cuidar las vías aéreas con bufanda. Hay que evitar cambios bruscos de temperatura y el sobreabrigo.", time: "10:01" },
+                                                    { sender: "Francesca", text: "Sí, sobre todo con los niños que son más inquietos. ¿Y qué pasa con las vacaciones y aglomeraciones?", time: "10:02" },
+                                                    { sender: "Paulina", text: "Hay que evitar malls y cines. Mejor invitaciones a la naturaleza. Si alguien está resfriado, que use mascarilla y se aísle de personas mayores o niños.", time: "10:03" },
+                                                    { sender: "Francesca", text: "Si un vecino tiene problemas respiratorios, ¿qué debe hacer?", time: "10:04" },
+                                                    { sender: "Paulina", text: "Existen distintos niveles. 🟢 Para síntomas leves (resfrío, fiebre menor a 38ºC por menos de 3 días): mucho líquido y aseo nasal. Si la fiebre supera los 38ºC y hay dolor de oídos, consultar.", time: "10:05" },
+                                                    { sender: "Paulina", text: "🟡 Síntomas moderados (tos intensa por más de 3 días, respiración rápida): Sí o sí consultar al CESFAM. En niños menores de 6 meses, más de 40 respiraciones por minuto es un riesgo.", time: "10:06" },
+                                                    { sender: "Paulina", text: "🔴 Presentaciones graves: tos que ahoga, hundimiento de costillas, labios morados o silbidos en el pecho. Acudir inmediatamente a URGENCIAS. Es riesgo vital.", time: "10:07" },
+                                                    { sender: "Francesca", text: "Muy valiosa información. Los SAPU y SAR están disponibles en distintos horarios, ¿verdad?", time: "10:08" },
+                                                    { sender: "Paulina", text: "Exacto, es mejor ir a los CESFAM o SAPU si los síntomas no son graves para no colapsar los hospitales. Y ante la duda, pueden llamar a Salud Responde: 600 360 777. Funciona 24/7.", time: "10:09" },
+                                                    { sender: "Francesca", text: "¿Algún mensaje final para los vecinos?", time: "10:10" },
+                                                    { sender: "Paulina", text: "La prevención es tarea de todos. Prepararnos desde ya, arreglar techos y canaletas, y evitar la humedad en casa hace la diferencia. ¡Y por supuesto, vacunarse a tiempo!", time: "10:11" },
+                                                    { sender: "Francesca", text: "Muchas gracias por tu tiempo, Paulina.", time: "10:12" }
+                                                ].map((msg, idx) => {
+                                                    const isPaulina = msg.sender === "Paulina";
+                                                    return (
+                                                        <motion.div 
+                                                            key={idx}
+                                                            initial={{ opacity: 0, y: 20 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ delay: idx * 0.15 }}
+                                                            style={{
+                                                                alignSelf: isPaulina ? 'flex-start' : 'flex-end',
+                                                                background: isPaulina ? '#fff' : '#dcf8c6',
+                                                                padding: '10px 15px',
+                                                                borderRadius: '15px',
+                                                                borderTopLeftRadius: isPaulina ? '0' : '15px',
+                                                                borderTopRightRadius: isPaulina ? '15px' : '0',
+                                                                maxWidth: '85%',
+                                                                boxShadow: '0 1px 2px rgba(0,0,0,0.1)',
+                                                                position: 'relative'
+                                                            }}
+                                                        >
+                                                            <div style={{ fontSize: '0.75rem', fontWeight: 'bold', color: isPaulina ? '#075e54' : '#128C7E', marginBottom: '4px' }}>
+                                                                {msg.sender}
+                                                            </div>
+                                                            <div style={{ fontSize: '0.9rem', color: '#303030', lineHeight: '1.4' }}>
+                                                                {msg.text}
+                                                            </div>
+                                                            <div style={{ fontSize: '0.65rem', color: '#999', textAlign: 'right', marginTop: '5px' }}>
+                                                                {msg.time}
+                                                            </div>
+                                                        </motion.div>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
                                     </motion.div>
                                 )}
