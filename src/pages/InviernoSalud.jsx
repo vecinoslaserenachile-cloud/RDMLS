@@ -97,6 +97,9 @@ export default function InviernoSalud() {
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [isAnswerChecked, setIsAnswerChecked] = useState(false);
     
+    // Transcript State
+    const [showTranscript, setShowTranscript] = useState(false);
+    
     useEffect(() => {
         window.scrollTo(0,0);
         
@@ -307,13 +310,77 @@ export default function InviernoSalud() {
                                 Entrevista Oficial <br/> 
                                 <span style={{ color: '#10b981' }}>Salud Coquimbo</span>
                             </h2>
-                            <p style={{ fontSize: '1.1rem', color: '#cbd5e1', lineHeight: '1.6', marginBottom: '2.5rem' }}>
+                            <p style={{ fontSize: '1.1rem', color: '#cbd5e1', lineHeight: '1.6', marginBottom: '1.5rem' }}>
                                 Conoce las medidas oficiales y los protocolos de acción para enfrentar las enfermedades respiratorias de este invierno junto a las profesionales del Servicio de Salud Coquimbo.
                             </p>
+
+                            <button 
+                                onClick={() => setShowTranscript(!showTranscript)}
+                                style={{
+                                    background: showTranscript ? 'rgba(59, 130, 246, 0.2)' : 'transparent',
+                                    border: '1px solid #3b82f6',
+                                    color: '#3b82f6',
+                                    padding: '8px 16px',
+                                    borderRadius: '50px',
+                                    fontSize: '0.9rem',
+                                    fontWeight: 'bold',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    marginBottom: '2rem',
+                                    transition: 'all 0.3s'
+                                }}
+                            >
+                                {showTranscript ? <ArrowLeft size={16} /> : <Info size={16} />}
+                                {showTranscript ? "Ocultar Transcripción" : "Leer Transcripción de la Entrevista"}
+                            </button>
+
+                            <AnimatePresence>
+                                {showTranscript && (
+                                    <motion.div
+                                        initial={{ opacity: 0, height: 0 }}
+                                        animate={{ opacity: 1, height: 'auto' }}
+                                        exit={{ opacity: 0, height: 0 }}
+                                        style={{ overflow: 'hidden', marginBottom: '2rem' }}
+                                    >
+                                        <div style={{
+                                            background: 'rgba(0,0,0,0.3)',
+                                            border: '1px solid rgba(255,255,255,0.1)',
+                                            borderRadius: '15px',
+                                            padding: '1.5rem',
+                                            maxHeight: '300px',
+                                            overflowY: 'auto',
+                                            color: '#cbd5e1',
+                                            fontSize: '0.95rem',
+                                            lineHeight: '1.7'
+                                        }}>
+                                            <p><strong>Especialista Paulina Fleite:</strong> "...lavado de manos, ambientes saludables, cuidar las vías aéreas con bandana, bufanda, para evitar cambios de temperatura, evitar calefacciones tóxicas. Exacto. Y evitar el sobreabrigo. No lo mencioné, pero eso es super importante porque a veces pasa, cuesta aquí saber con qué vestirse así. Y con los niños, por ejemplo, las mamás tienden a vestirlos como que fueran a cruzar el polo... y los niños llegan al jardín y juegan, se mueven, entonces transpiran y esa transpiración se enfría y finalmente hace peor."</p>
+                                            
+                                            <p><strong>Entrevistadora:</strong> "Sí, sobre todo pasa con los niños porque insisto, ellos son más inquietos... Ya, Paulina, y lo otro, ahora que se vienen las vacaciones y hay aglomeraciones, ¿qué podemos recomendar ahí para evitar los contagios?"</p>
+                                            
+                                            <p><strong>Especialista:</strong> "Evitar las aglomeraciones, o sea, por ejemplo, mall, supermercado, cine, tienden a ser espacios cerrados que favorecen el contagio. Son invitaciones a la naturaleza total, ojalá... Si alguien está resfriado en la casa, ojalá usar mascarilla, que los niños, las personas mayores eviten el contacto con personas enfermas y por sobre todo vacunarse en tiempo."</p>
+                                            
+                                            <p><strong>Entrevistadora:</strong> "Paulina, si algún vecino o vecina tiene algún tema en salud respiratoria, ¿qué es lo que debe hacer?"</p>
+                                            
+                                            <p><strong>Especialista:</strong> "Existen distintos niveles de acción. Por ejemplo, en caso de presentar síntomas leves (Protocolo Verde), un resfrío que puede aparecer con aumento de temperatura entre 36 a 38 grados, congestión... siempre observar aumento de líquidos, mantener la ropa liviana y en el caso de los niños, un buen aseo nasal... Cuando supera los 38ºC y vemos que se asocia a dolor de oídos, dolor de garganta, diarrea, consultar."</p>
+                                            
+                                            <p>"Ahora, si vemos síntomas moderados (Protocolo Amarillo), aquí sí o sí una consulta médica en el CESFAM, por ejemplo... por un resfrío con una tos intensa que dure más de 3 días, aumento en la frecuencia respiratoria... o decaimiento."</p>
+
+                                            <p>"Y en el caso de presentaciones más graves (Protocolo Rojo), aquí sí o sí se debe recurrir a Urgencia: una tos que le dificulte la respiración, que se ahogue, hundimiento de las costillas, cambio de coloración en los labios o uñas... o silbidos en el pecho audibles a distancia."</p>
+
+                                            <p><strong>Entrevistadora:</strong> "¿Algo más que le quieras comentar a los vecinos de La Serena el día de hoy?"</p>
+
+                                            <p><strong>Especialista:</strong> "Que la prevención es tarea de todos. Por lo tanto, todas estas medidas preventivas la idea es utilizarlas a nuestro favor y protegernos desde ya, prepararnos... preparar los techos, canaletas, evitar la humedad dentro de los domicilios va a hacer la diferencia."</p>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                             
                             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                                <img src="/invierno/invierno_protocolo_rojo.jpg" alt="Rojo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_rojo.jpg")} />
+                                <img src="/invierno/invierno_protocolo_verde.jpg" alt="Verde" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_verde.jpg")} />
                                 <img src="/invierno/invierno_protocolo_amarillo.jpg" alt="Amarillo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_amarillo.jpg")} />
+                                <img src="/invierno/invierno_protocolo_rojo.jpg" alt="Rojo" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_protocolo_rojo.jpg")} />
                                 <img src="/invierno/invierno_prevenir.jpg" alt="Prevenir" style={{ height: '70px', borderRadius: '12px', border: '2px solid rgba(255,255,255,0.1)', boxShadow: '0 10px 20px rgba(0,0,0,0.5)', cursor: 'zoom-in' }} onClick={() => setSelectedImage("/invierno/invierno_prevenir.jpg")} />
                             </div>
                         </div>
@@ -395,6 +462,7 @@ export default function InviernoSalud() {
                             {[
                                 { src: "/invierno/invierno_entrevista_portada.jpg", title: "Campaña Oficial", desc: "Haz clic para ampliar" },
                                 { src: "/invierno/invierno_prevenir.jpg", title: "Prevención", desc: "Haz clic para ampliar" },
+                                { src: "/invierno/invierno_protocolo_verde.jpg", title: "Alerta Verde", desc: "Haz clic para ampliar" },
                                 { src: "/invierno/invierno_protocolo_amarillo.jpg", title: "Alerta Amarilla", desc: "Haz clic para ampliar" },
                                 { src: "/invierno/invierno_protocolo_rojo.jpg", title: "Alerta Roja", desc: "Haz clic para ampliar" }
                             ].map((item, index) => (
