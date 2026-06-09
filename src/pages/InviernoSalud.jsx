@@ -748,7 +748,188 @@ export default function InviernoSalud() {
                     </div>
                 </div>
 
+
+            {/* ===== SECCIÓN COMPARTIR EXCLUSIVA /invierno ===== */}
+            <section style={{
+                margin: '3rem auto',
+                maxWidth: '900px',
+                padding: '0 2rem'
+            }}>
+                <motion.div
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6 }}
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(15,23,42,0.8))',
+                        borderRadius: '35px',
+                        padding: '2.5rem',
+                        border: '1px solid rgba(16,185,129,0.25)',
+                        backdropFilter: 'blur(20px)',
+                        textAlign: 'center'
+                    }}
+                >
+                    {/* Header */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                        <span style={{ fontSize: '2rem' }}>❄️</span>
+                        <h3 style={{ fontSize: '1.8rem', fontWeight: '900', color: 'white', margin: '0.5rem 0' }}>
+                            ¡Comparte esta información!
+                        </h3>
+                        <p style={{ color: '#94a3b8', fontSize: '1rem' }}>
+                            Ayuda a tu familia y vecinos a estar preparados este invierno.
+                        </p>
+                    </div>
+
+                    {/* Tarjeta gráfica de compartir */}
+                    <motion.div
+                        whileHover={{ scale: 1.02, boxShadow: '0 25px 50px rgba(16,185,129,0.3)' }}
+                        style={{
+                            borderRadius: '20px',
+                            overflow: 'hidden',
+                            marginBottom: '2rem',
+                            cursor: 'pointer',
+                            border: '2px solid rgba(16,185,129,0.3)',
+                            boxShadow: '0 15px 35px rgba(0,0,0,0.5)'
+                        }}
+                        onClick={() => setSelectedImage('/invierno/invierno_prevenir.jpg')}
+                    >
+                        <img
+                            src="/invierno/invierno_prevenir.jpg"
+                            alt="Campaña Invierno Saludable - Prevención Respiratoria La Serena"
+                            style={{ width: '100%', display: 'block' }}
+                        />
+                    </motion.div>
+
+                    {/* Botones de compartir */}
+                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                        {/* WhatsApp */}
+                        <motion.a
+                            href={`https://wa.me/?text=${encodeURIComponent('❄️ Campaña Invierno Saludable 2025 🏥\n\n¿Cuál es el mejor tratamiento? ¡PREVENIR!\n\nConoce los protocolos Verde, Amarillo y Rojo del Servicio de Salud Coquimbo con la Dra. Paulina Fleite.\n\n👉 Ver entrevista completa y trivia interactiva:\nhttps://entrevecinas.cl/invierno\n\nSalud Responde 24/7: 600-360-7777')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: '#25D366',
+                                color: 'white',
+                                textDecoration: 'none',
+                                padding: '14px 24px',
+                                borderRadius: '50px',
+                                fontWeight: '800',
+                                fontSize: '1rem',
+                                boxShadow: '0 10px 20px rgba(37,211,102,0.35)',
+                                transition: 'all 0.3s'
+                            }}
+                        >
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                            WhatsApp
+                        </motion.a>
+
+                        {/* Facebook */}
+                        <motion.a
+                            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent('https://entrevecinas.cl/invierno')}&quote=${encodeURIComponent('❄️ ¿Cuál es el mejor tratamiento? ¡PREVENIR! Conoce los protocolos de salud respiratoria para este invierno con el Servicio de Salud Coquimbo.')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: '#1877F2',
+                                color: 'white',
+                                textDecoration: 'none',
+                                padding: '14px 24px',
+                                borderRadius: '50px',
+                                fontWeight: '800',
+                                fontSize: '1rem',
+                                boxShadow: '0 10px 20px rgba(24,119,242,0.35)',
+                                transition: 'all 0.3s'
+                            }}
+                        >
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                            Facebook
+                        </motion.a>
+
+                        {/* X (Twitter) */}
+                        <motion.a
+                            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent('❄️ ¿Cuál es el mejor tratamiento? ¡PREVENIR! Conoce los protocolos Verde, Amarillo y Rojo para enfermedades respiratorias este invierno. Salud Responde: 600-360-7777 (24/7)')}&url=${encodeURIComponent('https://entrevecinas.cl/invierno')}&hashtags=InviernoSaludable,LaSerena,Prevención`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: '#000',
+                                color: 'white',
+                                textDecoration: 'none',
+                                padding: '14px 24px',
+                                borderRadius: '50px',
+                                fontWeight: '800',
+                                fontSize: '1rem',
+                                boxShadow: '0 10px 20px rgba(0,0,0,0.4)',
+                                transition: 'all 0.3s'
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.259 5.63L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+                            X (Twitter)
+                        </motion.a>
+
+                        {/* Copiar enlace */}
+                        <motion.button
+                            whileHover={{ scale: 1.05, y: -3 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => {
+                                navigator.clipboard.writeText('https://entrevecinas.cl/invierno');
+                                playTone(600, 'sine', 0.15);
+                            }}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '10px',
+                                background: 'rgba(255,255,255,0.1)',
+                                color: 'white',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                padding: '14px 24px',
+                                borderRadius: '50px',
+                                fontWeight: '800',
+                                fontSize: '1rem',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s'
+                            }}
+                        >
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            Copiar enlace
+                        </motion.button>
+                    </div>
+
+                    {/* Número de Salud Responde */}
+                    <div style={{
+                        marginTop: '2rem',
+                        background: 'linear-gradient(135deg, rgba(239,68,68,0.15), rgba(59,130,246,0.15))',
+                        border: '1px solid rgba(239,68,68,0.3)',
+                        borderRadius: '20px',
+                        padding: '1.2rem 2rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '15px'
+                    }}>
+                        <span style={{ fontSize: '2rem' }}>📞</span>
+                        <div style={{ textAlign: 'left' }}>
+                            <div style={{ color: '#94a3b8', fontSize: '0.8rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>Salud Responde · 24/7</div>
+                            <div style={{ color: 'white', fontSize: '1.8rem', fontWeight: '900', letterSpacing: '2px' }}>600-360-7777</div>
+                        </div>
+                    </div>
+                </motion.div>
+            </section>
+
             </main>
+
 
             {/* Image Fullscreen Modal */}
             <AnimatePresence>
