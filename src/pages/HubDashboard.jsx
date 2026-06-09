@@ -2232,9 +2232,9 @@ export default function HubDashboard() {
                         
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
-                        <motion.div 
+                        <motion.a 
+                            href="/invierno"
                             whileHover={{ y: -5 }}
-                            onClick={() => window.location.href = '/invierno?v=1'}
                             style={{
                                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
                                 borderRadius: '30px',
@@ -2278,7 +2278,7 @@ export default function HubDashboard() {
                                     VER ENTREVISTA Y TRIVIA <ArrowRight size={20} />
                                 </div>
                             </div>
-                        </motion.div>
+                        </motion.a>
                     </div>
                     
                     {/* ══════════════════════════════════════════════════════════ */}

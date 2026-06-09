@@ -447,9 +447,9 @@ export default function EntrevecinasHub() {
 
                     {/* TARJETA GRÁFICA: CAMPAÑA INVIERNO */}
                     <section style={{ marginBottom: '4rem' }}>
-                        <motion.div 
+                        <motion.a 
+                            href="/invierno"
                             whileHover={{ y: -10 }}
-                            onClick={() => window.location.href = '/invierno?v=1'}
                             style={{
                                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
                                 borderRadius: '40px',
@@ -490,8 +490,7 @@ export default function EntrevecinasHub() {
                                 </p>
                                 
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <button 
-                                        onClick={(e) => { e.stopPropagation(); window.location.href = '/invierno?v=1'; }}
+                                    <div 
                                         style={{ 
                                             display: 'flex', alignItems: 'center', gap: '10px', 
                                             background: '#10b981', color: 'white', border: 'none', 
@@ -501,10 +500,10 @@ export default function EntrevecinasHub() {
                                             transition: 'transform 0.3s'
                                         }}>
                                         <Play size={20} fill="currentColor" /> VER ENTREVISTA Y TRIVIA
-                                    </button>
+                                    </div>
                                 </div>
                             </div>
-                        </motion.div>
+                        </motion.a>
                     </section>
 
                     {/* TARJETA GRÁFICA: INVITACIÓN MILAGROS (SOLICITADO POR USUARIO) */}
