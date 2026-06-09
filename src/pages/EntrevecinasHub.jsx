@@ -449,7 +449,7 @@ export default function EntrevecinasHub() {
                     <section style={{ marginBottom: '4rem' }}>
                         <motion.div 
                             whileHover={{ y: -10 }}
-                            onClick={() => navigate('/invierno')}
+                            onClick={() => window.location.href = '/invierno'}
                             style={{
                                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
                                 borderRadius: '40px',
@@ -490,14 +490,16 @@ export default function EntrevecinasHub() {
                                 </p>
                                 
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                                    <button style={{ 
-                                        display: 'flex', alignItems: 'center', gap: '10px', 
-                                        background: '#10b981', color: 'white', border: 'none', 
-                                        padding: '15px 30px', borderRadius: '20px', 
-                                        fontWeight: '900', fontSize: '1rem', cursor: 'pointer',
-                                        boxShadow: '0 10px 25px rgba(16, 185, 129, 0.4)',
-                                        transition: 'transform 0.3s'
-                                    }}>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); window.location.href = '/invierno'; }}
+                                        style={{ 
+                                            display: 'flex', alignItems: 'center', gap: '10px', 
+                                            background: '#10b981', color: 'white', border: 'none', 
+                                            padding: '15px 30px', borderRadius: '20px', 
+                                            fontWeight: '900', fontSize: '1rem', cursor: 'pointer',
+                                            boxShadow: '0 10px 25px rgba(16, 185, 129, 0.4)',
+                                            transition: 'transform 0.3s'
+                                        }}>
                                         <Play size={20} fill="currentColor" /> VER ENTREVISTA Y TRIVIA
                                     </button>
                                 </div>

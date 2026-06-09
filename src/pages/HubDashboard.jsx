@@ -2234,7 +2234,7 @@ export default function HubDashboard() {
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
                         <motion.div 
                             whileHover={{ y: -5 }}
-                            onClick={() => navigate('/invierno')}
+                            onClick={() => window.location.href = '/invierno'}
                             style={{
                                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
                                 borderRadius: '30px',
