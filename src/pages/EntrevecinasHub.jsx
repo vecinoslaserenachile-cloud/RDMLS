@@ -499,7 +499,7 @@ export default function EntrevecinasHub() {
                                             boxShadow: '0 10px 25px rgba(16, 185, 129, 0.4)',
                                             transition: 'transform 0.3s'
                                         }}>
-                                        <Play size={20} fill="currentColor" /> VER ENTREVISTA Y TRIVIA
+                                        <Play size={20} fill="currentColor" /> ➡ VER ENTREVISTA Y TRIVIA ❄
                                     </div>
                                 </div>
                             </div>

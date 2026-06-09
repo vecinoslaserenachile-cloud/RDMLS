@@ -2275,7 +2275,7 @@ export default function HubDashboard() {
                                     Conoce el protocolo oficial de acción frente a los síntomas respiratorios y cuida a tu familia con la Entrevista Especial del Servicio de Salud Coquimbo.
                                 </p>
                                 <div style={{ display: 'flex', alignItems: 'center', color: '#10b981', fontWeight: '900', gap: '8px', fontSize: '1rem' }}>
-                                    VER ENTREVISTA Y TRIVIA <ArrowRight size={20} />
+                                    ➡ VER ENTREVISTA Y TRIVIA ❄ <ArrowRight size={20} />
                                 </div>
                             </div>
                         </motion.a>
