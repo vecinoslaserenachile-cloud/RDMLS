@@ -1835,7 +1835,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
   const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
   // VLS_C5: NEVER return null. Return LoadingScreen to avoid "black screen" confusion.
-  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas|akichip|21mayo)/i) || location.hash.match(/(akichip|21mayo)/i);
+  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas|akichip|21mayo|invierno)/i) || location.hash.match(/(akichip|21mayo)/i);
 
   // ——— SYNC ARCADE ROUTE (Moved above early returns to satisfy Hook rules) ———
   useEffect(() => {

@@ -449,7 +449,7 @@ export default function EntrevecinasHub() {
                     <section style={{ marginBottom: '4rem' }}>
                         <motion.div 
                             whileHover={{ y: -10 }}
-                            onClick={() => window.location.href = '/invierno'}
+                            onClick={() => window.location.href = '/invierno?v=1'}
                             style={{
                                 background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
                                 borderRadius: '40px',
@@ -491,7 +491,7 @@ export default function EntrevecinasHub() {
                                 
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                     <button 
-                                        onClick={(e) => { e.stopPropagation(); window.location.href = '/invierno'; }}
+                                        onClick={(e) => { e.stopPropagation(); window.location.href = '/invierno?v=1'; }}
                                         style={{ 
                                             display: 'flex', alignItems: 'center', gap: '10px', 
                                             background: '#10b981', color: 'white', border: 'none', 
