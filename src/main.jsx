@@ -465,6 +465,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <Route path="monica-sierra" element={<MonicaSierra />} />
                   <Route path="antonia-rodriguez" element={<AntoniaRodriguez />} />
                   <Route path="aurora-portal" element={<AuroraPortal />} />
+                  <Route path="invierno" element={<InviernoSalud />} />
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Route>
               ) : isRadioVecinosDns ? (
