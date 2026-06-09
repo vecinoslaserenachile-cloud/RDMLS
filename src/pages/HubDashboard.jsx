@@ -2231,28 +2231,54 @@ export default function HubDashboard() {
                         {/* <LocalNewsGrid /> */}
                         
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
-                        <div 
+                        {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
+                        <motion.div 
+                            whileHover={{ y: -5 }}
                             onClick={() => navigate('/invierno')}
-                            className="group cursor-pointer relative rounded-2xl overflow-hidden shadow-2xl border border-slate-700 transition-all hover:border-emerald-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-slate-900 mt-4 mb-4"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(15, 23, 42, 0.8))',
+                                borderRadius: '30px',
+                                border: '1px solid rgba(16, 185, 129, 0.3)',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'stretch',
+                                cursor: 'pointer',
+                                boxShadow: '0 20px 40px -10px rgba(0,0,0,0.5)',
+                                marginTop: '1rem',
+                                marginBottom: '1rem',
+                                position: 'relative',
+                                backdropFilter: 'blur(30px)'
+                            }}
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-3 items-center">
-                                <div className="md:col-span-1 h-48 md:h-full w-full relative">
-                                    <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                    <div className="absolute inset-0 bg-gradient-to-t md:bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent"></div>
+                            <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: '#10b981', filter: 'blur(100px)', opacity: 0.2, pointerEvents: 'none' }} />
+                            
+                            <div style={{ flex: '1', minWidth: '250px', position: 'relative' }}>
+                                <img src="/invierno/invierno_entrevista_portada.jpg" alt="Entrevista Salud Coquimbo" style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '200px' }} />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent, rgba(15, 23, 42, 0.8) 90%, rgba(15, 23, 42, 1) 100%)' }}></div>
+                            </div>
+
+                            <div style={{ flex: '2', minWidth: '350px', padding: '2rem 3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', zIndex: 10 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(16, 185, 129, 0.2)', padding: '5px 12px', borderRadius: '50px', border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                                        <ShieldAlert size={14} color="#10b981" />
+                                        <span style={{ color: '#10b981', fontSize: '0.75rem', fontWeight: '900', letterSpacing: '1px' }}>SALUD PÚBLICA</span>
+                                    </div>
+                                    <span style={{ color: '#94a3b8', fontSize: '0.85rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                        <Clock size={12} /> Campaña Invierno 2026
+                                    </span>
                                 </div>
-                                <div className="md:col-span-2 p-6 md:p-8 relative z-10 space-y-4">
-                                    <div className="flex items-center gap-2">
-                                        <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1"><ShieldAlert size={12}/> Salud Pública</span>
-                                        <span className="text-slate-400 text-xs font-medium flex items-center gap-1"><Clock size={12}/> Campaña Invierno 2026</span>
-                                    </div>
-                                    <h3 className="text-2xl md:text-3xl font-black text-white group-hover:text-emerald-400 transition-colors">¿Cuál es el mejor tratamiento? PREVENIR</h3>
-                                    <p className="text-slate-300">Conoce el protocolo oficial de acción frente a los síntomas respiratorios y cuida a tu familia con la Entrevista Especial del Servicio de Salud Coquimbo.</p>
-                                    <div className="flex items-center text-emerald-400 font-bold group-hover:translate-x-2 transition-transform">
-                                        VER ENTREVISTA Y TRIVIA <ArrowRight className="ml-2 w-5 h-5" />
-                                    </div>
+                                <h3 style={{ fontSize: '2rem', fontWeight: '950', color: 'white', marginBottom: '1rem', lineHeight: '1.2' }}>
+                                    ¿Cuál es el mejor tratamiento? <span style={{ color: '#10b981' }}>PREVENIR</span>
+                                </h3>
+                                <p style={{ color: '#cbd5e1', fontSize: '1.05rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>
+                                    Conoce el protocolo oficial de acción frente a los síntomas respiratorios y cuida a tu familia con la Entrevista Especial del Servicio de Salud Coquimbo.
+                                </p>
+                                <div style={{ display: 'flex', alignItems: 'center', color: '#10b981', fontWeight: '900', gap: '8px', fontSize: '1rem' }}>
+                                    VER ENTREVISTA Y TRIVIA <ArrowRight size={20} />
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
                     
                     {/* ══════════════════════════════════════════════════════════ */}

@@ -1890,7 +1890,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
 
 
   if (isEntreVecinasHost) {
-    const isSubPage = location.pathname.includes('/tano') || location.pathname.includes('/comunidades') || location.pathname.includes('/astronomia-beltrand') || location.pathname.includes('/humedales-campos') || location.pathname.includes('/adobe-vivo') || location.pathname.includes('/ruinas-lambert');
+    const isSubPage = location.pathname.includes('/tano') || location.pathname.includes('/comunidades') || location.pathname.includes('/astronomia-beltrand') || location.pathname.includes('/humedales-campos') || location.pathname.includes('/adobe-vivo') || location.pathname.includes('/ruinas-lambert') || location.pathname.includes('/invierno');
     
     if (isSubPage) {
       return (
