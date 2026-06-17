@@ -25,7 +25,7 @@ import {
     Newspaper, Info, Music, Zap, Move, Tv, Monitor, Lock, Clock, Calendar,
     MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, ExternalLink, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Star, Play, Pause,
     Heart, Users, Briefcase, Landmark, BookOpen, Book, Map, Phone, AlertCircle, ShoppingCart, Award, Sparkles, CheckCircle2,
-    ArrowRight, Building2, UserCheck, Pill, Bell, CircuitBoard, Cpu, BarChart3
+    ArrowRight, Building2, UserCheck, Pill, Bell, CircuitBoard, Cpu, BarChart3, Mail
 } from 'lucide-react';
 import {
     ShieldCheck, Eye, Home as HomeIcon, Ruler, Camera, Dumbbell, Box, PenTool, User as UserIcon, LogOut, ChevronRight, ChevronLeft, X, Pin, MapPin, Database, Share2,
@@ -235,7 +235,7 @@ export default function HubDashboard() {
     const handleEstudio = () => { closeAllPopups(); setShowEstudio(true); };
     const handleAndacollo = () => { closeAllPopups(); navigate('/andacollo'); };
     const handleVallenar = () => { closeAllPopups(); navigate('/vallenar'); };
-    const handleMemorial = () => { closeAllPopups(); setShowMemorialHijos(true); };
+    const handleMemorial = () => { closeAllPopups(); navigate('/altares'); };
     const handleTuerca = () => { closeAllPopups(); setShowTuerca(true); };
     const handleVeciCat = () => { closeAllPopups(); setShowVeciCat(true); };
     const handleTienda = () => { closeAllPopups(); setShowTiendaPoleras(true); };
@@ -1070,8 +1070,8 @@ export default function HubDashboard() {
             icon: Ruler, color: '#3b82f6', path: '/arquitectura', active: true, badge: 'DOM'
         },
         {
-            id: 'smart-learning', title: isRDMLS ? 'Inducción Municipal' : 'Smart Academia VLS', subtitle: isRDMLS ? 'Pilar #2: Capacitación, Diplomas y Soberanía' : 'Capacitación, Inglés, Diplomas y Saberes Locales',
-            icon: GraduationCap, color: '#fbbf24', path: '/induccion', active: true, badge: isRDMLS ? 'INDUCCIÓN' : 'ESTUDIOS'
+            id: 'smart-learning', title: isRDMLS ? 'Inducción Municipal' : 'Roadmap & Speech Inversores', subtitle: isRDMLS ? 'Pilar #2: Capacitación, Diplomas y Soberanía' : 'Opciones de Publicidad, Alianzas y Monetización',
+            icon: isRDMLS ? GraduationCap : Rocket, color: '#fbbf24', path: isRDMLS ? '/induccion' : undefined, isEvent: !isRDMLS ? 'open-pitch-inversores' : undefined, active: true, badge: isRDMLS ? 'INDUCCIÓN' : 'INVERSIÓN'
         },
         {
             id: 'tienda-poleras', title: 'Tienda Poleras 3D', subtitle: 'Espejo Virtual y Creación de Vestuario',
@@ -1146,8 +1146,8 @@ export default function HubDashboard() {
             icon: ListChecks, color: '#3b82f6', isEvent: 'open-vls-roadmap', active: true, badge: 'ESTATUS'
         },
         {
-            id: 'pitch-inversionistas', title: 'Pitch Inversionistas (B2G)', subtitle: 'Modelo SaaS Municipal y Nube Cero Costo (Cloudflare D1/R2)',
-            icon: Rocket, color: '#c084fc', isEvent: 'open-project-info', active: true, badge: 'Dossier 2030'
+            id: 'pitch-inversionistas', title: 'Pitch Inversores (Monetización)', subtitle: '11 Modelos de Negocio, Dossier y Estrategia PDF',
+            icon: Rocket, color: '#f59e0b', isEvent: 'open-pitch-inversores', active: true, badge: 'NUEVO'
         },
         {
             id: 'low-data-safe-access', title: 'Sección Liviana (Low-Data)', subtitle: 'Portal de Ahorro para Celulares y 3G',
@@ -1299,7 +1299,7 @@ export default function HubDashboard() {
         },
         {
             id: 'parlamento-regional', title: 'Observatorio Parlamentario', subtitle: 'Transparencia y Auditoría de Representantes Regionales',
-            icon: Gavel, color: '#38bdf8', isEvent: 'open-parlamento-regional', active: false, badge: 'NUEVO'
+            icon: Gavel, color: '#38bdf8', isEvent: 'open-transparencia-secreta', active: true, badge: 'NUEVO'
         },
         {
             id: 'vls-vial', title: 'Crisis Vial: El Laberinto', subtitle: 'Expediente VLS-2025-VIAL: Denuncia baches y rutas críticas',
@@ -1368,10 +1368,10 @@ export default function HubDashboard() {
         },
         {
             id: 'admin',
-            name: 'Smart Administration (Gestión Interna)',
+            name: isRDMLS ? 'Smart Administration (Gestión Interna)' : 'Smart Administration (Comercial y Alianzas)',
             description: isRDMLS
                 ? 'Portal de inducción E-learning (entrega de diplomas) y digitalización de informes para trabajadores municipales (Honorarios) con firma digital.'
-                : 'Portal de formación continua, saberes locales y herramientas de gestión vecinal avanzada.',
+                : 'Roadmap de la plataforma, speech para inversionistas, opciones de publicidad y monetización.',
             icon: Briefcase,
             color: '#10b981',
             modules: [
@@ -1636,8 +1636,8 @@ export default function HubDashboard() {
             <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-chat'))} className="huincha-btn premium-citizens" style={{ background: 'rgba(56, 189, 248, 0.15)', border: '1px solid #38bdf8', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(56, 189, 248, 0.3)' }}>
                 <Users size={14} color="#38bdf8" /> SMART CITIZENS
             </button>
-            <button onClick={() => navigate('/induccion')} className="huincha-btn premium-admin" style={{ background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(16, 185, 129, 0.3)' }}>
-                <Shield size={14} color="#10b981" /> SMART ADMINISTRATION
+            <button onClick={() => window.dispatchEvent(new CustomEvent('open-pitch-inversores'))} className="huincha-btn premium-admin" style={{ background: 'rgba(245, 158, 11, 0.15)', border: '1px solid #f59e0b', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(245, 158, 11, 0.3)' }}>
+                <Rocket size={14} color="#f59e0b" /> PITCH INVERSORES
             </button>
             <button onClick={() => window.dispatchEvent(new CustomEvent('open-vls-eventos'))} className="huincha-btn premium-events" style={{ background: 'rgba(239, 68, 68, 0.15)', border: '1px solid #ef4444', borderRadius: '50px', padding: '0.4rem 1.2rem', color: 'white', fontWeight: '900', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(239, 68, 68, 0.3)' }}>
                 <Calendar size={14} color="#ef4444" /> SMART EVENTS
@@ -2038,7 +2038,7 @@ export default function HubDashboard() {
                     width: '100%',
                     background: 'linear-gradient(90deg, #1e1b4b 0%, #312e81 100%)',
                     borderBottom: '2px solid #ef4444',
-                    padding: '0.4rem 1.5rem',
+                    padding: isMobile ? '0.4rem 0.5rem' : '0.4rem 1.5rem',
                     display: 'flex',
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -2046,13 +2046,14 @@ export default function HubDashboard() {
                     fontSize: '0.85rem',
                     zIndex: 990,
                     position: 'relative',
-                    gap: '20px',
+                    gap: isMobile ? '10px' : '20px',
                     minHeight: '70px',
-                    overflowX: 'hidden'
+                    flexWrap: isMobile ? 'wrap' : 'nowrap',
+                    justifyContent: isMobile ? 'center' : 'flex-start'
                 }}>
                     {/* Mensaje Informativo (Izquierda/Centro) */}
                     <div key={msgIndex} className="animate-slide-up" style={{
-                        display: 'flex',
+                        display: isMobile ? 'none' : 'flex',
                         alignItems: 'center',
                         gap: '1rem',
                         textAlign: 'left',
@@ -2096,10 +2097,16 @@ export default function HubDashboard() {
                         <div style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '12px',
+                        gap: isMobile ? '8px' : '12px',
                         flexShrink: 0,
                         padding: '0.5rem 0',
-                        justifyContent: 'flex-start'
+                        width: isMobile ? '100%' : 'auto',
+                        justifyContent: 'flex-start',
+                        flexWrap: 'nowrap',
+                        overflowX: 'auto',
+                        WebkitOverflowScrolling: 'touch',
+                        msOverflowStyle: 'none',
+                        scrollbarWidth: 'none'
                     }}>
                         {/* BOTÓN DE ACCESO DINÁMICO */}
                         {!currentUser ? (
@@ -2142,6 +2149,72 @@ export default function HubDashboard() {
                                 <LogOut size={14} /> SALIR
                             </button>
                         )}
+
+                        {/* BOTÓN PITCH INVERSORES DESTACADO */}
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-pitch-inversores'))}
+                            className="btn-glass"
+                            style={{
+                                background: 'linear-gradient(135deg, rgba(245,158,11,0.2), rgba(236,72,153,0.2))',
+                                border: '1px solid rgba(245,158,11,0.5)',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1rem',
+                                color: '#f59e0b',
+                                fontWeight: '900',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            📊 PITCH 2026
+                        </button>
+
+                        {/* BOTÓN CONTACTO DESTACADO */}
+                        <button
+                            onClick={() => window.dispatchEvent(new CustomEvent('open-vls-contact'))}
+                            className="btn-glass pulse"
+                            style={{
+                                background: 'linear-gradient(90deg, #38bdf8, #2563eb)',
+                                border: '1px solid #38bdf8',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1.2rem',
+                                color: 'white',
+                                fontWeight: '900',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 15px rgba(56, 189, 248, 0.4)'
+                            }}
+                        >
+                            <Mail size={14} /> CONTACTO
+                        </button>
+
+                        {/* BOTÓN WHATSAPP DESTACADO */}
+                        <a
+                            href="https://wa.me/56999072085"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="btn-glass pulse"
+                            style={{
+                                background: 'linear-gradient(90deg, #25D366, #128C7E)',
+                                border: '1px solid #25D366',
+                                borderRadius: '50px',
+                                padding: '0.4rem 1.2rem',
+                                color: 'white',
+                                fontWeight: '900',
+                                fontSize: '0.75rem',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                                boxShadow: '0 0 15px rgba(37, 211, 102, 0.4)',
+                                textDecoration: 'none'
+                            }}
+                        >
+                            <MessageSquare size={14} /> WHATSAPP
+                        </a>
 
                         <button
                             onClick={() => navigate('/glosario')}
@@ -2221,6 +2294,43 @@ export default function HubDashboard() {
 
                 <main className="flex-1 overflow-y-auto overflow-x-hidden relative" style={{ padding: '0 0 100px 0' }}>
                     {/* ══════════════════════════════════════════════════════════ */}
+                    {/* NODO DE BIENVENIDA (ABS-TOP)                                 */}
+                    {/* ══════════════════════════════════════════════════════════ */}
+                    {isVLS && (
+                        <div className="animate-fade-in" style={{
+                            width: '100%',
+                            background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
+                            borderBottom: '4px solid #fbbf24',
+                            padding: '1.2rem 2rem',
+                            position: 'relative',
+                            overflow: 'hidden',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            boxSizing: 'border-box'
+                        }}>
+                            <div style={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'radial-gradient(circle at 50% 50%, #38bdf8 0%, transparent 60%)' }}></div>
+                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <div style={{ background: '#38bdf8', padding: '6px 18px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 20px rgba(56,189,248,0.3)', flexShrink: 0 }}>
+                                    <Rocket size={16} color="white" />
+                                    <span style={{ color: 'white', fontWeight: '900', fontSize: '0.75rem', letterSpacing: '2px' }}>{isRDMLS ? 'HUB DE INTELIGENCIA' : 'COMUNIDAD DIGITAL'}</span>
+                                </div>
+                                <h2 style={{ fontSize: 'clamp(1rem, 3vw, 1.5rem)', fontWeight: '900', margin: 0, color: 'white', letterSpacing: '-0.5px', lineHeight: '1', whiteSpace: 'nowrap' }}>
+                                    {isRDMLS ? 'BIENVENIDOS AL ECOSISTEMA ' : 'BIENVENIDO A '}<span style={{ color: '#38bdf8' }}>{isRDMLS ? 'RDMLS' : 'VECINOS LA SERENA'}</span>
+                                </h2>
+                                <p style={{ fontSize: '0.85rem', color: '#94a3b8', margin: 0, lineHeight: '1.4', maxWidth: '500px' }}>
+                                    {tHub.heroDescription}
+                                </p>
+                                {isRDMLS && (
+                                    <button className="btn-vls-action-light" onClick={() => navigate('/induccion')} style={{ fontSize: '0.9rem', padding: '0.6rem 1.5rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer', flexShrink: 0 }}>CENTRO DE FORMACIÓN</button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ══════════════════════════════════════════════════════════ */}
                     {/* RADAR MUNDIAL: NOTICIAS INTERNACIONALES (SIEMPRE VISIBLE)  */}
                     {/* ══════════════════════════════════════════════════════════ */}
                     {/* ══════════════════════════════════════════════════════════ */}
@@ -2230,6 +2340,91 @@ export default function HubDashboard() {
                         {/* <WorldNewsTablets /> */}
                         {/* <LocalNewsGrid /> */}
                         
+                        {/* CARD: MARKETPLACE VECINAL */}
+                        <motion.div 
+                            initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}
+                            whileInView={isMobile ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                            onClick={() => window.location.href = '/vende'}
+                            style={{ 
+                                position: 'relative', minHeight: isMobile ? '220px' : '520px', borderRadius: '40px', overflow: 'hidden', 
+                                border: '2px solid rgba(56, 189, 248, 0.4)', boxShadow: '0 30px 60px rgba(56, 189, 248, 0.2)',
+                                cursor: 'pointer', background: '#0f172a', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                                marginBottom: '2rem'
+                            }}
+                            whileHover={{ y: -10, transition: { duration: 0.3 } }}
+                        >
+                            <img src="https://images.unsplash.com/photo-1555529771-835f59fc5efe?auto=format&fit=crop&w=1200&q=80" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', opacity: 0.4 }} alt="Marketplace Vecinal" />
+                            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.6) 50%, transparent 100%)' }} />
+                            
+                            <div style={{ 
+                                position: 'absolute', top: window.innerWidth < 768 ? 15 : 30, right: window.innerWidth < 768 ? 15 : 30, 
+                                background: '#38bdf8', padding: window.innerWidth < 768 ? '0.4rem 1rem' : '0.6rem 1.8rem', borderRadius: '30px', 
+                                color: '#0f172a', fontWeight: 950, fontSize: 'clamp(0.65rem, 2vw, 0.9rem)', letterSpacing: window.innerWidth < 768 ? '1px' : '2px', 
+                                zIndex: 20, boxShadow: '0 10px 20px rgba(56, 189, 248, 0.5)' 
+                            }}>
+                                🛒 NUEVO MARKETPLACE VLS
+                            </div>
+ 
+                            <div style={{ position: 'relative', padding: window.innerWidth < 768 ? '1.5rem' : '3rem', zIndex: 10, maxWidth: '1000px', paddingTop: window.innerWidth < 768 ? '4rem' : '3rem' }}>
+                                <h2 style={{ color: 'white', fontSize: 'clamp(1.5rem, 5.5vw, 3.8rem)', fontWeight: 950, margin: 0, letterSpacing: '-1px', lineHeight: 1.05 }}>
+                                   COMERCIO CIRCULAR:<br/>
+                                   <span style={{ color: '#38bdf8' }}>COMPRA, VENDE O ARRIENDA<br className="lg:hidden" style={{ display: window.innerWidth < 768 ? 'block' : 'none' }}/> EN LA SERENA</span>
+                                </h2>
+                                <p style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(0.95rem, 2vw, 1.4rem)', marginTop: '1rem', fontWeight: 400, maxWidth: '800px', lineHeight: 1.4 }}>
+                                   Explora propiedades, vehículos y artículos de tus vecinos. Sube tus productos, gestiona tus ventas y conecta de forma segura dentro de la comunidad Smart de La Serena.
+                                </p>
+                                <button className="btn-vls-action-light" style={{ marginTop: window.innerWidth < 768 ? '1.5rem' : '2rem', background: '#38bdf8', color: '#0f172a', border: 'none', padding: window.innerWidth < 768 ? '0.8rem 1.5rem' : '1rem 2.5rem', fontSize: window.innerWidth < 768 ? '0.9rem' : '1.1rem', fontWeight: 900, borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                   ENTRAR AL MARKETPLACE <ArrowRight size={20} />
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* PROMO ARCADE ZONE */}
+                        <motion.div 
+                            onClick={() => window.location.href = '/arcade'}
+                            whileHover={{ y: -5 }}
+                            style={{
+                                background: '#020617',
+                                borderRadius: '30px',
+                                border: '2px solid #ef4444',
+                                overflow: 'hidden',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'stretch',
+                                cursor: 'pointer',
+                                boxShadow: '0 20px 40px -10px rgba(239, 68, 68, 0.4)',
+                                marginTop: '1rem',
+                                marginBottom: '2rem',
+                                position: 'relative',
+                                minHeight: '300px'
+                            }}
+                        >
+                            <div style={{ flex: '1', minWidth: '300px', position: 'relative' }}>
+                                <img src="/arcade_promo.png" alt="Arcade Promo" style={{ width: '100%', height: '100%', objectFit: 'cover', minHeight: '300px', objectPosition: 'center' }} />
+                                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to right, transparent, rgba(2, 6, 23, 0.8) 90%, rgba(2, 6, 23, 1) 100%)' }}></div>
+                            </div>
+
+                            <div style={{ flex: '1', minWidth: '350px', padding: '2rem 3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', zIndex: 10 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '1rem' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239, 68, 68, 0.2)', padding: '5px 12px', borderRadius: '50px', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
+                                        <Star size={14} color="#ef4444" />
+                                        <span style={{ color: '#ef4444', fontSize: '0.75rem', fontWeight: '900', letterSpacing: '1px' }}>VLS ARCADE</span>
+                                    </div>
+                                </div>
+                                <h3 style={{ fontSize: '2.5rem', fontWeight: '950', color: 'white', marginBottom: '1rem', lineHeight: '1.1' }}>
+                                    VECINOS LA SERENA <br/><span style={{ color: '#ef4444' }}>ARCADE</span>
+                                </h3>
+                                <p style={{ color: '#cbd5e1', fontSize: '1.1rem', lineHeight: '1.5', marginBottom: '1.5rem' }}>
+                                    Juegos 3D, Pinball, Pacman y Clásicos Arcade rediseñados. Compite en los desafíos comunitarios y consigue los récords de La Serena.
+                                </p>
+                                <div style={{ display: 'flex', alignItems: 'center', color: '#ef4444', fontWeight: '900', gap: '8px', fontSize: '1rem' }}>
+                                    ➡ ENTRAR AL PLAY CENTER <ArrowRight size={20} />
+                                </div>
+                            </div>
+                        </motion.div>
+
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
                         {/* NOTA PRINCIPAL: CAMPAÑA INVIERNO */}
                         <motion.a 
@@ -2281,107 +2476,9 @@ export default function HubDashboard() {
                         </motion.a>
                     </div>
                     
-                    {/* ══════════════════════════════════════════════════════════ */}
-                    {/* NODO DE BIENVENIDA (ABS-TOP)                                 */}
-                    {/* ══════════════════════════════════════════════════════════ */}
-                    {isVLS && (
-                        <div className="animate-fade-in" style={{
-                            width: '100%',
-                            background: 'linear-gradient(135deg, #020617 0%, #0f172a 100%)',
-                            borderBottom: '4px solid #fbbf24',
-                            padding: '3rem 2rem',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            textAlign: 'center',
-                            boxSizing: 'border-box'
-                        }}>
-                             {/* Personaje 3D (Humanized Serenito) - REGLA ESTRICTA (Actualmente en producción) */}
-                            <div style={{ position: 'absolute', inset: 0, opacity: 0.15, background: 'radial-gradient(circle at 50% 50%, #38bdf8 0%, transparent 60%)' }}></div>
-                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.2rem' }}>
-                                <div style={{ background: '#38bdf8', padding: '10px 25px', borderRadius: '50px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 0 30px rgba(56,189,248,0.3)' }}>
-                                    <Rocket size={20} color="white" />
-                                    <span style={{ color: 'white', fontWeight: '900', fontSize: '0.85rem', letterSpacing: '2px' }}>{isRDMLS ? 'HUB DE INTELIGENCIA' : 'COMUNIDAD DIGITAL'}</span>
-                                </div>
-                                <h2 style={{ fontSize: 'clamp(1.8rem, 6vw, 3.2rem)', fontWeight: '900', margin: 0, color: 'white', letterSpacing: '-1.5px', lineHeight: '1.1' }}>
-                                    {isRDMLS ? 'BIENVENIDOS AL ECOSISTEMA ' : 'BIENVENIDO A '} <br/> <span style={{ color: '#38bdf8' }}>{isRDMLS ? 'RDMLS' : 'VECINOS LA SERENA'}</span>
-                                </h2>
-                                <p style={{ maxWidth: '900px', fontSize: '1.15rem', color: '#94a3b8', margin: '0.5rem 0', lineHeight: '1.6' }}>
-                                    {tHub.heroDescription}
-                                </p>
-                                <div style={{ display: 'flex', gap: '1.5rem', marginTop: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    {!isRDMLS && (
-                                        <button className="btn-vls-action-blue" onClick={() => setShowDirectory(true)} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>EXPLORAR SERVICIOS</button>
-                                    )}
-                                    {isRDMLS && (
-                                        <button className="btn-vls-action-light" onClick={() => navigate('/induccion')} style={{ fontSize: '1rem', padding: '1rem 2rem', background: '#38bdf8', color: 'white', fontWeight: '900', border: 'none', borderRadius: '30px', cursor: 'pointer' }}>CENTRO DE FORMACIÓN</button>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    )}
 
-                    {/* ══════════════════════════════════════════════════════════ */}
-                    {/* SUPER BANNER: PULSO CIUDADANO (PRINCIPAL ABAJO DE WELCOME) */}
-                    {/* ══════════════════════════════════════════════════════════ */}
-                    {isVLS && (
-                        <motion.div 
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            onClick={() => window.dispatchEvent(new CustomEvent('open-pulso-ciudadano'))}
-                            style={{ 
-                                margin: '2rem',
-                                minHeight: '400px',
-                                background: 'linear-gradient(135deg, #020617 0%, #1e1b4b 100%)',
-                                borderRadius: '40px',
-                                border: '1px solid rgba(56, 189, 248, 0.3)',
-                                cursor: 'pointer',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                overflow: 'hidden',
-                                position: 'relative',
-                                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
-                            }}
-                            whileHover={{ scale: 1.01, borderColor: '#38bdf8' }}
-                        >
-                            <div style={{ position: 'absolute', inset: 0, opacity: 0.1, background: 'url("/grid_bg.png")' }}></div>
-                            <div style={{ zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', maxWidth: '1200px', textAlign: 'center' }}>
-                                <div style={{ background: 'rgba(56, 189, 248, 0.1)', border: '1px solid #38bdf8', padding: '8px 20px', borderRadius: '50px', color: '#38bdf8', fontWeight: 900, fontSize: '0.8rem', letterSpacing: '3px' }}>REPORTE EXTERNO · ACTIVA RESEARCH</div>
-                                <h1 style={{ fontSize: 'clamp(2.5rem, 8vw, 4rem)', fontWeight: 950, margin: 0, color: 'white', letterSpacing: '-3px', lineHeight: '0.9' }}>
-                                    PULSO CIUDADANO
-                                </h1>
-                                
-                                <div style={{ display: 'flex', gap: '2.5rem', marginTop: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#ef4444' }}>54.4%</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Desaprobación Presidencial</div>
-                                    </div>
-                                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '3rem', fontWeight: 950, color: '#38bdf8' }}>31.2%</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación Presidencial</div>
-                                    </div>
-                                    <div style={{ width: '1px', background: 'rgba(255,255,255,0.1)', height: '50px' }}></div>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <div style={{ fontSize: '2.5rem', fontWeight: 950, color: '#38bdf8' }}>J. A. Kast</div>
-                                        <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontWeight: 900, textTransform: 'uppercase' }}>Aprobación (31.2%)</div>
-                                    </div>
-                                </div>
 
-                                <motion.button 
-                                    whileHover={{ scale: 1.05 }}
-                                    style={{ background: 'linear-gradient(90deg, #38bdf8, #1d4ed8)', color: 'white', padding: '15px 50px', borderRadius: '50px', border: 'none', fontWeight: 950, fontSize: '1rem', marginTop: '1rem', boxShadow: '0 10px 30px rgba(58, 190, 248, 0.4)' }}
-                                >
-                                    EXPLORAR ANÁLISIS COMPLETO
-                                </motion.button>
-                            </div>
-                        </motion.div>
-                    )}
+
 
                     {/* ══════════════════════════════════════════════════════════ */}
                     {/* TARJETÓN GRÁFICO: STELLA DÍAZ VARÍN (LA COLORINA)          */}
@@ -2457,6 +2554,43 @@ export default function HubDashboard() {
             {/* NOTICIAS DE HOY: GESTIÓN Y EVENTOS (Kast & Yoga)             */}
             {/* ══════════════════════════════════════════════════════════ */}
             <div style={{ padding: '3rem 1.5rem 0', maxWidth: '1400px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }}>
+
+                {/* ── TARJETA DESTACADA OSULS ── */}
+                <div 
+                    onClick={() => window.location.href = '/osuls'}
+                    style={{
+                        background: 'linear-gradient(90deg, rgba(30, 58, 138, 0.8), rgba(2, 6, 23, 0.9))',
+                        borderRadius: '24px',
+                        border: '1px solid rgba(56, 189, 248, 0.3)',
+                        overflow: 'hidden',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+                        position: 'relative',
+                        transition: 'all 0.3s',
+                        marginBottom: '3rem'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'scale(1.01)'; e.currentTarget.style.boxShadow = '0 25px 50px rgba(56, 189, 248, 0.2)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.4)'; }}
+                >
+                    <div style={{ position: 'relative', height: isMobile ? '200px' : '220px', width: '100%', overflow: 'hidden' }}>
+                        <img src="/images/osuls/BANNER IV Concierto de Temporada (gira).png" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'top center' }} alt="OSULS Gira Nacional" />
+                        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15, 23, 42, 1) 0%, transparent 100%)' }} />
+                        <div style={{ position: 'absolute', top: '15px', left: '15px', background: '#ec4899', color: 'white', padding: '6px 14px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '5px', boxShadow: '0 4px 10px rgba(0,0,0,0.5)' }}>
+                            <Star size={14} /> ESPECIAL CULTURA
+                        </div>
+                    </div>
+                    <div style={{ padding: '1.5rem', position: 'relative', zIndex: 10, marginTop: '-60px' }}>
+                        <h3 style={{ fontSize: isMobile ? '1.4rem' : '1.8rem', fontWeight: '900', color: 'white', marginBottom: '0.5rem', lineHeight: 1.2, textShadow: '0 2px 10px rgba(0,0,0,0.8)' }}>
+                            OSULS anuncia importante gira nacional con conciertos en Santiago y Valparaíso
+                        </h3>
+                        <p style={{ color: '#bae6fd', fontSize: '1rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' }}>
+                            <Music size={18} color="#38bdf8" /> Orquesta Sinfónica Universidad de La Serena
+                        </p>
+                    </div>
+                </div>
+
                 <div className="vls-perf-section" style={{ display: 'grid', gridTemplateColumns: window.innerWidth < 1024 ? '1fr' : 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2.5rem' }}>
                     
                     {/* CARD KAST (TOP HIGHLIGHT 1) */}
@@ -3085,6 +3219,8 @@ export default function HubDashboard() {
                                 </button>
                             </div>
                         </motion.div>
+
+
                         {/* CARD 0: SALUD LA SERENA (TOP HIGHLIGHT) */}
                         <motion.div 
                             initial={isMobile ? { opacity: 1 } : { opacity: 0, scale: 0.95 }}

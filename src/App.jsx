@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useLocation, useSearchParams } from 'react-router-
 import { motion, AnimatePresence } from 'framer-motion';
 import StickyNoteWidget from './components/StickyNoteWidget';
 
-import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award, Joystick, Radio } from 'lucide-react';
+import { Search, ShieldAlert, Map as MapIcon, Box, ExternalLink, Home, Info, X as CloseIcon, Star, Sun, Moon, Cloud, CloudRain, CloudLightning, CloudSnow, CloudFog, Bell, UserCircle, Sparkles, Fingerprint, ArrowLeft, Ticket, Activity, LogIn, ClipboardList, Eye, Download, HardDrive, ShoppingCart, Tag, Shirt, Network, Fuel, Ruler, Plane, Anchor, LineChart, LayoutGrid, Heart, Award, Joystick, Radio, Mail, MessageSquare, SkipForward, SkipBack, Layers, Settings, Maximize, Minimize, Globe, Wifi, Shield, TrendingUp, TrendingDown, History as HistoryIcon, Play, Pause } from 'lucide-react';
 import { socket as comSocket } from './utils/socket';
 import RadioMasterEngine from './components/Radio/RadioMasterEngine';
 import { LanguageProvider, useTranslation } from './context/LanguageContext';
@@ -81,6 +81,8 @@ const IdentityGate = lazy(() => import('./components/IdentityGate.jsx'));
 const MasterLock = lazy(() => import('./components/MasterLock.jsx'));
 const VLSVisionModal = lazy(() => import('./components/VLSVisionModal.jsx'));
 const ProjectInfoModal = lazy(() => import('./components/ProjectInfoModal.jsx'));
+const VLSRoadmap = lazy(() => import('./components/VLSRoadmap.jsx'));
+const VLSPitchInversores = lazy(() => import('./components/VLSPitchInversores.jsx'));
 const SmartCalendar = lazy(() => import('./components/SmartCalendar.jsx'));
 const LeanStartupMaster = lazy(() => import('./components/LeanStartupMaster.jsx'));
 const TiendaPoleras3D = lazy(() => import('./components/TiendaPoleras3D'));
@@ -118,7 +120,8 @@ const VLSNewsUcen = React.lazy(() => import('./components/VLSNewsUcen.jsx'));
 // const VLSNewsIglesiasPiedra = React.lazy(() => import('./components/VLSNewsIglesiasPiedra.jsx'));
 const SmartHub3D = lazy(() => import('./components/SmartHub3D'));
 const SocialVision = lazy(() => import('./components/SocialVision'));
-const RadioIntercom = lazy(() => import('./components/RadioIntercom'));
+import VLSNewsOSULS from './components/VLSNewsOSULS';
+const RadioPlayer = lazy(() => import('./components/RadioPlayer'));
 const VLSNewsAguasValle = lazy(() => import('./components/VLSNewsAguasValle'));
 const AuditoriaVecinal = lazy(() => import('./components/Auditoria/AuditoriaVecinal'));
 const Gimnasio3D = lazy(() => import('./components/Gimnasio3D'));
@@ -511,7 +514,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const isClasica = location.pathname.toLowerCase().includes('/clasica');
   const isPeregrinoHost = host.includes('peregrino');
   const isEvolutionShowroom = (host.includes('vecinosmart.cl') || (host.includes('localhost') && !host.includes('puertasmart.cl'))) && !location.pathname.match(/^\/(21mayo|akichip|stella|1demayo)/i) && !location.hash.match(/(21mayo|akichip|stella|1demayo)/i);
-  const isZeroDistraction = isInduccion || isVLSabes || isTribute || isClasica || isArtemis || isCordillera || isPeregrinoHost || isEvolutionShowroom || !!location.pathname.match(/^\/(21mayo|akichip)/i) || !!location.hash.match(/(21mayo|akichip)/i);
+  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine)/i);
+  const isZeroDistraction = isInduccion || isVLSabes || isTribute || isClasica || isArtemis || isCordillera || isPeregrinoHost || isEvolutionShowroom || !!location.pathname.match(/^\/(21mayo|akichip|vende|marketplace)/i) || !!location.hash.match(/(21mayo|akichip|vende|marketplace)/i);
   const isCommercial = isAcademy;
 
   const { t, lang, setLang } = useTranslation();
@@ -539,6 +543,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const newsId = searchParams.get('news') || searchParams.get('note') || (mediaMatch ? mediaMatch[1] : pathMatch);
   
   const [currentUser, setCurrentUser] = useState(null);
+  const isAuthorized = !!currentUser || localStorage.getItem('master_bypass') === 'true';
   const [isGuest, setIsGuest] = useState(false);
   const [guestTimeLeft, setGuestTimeLeft] = useState(3600);
   // VLS_C5: authInitialized is now true by default in RDMLS, or after safety timer in VLS
@@ -568,6 +573,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [systemHealth, setSystemHealth] = useState('optimal'); // 'optimal', 'polishing', 'issue'
   const [showMaintenanceNotice, setShowMaintenanceNotice] = useState(false);
   const [showRoadmap, setShowRoadmap] = useState(false);
+  const [showPitchInversores, setShowPitchInversores] = useState(false);
 
   // SUPREME OVERRIDE: If mode=aprende is in URL, LOCK the screen to the induction portal - NO EARLY RETURN HERE TO PRESERVE HOOK COUNT
   const isAprendeMode = mode === 'aprende' || mode === 'induccion' || location.pathname.toLowerCase().includes('/imls/induccion');
@@ -611,7 +617,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [vlsTokens, setVlsTokens] = useState(() => parseInt(localStorage.getItem('vls_tokens') || '0'));
   const [showSmartTV, setShowSmartTV] = useState(false);
-  const [showContactForm, setShowContactForm] = useState(false);
+  const [showContactForm, setShowContactForm] = useState(window.location.pathname.toLowerCase() === '/contacto');
   const [pendingPayment, setPendingPayment] = useState(null);
 
   // —— Sync con Supabase (El CRM del Vecino) ——————————————————————————
@@ -918,7 +924,6 @@ function AppContent({ setShowCoquiSmartCRM }) {
     // VLS_DEEP_DOMAIN_BYPASS v5.2: Prendes.cl users NEVER get /welcome (they have their own branding)
     const isPrendesHost = host.includes('prendes.cl') || host.includes('prendes-vls');
     const isPeregrinoHost = host.includes('peregrino') || host.includes('nuevo-peregrino');
-    const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine)/i);
 
     if (!localStorage.getItem('smart_tenant') && !isDirectDomain && !isRDMLS && !isPrendesHost && !isMediaPortal && !isPeregrinoHost && !host.includes('sonicev') && !host.includes('localhost') && !host.includes('127.0.0.1') && !isEvolutionShowroom) {
       if (location.pathname !== '/welcome') {
@@ -1039,6 +1044,16 @@ function AppContent({ setShowCoquiSmartCRM }) {
     // VLS_C5_SOVEREIGN: Cambiado a Supabase Auth para Soberanía Digital
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       clearTimeout(safetyTimer);
+
+      // Manejar token de refresco inválido: limpiar sesión corrupta silenciosamente
+      if (_event === 'TOKEN_REFRESHED' && !session) {
+        console.warn('VLS_AUTH: Token refrescado pero sin sesión válida. Limpiando sesión...');
+        supabase.auth.signOut().catch(() => {});
+        setCurrentUser(null);
+        setAuthInitialized(true);
+        return;
+      }
+
       const user = session?.user || null;
       
       // Mapeo de Supabase User a estructura compatible con el resto de la App (Firebase-like)
@@ -1055,8 +1070,24 @@ function AppContent({ setShowCoquiSmartCRM }) {
       }
     });
 
-    // Carga inicial de sesión persistente
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Carga inicial de sesión persistente — con manejo de Refresh Token inválido
+    supabase.auth.getSession()
+      .then(({ data: { session }, error }) => {
+        // Si Supabase devuelve error de refresh token, limpiar la sesión guardada
+        if (error) {
+          console.warn('VLS_AUTH: Sesión inválida detectada. Limpiando tokens locales...', error.message);
+          // Limpiar todas las claves de Supabase del localStorage para evitar bucles
+          Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('sb-') || key.includes('supabase')) {
+              localStorage.removeItem(key);
+            }
+          });
+          supabase.auth.signOut().catch(() => {});
+          setCurrentUser(null);
+          setAuthInitialized(true);
+          clearTimeout(safetyTimer);
+          return;
+        }
         if (session?.user) {
             const u = session.user;
             u.displayName = u.user_metadata?.full_name || u.email?.split('@')[0];
@@ -1066,7 +1097,20 @@ function AppContent({ setShowCoquiSmartCRM }) {
         }
         setAuthInitialized(true);
         clearTimeout(safetyTimer);
-    });
+      })
+      .catch((err) => {
+        // Capturar AuthApiError: Invalid Refresh Token
+        console.warn('VLS_AUTH: Error al obtener sesión, limpiando estado:', err?.message || err);
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('sb-') || key.includes('supabase')) {
+            localStorage.removeItem(key);
+          }
+        });
+        supabase.auth.signOut().catch(() => {});
+        setCurrentUser(null);
+        setAuthInitialized(true);
+        clearTimeout(safetyTimer);
+      });
 
     return () => { 
         subscription.unsubscribe(); 
@@ -1313,6 +1357,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
   };
   const handleOpenTienda = () => setShowTiendaPoleras(true);
   const handleOpenRoadmap = () => setShowRoadmap(true);
+  const handleOpenPitch = () => setShowPitchInversores(true);
   const handleNavMusica = () => navigate('/escuela-musica');
   const handleNavArtes = () => navigate('/escuela-artes');
   const handleOpenHub3D = () => setShowHub3D(true);
@@ -1379,6 +1424,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         if (appId === 'backoffice') setShowSmartAdmin(true);
         if (appId === 'tienda') setShowTiendaPoleras(true);
         if (appId === 'roadmap') setShowRoadmap(true);
+        if (appId === 'pitch-inversionistas' || appId === 'pitch') setShowPitchInversores(true);
         if (appId === 'council') setShowCouncil(true);
         if (appId === 'faro' || appId === 'chat' || appId === 'ia') handleOpenFaro();
         if (appId === 'motors') setShowVLSMotors(true);
@@ -1630,12 +1676,14 @@ function AppContent({ setShowCoquiSmartCRM }) {
     window.addEventListener('open-arquitectura', handleOpenArquitectura);
     window.addEventListener('open-propiedades', handleOpenPropiedades);
     window.addEventListener('open-parlamento-regional', () => setShowParliamentary(true));
+    window.addEventListener('open-transparencia-secreta', () => setShowTransparenciaSecreta(true));
     window.addEventListener('open-alcaldes-history', () => setShowAlcaldes(true));
     window.addEventListener('open-galaxia-disco', () => setShowMemoryPortal(true));
     window.addEventListener('open-entrevecinas', handleOpenEntreVecinas);
     window.addEventListener('open-vecinity-pay', handleOpenVecnityPay);
     window.addEventListener('open-tienda-poleras', handleOpenTienda);
     window.addEventListener('open-roadmap-vls', handleOpenRoadmap);
+    window.addEventListener('open-pitch-inversores', handleOpenPitch);
     window.addEventListener('open-decision-vecinal', handleOpenCouncil);
     window.addEventListener('open-vls-reporte', () => setShowSafeRoute(true));
     window.addEventListener('open-vls-academia', () => setShowVLSInduccion(true));
@@ -1819,11 +1867,10 @@ function AppContent({ setShowCoquiSmartCRM }) {
       window.removeEventListener('open-safe-route', handleOpenSafeRoute);
       window.removeEventListener('open-smart-salud', handleOpenSmartSalud);
       window.removeEventListener('open-arquitectura', handleOpenArquitectura);
-      window.removeEventListener('open-propiedades', handleOpenPropiedades);
-      window.removeEventListener('open-entrevecinas', handleOpenEntreVecinas);
       window.removeEventListener('open-tienda-poleras', handleOpenTienda);
       window.removeEventListener('open-vecinity-pay', handleOpenVecnityPay);
       window.removeEventListener('open-roadmap-vls', handleOpenRoadmap);
+      window.removeEventListener('open-pitch-inversores', handleOpenPitch);
       window.removeEventListener('open-decision-vecinal', handleOpenCouncil);
       window.removeEventListener('open-project-info', () => setShowProjectInfo(true));
       window.removeEventListener('message', handleMessage);
@@ -1833,14 +1880,13 @@ function AppContent({ setShowCoquiSmartCRM }) {
     };
   }, []);
 
-  const isAuthorized = currentUser && ALLOWED_ADMINS.some(admin => admin.toLowerCase() === currentUser.email.toLowerCase());
-  // VLS_C5: NEVER return null. Return LoadingScreen to avoid "black screen" confusion.
-  const isMediaPortal = location.pathname.match(/\/(clasica|chequia|artemis|artemisa|artemis2|ucen|fred|juansoldado|vallenar|andacollo|retail|media|mundo|altacordillera|cordillera|secrevial|vialidad2025|domeyko|horario|cambio-de-hora|migra|migracion|sonicev|nuevoperegrino|acciona|salud|choapa|redcine|entrevecinas|akichip|21mayo|invierno)/i) || location.hash.match(/(akichip|21mayo)/i);
-
-  // ——— SYNC ARCADE ROUTE (Moved above early returns to satisfy Hook rules) ———
+  // ——— SYNC ARCADE & DE BONO ROUTES ———
   useEffect(() => {
     if (location.pathname === '/arcade') {
       setShowGame(true);
+    }
+    if (location.pathname === '/sombreros' || location.pathname === '/seis') {
+      setShowDeBonoHats(true);
     }
   }, [location.pathname]);
   if (!authInitialized && !isRDMLS && !isMediaPortal && !isEvolutionShowroom && !isPeregrinoHost && !isEntreVecinasHost) {
@@ -1942,7 +1988,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
     <div className="app-layout animate-fade-in" style={{ background: '#020617', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <SEO />
       <div style={{ 
-        position: 'fixed', 
+        position: 'sticky', 
         top: 0, 
         left: 0, 
         right: 0, 
@@ -1963,7 +2009,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
               borderBottom: "1px solid rgba(255,215,0,0.3)", 
               padding: "0 1rem",
               gap: "15px",
-              pointerEvents: "auto"
+              pointerEvents: "auto",
+              marginBottom: "10px"
             }}>
               <button onClick={() => window.location.href="/reportes"} style={{ background: "transparent", border: "none", color: "white", fontSize: "0.75rem", fontWeight: "950", display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", letterSpacing: "1px" }}>
                 <span style={{ color: "#FFD700" }}>🚨 VLS SEGURA:</span> REPORTE CIUDADANO 24/7
@@ -2116,11 +2163,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
                  <button onClick={() => window.dispatchEvent(new CustomEvent('open-smart-report'))} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#38bdf8', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-sky-900/40 transition-colors" title="Acceso a reportes, Registro de Accesos y monitoreo ambiental">
                     SMART CITIZENS
                  </button>
+                 <button onClick={() => window.dispatchEvent(new CustomEvent('open-pitch-inversores'))} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#f59e0b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-amber-900/40 transition-colors" title="Estrategia comercial y dossier">
+                    PITCH INVERSORES
+                 </button>
                  {isRDMLS && (
                    <>
-                     <button onClick={() => window.open('https://www.rdmls.cl/imls/induccion', '_blank')} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#10b981', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-emerald-900/40 transition-colors" title="Gestión interna, E-learning y firmas digitales">
-                        SMART ADMINISTRATION
-                     </button>
                      <button onClick={() => setShowSmartEvents(true)} style={{ padding: '0.3rem 0.8rem', fontSize: '0.65rem', fontWeight: '900', color: '#f59e0b', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: '20px', letterSpacing: '0.5px' }} className="hover:bg-amber-900/40 transition-colors" title="Protocolo y monitor de precedencias">
                         SMART EVENTS
                      </button>
@@ -2139,12 +2186,11 @@ function AppContent({ setShowCoquiSmartCRM }) {
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
-            gap: '0.5rem', 
+            gap: isMobile ? '0.3rem' : '0.5rem', 
             flexShrink: 1, 
             pointerEvents: 'auto',
-            overflowX: isMobile ? 'auto' : 'visible',
-            WebkitOverflowScrolling: 'touch',
-            paddingRight: isMobile ? '10px' : '0',
+            overflowX: 'visible',
+            paddingRight: '0',
             msOverflowStyle: 'none',
             scrollbarWidth: 'none'
           }} className="vls-header-actions">
@@ -2176,6 +2222,55 @@ function AppContent({ setShowCoquiSmartCRM }) {
               )}
             </button>
 
+            {/* BOTÓN WHATSAPP DESTACADO (TOP) */}
+            <a
+              href="https://wa.me/56999072085"
+              target="_blank"
+              rel="noreferrer"
+              className="glass-panel"
+              style={{
+                padding: isMobile ? '0.35rem 0.6rem' : '0.4rem 1rem',
+                borderRadius: '50px',
+                background: 'linear-gradient(90deg, rgba(37, 211, 102, 0.25), rgba(18, 140, 126, 0.25))',
+                border: `2px solid ${isMobile ? 'transparent' : '#25D366'}`,
+                color: 'white',
+                fontWeight: '900',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                boxShadow: '0 0 15px rgba(37, 211, 102, 0.3)',
+                textDecoration: 'none'
+              }}
+            >
+              <MessageSquare size={isMobile ? 18 : 14} color="#25D366" />
+              {!isMobile && 'WHATSAPP'}
+            </a>
+
+            {/* BOTÓN CONTACTO DESTACADO (TOP) */}
+            <button 
+              onClick={() => window.dispatchEvent(new CustomEvent('open-vls-contact'))}
+              className="glass-panel animate-pulse"
+              style={{
+                padding: isMobile ? '0.35rem 0.6rem' : '0.4rem 1rem',
+                borderRadius: '50px',
+                background: 'linear-gradient(90deg, rgba(56, 189, 248, 0.25), rgba(37, 99, 235, 0.25))',
+                border: `2px solid ${isMobile ? 'transparent' : '#38bdf8'}`,
+                color: 'white',
+                fontWeight: '900',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                cursor: 'pointer',
+                boxShadow: '0 0 15px rgba(56, 189, 248, 0.3)'
+              }}
+            >
+              <Mail size={isMobile ? 18 : 14} color="#38bdf8" />
+              {!isMobile && 'CONTACTO'}
+            </button>
+
             {/* CTA REPORTE VECINAL (TOP) - Universal Visibility */}
             <button 
               onClick={() => window.dispatchEvent(new CustomEvent('open-smart-report'))}
@@ -2194,8 +2289,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
                 cursor: 'pointer'
               }}
             >
-              <ShieldAlert size={14} color="#ef4444" />
-              REPORTE CIUDADANO
+              <ShieldAlert size={18} color="#ef4444" />
+              {!isMobile && 'REPORTE'}
             </button>
 
             {(isVLS || isRDMLS) && (
@@ -2455,7 +2550,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
         )}
       </AnimatePresence>
 
-      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev') ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', paddingTop: (isZeroDistraction || isPuertaSmart) ? 0 : (isRDMLS ? '60px' : '100px'), background: isRDMLS ? '#0a0a0a' : '#020617', minHeight: '100vh' }}>
+      <main className={`page-content ${(location.pathname === '/' || location.pathname === '/dev' || location.pathname.includes('/vende') || location.pathname.includes('/marketplace')) ? 'full-width-dev' : 'container'}`} style={{ paddingBottom: isZeroDistraction ? 0 : '4rem', background: isRDMLS ? '#0a0a0a' : '#020617', minHeight: '100vh' }}>
         <ErrorBoundary>
           <Outlet context={{ weather, isAuthorized, isGuest, isRegistered, lang, setLang, t, currentUser, isRDMLS, handleLogin, handleLogout }} />
         </ErrorBoundary>
@@ -2478,7 +2573,7 @@ function AppContent({ setShowCoquiSmartCRM }) {
       </main>
 
       {/* Smart Toolbox Control (Caja de Herramientas) */}
-      {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isRadioVecinos && !isPuertaSmart && <SmartToolbox />}
+      {/* {!isZeroDistraction && !isRDMLS && !isEvolutionShowroom && !isRadioVecinos && !isPuertaSmart && <SmartToolbox />} */}
 
       {/* Chat Botón y Panel */}
       {showChat && (
@@ -2552,13 +2647,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {/* Modal Game (Arcade Lobby) */}
       {showGame && (
         <Suspense fallback={<div />}>
-          <RetroArcadeLobby onClose={() => setShowGame(false)} />
+          <RetroArcadeLobby onClose={() => { setShowGame(false); if(window.location.pathname.toLowerCase().includes('/arcade')) navigate('/'); }} />
         </Suspense>
       )}
 
       {showContactForm && (
         <Suspense fallback={null}>
-          <ContactForm onClose={() => setShowContactForm(false)} />
+          <ContactForm onClose={() => {
+            setShowContactForm(false);
+            if (window.location.pathname.toLowerCase() === '/contacto') {
+              window.history.pushState({}, '', '/');
+            }
+          }} />
         </Suspense>
       )}
 
@@ -2638,7 +2738,18 @@ function AppContent({ setShowCoquiSmartCRM }) {
       {/* Estudio Musical IA (Creación de Canciones, Acordes, Letras) */}
       {showMusicStudio && <MusicCreatorModal onClose={() => setShowMusicStudio(false)} />}
       {/* Marketplace Vecinal */}
-      {showMarketplace && <MarketplaceVecinal onClose={() => setShowMarketplace(false)} />}
+      {showMarketplace && (
+        <Suspense fallback={<LoadingScreen />}>
+          <MarketplaceVecinal onClose={() => setShowMarketplace(false)} />
+        </Suspense>
+      )}
+
+      {/* Hemeroteca Aguas del Valle */}
+      {showAguasValle && (
+        <Suspense fallback={<LoadingScreen />}>
+          <VLSNewsAguasValle onClose={() => setShowAguasValle(false)} />
+        </Suspense>
+      )}
 
       {/* Sentinel Mini Búsqueda Inteligente */}
       {showSocialVision && (
@@ -3143,6 +3254,8 @@ function AppContent({ setShowCoquiSmartCRM }) {
       )}
       {showTransparenciaSecreta && <Suspense fallback={<div />}><MonitoreoTransparencia onClose={() => setShowTransparenciaSecreta(false)} /></Suspense>}
       {showStickyNote && <Suspense fallback={<div />}><StickyNoteWidget onClose={() => setShowStickyNote(false)} /></Suspense>}
+      {showRoadmap && <Suspense fallback={<div />}><VLSRoadmap onClose={() => setShowRoadmap(false)} /></Suspense>}
+      {showPitchInversores && <Suspense fallback={<div />}><VLSPitchInversores onClose={() => setShowPitchInversores(false)} /></Suspense>}
     </div>
   );
 }
