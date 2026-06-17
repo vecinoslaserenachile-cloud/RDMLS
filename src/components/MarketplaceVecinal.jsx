@@ -546,6 +546,19 @@ export default function MarketplaceVecinal({ onClose }) {
                     }
                     
                     /* Form grids */
+                    .vls-publish-container {
+                        padding: 1rem 0.5rem !important;
+                    }
+                    .vls-publish-inner {
+                        padding: 1rem !important;
+                    }
+                    .vls-publish-actions {
+                        flex-direction: column !important;
+                        gap: 0.5rem !important;
+                    }
+                    .vls-publish-actions button {
+                        width: 100% !important;
+                    }
                     .vls-form-grid-2 {
                         grid-template-columns: 1fr !important;
                         gap: 1rem !important;
@@ -746,8 +759,8 @@ export default function MarketplaceVecinal({ onClose }) {
                 <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
 
                     {isPublishing ? (
-                        <div style={{ flex: 1, overflowY: 'auto', padding: '2rem 4rem', background: 'rgba(255,255,255,0.02)' }}>
-                            <div style={{ maxWidth: '800px', margin: '0 auto', background: 'rgba(0,0,0,0.4)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                        <div className="vls-publish-container" style={{ flex: 1, overflowY: 'auto', padding: '2rem 4rem', background: 'rgba(255,255,255,0.02)' }}>
+                            <div className="vls-publish-inner" style={{ maxWidth: '800px', margin: '0 auto', background: 'rgba(0,0,0,0.4)', padding: '2rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
                                 <h2 style={{ color: 'white', marginTop: 0, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                     <PlusCircle color="#10b981" /> Crear Nueva Publicación
                                 </h2>
@@ -906,13 +919,13 @@ export default function MarketplaceVecinal({ onClose }) {
                                                 <div onClick={() => fileInputRef.current?.click()} style={{ width: '100px', height: '100px', borderRadius: '12px', border: '2px dashed rgba(56, 189, 248, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'rgba(56, 189, 248, 0.05)', color: '#38bdf8' }}>
                                                     <Camera size={24} style={{ marginBottom: '5px' }} />
                                                     <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Añadir Foto</span>
-                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" style={{ display: 'none' }} />
+                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" capture="environment" style={{ display: 'none' }} />
                                                 </div>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                                    <div className="vls-publish-actions" style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.5rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
                                         <button type="button" onClick={() => { setIsPublishing(false); setEditingId(null); }} style={{ background: 'transparent', color: 'white', border: '1px solid rgba(255,255,255,0.2)', padding: '0.8rem 1.5rem', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}>
                                             Cancelar
                                         </button>
