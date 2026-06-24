@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { ShoppingCart, X, Tag, MapPin, Building2, Store, Home, Bed, Bath, Maximize, Camera, Image as ImageIcon, Trash2, CheckCircle, Car, Package, PlusCircle, Search, Filter, Eye, Phone, ArrowLeft } from 'lucide-react';
+import { ShoppingCart, X, Tag, MapPin, Building2, Store, Home, Bed, Bath, Maximize, Camera, Image as ImageIcon, Trash2, CheckCircle, Car, Package, PlusCircle, Search, Filter, Eye, Phone, ArrowLeft, Play, ExternalLink } from 'lucide-react';
 import { supabase } from '../utils/supabase';
 import imageCompression from 'browser-image-compression';
 
@@ -39,7 +39,8 @@ export default function MarketplaceVecinal({ onClose }) {
         marca: '', modelo: '', anio: '', tipo_vehiculo: 'Automóvil', kilometraje: '',
         tipo_propiedad: 'Casa', operacion: 'Venta', habitaciones: '', banos: '', superficie: '', estacionamientos: '',
         condicion: 'Nuevo',
-        contacto: ''
+        contacto: '',
+        video_link: ''
     });
     const [editingId, setEditingId] = useState(null);
     const [photos, setPhotos] = useState([]);
@@ -437,6 +438,17 @@ export default function MarketplaceVecinal({ onClose }) {
                                     <p style={{ color: '#4B5563', fontSize: '15px', lineHeight: '1.7', whiteSpace: 'pre-wrap', margin: 0 }}>
                                         {selectedItem.descripcion}
                                     </p>
+                                    
+                                    {selectedItem.video_link && (
+                                        <div style={{ marginTop: '20px', paddingTop: '20px', borderTop: '1px solid #E2E8F0' }}>
+                                            <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#111827', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                <Play size={18} color="#0073C2" /> Video de la Propiedad
+                                            </h3>
+                                            <a href={selectedItem.video_link} target="_blank" rel="noopener noreferrer" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 16px', background: 'rgba(0, 115, 194, 0.1)', color: '#0073C2', borderRadius: '8px', textDecoration: 'none', fontWeight: 'bold', fontSize: '14px', transition: 'background 0.2s' }}>
+                                                Ver Video Externo <ExternalLink size={16} />
+                                            </a>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
@@ -906,6 +918,11 @@ export default function MarketplaceVecinal({ onClose }) {
                                         <textarea required value={formData.descripcion} onChange={e => setFormData({...formData, descripcion: e.target.value})} rows={4} placeholder="Describe los detalles importantes, condiciones, métodos de pago, etc." style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white', fontSize: '1rem', resize: 'vertical' }}></textarea>
                                     </div>
 
+                                    <div style={{ marginBottom: '1.5rem' }}>
+                                        <label style={{ display: 'block', color: '#94a3b8', marginBottom: '8px' }}>Link a Video (YouTube, Vimeo, etc) - Opcional</label>
+                                        <input type="url" value={formData.video_link || ''} onChange={e => setFormData({...formData, video_link: e.target.value})} placeholder="Ej. https://www.youtube.com/watch?v=..." style={{ width: '100%', padding: '12px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: 'white', fontSize: '1rem' }} />
+                                    </div>
+
                                     {/* Subida de Fotos */}
                                     <div style={{ marginBottom: '2rem' }}>
                                         <label style={{ display: 'block', color: '#94a3b8', marginBottom: '8px' }}>Fotografías ({photos.length}/5)</label>
@@ -922,7 +939,7 @@ export default function MarketplaceVecinal({ onClose }) {
                                                 <div onClick={() => fileInputRef.current?.click()} style={{ width: '100px', height: '100px', borderRadius: '12px', border: '2px dashed rgba(56, 189, 248, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'rgba(56, 189, 248, 0.05)', color: '#38bdf8' }}>
                                                     <Camera size={24} style={{ marginBottom: '5px' }} />
                                                     <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Añadir Foto</span>
-                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" capture="environment" style={{ display: 'none' }} />
+                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" style={{ display: 'none' }} />
                                                 </div>
                                             )}
                                         </div>
