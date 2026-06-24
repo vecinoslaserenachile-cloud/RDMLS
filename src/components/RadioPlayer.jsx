@@ -161,6 +161,14 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     useEffect(() => {
         const ACTIVITY_EVENTS = ['click', 'mousedown', 'touchstart', 'keydown'];
 
+        const unlockAudio = () => {
+            if (audioRef.current) {
+                audioRef.current.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+                const p = audioRef.current.play();
+                if (p !== undefined) p.catch(() => {});
+            }
+        };
+
         const tryAutoplay = () => {
             if (hasAutoplayAttempted.current) return;
             
@@ -169,6 +177,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             hasAutoplayAttempted.current = true;
             
             if (audioRef.current && audioRef.current.paused) {
+                unlockAudio();
                 setIsPlaying(true);
                 setCurrentStation(stations[0]);
                 setupStreamAndPlay(stations[0]);
@@ -180,6 +189,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const handleExternalStart = () => {
             if (audioRef.current && audioRef.current.paused) {
                 initAudioContext();
+                unlockAudio();
                 setIsPlaying(true);
                 setCurrentStation(stations[0]);
                 setupStreamAndPlay(stations[0]);
@@ -564,6 +574,11 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             setIsPlaying(false);
             if (animationRef.current) cancelAnimationFrame(animationRef.current);
         } else {
+            // Unlock audio for mobile Safari/Chrome
+            audioRef.current.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+            const p = audioRef.current.play();
+            if (p !== undefined) p.catch(() => {});
+            
             setIsPlaying(true);
             const station = currentStation || stations[0];
             setCurrentStation(station);

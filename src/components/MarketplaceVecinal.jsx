@@ -939,7 +939,7 @@ export default function MarketplaceVecinal({ onClose }) {
                                                 <div onClick={() => fileInputRef.current?.click()} style={{ width: '100px', height: '100px', borderRadius: '12px', border: '2px dashed rgba(56, 189, 248, 0.5)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: 'rgba(56, 189, 248, 0.05)', color: '#38bdf8' }}>
                                                     <Camera size={24} style={{ marginBottom: '5px' }} />
                                                     <span style={{ fontSize: '0.75rem', fontWeight: 'bold' }}>Añadir Foto</span>
-                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple accept="image/*" style={{ display: 'none' }} />
+                                                    <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple style={{ display: 'none' }} />
                                                 </div>
                                             )}
                                         </div>
