@@ -85,9 +85,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     ] : isRDMLS ? [
         { id: 10, type: 'radio', sub: 'rdmls', name: 'RDMLS Señal Oficial', stream: 'serverless', isLive: true, isMain: true, desc: 'I. Municipalidad de La Serena' }
     ] : [
-        { id: 1, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Señal Principal', stream: 'https://az11.yesstreaming.net:8630/radio.mp3', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
-        { id: 14, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Sesiones Musicales', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=cuturrufo', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones vecinoslaserena.cl' },
-        { id: 15, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Entrevistas', stream: 'https://az11.yesstreaming.net:8630/radio.mp3?rel=entrevecinas', isLive: true, desc: 'EntreVecinas: Historias y Comunidad vecinoslaserena.cl' }
+        { id: 1, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Señal Principal', stream: 'serverless', isLive: true, isMain: true, desc: 'Noticias y Comunidad La Serena' },
+        { id: 14, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Sesiones Musicales', stream: 'serverless', isLive: true, desc: 'Marcelo Cuturrufo y Amigos - Sesiones vecinoslaserena.cl' },
+        { id: 15, type: 'radio', sub: 'vls', name: 'vecinoslaserena.cl Entrevistas', stream: 'serverless', isLive: true, desc: 'EntreVecinas: Historias y Comunidad vecinoslaserena.cl' }
     ];
     const [currentStation, setCurrentStation] = useState(stations[0]);
 
@@ -169,18 +169,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             hasAutoplayAttempted.current = true;
             
             if (audioRef.current && audioRef.current.paused) {
-                audioRef.current.src = stations[0].stream;
-                audioRef.current.load();
-                const p = audioRef.current.play();
-                if (p !== undefined) {
-                    p.then(() => {
-                        setIsPlaying(true);
-                        setCurrentStation(stations[0]);
-                    }).catch(err => {
-                        console.warn("VLS Autplay blocked/failed:", err);
-                        // No mostramos alerta invasiva aún, ya que el usuario solo navegó/scrolleó
-                    });
-                }
+                setIsPlaying(true);
+                setCurrentStation(stations[0]);
+                setupStreamAndPlay(stations[0]);
             }
             // Limpiar listeners una vez ejecutado
             ACTIVITY_EVENTS.forEach(evt => window.removeEventListener(evt, tryAutoplay));
@@ -189,7 +180,9 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const handleExternalStart = () => {
             if (audioRef.current && audioRef.current.paused) {
                 initAudioContext();
-                setupStreamAndPlay();
+                setIsPlaying(true);
+                setCurrentStation(stations[0]);
+                setupStreamAndPlay(stations[0]);
             }
         };
 
@@ -440,12 +433,12 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
     }, [currentStation, hasProxyFallback]);
 
     // ─── LÓGICA VLS NATIVE HTML5 STREAMING 2026 ─────────
-    const setupStreamAndPlay = async () => {
+    const setupStreamAndPlay = async (targetStation = currentStation) => {
         if (!audioRef.current) return;
         if (animationRef.current) cancelAnimationFrame(animationRef.current);
         
-        if (!currentStation) return;
-        const streamUrl = currentStation.stream;
+        if (!targetStation) return;
+        const streamUrl = targetStation.stream;
 
         audioRef.current.pause();
         audioRef.current.removeAttribute('crossorigin'); // Bypass CORS completely
@@ -571,7 +564,10 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             setIsPlaying(false);
             if (animationRef.current) cancelAnimationFrame(animationRef.current);
         } else {
-            setupStreamAndPlay();
+            setIsPlaying(true);
+            const station = currentStation || stations[0];
+            setCurrentStation(station);
+            setupStreamAndPlay(station);
         }
     };
 
