@@ -169,18 +169,8 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             hasAutoplayAttempted.current = true;
             
             if (audioRef.current && audioRef.current.paused) {
-                audioRef.current.src = stations[0].stream;
-                audioRef.current.load();
-                const p = audioRef.current.play();
-                if (p !== undefined) {
-                    p.then(() => {
-                        setIsPlaying(true);
-                        setCurrentStation(stations[0]);
-                    }).catch(err => {
-                        console.warn("VLS Autplay blocked/failed:", err);
-                        // No mostramos alerta invasiva aún, ya que el usuario solo navegó/scrolleó
-                    });
-                }
+                setIsPlaying(true);
+                setupStreamAndPlay();
             }
             // Limpiar listeners una vez ejecutado
             ACTIVITY_EVENTS.forEach(evt => window.removeEventListener(evt, tryAutoplay));
@@ -189,6 +179,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
         const handleExternalStart = () => {
             if (audioRef.current && audioRef.current.paused) {
                 initAudioContext();
+                setIsPlaying(true);
                 setupStreamAndPlay();
             }
         };
@@ -571,6 +562,7 @@ export default function RadioPlayer({ globalWeather, isVisible }) {
             setIsPlaying(false);
             if (animationRef.current) cancelAnimationFrame(animationRef.current);
         } else {
+            setIsPlaying(true);
             setupStreamAndPlay();
         }
     };

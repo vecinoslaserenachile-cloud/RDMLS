@@ -114,19 +114,22 @@ export default function MarketplaceVecinal({ onClose }) {
     }, []);
 
     const loadListings = () => {
+        const initial = [
+            { id: '4', seller: 'Rodrigo Godoy', date: Date.now() - 1000, status: 'active', tipo_publicacion: 'propiedad', titulo: 'Excelente Casa en Avenida Gabriela Mistral', precio: '6500', moneda: 'UF', descripcion: 'Excelente propiedad ubicada en sector San Joaquín, Avenida Gabriela Mistral. Cuenta con amplios espacios, gran patio trasero, cocina equipada y excelente iluminación natural. Ideal para proyecto familiar.', ubicacion: 'San Joaquín, La Serena', tipo_propiedad: 'Casa', operacion: 'Venta', habitaciones: '4', banos: '3', superficie: '240', estacionamientos: '4', fotos: ['/images/gabriela-mistral/nuevas/IMG_20260207_203329.jpg', '/images/gabriela-mistral/nuevas/MVIMG_20260203_074330_1.jpg', '/images/gabriela-mistral/nuevas/Captura de pantalla 2026-06-23 095754.png', '/images/gabriela-mistral/nuevas/Captura de pantalla 2026-06-23 095815.png', '/images/gabriela-mistral/Gemini_Generated_Image_4811e64811e64811.png', '/images/gabriela-mistral/Gemini_Generated_Image_a62t40a62t40a62t.png', '/images/gabriela-mistral/Gemini_Generated_Image_atzwqpatzwqpatzw.png', '/images/gabriela-mistral/Gemini_Generated_Image_cyxgldcyxgldcyxg.png', '/images/gabriela-mistral/Gemini_Generated_Image_ikclq3ikclq3ikcl.png', '/images/gabriela-mistral/Gemini_Generated_Image_lqclxilqclxilqcl.png', '/images/gabriela-mistral/Gemini_Generated_Image_p6xe87p6xe87p6xe.png'], views: 342 },
+            { id: '1', seller: 'Vecino Smart', date: Date.now() - 10000, status: 'active', tipo_publicacion: 'vehiculo', titulo: 'Toyota Yaris 2018 Impecable', precio: '7500000', descripcion: 'Excelente estado, único dueño, mantenciones al día. Se vende por renovación.', ubicacion: 'La Serena', marca: 'Toyota', modelo: 'Yaris', anio: '2018', tipo_vehiculo: 'Automóvil', kilometraje: '65000', fotos: ['https://images.unsplash.com/photo-1550422216-1f6b86ce888b?auto=format&fit=crop&w=800&q=80'], views: 14 },
+            { id: '2', seller: 'Vecino Smart', date: Date.now() - 50000, status: 'active', tipo_publicacion: 'propiedad', titulo: 'Casa Esquina San Joaquín', precio: '4500', moneda: 'UF', descripcion: 'Amplia casa en barrio residencial. Ideal para familia grande.', ubicacion: 'San Joaquín', tipo_propiedad: 'Casa', operacion: 'Venta', habitaciones: '4', banos: '3', superficie: '180', estacionamientos: '1', fotos: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'], views: 56 },
+            { id: '3', seller: 'Emporio Diaguita', date: Date.now() - 100000, status: 'active', tipo_publicacion: 'producto', titulo: 'Bicicleta Trek Marlin 5', precio: '350000', descripcion: 'Aro 29, frenos hidráulicos, mantención recién hecha.', ubicacion: 'Coquimbo', condicion: 'Usado', fotos: ['https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80'], views: 89 }
+        ];
+
         const saved = JSON.parse(localStorage.getItem('vls_marketplace_listings_v2') || '[]');
         if (saved.length === 0) {
-            // Seed some data
-            const initial = [
-                { id: '4', seller: 'Jessica Mendoza', date: Date.now() - 1000, status: 'active', tipo_publicacion: 'propiedad', titulo: 'Excelente Casa en Avenida Gabriela Mistral', precio: '6500', moneda: 'UF', descripcion: 'Excelente propiedad ubicada en sector San Joaquín, Avenida Gabriela Mistral. Cuenta con amplios espacios, gran patio trasero, cocina equipada y excelente iluminación natural. Ideal para proyecto familiar.', ubicacion: 'San Joaquín, La Serena', tipo_propiedad: 'Casa', operacion: 'Venta', habitaciones: '4', banos: '3', superficie: '240', estacionamientos: '4', fotos: ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=1200&q=80', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80', 'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80'], views: 342 },
-                { id: '1', seller: 'Vecino Smart', date: Date.now() - 10000, status: 'active', tipo_publicacion: 'vehiculo', titulo: 'Toyota Yaris 2018 Impecable', precio: '7500000', descripcion: 'Excelente estado, único dueño, mantenciones al día. Se vende por renovación.', ubicacion: 'La Serena', marca: 'Toyota', modelo: 'Yaris', anio: '2018', tipo_vehiculo: 'Automóvil', kilometraje: '65000', fotos: ['https://images.unsplash.com/photo-1550422216-1f6b86ce888b?auto=format&fit=crop&w=800&q=80'], views: 14 },
-                { id: '2', seller: 'Vecino Smart', date: Date.now() - 50000, status: 'active', tipo_publicacion: 'propiedad', titulo: 'Casa Esquina San Joaquín', precio: '4500', moneda: 'UF', descripcion: 'Amplia casa en barrio residencial. Ideal para familia grande.', ubicacion: 'San Joaquín', tipo_propiedad: 'Casa', operacion: 'Venta', habitaciones: '4', banos: '3', superficie: '180', estacionamientos: '1', fotos: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'], views: 56 },
-                { id: '3', seller: 'Emporio Diaguita', date: Date.now() - 100000, status: 'active', tipo_publicacion: 'producto', titulo: 'Bicicleta Trek Marlin 5', precio: '350000', descripcion: 'Aro 29, frenos hidráulicos, mantención recién hecha.', ubicacion: 'Coquimbo', condicion: 'Usado', fotos: ['https://images.unsplash.com/photo-1485965120184-e220f721d03e?auto=format&fit=crop&w=800&q=80'], views: 89 }
-            ];
             setListings(initial);
             localStorage.setItem('vls_marketplace_listings_v2', JSON.stringify(initial));
         } else {
-            setListings(saved);
+            // Force update property 4 to use the new photos and seller info
+            const updated = saved.map(item => item.id === '4' ? initial[0] : item);
+            setListings(updated);
+            localStorage.setItem('vls_marketplace_listings_v2', JSON.stringify(updated));
         }
     };
 
