@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { supabase } from '../utils/supabase';
 import { socket } from '../utils/socket';
-import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users, LayoutGrid, Database, BookOpen } from 'lucide-react';
+import { ShieldAlert, AlertTriangle, ShieldCheck, MapPin, Navigation, Droplets, Zap, Wifi, Mic, Activity, Car, Camera as CameraIcon, CheckCircle2, Send, History, LogOut, Megaphone, Radio as RadioIcon, Lock, Users, LayoutGrid, Database, BookOpen, Mail } from 'lucide-react';
 import RadioBackofficeModal from '../components/RadioBackofficeModal';
 import MartinSecurityShield from '../components/MartinSecurityShield';
 import OmniBackofficeDesk from '../components/OmniBackofficeDesk';
@@ -14,6 +14,7 @@ import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestor
 import OmniFeedBackoffice from '../components/OmniFeedBackoffice';
 import SmartPDFStudio from '../components/SmartPDFStudio';
 import ElearningDashboard from '../components/ElearningDashboard';
+import ContactosBackofficeModal from '../components/ContactosBackofficeModal';
 
 // Fix para los iconos de Leaflet en React
 delete L.Icon.Default.prototype._getIconUrl;
@@ -82,6 +83,7 @@ export default function Backoffice() {
     const [showOmniFeed, setShowOmniFeed] = useState(false);
     const [showSmartPDFStudio, setShowSmartPDFStudio] = useState(false);
     const [showElearningLogs, setShowElearningLogs] = useState(false);
+    const [showContactosModal, setShowContactosModal] = useState(false);
 
     // Auth States
     const [user, setUser] = useState(null);
@@ -90,10 +92,35 @@ export default function Backoffice() {
     const [authError, setAuthError] = useState('');
 
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user || null);
-            setLoadingUser(false);
-        });
+        // Carga inicial de sesión con manejo de Refresh Token inválido
+        supabase.auth.getSession()
+            .then(({ data: { session }, error }) => {
+                if (error) {
+                    console.warn('VLS_BACKOFFICE_AUTH: Token inválido detectado, limpiando sesión...', error.message);
+                    Object.keys(localStorage).forEach(key => {
+                        if (key.startsWith('sb-') || key.includes('supabase')) {
+                            localStorage.removeItem(key);
+                        }
+                    });
+                    supabase.auth.signOut().catch(() => {});
+                    setUser(null);
+                    setLoadingUser(false);
+                    return;
+                }
+                setUser(session?.user || null);
+                setLoadingUser(false);
+            })
+            .catch((err) => {
+                console.warn('VLS_BACKOFFICE_AUTH: Error de sesión, limpiando estado:', err?.message || err);
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('sb-') || key.includes('supabase')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                supabase.auth.signOut().catch(() => {});
+                setUser(null);
+                setLoadingUser(false);
+            });
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setUser(session?.user || null);
@@ -512,6 +539,14 @@ export default function Backoffice() {
                             >
                                 <LayoutGrid size={20} color="#c084fc" />
                                 <span>Smart PDF Studio</span>
+                            </button>
+                            <button
+                                className="btn btn-glass"
+                                style={{ padding: '0.8rem 0.5rem', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem', border: '1px solid #14b8a6', background: 'rgba(20, 184, 166, 0.1)' }}
+                                onClick={() => setShowContactosModal(true)}
+                            >
+                                <Mail size={20} color="#14b8a6" />
+                                <span>Buzón Contactos</span>
                             </button>
                         </div>
                     </div>
@@ -985,9 +1020,8 @@ export default function Backoffice() {
                 <RadioBackofficeModal onClose={() => setShowRadioBackoffice(false)} />
             )}
 
-            {showSmartPDFStudio && (
-                <SmartPDFStudio onClose={() => setShowSmartPDFStudio(false)} />
-            )}
+            {showSmartPDFStudio && <SmartPDFStudio onClose={() => setShowSmartPDFStudio(false)} />}
+            {showContactosModal && <ContactosBackofficeModal onClose={() => setShowContactosModal(false)} />}
 
             {showSecurityShield && (
                 <MartinSecurityShield onClose={() => setShowSecurityShield(false)} />
