@@ -1,0 +1,2905 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VecinosYa - Seguridad y Domotización Inteligente</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#38bdf8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=V&size=192&background=38bdf8&color=fff&format=png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Outfit:wght@300;400;500;600;700;900&display=swap" rel="family">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-dark: #090d16;
+            --bg-light: #f5f7fa;
+            --card-bg-dark: rgba(15, 23, 42, 0.6);
+            --card-bg-light: rgba(255, 255, 255, 0.8);
+            
+            --border-glow-dark: rgba(56, 189, 248, 0.25);
+            --border-glow-light: rgba(56, 189, 248, 0.5);
+
+            --accent-blue: #38bdf8;
+            --accent-pink: #f43f5e;
+            --accent-emerald: #10b981;
+            --accent-yellow: #f59e0b;
+
+            --bg-color: var(--bg-dark);
+            --card-bg: var(--card-bg-dark);
+            --border-glow: var(--border-glow-dark);
+            --text-color: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --hero-gradient: linear-gradient(to right, #ffffff, #94a3b8);
+            --blueprint-line: rgba(255, 255, 255, 0.06);
+            --blueprint-text: rgba(255, 255, 255, 0.25);
+        }
+
+        [data-theme="light"] {
+            --bg-color: var(--bg-light);
+            --card-bg: var(--card-bg-light);
+            --border-glow: var(--border-glow-light);
+            --text-color: #0f172a;
+            --text-secondary: #334155;
+            --hero-gradient: linear-gradient(to right, #0f172a, #475569);
+            --blueprint-line: rgba(0, 0, 0, 0.1);
+            --blueprint-text: rgba(0, 0, 0, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Outfit', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .logo span {
+            color: var(--accent-blue);
+        }
+
+        .logo-tag {
+            font-size: 0.65rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            margin-top: -2px;
+        }
+
+        .contact-btn {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .contact-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.6);
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 950;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -2px;
+            background: var(--hero-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(to right, var(--accent-blue), var(--accent-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 1024px) {
+            .grid-dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-glow);
+            border-radius: 28px;
+            padding: 2rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(12px);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .badge-live {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            font-size: 0.65rem;
+            font-weight: bold;
+            padding: 3px 10px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ef4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.5; }
+            100% { transform: scale(0.9); opacity: 1; }
+        }
+
+        /* 1. CCTV SURVEILLANCE STYLING */
+        .cctv-viewer {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: #000;
+        }
+
+        .cctv-feed {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            transition: all 0.5s ease;
+        }
+
+        .cctv-overlay {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 1rem;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #10b981;
+            text-shadow: 0 1px 4px #000;
+            pointer-events: none;
+        }
+
+        .cctv-top {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cctv-bottom {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .cctv-grid-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .cctv-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #94a3b8;
+            padding: 8px 5px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cctv-btn.active, .cctv-btn:hover {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        /* CCTV BLUEPRINT & MOCK APP STYLING */
+        .blueprint-container {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .blueprint-svg {
+            width: 100%;
+            height: auto;
+            max-width: 420px;
+        }
+
+        .cam-hotspot {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cam-hotspot:hover .pulse-ring {
+            transform-origin: center;
+            transform: scale(1.3);
+        }
+
+        .cam-hotspot.active .fov-cone {
+            opacity: 0.15;
+        }
+
+        .cam-hotspot.active .pulse-ring {
+            animation: pulse-hotspot 1.2s infinite ease-in-out;
+            transform-origin: center;
+        }
+
+        .fov-cone {
+            opacity: 0.45;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-hotspot {
+            0% { r: 6px; opacity: 1; }
+            50% { r: 12px; opacity: 0.4; }
+            100% { r: 6px; opacity: 1; }
+        }
+
+        /* Responsive grid layout for CCTV block */
+        .cctv-dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 991px) {
+            .cctv-dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 2. DOMOTIC LIGHTING STYLING */
+        .lighting-preview {
+            width: 100%;
+            height: 240px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            background: #090d16;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .house-blueprint {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 12px;
+            width: 100%;
+            height: 100%;
+        }
+
+        .room {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1.5px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            gap: 8px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .room-icon {
+            width: 32px;
+            height: 32px;
+            color: #475569;
+            transition: all 0.4s ease;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .room-name {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748b;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            transition: all 0.4s ease;
+        }
+
+        /* Room glowing active states */
+        .room.active-light {
+            border-style: solid;
+            background: var(--room-glow-bg, rgba(56, 189, 248, 0.08));
+            border-color: var(--room-color, var(--accent-blue));
+            box-shadow: inset 0 0 15px var(--room-glow-color, rgba(56, 189, 248, 0.15)),
+                        0 0 15px var(--room-glow-color, rgba(56, 189, 248, 0.1));
+        }
+
+        .room.active-light .room-icon {
+            color: var(--room-color, var(--accent-blue));
+            filter: drop-shadow(0 0 8px var(--room-color, var(--accent-blue)));
+        }
+
+        .room.active-light .room-name {
+            color: #f8fafc;
+            text-shadow: 0 0 8px var(--room-color, var(--accent-blue));
+        }
+
+        .light-intensity-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .lighting-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .color-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15);
+            border-color: #fff;
+        }
+
+        .slider-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            outline: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-blue);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-blue);
+        }
+
+        .festive-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .festive-btn {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            padding: 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.3s;
+        }
+
+        .festive-btn:hover {
+            background: rgba(244, 63, 94, 0.1);
+            border-color: var(--accent-pink);
+        }
+
+        .festive-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink) 0%, #be123c 100%);
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+        }
+
+        /* 3. SMART LOCK STYLING */
+        .lock-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 20px;
+            border-radius: 20px;
+        }
+
+        .lock-btn {
+            background: var(--accent-emerald);
+            color: #0f172a;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .lock-btn.locked {
+            background: var(--accent-pink);
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+        }
+
+        .lock-btn.unlocked {
+            background: var(--accent-emerald);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+        }
+
+        .logs-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .log-item {
+            font-size: 0.75rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+        }
+
+        .log-item.new {
+            color: var(--accent-blue);
+            font-weight: bold;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 4. SUBSCRIPTION CALCULATOR STYLING */
+        .calc-pricing {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px dashed rgba(56, 189, 248, 0.3);
+            border-radius: 20px;
+            margin-top: 1rem;
+        }
+
+        .calc-price {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+            margin: 5px 0;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        /* CONTACT FORM STYLING */
+        .contact-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 1rem;
+        }
+
+        .form-input {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 12px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+        }
+
+        .submit-btn {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: #0f172a;
+            border: none;
+            padding: 14px;
+            border-radius: 14px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+            transform: translateY(-1px);
+        }
+
+        /* TABS AND SD CARDS STYLING */
+        .tabs-container {
+            display: flex;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 4px;
+            border-radius: 14px;
+            gap: 4px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
+        }
+
+        .info-alert {
+            display: flex;
+            gap: 10px;
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            padding: 12px 15px;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            color: #cbd5e1;
+        }
+
+        .info-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--accent-blue);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .sd-cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sd-card-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 12px 15px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .sd-card-item:hover {
+            background: rgba(255,255,255,0.04);
+            border-color: rgba(255,255,255,0.1);
+            transform: translateX(3px);
+        }
+
+        .sd-card-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: white;
+        }
+
+        .sd-card-title svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent-blue);
+        }
+
+        .sd-card-desc {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-top: 2px;
+        }
+
+        .sd-card-price {
+            font-size: 0.95rem;
+            font-weight: 900;
+            color: var(--accent-blue);
+        }
+
+        /* CCTV DEVICE & TECH SELECTORS */
+        .device-selector {
+            display: flex;
+            gap: 4px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 3px;
+            border-radius: 10px;
+        }
+
+        .device-btn {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            padding: 4px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.7rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+
+        .device-btn.active, .device-btn:hover {
+            background: rgba(56, 189, 248, 0.12);
+            color: var(--accent-blue);
+        }
+
+        .device-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        /* Tech selector tabs */
+        .tech-selector {
+            display: flex;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 4px;
+            border-radius: 14px;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .tech-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            padding: 8px 6px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tech-btn:hover {
+            color: white;
+        }
+
+        .tech-btn.active {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent-blue);
+        }
+
+        /* Device frames styling */
+        .cctv-viewer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            transition: all 0.4s ease;
+        }
+
+        .device-frame-phone {
+            width: 300px;
+            height: 540px;
+            border: 12px solid #1e293b;
+            border-radius: 40px;
+            position: relative;
+            background: #090d16;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8), 0 0 30px rgba(56, 189, 248, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .device-frame-phone .cctv-viewer {
+            height: 170px !important;
+            border-radius: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .device-frame-phone .app-only {
+            display: flex !important;
+        }
+
+        .device-frame-tv .app-only, .device-frame-tablet .app-only {
+            display: none !important;
+        }
+
+        .device-frame-tv {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border: 4px solid #1e293b;
+            border-radius: 12px;
+            position: relative;
+            background: #000;
+            transition: all 0.4s ease;
+        }
+
+        .device-frame-tablet {
+            width: 440px;
+            height: 330px;
+            border: 14px solid #1e293b;
+            border-radius: 28px;
+            position: relative;
+            background: #000;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+            transition: all 0.4s ease;
+        }
+
+        .lens-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0,0,0,0.6);
+            color: #10b981;
+            font-family: monospace;
+            font-size: 9px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+
+        /* Presence Section Grid */
+        .presence-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 {
+                font-size: 2.1rem;
+                letter-spacing: -1px;
+            }
+            .hero p {
+                font-size: 0.9rem;
+                line-height: 1.5;
+            }
+            .presence-grid {
+                grid-template-columns: 1fr;
+            }
+            .device-frame-tablet {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 4/3;
+                border-width: 6px;
+                border-radius: 16px;
+            }
+            .device-frame-phone {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 9/16;
+                border-width: 6px;
+                border-radius: 20px;
+            }
+            .tech-btn {
+                font-size: 0.65rem;
+                padding: 6px 2px;
+            }
+        }
+
+        @keyframes trackTarget {
+            0% { left: 15%; top: 25%; }
+            25% { left: 65%; top: 40%; }
+            50% { left: 45%; top: 15%; }
+            75% { left: 20%; top: 50%; }
+            100% { left: 15%; top: 25%; }
+        }
+        /* Chat Widget Styles */
+        .chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+            font-family: inherit;
+        }
+        .chat-toggle {
+            background: linear-gradient(135deg, var(--accent-blue) 0%, #0284c7 100%);
+            color: #0f172a;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .chat-toggle:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(56, 189, 248, 0.6);
+        }
+        .chat-window {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: slideUp 0.3s ease forwards;
+        }
+        .chat-window.active {
+            display: flex;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            font-weight: bold;
+            color: var(--text-color);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .chat-close {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .chat-close:hover { opacity: 1; }
+        .chat-body {
+            padding: 20px;
+            height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            scrollbar-width: thin;
+        }
+        .chat-message {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bot-msg {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-color);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+        .user-msg {
+            background: var(--accent-blue);
+            color: #0f172a;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            font-weight: bold;
+        }
+        .chat-options {
+            padding: 0 20px 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .chat-opt-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-color);
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chat-opt-btn:hover {
+            background: var(--accent-blue);
+            color: #0f172a;
+            border-color: var(--accent-blue);
+        }
+        .chat-input-area {
+            display: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        .chat-input-area.active { display: flex; }
+        .chat-input-area input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+            padding: 10px;
+            border-radius: 6px;
+            outline: none;
+            font-family: inherit;
+        }
+        .chat-input-area button {
+            background: var(--accent-blue);
+            color: #0f172a;
+            border: none;
+            padding: 0 15px;
+            margin-left: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        /* Advanced Filter Form */
+        .advanced-filter-form {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .filter-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            font-weight: bold;
+        }
+        .filter-select {
+            background: rgba(0,0,0,0.3);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 6px;
+            outline: none;
+            font-family: inherit;
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+        .checkbox-label input {
+            accent-color: var(--accent-blue);
+        }
+        .render-3d-box {
+            width: 100%;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            overflow: hidden;
+            display: none;
+        }
+        .render-3d-box img {
+            width: 100%;
+            display: block;
+        }
+        .chat-input-area button:hover { opacity: 0.8; }
+        
+        /* Carousel VecinosYa */
+        .vy-carousel-wrapper {
+            margin: -1.5rem 0 3rem 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .vy-carousel {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 5px;
+        }
+        .vy-carousel::-webkit-scrollbar {
+            display: none;
+        }
+        .vy-carousel-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            font-size: 0.9rem;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+        .vy-carousel-btn:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: rgba(56, 189, 248, 0.4);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .vy-carousel-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink) 0%, #be123c 100%);
+            border-color: transparent;
+            color: white;
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+        }
+    </style>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <div class="logo-container" style="flex-direction: row; align-items: center; gap: 12px;">
+                <img src="assets/hyperrealistic_smart_house.png?v=3" alt="Smart Home 3D" style="height: 60px; border-radius: 8px; object-fit: cover;">
+                <img src="logo.jpg" alt="vecinosya.cl" style="height: 80px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); object-fit: cover;">
+                <div class="logo-tag" style="margin: 0; align-self: center; font-size: 0.8rem;">Seguridad y Domotización</div>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">                <button class="contact-btn" onclick="document.getElementById('contacto').scrollIntoView({behavior: 'smooth'})">
+                    <i data-lucide="phone"></i> Agendar Instalación
+                </button>
+            </div>
+        </header>
+
+        <!-- Carrusel VecinosYa -->
+        <div class="vy-carousel-wrapper">
+            <div class="vy-carousel">
+                <a href="/" target="_parent" class="vy-carousel-btn active"><i data-lucide="shield-check"></i> Seguridad</a>
+                <a href="/propiedades" target="_parent" class="vy-carousel-btn"><i data-lucide="home"></i> Propiedades</a>
+                <a href="/21719" target="_parent" class="vy-carousel-btn"><i data-lucide="link"></i> 21719</a>
+                <a href="/marketplace" target="_parent" class="vy-carousel-btn"><i data-lucide="store"></i> Marketplace</a>
+                <a href="/vecinosya" target="_parent" class="vy-carousel-btn"><i data-lucide="bike"></i> Delivery</a>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1>Protección Total y Domótica Inteligente<br>para <span><span style="white-space: nowrap;">La Serena</span> y Coquimbo</span></h1>
+            <p>Controla tus cámaras, cerraduras e iluminación de colores personalizados desde tu celular. Respaldo en la nube integrado e instalación profesional garantizada.</p>
+        </section>
+
+        <!-- Grid Dashboard / Simulador de Domótica -->
+        <section class="grid-dashboard">
+            
+            <!-- Panel Izquierdo: Cámaras y Cerradura -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                       <!-- CCTV Card -->
+                <div class="card">
+                    <div class="card-header" style="flex-wrap: wrap; gap: 8px;">
+                        <div class="card-title">
+                        <img src="assets/custom_video_icon.png" alt="Video Icon" class="video-icon" style="height:1em; vertical-align:middle; margin-right:4px;"/>
+                        Videovigilancia VecinosYa
+                        </div>
+                        <div class="badge-live">
+                            <div class="pulse-dot"></div>
+                            VIVO
+                        </div>
+                    </div>
+
+                    <div class="cctv-dashboard-grid">
+                        <!-- Column 1: Blueprint -->
+                        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                            <span style="font-size: 0.75rem; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Mapa de Cobertura e Instalación (Plano)</span>
+                            <div class="blueprint-container">
+                                <svg viewBox="0 0 400 300" class="blueprint-svg">
+                                    <!-- Outer walls -->
+                                    <rect x="10" y="10" width="380" height="280" rx="10" fill="none" stroke="var(--blueprint-line)" stroke-width="1.5" stroke-dasharray="4 4" />
+                                    
+                                    <!-- Interior Negocio (Top Left) -->
+                                    <rect x="30" y="30" width="160" height="110" fill="rgba(56, 189, 248, 0.01)" stroke="rgba(56, 189, 248, 0.2)" stroke-width="1.5" />
+                                    <rect x="30" y="30" width="8" height="8" fill="rgba(56, 189, 248, 0.4)" />
+                                    <rect x="182" y="30" width="8" height="8" fill="rgba(56, 189, 248, 0.4)" />
+                                    <rect x="30" y="132" width="8" height="8" fill="rgba(56, 189, 248, 0.4)" />
+                                    <rect x="182" y="132" width="8" height="8" fill="rgba(56, 189, 248, 0.4)" />
+                                    <text x="45" y="90" fill="var(--blueprint-text)" font-size="8" font-weight="bold" letter-spacing="1">INTERIOR NEGOCIO</text>
+                                    
+                                    <!-- Estacionamiento (Bottom Left) -->
+                                    <rect x="30" y="160" width="160" height="110" fill="rgba(244, 63, 94, 0.01)" stroke="rgba(244, 63, 94, 0.2)" stroke-width="1.5" />
+                                    <line x1="30" y1="215" x2="190" y2="215" stroke="rgba(244, 63, 94, 0.1)" stroke-dasharray="4 4" />
+                                    <rect x="30" y="160" width="8" height="8" fill="rgba(244, 63, 94, 0.4)" />
+                                    <rect x="182" y="160" width="8" height="8" fill="rgba(244, 63, 94, 0.4)" />
+                                    <rect x="30" y="262" width="8" height="8" fill="rgba(244, 63, 94, 0.4)" />
+                                    <rect x="182" y="262" width="8" height="8" fill="rgba(244, 63, 94, 0.4)" />
+                                    <text x="45" y="220" fill="var(--blueprint-text)" font-size="8" font-weight="bold" letter-spacing="1">ESTACIONAMIENTO</text>
+                                    
+                                    <!-- Acceso Principal (Top Right) -->
+                                    <rect x="210" y="30" width="160" height="110" fill="rgba(16, 185, 129, 0.01)" stroke="rgba(16, 185, 129, 0.2)" stroke-width="1.5" />
+                                    <rect x="210" y="30" width="8" height="8" fill="rgba(16, 185, 129, 0.4)" />
+                                    <rect x="362" y="30" width="8" height="8" fill="rgba(16, 185, 129, 0.4)" />
+                                    <rect x="210" y="132" width="8" height="8" fill="rgba(16, 185, 129, 0.4)" />
+                                    <rect x="362" y="132" width="8" height="8" fill="rgba(16, 185, 129, 0.4)" />
+                                    <text x="225" y="90" fill="var(--blueprint-text)" font-size="8" font-weight="bold" letter-spacing="1">ACCESO PRINCIPAL</text>
+                                    
+                                    <!-- Patio Trasero (Bottom Right) -->
+                                    <rect x="210" y="160" width="160" height="110" fill="rgba(245, 158, 11, 0.01)" stroke="rgba(245, 158, 11, 0.2)" stroke-width="1.5" />
+                                    <rect x="210" y="160" width="8" height="8" fill="rgba(245, 158, 11, 0.4)" />
+                                    <rect x="362" y="160" width="8" height="8" fill="rgba(245, 158, 11, 0.4)" />
+                                    <rect x="210" y="262" width="8" height="8" fill="rgba(245, 158, 11, 0.4)" />
+                                    <rect x="362" y="262" width="8" height="8" fill="rgba(245, 158, 11, 0.4)" />
+                                    <text x="225" y="220" fill="var(--blueprint-text)" font-size="8" font-weight="bold" letter-spacing="1">PATIO TRASERO</text>
+                                    
+                                    <!-- Hotspots / Radars (Conos de visión traslúcidos) -->
+                                    <g class="cam-hotspot active" id="hotspot-cam1" onclick="changeCam(1, 'ACCESO PRINCIPAL', 'assets/cam_acceso.png')">
+                                        <path d="M 230 45 L 290 85 L 210 85 Z" fill="rgba(16, 185, 129, 0.12)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1" class="fov-cone" />
+                                        <circle cx="230" cy="45" r="10" fill="#10b981" class="pulse-ring" style="opacity: 0.5;" />
+                                        <circle cx="230" cy="45" r="5" fill="#fff" stroke="#10b981" stroke-width="2" />
+                                        <text x="226" y="32" fill="#10b981" font-size="8" font-weight="950">CAM 1</text>
+                                    </g>
+                                    
+                                    <g class="cam-hotspot" id="hotspot-cam2" onclick="changeCam(2, 'ESTACIONAMIENTO', 'assets/cam_estacionamiento.png')">
+                                        <path d="M 175 175 L 125 215 L 125 175 Z" fill="rgba(244, 63, 94, 0.12)" stroke="rgba(244, 63, 94, 0.4)" stroke-width="1" class="fov-cone" />
+                                        <circle cx="175" cy="175" r="10" fill="#f43f5e" class="pulse-ring" style="opacity: 0.5;" />
+                                        <circle cx="175" cy="175" r="5" fill="#fff" stroke="#f43f5e" stroke-width="2" />
+                                        <text x="171" y="162" fill="#f43f5e" font-size="8" font-weight="950">CAM 2</text>
+                                    </g>
+                                    
+                                    <g class="cam-hotspot" id="hotspot-cam3" onclick="changeCam(3, 'PATIO TRASERO', 'assets/cam_patio.png')">
+                                        <path d="M 350 250 L 295 205 L 350 205 Z" fill="rgba(245, 158, 11, 0.12)" stroke="rgba(245, 158, 11, 0.4)" stroke-width="1" class="fov-cone" />
+                                        <circle cx="350" cy="250" r="10" fill="#f59e0b" class="pulse-ring" style="opacity: 0.5;" />
+                                        <circle cx="350" cy="250" r="5" fill="#fff" stroke="#f59e0b" stroke-width="2" />
+                                        <text x="346" y="237" fill="#f59e0b" font-size="8" font-weight="950">CAM 3</text>
+                                    </g>
+                                    
+                                    <g class="cam-hotspot" id="hotspot-cam4" onclick="changeCam(4, 'INTERIOR NEGOCIO', 'assets/cam_interior.png')">
+                                        <path d="M 45 45 L 95 85 L 45 85 Z" fill="rgba(56, 189, 248, 0.12)" stroke="rgba(56, 189, 248, 0.4)" stroke-width="1" class="fov-cone" />
+                                        <circle cx="45" cy="45" r="10" fill="#38bdf8" class="pulse-ring" style="opacity: 0.5;" />
+                                        <circle cx="45" cy="45" r="5" fill="#fff" stroke="#38bdf8" stroke-width="2" />
+                                        <text x="41" y="32" fill="#38bdf8" font-size="8" font-weight="950">CAM 4</text>
+                                    </g>
+                                </svg>
+                            </div>
+                            <span style="font-size: 0.65rem; color: #64748b; line-height: 1.3;">ℹ️ Haz clic sobre los iconos de cámara en el plano translúcido para simular la visualización y ver la ubicación física.</span>
+                        </div>
+
+                        <!-- Column 2: Device Frame and Controls -->
+                        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; align-items: center;">
+                            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                                <span style="font-size: 0.75rem; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; align-self: center;">Receptor Simulado</span>
+                                <div class="device-selector">
+                                    <button class="device-btn active" onclick="setDevice('tv')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> TV</button>
+                                    <button class="device-btn" onclick="setDevice('tablet')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Tablet</button>
+                                    <button class="device-btn" onclick="setDevice('phone')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg> Móvil</button>
+                                </div>
+                            </div>
+
+                            <!-- Tech Selector -->
+                            <div class="tech-selector" style="width: 100%;">
+                                <button class="tech-btn active" id="techSimple" onclick="switchCameraTech('simple')">Formato Sencillo</button>
+                                <button class="tech-btn" id="techDual" onclick="switchCameraTech('dual')">Doble Lente</button>
+                                <button class="tech-btn" id="techTrack" onclick="switchCameraTech('track')">Seguimiento Auto</button>
+                            </div>
+
+                            <!-- Device Wrapper -->
+                            <div class="cctv-viewer-container" id="cctvContainer">
+                                <div class="device-frame-tv" id="deviceFrame">
+                                    <div class="cctv-viewer" style="height: 100%; border: none; border-radius: 0; position: relative;">
+                                        <!-- Simple image feed -->
+                                        <img id="cctvImage" class="cctv-feed" src="assets/cam_acceso.png" alt="CCTV Feed" style="height: 100%; object-fit: cover; width: 100%;">
+                                        
+                                        <!-- Dual camera feed -->
+                                        <div id="cctvDualContainer" style="display: none; grid-template-columns: 1fr 1fr; gap: 4px; height: 100%; width: 100%;">
+                                            <div style="position: relative; height: 100%;">
+                                                <img class="cctv-feed" id="cctvImageWide" src="assets/cam_acceso.png" style="height: 100%; object-fit: cover; width: 100%;">
+                                                <div class="lens-label">GRAN ANGULAR (130°)</div>
+                                            </div>
+                                            <div style="position: relative; height: 100%; overflow: hidden;">
+                                                <img class="cctv-feed" id="cctvImageZoom" src="assets/cam_acceso.png" style="height: 100%; object-fit: cover; transform: scale(1.8); transform-origin: center; width: 100%;">
+                                                <div class="lens-label">ZOOM PTZ SEGUIMIENTO</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Auto-tracking box overlay -->
+                                        <div id="trackingOverlay" style="display: none; position: absolute; border: 2px solid #ef4444; background: rgba(239, 68, 68, 0.15); width: 60px; height: 100px; border-radius: 4px; animation: trackTarget 6s infinite ease-in-out; pointer-events: none; left: 50%; top: 30%;">
+                                            <div style="position: absolute; top: -20px; left: 0; font-family: monospace; font-size: 8px; background: #ef4444; color: white; padding: 1px 3px; border-radius: 2px; font-weight: bold; white-space: nowrap;">TARGET LOCK</div>
+                                        </div>
+
+                                        <div class="cctv-overlay">
+                                            <div class="cctv-top">
+                                                <div id="cameraLabel">CAM 01: ACCESO PRINCIPAL</div>
+                                                <div id="fpsLabel">30 FPS</div>
+                                            </div>
+                                            <div class="cctv-bottom">
+                                                <div id="timestamp">02/07/2026 13:20:54</div>
+                                                <div id="deviceTag">SMART TV VIEW</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Mock App Screen elements (visible only inside .device-frame-phone) -->
+                                    <div class="app-only" style="display: none; flex-direction: column; flex: 1; padding: 12px; gap: 10px; box-sizing: border-box; background: #090d16; border-top: 1px solid rgba(255,255,255,0.05); width: 100%;">
+                                        <!-- Mock App Header -->
+                                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 6px;">
+                                            <span style="font-size: 0.65rem; font-weight: 900; color: #38bdf8; letter-spacing: 0.5px;">VECINOSYA MOBILE</span>
+                                            <span style="width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 6px #10b981;"></span>
+                                        </div>
+                                        
+                                        <!-- Quick App Controls -->
+                                        <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 8px 10px; display: flex; justify-content: space-between; align-items: center;">
+                                            <div>
+                                                <div style="font-size: 0.55rem; color: #64748b; font-weight: bold; text-transform: uppercase;">CERRADURA ACCESO</div>
+                                                <div style="font-size: 0.72rem; font-weight: bold; color: white; margin-top: 1px;" id="appLockStatusText">🔒 CERRADO</div>
+                                            </div>
+                                            <button onclick="toggleLock()" style="background: var(--accent-pink); border: none; color: white; font-size: 0.6rem; font-weight: bold; padding: 4px 10px; border-radius: 50px; cursor: pointer; transition: all 0.3s;" id="appLockBtn">Abrir</button>
+                                        </div>
+
+                                        <!-- Camera Select List inside App -->
+                                        <div style="display: flex; flex-direction: column; gap: 5px; overflow-y: auto; flex: 1;">
+                                            <div style="font-size: 0.55rem; color: #64748b; font-weight: bold; text-transform: uppercase; margin-bottom: 1px;">Mis Cámaras</div>
+                                                              <div class="app-cam-item active" id="app-cam-1" onclick="changeCam(1, 'ACCESO', 'assets/cam_acceso.png')" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); cursor: pointer; transition: all 0.2s;">
+                                                <span style="font-size: 0.65rem; font-weight: bold; color: white;">CAM 01: Acceso</span>
+                                                <span style="font-size: 0.55rem; color: #38bdf8;">🔴 EN VIVO</span>
+                                            </div>
+                                            <div class="app-cam-item" id="app-cam-2" onclick="changeCam(2, 'ESTACIONAMIENTO', 'assets/cam_estacionamiento.png')" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s;">
+                                                <span style="font-size: 0.65rem; font-weight: bold; color: #94a3b8;">CAM 02: Estacionamiento</span>
+                                                <span style="font-size: 0.55rem; color: #64748b;">🔴 EN VIVO</span>
+                                            </div>
+                                            <div class="app-cam-item" id="app-cam-3" onclick="changeCam(3, 'PATIO', 'assets/cam_patio.png')" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s;">
+                                                <span style="font-size: 0.65rem; font-weight: bold; color: #94a3b8;">CAM 03: Patio</span>
+                                                <span style="font-size: 0.55rem; color: #64748b;">🔴 EN VIVO</span>
+                                            </div>
+                                            <div class="app-cam-item" id="app-cam-4" onclick="changeCam(4, 'ANTEJARDÍN', 'assets/cam_jardin.png')" style="display: flex; align-items: center; justify-content: space-between; padding: 6px 8px; border-radius: 6px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); cursor: pointer; transition: all 0.2s;">
+                                                <span style="font-size: 0.65rem; font-weight: bold; color: #94a3b8;">CAM 04: Antejardín</span>
+                                                <span style="font-size: 0.55rem; color: #64748b;">🔴 EN VIVO</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Bottom selector grid (matches mockup button layout) -->
+                            <div class="cctv-grid-selector" style="width: 100%;">
+                                <button class="cctv-btn active" onclick="changeCam(1, 'ACCESO', 'assets/cam_acceso.png')">Acceso</button>
+                                <button class="cctv-btn" onclick="changeCam(2, 'ESTACIONAMIENTO', 'assets/cam_estacionamiento.png')">Estacionam.</button>
+                                <button class="cctv-btn" onclick="changeCam(3, 'PATIO', 'assets/cam_patio.png')">Patio</button>
+                                <button class="cctv-btn" onclick="changeCam(4, 'ANTEJARDÍN', 'assets/cam_jardin.png')">Antejardín</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cerraduras Inteligentes Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i data-lucide="key-round" style="color: var(--accent-emerald)"></i>
+                            Cerraduras e Control de Accesos
+                        </div>
+                    </div>
+
+                    <div class="lock-container">
+                        <div>
+                            <div style="font-weight: bold; font-size: 0.95rem;" id="lockStatusText">ESTADO: 🔒 CERRADO</div>
+                            <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 2px;">Cerradura inteligente negocio / hogar</div>
+                        </div>
+                        <button id="lockBtn" class="lock-btn locked" onclick="toggleLock()">
+                            <i data-lucide="lock" id="lockIcon"></i> <span id="lockBtnText">Asegurar</span>
+                        </button>
+                    </div>
+
+                    <div class="logs-box" id="lockLogs">
+                        <div class="log-item">
+                            <span>🔑 Papá ingresó con Huella Digital</span>
+                            <span>Hoy 11:20</span>
+                        </div>
+                        <div class="log-item">
+                            <span>📲 Cierre remoto mediante App</span>
+                            <span>Hoy 10:45</span>
+                        </div>
+                        <div class="log-item">
+                            <span>💳 Empleado ingresó con Tarjeta RFID</span>
+                            <span>Hoy 08:30</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Widget convertido a Módulo -->
+                <div class="card" id="cotizador" style="padding: 0; overflow: hidden;">
+                    <div class="chat-header" style="background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 20px;">
+                        <span style="font-size: 1.2rem;"><i data-lucide="bot" style="width: 24px; vertical-align: middle; margin-right: 8px;"></i> Cotización Interactiva</span>
+                    </div>
+                    <div id="chatBody" class="chat-body" style="height: 350px; background: transparent;">
+                        <div class="chat-message bot-msg">
+                            ¡Hola! 👋 Soy el asistente virtual de VecinosYa. Para darte un presupuesto estimado al instante, cuéntame: ¿Qué te interesa cotizar hoy?
+                        </div>
+                    </div>
+                    <div id="chatOptions" class="chat-options" style="padding: 20px; background: rgba(0,0,0,0.1);">
+                        <button class="chat-opt-btn" onclick="handleChatOption('Cámaras de Seguridad')">Cámaras de Seguridad</button>
+                        <button class="chat-opt-btn" onclick="handleChatOption('Iluminación Inteligente')">Iluminación Inteligente</button>
+                        <button class="chat-opt-btn" onclick="handleChatOption('Otro requerimiento')">Coméntanos tu requerimiento</button>
+                    </div>
+                    <div id="chatInputArea" class="chat-input-area" style="padding: 20px;">
+                        <input type="text" id="chatInput" placeholder="Escribe tu requerimiento detallado..." onkeypress="if(event.key === 'Enter') sendCustomRequirement()" />
+                        <button onclick="sendCustomRequirement()" style="padding: 12px 24px;"><i data-lucide="send" style="width: 16px;"></i> Enviar</button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Panel Derecho: Iluminación y Calculadora -->
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                
+                <!-- Iluminación Domótica Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i data-lucide="lightbulb" style="color: var(--accent-yellow)"></i>
+                            Iluminación Inteligente RGB
+                        </div>
+                    </div>
+
+                    <div class="lighting-preview">
+                        <div class="house-blueprint">
+                            <div class="room active-light" id="room-bedroom" style="--room-color: #f59e0b; --room-glow-bg: rgba(245, 158, 11, 0.12); --room-glow-color: rgba(245, 158, 11, 0.25);">
+                                <svg class="room-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9M10 8H6a2 2 0 0 0-2 2v7M16 8v9"/></svg>
+                                <span class="room-name">Dormitorio</span>
+                            </div>
+                            <div class="room active-light" id="room-living" style="--room-color: #f59e0b; --room-glow-bg: rgba(245, 158, 11, 0.12); --room-glow-color: rgba(245, 158, 11, 0.25);">
+                                <svg class="room-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 10V5a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v5M2 17v-3a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v3M5 12V9a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3M4 17h16M4 21v-4M20 21v-4"/></svg>
+                                <span class="room-name">Living</span>
+                            </div>
+                            <div class="room active-light" id="room-kitchen" style="--room-color: #f59e0b; --room-glow-bg: rgba(245, 158, 11, 0.12); --room-glow-color: rgba(245, 158, 11, 0.25);">
+                                <svg class="room-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12h20M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8M12 2v10M6 6h12"/></svg>
+                                <span class="room-name">Cocina</span>
+                            </div>
+                            <div class="room active-light" id="room-patio" style="--room-color: #f59e0b; --room-glow-bg: rgba(245, 158, 11, 0.12); --room-glow-color: rgba(245, 158, 11, 0.25);">
+                                <svg class="room-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 22h20L12 2zm0 8v8M9 14h6"/></svg>
+                                <span class="room-name">Patio/Jardín</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lighting-controls">
+                        <!-- Temperatura de blanco -->
+                        <div class="slider-container">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                <span>Temperatura Blanco (K)</span>
+                                <span id="tempVal">3000K (Blanco Cálido)</span>
+                            </div>
+                            <input type="range" class="slider" min="2700" max="6500" value="3000" id="tempSlider" oninput="changeTemperature(this.value)">
+                        </div>
+
+                        <!-- Colores personalizados -->
+                        <div class="slider-container">
+                            <span style="font-size: 0.8rem; margin-bottom: 4px;">Colores Personalizados RGB</span>
+                            <div class="color-row">
+                                <div class="color-dot" style="background: #38bdf8;" onclick="changeColor('#38bdf8', 'Celeste disuasivo')"></div>
+                                <div class="color-dot" style="background: #ef4444;" onclick="changeColor('#ef4444', 'Rojo disuasivo')"></div>
+                                <div class="color-dot" style="background: #10b981;" onclick="changeColor('#10b981', 'Verde relax')"></div>
+                                <div class="color-dot" style="background: #a855f7;" onclick="changeColor('#a855f7', 'Púrpura premium')"></div>
+                                <div class="color-dot" style="background: #f59e0b;" onclick="changeColor('#f59e0b', 'Blanco cálido')"></div>
+                                <div class="color-dot" style="background: #ffffff;" onclick="changeColor('#ffffff', 'Blanco total')"></div>
+                            </div>
+                        </div>
+
+                        <!-- Sincronización festiva -->
+                        <div class="slider-container">
+                            <span style="font-size: 0.8rem; margin-bottom: 4px;">Sincronización para Festividades</span>
+                            <div class="festive-row">
+                                <button class="festive-btn" id="festive1" onclick="activateFestive(1, 'Navidad')">🎄 Navidad</button>
+                                <button class="festive-btn" id="festive2" onclick="activateFestive(2, 'Patrias')">🇨🇱 Fiestas P.</button>
+                                <button class="festive-btn" id="festive3" onclick="activateFestive(3, 'Halloween')">🎃 Halloween</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cotizador Iluminación  -->
+                <div class="card" style="border: 1px solid var(--accent-yellow);">
+                    <div class="card-header" style="background: rgba(245, 158, 11, 0.1);">
+                        <div class="card-title">
+                            <i data-lucide="calculator" style="color: var(--accent-yellow)"></i>
+                            Cotizador de Iluminación Inteligente
+                        </div>
+                    </div>
+                    
+                    <div class="card-content" style="padding: 20px;">
+                        <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 20px; line-height: 1.5;">Calcula el valor de domotizar tu hogar con las <b>Ampolletas Inteligentes Wi-Fi RGB</b>. Controla el color, el brillo y automatiza tus espacios.</div>
+                        
+                        <div class="slider-container" style="margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold;">
+                                <span style="color: #cbd5e1">Cantidad</span>
+                                <span id="lightCountLabel" style="color: var(--accent-yellow)">1 Ampolleta</span>
+                            </div>
+                            <input type="range" class="slider" min="1" max="20" value="1" id="lightSlider" oninput="calculateLight()" style="accent-color: var(--accent-yellow);">
+                        </div>
+                        
+                        <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem;">
+                                <span>Equipos Inteligentes Wi-Fi</span>
+                                <span id="lightEquipCost">$19.990</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem;">
+                                <span>Mano de Obra y Configuración</span>
+                                <span id="lightInstCost">$15.000</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; margin-top: 10px;">
+                                <span style="font-size: 1.1rem;">Estimado Base</span>
+                                <span id="lightTotalCost" style="font-size: 1.5rem; font-weight: 900; color: white;">$34.990</span>
+                            </div>
+                        </div>
+
+                        <button onclick="requestLight()" style="width: 100%; background: var(--accent-yellow); color: #000; font-weight: bold; padding: 12px; border-radius: 8px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: transform 0.2s;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg> Solicitar Instalación
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Almacenamiento Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">
+                            <i data-lucide="database" style="color: var(--accent-blue)"></i>
+                            Almacenamiento de Video
+                        </div>
+                    </div>
+
+                    <!-- Pestañas -->
+                    <div class="tabs-container">
+                        <button class="tab-btn active" id="tabCloud" onclick="switchStorageTab('cloud')">Respaldo Nube</button>
+                        <button class="tab-btn" id="tabSD" onclick="switchStorageTab('sd')">Tarjeta Micro SD</button>
+                    </div>
+
+                    <!-- Contenido Nube -->
+                    <div id="contentCloud" class="tab-content">
+                        <div class="info-alert" style="margin-top: 10px;">
+                            <i data-lucide="info" class="info-icon"></i>
+                            <span>El respaldo en la nube se almacena de forma encriptada en <strong>diferentes alternativas de nube o tarjetas</strong>, garantizando velocidad y máxima privacidad.</span>
+                        </div>
+
+                        <div class="slider-container" style="margin-top: 12px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                <span>Número de Cámaras</span>
+                                <span id="camCountLabel">3 Cámaras</span>
+                            </div>
+                            <input type="range" class="slider" min="1" max="10" value="3" id="camSlider" oninput="calculatePrice()">
+                        </div>
+
+                        <div class="slider-container">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem;">
+                                <span>Historial de Respaldo</span>
+                                <span id="historyLabel">7 días de historial</span>
+                            </div>
+                            <input type="range" class="slider" min="1" max="2" value="1" id="historySlider" oninput="calculatePrice()">
+                        </div>
+
+                        <div class="calc-pricing">
+                            <div style="font-size: 0.75rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">Suscripción Mensual Estimada</div>
+                            <div class="calc-price" id="calcPrice">$8.700</div>
+                            <div style="font-size: 0.7rem; color: #94a3b8;">*Incluye mantención y soporte remoto local.</div>
+                        </div>
+                    </div>
+
+                    <!-- Contenido Micro SD -->
+                    <div id="contentSD" class="tab-content" style="display: none; margin-top: 10px;">
+                        <div class="info-alert" style="border-color: var(--accent-yellow); background: rgba(245, 158, 11, 0.05); margin-bottom: 12px;">
+                            <i data-lucide="alert-triangle" class="info-icon" style="color: var(--accent-yellow)"></i>
+                            <span>Las tarjetas se instalan directo en el equipo. La capacidad máxima admisible <strong>depende de la compatibilidad del modelo de cámara elegido</strong> (soporte típico de 64GB hasta 256GB).</span>
+                        </div>
+
+                        <div class="sd-cards-list">
+                            <div class="sd-card-item">
+                                <div class="sd-card-info">
+                                    <div class="sd-card-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="M12 2v20"/><path d="M17 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+                                        Micro SD 64 GB
+                                    </div>
+                                    <div class="sd-card-desc">Graba aprox. 15 días continuos de video</div>
+                                </div>
+                                <div class="sd-card-price">$8.900</div>
+                            </div>
+                            <div class="sd-card-item">
+                                <div class="sd-card-info">
+                                    <div class="sd-card-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="M12 2v20"/><path d="M17 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+                                        Micro SD 128 GB
+                                    </div>
+                                    <div class="sd-card-desc">Graba aprox. 30 días continuos de video</div>
+                                </div>
+                                <div class="sd-card-price">$14.900</div>
+                            </div>
+                            <div class="sd-card-item">
+                                <div class="sd-card-info">
+                                    <div class="sd-card-title">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="M12 2v20"/><path d="M17 5H7a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2z"/></svg>
+                                        Micro SD 256 GB
+                                    </div>
+                                    <div class="sd-card-desc">Graba aprox. 60 días continuos de video</div>
+                                </div>
+                                <div class="sd-card-price">$24.900</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Formulario de Contacto -->
+
+        <section class="card" id="contacto" style="max-width: 700px; margin: 0 auto 3rem auto;">
+            <div class="card-header" style="text-align: center; flex-direction: column; gap: 8px;">
+                <div class="card-title" style="font-size: 1.4rem;">Agenda tu Diagnóstico en Terreno Gratuito</div>
+                <p style="margin: 0; font-size: 0.85rem; color: #94a3b8;">Ofrecemos asesoría de seguridad en La Serena y Coquimbo. Déjanos tus datos e instalamos en menos de 24 horas.</p>
+            </div>
+            
+            <form class="contact-form" onsubmit="submitLead(event)">
+                <input type="text" placeholder="Nombre completo" class="form-input" required id="leadName">
+                <input type="email" placeholder="Correo electrónico (ej: contacto@vecinosya.cl)" class="form-input" required id="leadEmail">
+                <input type="tel" placeholder="Número de contacto" class="form-input" required id="leadPhone">
+                <input type="text" placeholder="Dirección (ej: Av. Aguirre, La Serena)" class="form-input" required id="leadAddress">
+                
+                <!-- Mapa de Georreferenciación -->
+                <p style="font-size: 0.8rem; color: #94a3b8; text-align: left; margin: 10px 0 5px 0;">Opcional: Marca tu ubicación exacta en el mapa (autocompleta la dirección)</p>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+                <div id="map" style="height: 200px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 1rem; width: 100%; z-index: 1;"></div>
+                <input type="hidden" id="leadLat" value="">
+                <input type="hidden" id="leadLng" value="">
+
+                <button type="submit" class="submit-btn">Solicitar Cotización y Visita Técnica</button>
+                
+                <div style="grid-column: span 2; display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                    <span style="color: #64748b; font-size: 0.8rem; white-space: nowrap;">o contáctanos directo por</span>
+                    <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+                </div>
+
+                <button type="button" onclick="sendToWhatsApp()" style="
+                    grid-column: span 2;
+                    background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 12px;
+                    padding: 1rem 2rem;
+                    font-size: 1rem;
+                    font-weight: 700;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.75rem;
+                    transition: all 0.3s ease;
+                    box-shadow: 0 4px 20px rgba(37, 211, 102, 0.3);
+                "
+                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 30px rgba(37,211,102,0.5)'"
+                onmouseout="this.style.transform=''; this.style.boxShadow='0 4px 20px rgba(37, 211, 102, 0.3)'">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="white">
+                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                    </svg>
+                    Contactar por WhatsApp
+                </button>
+            </form>
+        </section>
+
+    </div>
+
+
+    <section class="card" style="max-width: 900px; margin: 0 auto 3rem auto;">
+        <div class="card-header" style="flex-direction: column; align-items: center; text-align: center; gap: 8px;">
+            <div class="card-title" style="font-size: 1.5rem; font-family: 'Outfit', sans-serif;">Infraestructura y Presencia Local</div>
+            <p style="margin: 0; font-size: 0.85rem; color: #94a3b8; max-width: 600px;">Equipamiento profesional e identificación certificada para tu tranquilidad. Técnicos oficiales operando en La Serena y Coquimbo.</p>
+        </div>
+        
+        <div class="presence-grid">
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 12px;">
+                <img src="movil.jpeg" alt="Móvil VecinosYa" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="padding: 0 4px 4px 4px;">
+                    <h4 style="margin: 0; font-size: 0.95rem; color: white;">Flota de Apoyo Local</h4>
+                    <p style="margin: 6px 0 0 0; font-size: 0.75rem; color: #94a3b8; line-height: 1.4;">Vehículos de soporte técnico en terreno para dar cobertura inmediata y configuraciones in situ rápidas.</p>
+                </div>
+            </div>
+            <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; padding: 12px; display: flex; flex-direction: column; gap: 12px;">
+                <img src="gorro.jpeg" alt="Gorro VecinosYa" style="width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 14px; border: 1px solid rgba(255,255,255,0.05);">
+                <div style="padding: 0 4px 4px 4px;">
+                    <h4 style="margin: 0; font-size: 0.95rem; color: white;">Equipo Autorizado</h4>
+                    <p style="margin: 6px 0 0 0; font-size: 0.75rem; color: #94a3b8; line-height: 1.4;">Nuestros técnicos visten uniforme y credenciales oficiales para garantizar máxima seguridad en tu hogar.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Inicializar iconos de forma segura
+        try {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        } catch (e) {
+            console.error('Error al inicializar Lucide:', e);
+        }
+
+        // Actualizar Reloj en tiempo real
+        setInterval(() => {
+            const now = new Date();
+            const timeString = now.toLocaleDateString('es-CL') + ' ' + now.toLocaleTimeString('es-CL');
+            document.getElementById('timestamp').innerText = timeString;
+        }, 1000);
+
+        // Simulador de Cámaras
+        function changeCam(camId, label, imageUrl) {
+            document.getElementById('cctvImage').src = imageUrl;
+            document.getElementById('cameraLabel').innerText = `CAM 0${camId}: ${label}`;
+            
+            // Toggle active classes on selectors
+            const buttons = document.querySelectorAll('.cctv-btn');
+            buttons.forEach((btn, index) => {
+                if (index === camId - 1) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        // Simulador de Cerradura
+        var isLocked = true;
+        function toggleLock() {
+            isLocked = !isLocked;
+            const btn = document.getElementById('lockBtn');
+            const icon = document.getElementById('lockIcon');
+            const text = document.getElementById('lockStatusText');
+            const btnText = document.getElementById('lockBtnText');
+            const logs = document.getElementById('lockLogs');
+            
+            const appText = document.getElementById('appLockStatusText');
+            const appBtn = document.getElementById('appLockBtn');
+
+            const now = new Date();
+            const timeStr = 'Hoy ' + now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            if (isLocked) {
+                btn.className = "lock-btn locked";
+                icon.setAttribute('data-lucide', 'lock');
+                text.innerText = "ESTADO: 🔒 CERRADO";
+                btnText.innerText = "Asegurar";
+                
+                if (appText) appText.innerText = "🔒 CERRADO";
+                if (appBtn) {
+                    appBtn.innerText = "Abrir";
+                    appBtn.style.background = "var(--accent-pink)";
+                }
+                
+                // Add log
+                const newLog = document.createElement('div');
+                newLog.className = 'log-item new';
+                newLog.innerHTML = `<span>🔒 Cerradura asegurada desde App</span><span>${timeStr}</span>`;
+                logs.insertBefore(newLog, logs.firstChild);
+            } else {
+                btn.className = "lock-btn unlocked";
+                icon.setAttribute('data-lucide', 'unlock');
+                text.innerText = "ESTADO: 🔓 ABIERTO";
+                btnText.innerText = "Abrir";
+                
+                if (appText) appText.innerText = "🔓 ABIERTO";
+                if (appBtn) {
+                    appBtn.innerText = "Cerrar";
+                    appBtn.style.background = "var(--accent-emerald)";
+                }
+
+                // Add log
+                const newLog = document.createElement('div');
+                newLog.className = 'log-item new';
+                newLog.innerHTML = `<span>🔓 Cerradura abierta remotamente</span><span>${timeStr}</span>`;
+                logs.insertBefore(newLog, logs.firstChild);
+            }
+            try {
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            } catch (e) {}
+        }
+
+        // Simulador de Iluminación
+        var activeInterval = null;
+        
+        function clearFestiveAnimation() {
+            if (activeInterval) {
+                clearInterval(activeInterval);
+                activeInterval = null;
+            }
+            const f1 = document.getElementById('festive1');
+            const f2 = document.getElementById('festive2');
+            const f3 = document.getElementById('festive3');
+            if (f1) f1.classList.remove('active');
+            if (f2) f2.classList.remove('active');
+            if (f3) f3.classList.remove('active');
+        }
+
+        function hexToRgba(hex, alpha) {
+            let cleaned = hex.replace('#', '');
+            if (cleaned.length === 3) {
+                cleaned = cleaned.split('').map(c => c + c).join('');
+            }
+            const r = parseInt(cleaned.substring(0, 2), 16);
+            const g = parseInt(cleaned.substring(2, 4), 16);
+            const b = parseInt(cleaned.substring(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        function setRoomsColor(colorHexOrRgb) {
+            const rooms = document.querySelectorAll('.room');
+            const isRgb = colorHexOrRgb.startsWith('rgb');
+            
+            let color, glowBg, glowColor;
+            if (isRgb) {
+                color = colorHexOrRgb;
+                glowBg = colorHexOrRgb.replace('rgb', 'rgba').replace(')', ', 0.12)');
+                glowColor = colorHexOrRgb.replace('rgb', 'rgba').replace(')', ', 0.25)');
+            } else {
+                color = colorHexOrRgb;
+                glowBg = hexToRgba(colorHexOrRgb, 0.12);
+                glowColor = hexToRgba(colorHexOrRgb, 0.25);
+            }
+
+            rooms.forEach(room => {
+                room.setAttribute('style', `--room-color: ${color}; --room-glow-bg: ${glowBg}; --room-glow-color: ${glowColor};`);
+            });
+        }
+
+        function changeTemperature(val) {
+            clearFestiveAnimation();
+            const numVal = parseInt(val);
+            const tempValEl = document.getElementById('tempVal');
+            if (tempValEl) tempValEl.innerText = `${numVal}K ` + (numVal < 3500 ? '(Blanco Cálido)' : numVal < 5000 ? '(Blanco Neutro)' : '(Luz Fría)');
+            
+            // Interpolación de colores blanco cálido a luz fría
+            let r, g, b;
+            if (numVal < 4500) {
+                const ratio = (numVal - 2700) / 1800;
+                r = 245;
+                g = 158 + Math.round(97 * ratio);
+                b = 11 + Math.round(244 * ratio);
+            } else {
+                const ratio = (numVal - 4500) / 2000;
+                r = 245 - Math.round(100 * ratio);
+                g = 255;
+                b = 255;
+            }
+
+            const rgbColor = `rgb(${r}, ${g}, ${b})`;
+            setRoomsColor(rgbColor);
+        }
+
+        function changeColor(hex, label) {
+            clearFestiveAnimation();
+            const tempValEl = document.getElementById('tempVal');
+            if (tempValEl) tempValEl.innerText = `Color: ${label}`;
+            setRoomsColor(hex);
+        }
+
+        function setRoomFestiveStyle(el, color) {
+            const glowBg = hexToRgba(color, 0.12);
+            const glowColor = hexToRgba(color, 0.25);
+            if (el) el.setAttribute('style', `--room-color: ${color}; --room-glow-bg: ${glowBg}; --room-glow-color: ${glowColor};`);
+        }
+
+        function activateFestive(type, label) {
+            clearFestiveAnimation();
+            const btn = document.getElementById('festive' + type);
+            if (btn) btn.classList.add('active');
+            const tempValEl = document.getElementById('tempVal');
+            if (tempValEl) tempValEl.innerText = `Modo Festivo: ${label}`;
+
+            const bedroom = document.getElementById('room-bedroom');
+            const living = document.getElementById('room-living');
+            const kitchen = document.getElementById('room-kitchen');
+            const patio = document.getElementById('room-patio');
+
+            let index = 0;
+            if (type === 1) {
+                // Navidad: Alterna Rojo y Verde entre habitaciones
+                activeInterval = setInterval(() => {
+                    const colors = ['#ef4444', '#10b981'];
+                    const c1 = colors[index % 2];
+                    const c2 = colors[(index + 1) % 2];
+                    
+                    setRoomFestiveStyle(bedroom, c1);
+                    setRoomFestiveStyle(living, c2);
+                    setRoomFestiveStyle(kitchen, c1);
+                    setRoomFestiveStyle(patio, c2);
+                    
+                    index++;
+                }, 800);
+            } else if (type === 2) {
+                // Fiestas Patrias Chilenas: Alterna Blanco, Azul, Rojo de forma secuencial
+                activeInterval = setInterval(() => {
+                    const colors = ['#ffffff', '#0284c7', '#ef4444'];
+                    const c1 = colors[index % 3];
+                    const c2 = colors[(index + 1) % 3];
+                    const c3 = colors[(index + 2) % 3];
+                    
+                    setRoomFestiveStyle(bedroom, c1);
+                    setRoomFestiveStyle(living, c2);
+                    setRoomFestiveStyle(kitchen, c3);
+                    setRoomFestiveStyle(patio, c1);
+
+                    index++;
+                }, 800);
+            } else if (type === 3) {
+                // Halloween: Naranja y Púrpura alternando
+                activeInterval = setInterval(() => {
+                    const colors = ['#f59e0b', '#a855f7'];
+                    const c1 = colors[index % 2];
+                    const c2 = colors[(index + 1) % 2];
+                    
+                    setRoomFestiveStyle(bedroom, c1);
+                    setRoomFestiveStyle(living, c2);
+                    setRoomFestiveStyle(kitchen, c2);
+                    setRoomFestiveStyle(patio, c1);
+
+                    index++;
+                }, 800);
+            }
+        }
+
+        // Cambiar formato de tecnología de cámara
+        var currentCamMode = 'simple';
+        function switchCameraTech(mode) {
+            currentCamMode = mode;
+            const btnSimple = document.getElementById('techSimple');
+            const btnDual = document.getElementById('techDual');
+            const btnTrack = document.getElementById('techTrack');
+
+            const cctvImg = document.getElementById('cctvImage');
+            const dualContainer = document.getElementById('cctvDualContainer');
+            const trackingOverlay = document.getElementById('trackingOverlay');
+
+            btnSimple.classList.remove('active');
+            btnDual.classList.remove('active');
+            btnTrack.classList.remove('active');
+
+            if (mode === 'simple') {
+                btnSimple.classList.add('active');
+                cctvImg.style.display = 'block';
+                dualContainer.style.display = 'none';
+                trackingOverlay.style.display = 'none';
+            } else if (mode === 'dual') {
+                btnDual.classList.add('active');
+                cctvImg.style.display = 'none';
+                dualContainer.style.display = 'grid';
+                trackingOverlay.style.display = 'none';
+            } else if (mode === 'track') {
+                btnTrack.classList.add('active');
+                cctvImg.style.display = 'block';
+                dualContainer.style.display = 'none';
+                trackingOverlay.style.display = 'block';
+            }
+        }
+
+        // Cambiar dispositivo de visualización en el simulador
+        function setDevice(device) {
+            const frame = document.getElementById('deviceFrame');
+            const buttons = document.querySelectorAll('.device-btn');
+            const deviceTag = document.getElementById('deviceTag');
+
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (device === 'phone') {
+                document.querySelector('[onclick="setDevice(\'phone\')"]').classList.add('active');
+                frame.className = 'device-frame-phone';
+                deviceTag.innerText = 'TELÉFONO MÓVIL';
+            } else if (device === 'tablet') {
+                document.querySelector('[onclick="setDevice(\'tablet\')"]').classList.add('active');
+                frame.className = 'device-frame-tablet';
+                deviceTag.innerText = 'TABLET RECEPTORA';
+            } else if (device === 'tv') {
+                document.querySelector('[onclick="setDevice(\'tv\')"]').classList.add('active');
+                frame.className = 'device-frame-tv';
+                deviceTag.innerText = 'SMART TV VIEW';
+            }
+        }
+
+        // Cambiar de pestaña de almacenamiento (Cloud vs SD)
+        function switchStorageTab(tab) {
+            const btnCloud = document.getElementById('tabCloud');
+            const btnSD = document.getElementById('tabSD');
+            const contentCloud = document.getElementById('contentCloud');
+            const contentSD = document.getElementById('contentSD');
+
+            if (tab === 'cloud') {
+                btnCloud.classList.add('active');
+                btnSD.classList.remove('active');
+                contentCloud.style.display = 'block';
+                contentSD.style.display = 'none';
+            } else {
+                btnCloud.classList.remove('active');
+                btnSD.classList.add('active');
+                contentCloud.style.display = 'none';
+                contentSD.style.display = 'block';
+            }
+        }
+
+        // Sobrescribir changeCam para actualizar múltiples vistas
+        function changeCam(camId, label, imageUrl) {
+            const img = document.getElementById('cctvImage');
+            const wide = document.getElementById('cctvImageWide');
+            const zoom = document.getElementById('cctvImageZoom');
+            const labelEl = document.getElementById('cameraLabel');
+            
+            if (img) img.src = imageUrl;
+            if (wide) wide.src = imageUrl;
+            if (zoom) zoom.src = imageUrl;
+            if (labelEl) labelEl.innerText = `CAM 0${camId}: ${label}`;
+            
+            // Botones de selección de cámaras externos
+            const buttons = document.querySelectorAll('.cctv-btn');
+            buttons.forEach((btn, index) => {
+                if (index === camId - 1) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Hotspots del plano SVG
+            const hotspots = document.querySelectorAll('.cam-hotspot');
+            hotspots.forEach(hot => {
+                hot.classList.remove('active');
+            });
+            const activeHot = document.getElementById(`hotspot-cam${camId}`);
+            if (activeHot) {
+                activeHot.classList.add('active');
+            }
+
+            // Lista de cámaras de la App móvil
+            const appItems = document.querySelectorAll('.app-cam-item');
+            appItems.forEach((item, index) => {
+                if (index === camId - 1) {
+                    item.classList.add('active');
+                    item.style.background = 'rgba(56, 189, 248, 0.1)';
+                    item.style.borderColor = 'rgba(56, 189, 248, 0.2)';
+                    const text = item.querySelector('span');
+                    if (text) text.style.color = 'white';
+                } else {
+                    item.classList.remove('active');
+                    item.style.background = 'rgba(255,255,255,0.02)';
+                    item.style.borderColor = 'rgba(255,255,255,0.05)';
+                    const text = item.querySelector('span');
+                    if (text) text.style.color = '#94a3b8';
+                }
+            });
+        }
+
+        // Calculadora de Precio Cámaras
+        function calculatePrice() {
+            const cams = parseInt(document.getElementById('camSlider').value);
+            const history = parseInt(document.getElementById('historySlider').value);
+
+            document.getElementById('camCountLabel').innerText = cams + (cams === 1 ? ' Cámara' : ' Cámaras');
+            document.getElementById('historyLabel').innerText = history === 1 ? '7 días de historial' : '30 días de historial';
+
+            // Tarifa base por cámara
+            const pricePerCam = history === 1 ? 6990 : 12990;
+            let totalPrice = cams * pricePerCam;
+
+            // Formatear precio
+            const formattedPrice = '$' + totalPrice.toLocaleString('es-CL');
+            document.getElementById('calcPrice').innerText = formattedPrice;
+        }
+
+        // Calculadora Iluminación Inteligente
+        function calculateLight() {
+            const count = parseInt(document.getElementById('lightSlider').value);
+            // VALORES EDITABLES:
+            const unitPrice = 19990;
+            const instPrice = 15000;
+            const unitTotal = unitPrice + instPrice;
+            
+            document.getElementById('lightCountLabel').innerText = count + (count === 1 ? ' Ampolleta' : ' Ampolletas');
+            
+            let discountPercent = (count - 1) * 0.05;
+            if (discountPercent > 0.20) discountPercent = 0.20;
+            
+            const equipTotal = count * unitPrice;
+            const instTotal = count * instPrice;
+            const discountedInstTotal = instTotal * (1 - discountPercent);
+            const grandTotal = equipTotal + discountedInstTotal;
+            
+            document.getElementById('lightEquipCost').innerText = '$' + equipTotal.toLocaleString('es-CL');
+            document.getElementById('lightInstCost').innerText = '$' + Math.round(discountedInstTotal).toLocaleString('es-CL');
+            document.getElementById('lightTotalCost').innerText = '$' + Math.round(grandTotal).toLocaleString('es-CL');
+        }
+
+        function requestLight() {
+            const count = parseInt(document.getElementById('lightSlider').value);
+            const unitPrice = 19990;
+            const instPrice = 15000;
+            let discountPercent = (count - 1) * 0.05;
+            if (discountPercent > 0.20) discountPercent = 0.20;
+            
+            const equipTotal = count * unitPrice;
+            const instTotal = count * instPrice;
+            const discountedInstTotal = instTotal * (1 - discountPercent);
+            const grandTotal = equipTotal + discountedInstTotal;
+            const formattedTotal = '$' + Math.round(grandTotal).toLocaleString('es-CL');
+            
+            const msg = `*Hola VecinosYa!* 👋\n\nEstoy interesado en domotizar la iluminación de mi hogar.\nQuiero solicitar la instalación de *${count} ampolleta(s) inteligente(s) Wi-Fi RGB*.\n\nEl cotizador me arrojó un valor estimado de *${formattedTotal}*.\n\nPor favor contáctenme para coordinar una visita.`;
+            const encoded = encodeURIComponent(msg);
+            window.open(`https://wa.me/56944939993?text=${encoded}`, '_blank');
+        }
+
+        // WhatsApp Direct Contact
+        function sendToWhatsApp() {
+            const name = document.getElementById('leadName').value || '';
+            const email = document.getElementById('leadEmail').value || '';
+            const phone = document.getElementById('leadPhone').value || '';
+            const address = document.getElementById('leadAddress').value || '';
+            const lat = document.getElementById('leadLat').value || '';
+            const lng = document.getElementById('leadLng').value || '';
+
+            let msg = `*Hola VecinosYa!* 👋\n\nMe interesa una cotización de seguridad para mi hogar o negocio.\n\n`;
+            if (name) msg += `*Nombre:* ${name}\n`;
+            if (email) msg += `*Correo:* ${email}\n`;
+            if (phone) msg += `*Teléfono:* ${phone}\n`;
+            if (address) msg += `*Dirección:* ${address}\n`;
+            if (lat && lng) msg += `*Ubicación GPS:* https://www.google.com/maps?q=${lat},${lng}\n`;
+            msg += `\nQuedo a la espera de su contacto. ¡Gracias!`;
+
+            const encoded = encodeURIComponent(msg);
+            window.open(`https://wa.me/56944939993?text=${encoded}`, '_blank');
+        }
+
+        // Form Submission - Guardado directo en Supabase
+        async function submitLead(event) {
+            event.preventDefault();
+            const name = document.getElementById('leadName').value;
+            const email = document.getElementById('leadEmail').value;
+            const phone = document.getElementById('leadPhone').value;
+            const address = document.getElementById('leadAddress').value;
+            const lat = document.getElementById('leadLat').value;
+            const lng = document.getElementById('leadLng').value;
+            
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Enviando solicitud...";
+
+            try {
+                const supabaseUrl = "https://pfemyswvswftwnhqifeu.supabase.co";
+                const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmZW15c3d2c3dmdHduaHFpZmV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY3Nzg0MjgsImV4cCI6MjA5MjM1NDQyOH0.8ua2w2f6GVmAFpre356Lt_Ff_iqSEHy8WTjdoolavT4";
+                
+                let res = await fetch(`${supabaseUrl}/rest/v1/contactos_vecinosya`, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': supabaseKey,
+                        'Authorization': `Bearer ${supabaseKey}`,
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        name: name,
+                        email: email,
+                        phone: phone,
+                        address: address + (lat ? ` (Google Maps: https://www.google.com/maps?q=${lat},${lng})` : '')
+                    })
+                });
+
+                if (res.ok) {
+                    // Enviar alerta de correo a contacto, rgodoy y rgomez @vecinosya.cl
+                    try {
+                        const resendKey = "re_Wm5zwb3d_KBbyZAjXvYKGzMLuSkrVkV2J";
+                        await fetch("https://api.resend.com/emails", {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${resendKey}`
+                            },
+                            body: JSON.stringify({
+                                from: "VecinosYa <contacto@vecinoslaserena.cl>",
+                                to: ["contacto@vecinosya.cl", "rgodoy@vecinosya.cl", "rgomez@vecinosya.cl", "vecinoslaserenachile@gmail.com"],
+                                subject: `🔔 Nuevo Contacto Registrado - ${name}`,
+                                html: `
+                                    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #1e293b; line-height: 1.6;">
+                                        <h2 style="color: #0284c7; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">¡Nuevo Formulario de Contacto!</h2>
+                                        <p>Se ha registrado un cliente interesado en el portal <b>vecinosya.cl</b>:</p>
+                                        <table style="width: 100%; border-collapse: collapse; margin-top: 15px;">
+                                            <tr>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9; font-weight: bold; width: 120px;">Nombre:</td>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9;">${name}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9; font-weight: bold;">Correo:</td>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9;"><a href="mailto:${email}">${email}</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9; font-weight: bold;">Teléfono:</td>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9;">${phone}</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9; font-weight: bold;">Dirección:</td>
+                                                <td style="padding: 8px; border-bottom: 1px solid #f1f5f9;">${address}</td>
+                                            </tr>
+                                        </table>
+                                        <br/>
+                                        <hr style="border: 0; border-top: 1px solid #e2e8f0;" />
+                                        <p style="font-size: 0.8rem; color: #64748b;">Este es un mensaje de alerta automático del sistema VecinosYa.</p>
+                                    </div>
+                                `
+                            })
+                        });
+                    } catch (emailErr) {
+                        console.error("Error al enviar correo de alerta:", emailErr);
+                    }
+
+                    alert(`¡Gracias ${name}! Hemos recibido tu solicitud en vecinosya.cl. Nos contactaremos al correo ${email} o teléfono ${phone} a la brevedad.`);
+                    event.target.reset();
+                } else {
+                    throw new Error("No se pudo guardar la solicitud.");
+                }
+            } catch (e) {
+                console.error("Error al enviar lead:", e);
+                alert("Hubo un problema al enviar tus datos. Por favor, escríbenos directamente a contacto@vecinosya.cl");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Solicitar Cotización y Visita Técnica";
+            }
+        }
+
+        // Ejecutar calculo inicial
+        calculatePrice();
+        if(document.getElementById('lightSlider')) {
+            calculateLight();
+        }
+
+        // Theme forced to Dark Mode
+        document.documentElement.setAttribute('data-theme', 'dark');
+
+        // Chat Widget Logic
+        const chatBody = document.getElementById('chatBody');
+        const chatOptions = document.getElementById('chatOptions');
+        const chatInputArea = document.getElementById('chatInputArea');
+        const chatInput = document.getElementById('chatInput');
+
+        let selectedMainOption = '';
+        let selectedCameraType = '';
+        let leadPropertyType = '';
+        let leadPropertySize = '';
+        let leadRooms = '';
+        let leadWifi = '';
+        let leadCameraLocation = '';
+
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('chat-message', sender === 'user' ? 'user-msg' : 'bot-msg');
+            msgDiv.innerText = text;
+            chatBody.appendChild(msgDiv);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }
+
+        function handleChatOption(option) {
+            appendMessage(option, 'user');
+            
+            if (option === 'Otro requerimiento') {
+                chatOptions.style.display = 'none';
+                chatInputArea.classList.add('active');
+                chatInput.focus();
+                setTimeout(() => appendMessage('Perfecto. Por favor, escríbeme abajo los detalles de lo que necesitas y calcularemos una estimación especial.', 'bot'), 400);
+            } else if (option === 'Cámaras de Seguridad') {
+                selectedMainOption = 'camaras';
+                chatOptions.style.display = 'none';
+                setTimeout(() => {
+                    askCameraLine();
+                }, 500);
+            } else if (option === 'Iluminación Inteligente') {
+                selectedMainOption = 'iluminacion';
+                chatOptions.style.display = 'none';
+                setTimeout(() => {
+                    appendMessage('¡Perfecto! ¿Cuántas ampolletas inteligentes Wi-Fi necesitas instalar?', 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="handleLightCount('1 a 3')">1 a 3 ampolletas</button>
+                        <button class="chat-opt-btn" onclick="handleLightCount('4 a 6')">4 a 6 ampolletas</button>
+                        <button class="chat-opt-btn" onclick="handleLightCount('Más de 6')">Más de 6 ampolletas</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 500);
+            }
+        }
+
+        function askCameraLine() {
+            appendMessage('¡Excelente elección! Para ajustarnos a lo que necesitas, ¿qué tipo de instalación buscas?', 'bot');
+            chatOptions.innerHTML = `
+                <button class="chat-opt-btn" onclick="handleCameraLine('Línea Hogar')">Línea Hogar (Inalámbrica/Wi-Fi)</button>
+                <button class="chat-opt-btn" onclick="handleCameraLine('Línea Profesional')">Línea Profesional (Cableada/IP)</button>
+            `;
+            chatOptions.style.display = 'flex';
+        }
+
+        let selectedCameraLine = '';
+        function handleCameraLine(lineType) {
+            appendMessage(lineType, 'user');
+            selectedCameraLine = lineType;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                askCameraQuantityType();
+            }, 500);
+        }
+
+        function askCameraQuantityType() {
+            appendMessage('¿Necesitas instalar solo 1 cámara (ej. para tu acceso) o requieres un sistema de varias cámaras?', 'bot');
+            chatOptions.innerHTML = `
+                <button class="chat-opt-btn" onclick="handleCameraQuantityType('Solo 1 cámara')">Solo 1 cámara</button>
+                <button class="chat-opt-btn" onclick="handleCameraQuantityType('Varias cámaras')">Varias cámaras</button>
+            `;
+            chatOptions.style.display = 'flex';
+        }
+
+        let isSingleCamera = false;
+        function handleCameraQuantityType(qtyType) {
+            appendMessage(qtyType, 'user');
+            chatOptions.style.display = 'none';
+            if (qtyType === 'Solo 1 cámara') {
+                isSingleCamera = true;
+                setTimeout(() => {
+                    appendMessage('Perfecto. Para esta cámara única, ¿qué tecnología prefieres?', 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="calculateSingleCamera('Simple')">Simple</button>
+                        <button class="chat-opt-btn" onclick="calculateSingleCamera('Doble Lente')">Doble Lente</button>
+                        <button class="chat-opt-btn" onclick="calculateSingleCamera('Automática')">Automática</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 500);
+            } else {
+                isSingleCamera = false;
+                setTimeout(() => {
+                    askPropertyType();
+                }, 500);
+            }
+        }
+
+        function calculateSingleCamera(type) {
+            appendMessage(type, 'user');
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                let cost = 25000;
+                if(type === 'Doble Lente') cost = 55000;
+                if(type === 'Automática') cost = 100000;
+                let install = 15000; // 1 cámara
+                let finalPrice = (cost + install) * 3;
+                let techLabel = selectedCameraLine === 'Línea Profesional' ? 'Profesional Cableada' : 'Hogar Wi-Fi';
+                appendMessage(`Para 1 cámara exterior ${type} (${techLabel}), el presupuesto estimado instalado tiene un valor desde $${finalPrice.toLocaleString('es-CL')} CLP + IVA. El servicio de grabación/almacenamiento se cotiza por separado.`, 'bot');
+                
+                setTimeout(() => {
+                    appendMessage(`¿Te gustaría aprovechar la visita técnica para sumar ampolletas inteligentes Wi-Fi a tu cotización?`, 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="promptExtraLights()">Sí, sumar ampolletas</button>
+                        <button class="chat-opt-btn" onclick="promptVisitOnly()">No, solo cámaras</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 1000);
+            }, 800);
+        }
+
+        function askPropertyType() {
+            appendMessage('Para darte un presupuesto exacto, necesito un par de datos de tu propiedad. ¿Es casa, departamento o local comercial?', 'bot');
+            chatOptions.innerHTML = `
+                <button class="chat-opt-btn" onclick="handlePropertyType('Casa')">Casa</button>
+                <button class="chat-opt-btn" onclick="handlePropertyType('Departamento')">Departamento</button>
+                <button class="chat-opt-btn" onclick="handlePropertyType('Local Comercial')">Local Comercial</button>
+            `;
+            chatOptions.style.display = 'flex';
+        }
+
+        function handlePropertyType(type) {
+            appendMessage(type, 'user');
+            leadPropertyType = type;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                if(type === 'Casa' || type === 'Local Comercial') {
+                    appendMessage('¿Las cámaras se instalarán principalmente en el interior o en el exterior?', 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="handleCameraLocation('Interior')">Interior</button>
+                        <button class="chat-opt-btn" onclick="handleCameraLocation('Exterior')">Exterior</button>
+                        <button class="chat-opt-btn" onclick="handleCameraLocation('Ambas')">Ambas (Mixto)</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                } else {
+                    leadCameraLocation = 'Interior';
+                    askPropertySize();
+                }
+            }, 500);
+        }
+
+        function handleCameraLocation(loc) {
+            appendMessage(loc, 'user');
+            leadCameraLocation = loc;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                askPropertySize();
+            }, 500);
+        }
+
+        function askPropertySize() {
+            appendMessage('¿Cuál es el tamaño aproximado del lugar?', 'bot');
+            chatOptions.innerHTML = `
+                <button class="chat-opt-btn" onclick="handlePropertySize('Menos de 50m2')">Menos de 50m2</button>
+                <button class="chat-opt-btn" onclick="handlePropertySize('Entre 50 y 100m2')">Entre 50 y 100m2</button>
+                <button class="chat-opt-btn" onclick="handlePropertySize('Más de 100m2')">Más de 100m2</button>
+            `;
+            chatOptions.style.display = 'flex';
+        }
+
+        function handlePropertySize(size) {
+            appendMessage(size, 'user');
+            leadPropertySize = size;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                appendMessage('¿Cuántas habitaciones o privados tiene?', 'bot');
+                chatOptions.innerHTML = `
+                    <button class="chat-opt-btn" onclick="handleRooms('1 a 2')">1 a 2</button>
+                    <button class="chat-opt-btn" onclick="handleRooms('3 a 4')">3 a 4</button>
+                    <button class="chat-opt-btn" onclick="handleRooms('5 o más')">5 o más</button>
+                `;
+                chatOptions.style.display = 'flex';
+            }, 500);
+        }
+
+        function handleRooms(rooms) {
+            appendMessage(rooms, 'user');
+            leadRooms = rooms;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                appendMessage('Por último, ¿dispones de conexión a Internet WiFi estable en el lugar?', 'bot');
+                chatOptions.innerHTML = `
+                    <button class="chat-opt-btn" onclick="handleWifi('Sí')">Sí, tengo WiFi</button>
+                    <button class="chat-opt-btn" onclick="handleWifi('No (Requiero chip 4G)')">No (Requiero chip 4G)</button>
+                `;
+                chatOptions.style.display = 'flex';
+            }, 500);
+        }
+
+        function handleWifi(wifi) {
+            appendMessage(wifi, 'user');
+            leadWifi = wifi;
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                appendMessage('¡Perfecto! Ya tengo la información base. Selecciona las características de resolución e inteligencia para tu sistema:', 'bot');
+                
+                const renderDiv = document.createElement('div');
+                renderDiv.className = 'render-3d-box';
+                renderDiv.style.display = 'block';
+                renderDiv.innerHTML = `<img src="assets/hyperrealistic_smart_house.png?v=3" alt="Smart Home 3D Hyperrealistic">`;
+                chatBody.appendChild(renderDiv);
+                chatBody.scrollTop = chatBody.scrollHeight;
+
+                chatOptions.innerHTML = `
+                    <div class="advanced-filter-form">
+                        <div class="filter-group">
+                            <label class="filter-label">Resolución</label>
+                            <select id="advResolution" class="filter-select">
+                                <option value="1080p">1080p (Estándar)</option>
+                                <option value="2K">2K (Alta Definición)</option>
+                                <option value="3K">3K (Ultra HD)</option>
+                                <option value="4K">4K (Máxima Claridad)</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Atributos Inteligentes</label>
+                            <div class="checkbox-grid">
+                                <label class="checkbox-label"><input type="checkbox" id="advLuz"> Luz Integrada</label>
+                                <label class="checkbox-label"><input type="checkbox" id="advParlante"> Parlante Interac.</label>
+                                <label class="checkbox-label"><input type="checkbox" id="advMovimiento"> Autoseguimiento</label>
+                                <label class="checkbox-label"><input type="checkbox" id="advAngular"> Gran Angular</label>
+                                <label class="checkbox-label"><input type="checkbox" id="advBateria"> 100% Batería</label>
+                                <label class="checkbox-label"><input type="checkbox" id="advDobleLente"> Doble Lente</label>
+                            </div>
+                        </div>
+                        <button class="submit-btn" onclick="submitAdvancedFilters()" style="margin-top: 5px; padding: 10px;">Calcular</button>
+                    </div>
+                `;
+                chatOptions.style.display = 'block';
+            }, 500);
+        }
+
+        let advFilters = {};
+        function submitAdvancedFilters() {
+            advFilters = {
+                resolution: document.getElementById('advResolution').value,
+                luz: document.getElementById('advLuz').checked,
+                parlante: document.getElementById('advParlante').checked,
+                movimiento: document.getElementById('advMovimiento').checked,
+                angular: document.getElementById('advAngular').checked,
+                bateria: document.getElementById('advBateria').checked,
+                dobleLente: document.getElementById('advDobleLente').checked
+            };
+            
+            chatOptions.style.display = 'none';
+            appendMessage(`Resolución: ${advFilters.resolution} + atributos.`, 'user');
+            
+            setTimeout(() => {
+                appendMessage(`Excelente. ¿Cuántas cámaras de este tipo necesitas aproximadamente?`, 'bot');
+                chatOptions.innerHTML = `
+                    <button class="chat-opt-btn" onclick="handleCameraCount('1 a 3')">1 a 3</button>
+                    <button class="chat-opt-btn" onclick="handleCameraCount('4 a 6')">4 a 6</button>
+                    <button class="chat-opt-btn" onclick="handleCameraCount('Más de 6')">Más de 6</button>
+                `;
+                chatOptions.style.display = 'flex';
+            }, 500);
+        }
+
+        function handleLightCount(count) {
+            appendMessage(count, 'user');
+            chatOptions.style.display = 'none';
+            
+            setTimeout(() => {
+                const unitPrice = 19990;
+                const instPrice = 15000;
+                const unitTotal = unitPrice + instPrice;
+                let min = 1, max = 3;
+                if(count === '4 a 6') { min = 4; max = 6; }
+                if(count === 'Más de 6') { min = 7; max = 10; }
+                
+                let minDiscount = (min - 1) * 0.05;
+                if(minDiscount > 0.20) minDiscount = 0.20;
+                let maxDiscount = (max - 1) * 0.05;
+                if(maxDiscount > 0.20) maxDiscount = 0.20;
+
+                const equipMin = min * unitPrice;
+                const instMin = min * instPrice;
+                const equipMax = max * unitPrice;
+                const instMax = max * instPrice;
+
+                const minTotal = Math.round(equipMin + (instMin * (1 - minDiscount)));
+                const maxTotal = Math.round(equipMax + (instMax * (1 - maxDiscount)));
+                
+                const formattedMax = '$' + maxTotal.toLocaleString('es-CL');
+                
+                appendMessage(`Basado en las ampolletas inteligentes Wi-Fi, el costo estimado (equipos + instalación) para ${max} unidades tiene un valor aproximado de ${formattedMax}. Valor reajustable o variable según las condiciones técnicas de la instalación.`, 'bot');
+                
+                setTimeout(() => {
+                    appendMessage('¿Te gustaría que te contactemos para agendar una visita técnica y darte el presupuesto exacto? (Es gratis)', 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="finishChat('Sí, agendar')">Sí, quiero que me contacten</button>
+                        <button class="chat-opt-btn" onclick="finishChat('No')">No, gracias, solo miraba</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 1000);
+            }, 600);
+        }
+
+        function showCameraCountOptions() {
+            chatOptions.innerHTML = `
+                <button class="chat-opt-btn" onclick="handleCameraCount('1 a 3')">1 a 3</button>
+                <button class="chat-opt-btn" onclick="handleCameraCount('4 a 6')">4 a 6</button>
+                <button class="chat-opt-btn" onclick="handleCameraCount('Más de 6')">Más de 6</button>
+            `;
+            chatOptions.style.display = 'flex';
+        }
+
+        function handleCameraCount(count) {
+            appendMessage(count, 'user');
+            chatOptions.style.display = 'none';
+            
+            setTimeout(() => {
+                // Costo de hardware por unidad avanzado
+                let unitHardwareCost = selectedCameraLine === 'Línea Profesional' ? 35000 : 21000; 
+                if (advFilters.resolution === '2K') unitHardwareCost += 10000;
+                if (advFilters.resolution === '3K') unitHardwareCost += 20000;
+                if (advFilters.resolution === '4K') unitHardwareCost += 35000;
+                
+                if (advFilters.luz) unitHardwareCost += 5000;
+                if (advFilters.parlante) unitHardwareCost += 8000;
+                if (advFilters.movimiento) unitHardwareCost += 15000;
+                if (advFilters.angular) unitHardwareCost += 10000;
+                if (advFilters.bateria) unitHardwareCost += 30000;
+                if (advFilters.dobleLente) unitHardwareCost += 25000;
+
+                selectedCameraType = `Avanzadas (${advFilters.resolution})`;
+                
+                if(leadCameraLocation === 'Exterior') {
+                    unitHardwareCost += 10000;
+                } else if (leadCameraLocation === 'Ambas') {
+                    unitHardwareCost += 5000;
+                }
+                
+                let minCams = 3; 
+                if(count === '4 a 6') minCams = 4;
+                if(count === 'Más de 6') minCams = 7;
+
+                // Costos base ajustados
+                let centralitaHardware = 0;
+                let hourlyRate = 20000; // instalación
+                let hoursPerCam = 0.5;
+                if(leadCameraLocation === 'Exterior') {
+                    hoursPerCam += 0.5;
+                } else if(leadCameraLocation === 'Ambas') {
+                    hoursPerCam += 0.25;
+                }
+                let hoursCentralita = 0;
+
+                // Modificadores de complejidad suavizados
+                let extraHours = 0;
+                if(leadPropertyType === 'Casa' || leadPropertyType === 'Local Comercial') extraHours += 0.5;
+                
+                if(leadPropertySize === 'Entre 50 y 100m2') extraHours += 0.5;
+                else if(leadPropertySize === 'Más de 100m2') extraHours += 1.0;
+                
+                if(leadRooms === '3 a 4') extraHours += 0.5;
+                else if(leadRooms === '5 o más') extraHours += 1.0;
+
+                let wifiNote = "Requiere disponer de conexión WiFi en el domicilio.";
+                let extraHardware = 0;
+                if(leadWifi === 'No (Requiero chip 4G)') {
+                    extraHardware = 30000;
+                    wifiNote = "Incluye costo extra por equipo router 4G LTE. Requiere chip con plan de datos activo (no incluido).";
+                }
+
+                let storageNote = selectedCameraLine === 'Línea Profesional' ? 
+                    'La opción profesional requiere idealmente un grabador NVR central para mayor seguridad.' : 
+                    wifiNote;
+
+                // Cálculo
+                let totalHardwareCost = (unitHardwareCost * minCams) + centralitaHardware + extraHardware;
+                let totalInstallHours = (hoursPerCam * minCams) + hoursCentralita + extraHours;
+                let totalInstallCost = totalInstallHours * hourlyRate;
+                
+                let totalCost = totalHardwareCost + totalInstallCost;
+                
+                // 200% de utilidad
+                let finalPrice = totalCost * 3;
+
+                const minPrice = finalPrice.toLocaleString('es-CL');
+
+                appendMessage(`Para ${count} cámaras tipo "${selectedCameraType}" en un(a) ${leadPropertyType.toLowerCase()} (${leadPropertySize}, ${leadRooms} hab.) usando nuestra ${selectedCameraLine}, el presupuesto estimado base tiene un valor desde $${minPrice} CLP + IVA. Valor reajustable o variable según las condiciones técnicas de la instalación. El servicio de almacenamiento se cotiza por separado. Importante: ${storageNote}`, 'bot');
+                
+                setTimeout(() => {
+                    appendMessage(`¿Te gustaría aprovechar la instalación para sumar ampolletas inteligentes Wi-Fi a tu cotización?`, 'bot');
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="promptExtraLights()">Sí, sumar ampolletas</button>
+                        <button class="chat-opt-btn" onclick="promptVisitOnly()">No, sólo cámaras</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 1000);
+            }, 800);
+        }
+
+        function promptExtraLights() {
+            appendMessage('Sí, sumar ampolletas', 'user');
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                appendMessage('¡Excelente decisión! ¿Cuántas ampolletas inteligentes Wi-Fi necesitas instalar?', 'bot');
+                chatOptions.innerHTML = `
+                    <button class="chat-opt-btn" onclick="handleLightCount('1 a 3')">1 a 3 ampolletas</button>
+                    <button class="chat-opt-btn" onclick="handleLightCount('4 a 6')">4 a 6 ampolletas</button>
+                    <button class="chat-opt-btn" onclick="handleLightCount('Más de 6')">Más de 6 ampolletas</button>
+                `;
+                chatOptions.style.display = 'flex';
+            }, 500);
+        }
+
+        function promptVisitOnly() {
+            appendMessage('No, sólo cámaras', 'user');
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                appendMessage(`¿Te gustaría agendar una visita técnica para obtener el valor final exacto sin compromiso?`, 'bot');
+                chatOptions.innerHTML = `
+                    <button class="chat-opt-btn" onclick="finishChat('Sí, agendar')">Sí, agendar</button>
+                    <button class="chat-opt-btn" onclick="finishChat('Sólo cotizaba')">Sólo cotizaba</button>
+                `;
+                chatOptions.style.display = 'flex';
+            }, 500);
+        }
+
+        function sendCustomRequirement() {
+            const val = chatInput.value.trim();
+            if(!val) return;
+            appendMessage(val, 'user');
+            chatInput.value = '';
+            chatInputArea.classList.remove('active');
+            
+            setTimeout(() => {
+                appendMessage("Gracias por los detalles. Debido a que es un requerimiento especial, te recomendamos agendar una visita técnica gratuita para evaluar el terreno y darte un presupuesto exacto.", 'bot');
+                setTimeout(() => {
+                    chatOptions.innerHTML = `
+                        <button class="chat-opt-btn" onclick="finishChat('Agendar visita')">Agendar visita</button>
+                    `;
+                    chatOptions.style.display = 'flex';
+                }, 800);
+            }, 600);
+        }
+
+        function finishChat(choice) {
+            appendMessage(choice, 'user');
+            chatOptions.style.display = 'none';
+            setTimeout(() => {
+                if(choice.includes('agendar') || choice.includes('Agendar')) {
+                    appendMessage("¡Perfecto! Te redirigiremos al formulario de contacto para que elijas la fecha.", 'bot');
+                    setTimeout(() => {
+                        document.getElementById('contacto').scrollIntoView({behavior: 'smooth'});
+                        chatWindow.classList.remove('active');
+                    }, 1500);
+                } else {
+                    appendMessage("Ningún problema. Si cambias de opinión, aquí estaremos. ¡Que tengas buen día!", 'bot');
+                }
+            }, 500);
+        }
+
+        // Inicializar Mapa
+        let map;
+        let marker;
+        try {
+            map = L.map('map').setView([-29.90453, -71.24894], 12); // Centro de La Serena / Coquimbo
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(map);
+
+            map.on('click', function(e) {
+                const lat = e.latlng.lat;
+                const lng = e.latlng.lng;
+                if (!marker) {
+                    marker = L.marker([lat, lng]).addTo(map);
+                } else {
+                    marker.setLatLng([lat, lng]);
+                }
+                document.getElementById('leadLat').value = lat;
+                document.getElementById('leadLng').value = lng;
+                
+                // Reverse geocoding
+                fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data && data.display_name) {
+                            document.getElementById('leadAddress').value = data.display_name;
+                        }
+                    }).catch(err => console.error(err));
+            });
+        } catch (e) {
+            console.error('Error al inicializar mapa:', e);
+        }
+
+        // Re-initialize icons for dynamic content
+        lucide.createIcons();
+    </script>
+
+    <!-- PWA Install Button -->
+    <button id="pwa-install-btn" style="display: none; position: fixed; bottom: 30px; right: 30px; z-index: 9999; background: #38bdf8; color: #090d16; border: none; border-radius: 50px; padding: 12px 24px; font-family: 'Outfit', sans-serif; font-weight: bold; cursor: pointer; box-shadow: 0 4px 20px rgba(56,189,248,0.5); align-items: center; gap: 8px;">
+        <i data-lucide="download" style="width: 20px; height: 20px;"></i> Instalar App
+    </button>
+
+    <script>
+        // PWA Logic & iOS Support
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW Falló:', err));
+            });
+        }
+
+        const installBtn = document.getElementById('pwa-install-btn');
+        let deferredPrompt;
+
+        // Detectar si es iOS (iPhone/iPad)
+        const isIos = () => {
+            const userAgent = window.navigator.userAgent.toLowerCase();
+            return /iphone|ipad|ipod/.test(userAgent);
+        };
+
+        // Detectar si ya está instalado
+        const isInStandaloneMode = () => ('standalone' in window.navigator) && (window.navigator.standalone);
+
+        // Si es iOS y NO está instalado, mostrar botón con instrucciones
+        if (isIos() && !isInStandaloneMode()) {
+            installBtn.style.display = 'flex';
+            installBtn.addEventListener('click', () => {
+                alert("Para instalar en iPhone:\n1. Toca el ícono de 'Compartir' (el cuadrado con la flecha hacia arriba) en la barra de navegación.\n2. Selecciona 'Agregar a inicio'.");
+            });
+        }
+
+        // Para Android y Chrome de PC
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.style.display = 'flex';
+        });
+
+        if (!isIos()) {
+            installBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    if (outcome === 'accepted') {
+                        installBtn.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        window.addEventListener('appinstalled', (evt) => {
+            installBtn.style.display = 'none';
+        });
+    </script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"3b3ab8c28f374bd7a80085151f7a2729","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
+
