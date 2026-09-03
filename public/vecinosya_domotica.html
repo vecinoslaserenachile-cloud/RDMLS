@@ -1218,11 +1218,9 @@
     <div class="container">
         
         <!-- Header -->
-        <header>
-            <div class="logo-container" style="flex-direction: row; align-items: center; gap: 12px;">
-                <img src="assets/hyperrealistic_smart_house.png?v=3" alt="Smart Home 3D" style="height: 60px; border-radius: 8px; object-fit: cover;">
-                <img src="logo.jpg" alt="vecinosya.cl" style="height: 80px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); object-fit: cover;">
-                <div class="logo-tag" style="margin: 0; align-self: center; font-size: 0.8rem;">Seguridad y Domotización</div>
+        <header style="margin-top: 60px;">
+            <div class="logo-container" style="flex-direction: row; align-items: center; justify-content: center; gap: 12px;">
+                <div class="logo-tag" style="margin: 0; align-self: center; font-size: 1.2rem; font-weight: bold; background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Seguridad y Domotización VecinosYa</div>
             </div>
             <div style="display: flex; gap: 1rem; align-items: center;">                <button class="contact-btn" onclick="document.getElementById('contacto').scrollIntoView({behavior: 'smooth'})">
                     <i data-lucide="phone"></i> Agendar Instalación
@@ -2546,7 +2544,7 @@
                 const renderDiv = document.createElement('div');
                 renderDiv.className = 'render-3d-box';
                 renderDiv.style.display = 'block';
-                renderDiv.innerHTML = `<img src="assets/hyperrealistic_smart_house.png?v=3" alt="Smart Home 3D Hyperrealistic">`;
+                renderDiv.innerHTML = `<div style="padding: 10px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 8px; text-align: center; color: #38bdf8;"><i data-lucide="home" style="margin-bottom: 5px;"></i><br>Smart Home 3D Renderizado</div>`;
                 chatBody.appendChild(renderDiv);
                 chatBody.scrollTop = chatBody.scrollHeight;
 

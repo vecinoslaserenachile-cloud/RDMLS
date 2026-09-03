@@ -10,7 +10,8 @@ const PLAYLIST_INSTITUTIONAL = [
     { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_Avenida_Francisco_de_Aguirre.mp4', title: 'Avenida Francisco de Aguirre' },
     { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_Polideportivo_Las_Compañias.mp4', title: 'Polideportivo Las Compañias' },
     { url: 'https://cdn.jsdelivr.net/gh/vecinoslaserenachile-cloud/juego-serenito@main/Serenito_paseo_Avenida_del_Mar_La_Serena.mp4', title: 'Avenida del Mar' },
-    { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE' }
+    { id: 'b9LTH4muxR8', title: 'FARO LA SERENA LIVE' },
+{ id: 'ftE56z7Ro4c', title: 'EN EL BARDELUCILA - Mauricio Redolés' }
 ];
 
 const PLAYLIST_LUDIC = [
@@ -1686,13 +1687,88 @@ export default function HubDashboard() {
                 <div style={{ padding: '2rem 1rem', width: '100%', maxWidth: '900px', display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
                     {/* 2. Módulos Destacados (RDMLS View) - MOVED UP */}
                     <div style={{
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        justifyContent: 'center',
                         gap: '1rem',
                         width: '100%',
                         maxWidth: '850px',
                         zIndex: 100
                     }}>
+
+                {/* Tarjeta 10: PORTAL EL CHAPULIN */}
+                <div
+                    onClick={() => { window.location.href = 'https://chapulin.vecinoslaserena.cl'; }}
+                    className="vls-mosaic-card" style={{
+                        background: 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)',
+                        border: '1px solid rgba(239, 68, 68, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(239, 68, 68, 0.15)',
+                        minWidth: '280px',
+                        flex: '1 1 280px',
+                        maxWidth: '400px'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/serenito_v3.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)', flexShrink: 0 }}>
+                        <Newspaper size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#fca5a5', textShadow: '0 0 15px rgba(239, 68, 68, 0.6)' }}>CHAPULÍN</span>
+                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>NOTICIAS</span>
+                        </div>
+                        <p style={{ color: 'rgba(252, 165, 165, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>El Portal de la Verdad<br/>(Independiente)</p>
+                    </div>
+                </div>
+
+                {/* Tarjeta 11: OPINA */}
+                <div
+                    onClick={() => { window.location.href = '/opina.html'; }}
+                    className="vls-mosaic-card" style={{
+                        background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%)',
+                        border: '1px solid rgba(59, 130, 246, 0.6)',
+                        borderRadius: '20px',
+                        padding: '1.2rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(59, 130, 246, 0.15)',
+                        minWidth: '280px',
+                        flex: '1 1 280px',
+                        maxWidth: '400px'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/serenito_v3.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #3b82f6, #1e40af)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)', flexShrink: 0 }}>
+                        <MessageSquare size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#bfdbfe', textShadow: '0 0 15px rgba(59, 130, 246, 0.6)' }}>OPINA</span>
+                            <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RESEÑAS</span>
+                        </div>
+                        <p style={{ color: 'rgba(191, 219, 254, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Restaurantes Av. del Mar</p>
+                    </div>
+                </div>
+
+
                         {/* Tarjeta ARCADE - PREMIUM DESIGN RESTORED */}
                         <div
                             onClick={() => { if (window.openArcade) window.openArcade(); else window.dispatchEvent(new CustomEvent('open-game')); }}
@@ -2698,9 +2774,112 @@ export default function HubDashboard() {
                 zIndex: 100,
                 position: 'relative'
             }}>
+                
+                {/* PORTAL EL CHAPULIN */}
                 <div
+                    onClick={() => { window.location.href = 'https://chapulin.vecinoslaserena.cl'; }}
+                    className="vls-mosaic-card" style={{
+                        background: 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)',
+                        border: '1px solid rgba(239, 68, 68, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(239, 68, 68, 0.15)',
+                        minWidth: '280px'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/serenito_v3.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(239, 68, 68, 0.5)', flexShrink: 0 }}>
+                        <Newspaper size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#fca5a5', textShadow: '0 0 15px rgba(239, 68, 68, 0.6)' }}>CHAPULÍN</span>
+                            <span style={{ background: '#ef4444', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>NOTICIAS</span>
+                        </div>
+                        <p style={{ color: 'rgba(252, 165, 165, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>El Portal de la Verdad</p>
+                    </div>
+                </div>
+
+                {/* OPINA */}
+                <div
+                    onClick={() => { window.location.href = '/opina.html'; }}
+                    className="vls-mosaic-card" style={{
+                        background: 'linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%)',
+                        border: '1px solid rgba(59, 130, 246, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(59, 130, 246, 0.15)',
+                        minWidth: '280px'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/serenito_v3.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #3b82f6, #1e40af)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)', flexShrink: 0 }}>
+                        <MessageSquare size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#bfdbfe', textShadow: '0 0 15px rgba(59, 130, 246, 0.6)' }}>OPINA</span>
+                            <span style={{ background: '#3b82f6', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>RESEÑAS</span>
+                        </div>
+                        <p style={{ color: 'rgba(191, 219, 254, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Restaurantes Av. del Mar</p>
+                    </div>
+                </div>
+
+                {/* MAQUINA EDITORA PDF */}
+                <div
+                    onClick={() => { window.location.href = '/pdf'; }}
+                    className="vls-mosaic-card" style={{
+                        background: 'linear-gradient(135deg, #064e3b 0%, #047857 100%)',
+                        border: '1px solid rgba(16, 185, 129, 0.6)',
+                        borderRadius: '24px',
+                        padding: '1.5rem',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        position: 'relative',
+                        overflow: 'hidden',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(16, 185, 129, 0.15)',
+                        minWidth: '280px'
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.9)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(16, 185, 129, 0.6)'; }}
+                >
+                    <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/serenito_v3.png)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.1, mixBlendMode: 'screen', pointerEvents: 'none' }} />
+                    <div style={{ background: 'linear-gradient(135deg, #10b981, #047857)', borderRadius: '50%', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(16, 185, 129, 0.5)', flexShrink: 0 }}>
+                        <FileText size={26} color="white" />
+                    </div>
+                    <div style={{ flex: 1, zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '1.3rem', fontWeight: '950', color: '#a7f3d0', textShadow: '0 0 15px rgba(16, 185, 129, 0.6)' }}>MÁQUINA PDF</span>
+                            <span style={{ background: '#10b981', color: 'white', fontSize: '0.6rem', fontWeight: '900', padding: '2px 8px', borderRadius: '10px' }}>HERRAMIENTA</span>
+                        </div>
+                        <p style={{ color: 'rgba(167, 243, 208, 0.9)', fontSize: '0.85rem', margin: '4px 0 0 0', fontWeight: '500' }}>Editor interactivo PDF</p>
+                    </div>
+                </div>
+
+<div
                     onClick={() => { window.dispatchEvent(new CustomEvent('open-game')); navigate('/arcade'); }}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(239, 68, 68, 0.6)',
                         borderRadius: '24px',
@@ -2741,7 +2920,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 2: SMART CITIZENS (ATENCIÓN CIUDADANA) */}
                 <div
                     onClick={() => navigate('/citizens')}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, rgba(14, 165, 233, 0.3) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(14, 165, 233, 0.6)',
                         borderRadius: '24px',
@@ -2870,7 +3049,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 5: SMART LISTENING (CENTINEL FARO IA) */}
                 <div
                     onClick={() => window.dispatchEvent(new CustomEvent('open-faro'))}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(16, 185, 129, 0.6)',
                         borderRadius: '24px',
@@ -2910,7 +3089,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 6: SMART JUEGAPRENDE (VALSABES) */}
                 <div
                     onClick={() => { window.dispatchEvent(new CustomEvent('open-vls-game')); }}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(250, 204, 21, 0.6)',
                         borderRadius: '24px',
@@ -2951,7 +3130,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 7: CUADRO DE DISTANCIAS RADAR */}
                 <div
                     onClick={() => navigate('/distancias')}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(15, 23, 42, 0.6) 100%)',
                         border: '1px solid rgba(56, 189, 248, 0.6)',
                         borderRadius: '24px',
@@ -2992,7 +3171,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 8: PORTAL DOMEYKO */}
                 <div
                     onClick={() => navigate('/domeyko')}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%)',
                         border: '1px solid rgba(56, 189, 248, 0.6)',
                         borderRadius: '20px',
@@ -3025,7 +3204,7 @@ export default function HubDashboard() {
                 {/* Tarjeta 9: PORTAL LAMBERT */}
                 <div
                     onClick={() => navigate('/lambert')}
-                    style={{
+                    className="vls-mosaic-card" style={{
                         background: 'linear-gradient(135deg, #0f172a 0%, #451a03 100%)',
                         border: '1px solid rgba(245, 158, 11, 0.6)',
                         borderRadius: '20px',

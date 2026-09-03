@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Opina · Restaurantes Av. del Mar · Vecinos La Serena</title>
+<meta name="description" content="Ranking y opiniones de los 20 restaurantes de la Avenida del Mar, La Serena. Datos de Google y opiniones de vecinos.">
+
+<!--
+  ============================================================
+  CÓMO CONECTAR EL FORMULARIO A MAKE (antes Integromat)
+  ============================================================
+  1. En Make, crea un escenario nuevo.
+  2. Agrega un módulo "Webhooks" -> "Custom webhook" como disparador.
+  3. Copia la URL que entrega Make y pégala abajo en MAKE_WEBHOOK_URL.
+  4. Conecta ese webhook a un módulo de Google Sheets ("Add a Row") o
+     Airtable, para ir guardando cada opinión que llega.
+  5. Opcional: agrega un paso de moderación. Que las opiniones lleguen
+     primero a una hoja "Pendientes" y tú las muevas a "Publicadas"
+     antes de que se vean en el sitio.
+  6. Si más adelante quieres MOSTRAR en esta misma página las opiniones
+     ya moderadas, la forma más simple es: Make publica un JSON (por
+     ejemplo, exportando la Sheet como CSV/JSON a un bucket de
+     Cloudflare R2) y esta página hace fetch() a esa URL. Dejé lista
+     la función cargarOpinionesPublicadas() para ese momento.
+  ============================================================
+-->
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --navy-deep:#0E2433;
+    --navy-mid:#173A50;
+    --sand:#F1E7D2;
+    --sand-card:#FBF6EC;
+    --coral:#FF7A50;
+    --coral-dark:#E4602F;
+    --seafoam:#5FB6A6;
+    --seafoam-dark:#3C8B7E;
+    --ink:#12202B;
+    --ink-soft:#4A5B66;
+    --offwhite:#F6F1E4;
+    --line:#D9CBAE;
+    --radius:14px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--sand);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;}
+
+  .mono{font-family:'IBM Plex Mono', monospace;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse at 80% -10%, rgba(95,182,166,0.25), transparent 55%),
+      linear-gradient(180deg, var(--navy-deep) 0%, var(--navy-mid) 100%);
+    color:var(--offwhite);
+    padding:64px 24px 110px;
+    position:relative;
+    overflow:hidden;
+  }
+  .hero-inner{
+    max-width:980px;
+    margin:0 auto;
+    position:relative;
+    z-index:2;
+  }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--seafoam);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:26px;height:1px;
+    background:var(--seafoam);
+    display:inline-block;
+  }
+  h1.hero-title{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:600;
+    font-size:clamp(38px, 6vw, 68px);
+    line-height:1.02;
+    margin:0 0 20px;
+    letter-spacing:-0.01em;
+  }
+  h1.hero-title em{
+    font-style:italic;
+    font-weight:400;
+    color:var(--seafoam);
+  }
+  .hero-sub{
+    font-size:18px;
+    line-height:1.6;
+    color:#CBD9DD;
+    max-width:560px;
+    margin:0 0 34px;
+  }
+  .hero-stats{
+    display:flex;
+    gap:36px;
+    flex-wrap:wrap;
+    margin-bottom:36px;
+  }
+  .stat-num{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:40px;
+    line-height:1;
+    color:var(--offwhite);
+  }
+  .stat-label{
+    font-size:12px;
+    color:#9DB3BA;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    margin-top:6px;
+  }
+  .hero-actions{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:13px 24px;
+    border-radius:999px;
+    font-weight:600;
+    font-size:15px;
+    text-decoration:none;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn-primary{background:var(--coral);color:#1A1206;}
+  .btn-primary:hover{background:var(--coral-dark);}
+  .btn-ghost{background:transparent;color:var(--offwhite);border-color:rgba(246,241,228,0.35);}
+  .btn-ghost:hover{background:rgba(246,241,228,0.08);}
+
+  /* wave divider */
+  .wave-divider{
+    position:absolute;
+    left:0;right:0;bottom:-1px;
+    line-height:0;
+    z-index:1;
+  }
+  .wave-divider svg{width:100%;height:90px;display:block;}
+
+  /* ---------- FILTER BAR ---------- */
+  .filter-bar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    background:var(--sand-card);
+    border-bottom:1px solid var(--line);
+    padding:14px 24px;
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+    max-width:1080px;
+    margin:0 auto;
+    border-radius:0 0 var(--radius) var(--radius);
+  }
+  .filter-bar label{
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    color:var(--ink-soft);
+    margin-right:6px;
+  }
+  select#sortSelect{
+    font-family:'Public Sans', sans-serif;
+    font-size:14px;
+    padding:8px 12px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:#fff;
+    color:var(--ink);
+  }
+  .result-count{
+    margin-left:auto;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- LIST ---------- */
+  .section{
+    max-width:1080px;
+    margin:0 auto;
+    padding:56px 24px;
+  }
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    margin-bottom:28px;
+    flex-wrap:wrap;
+  }
+  .section-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:30px;
+    margin:0;
+  }
+  .section-note{
+    font-size:14px;
+    color:var(--ink-soft);
+    max-width:420px;
+  }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap:18px;
+  }
+  @media (max-width:760px){ .grid{grid-template-columns:1fr;} }
+
+  .card{
+    background:var(--sand-card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .card:hover{border-color:var(--seafoam-dark); transform:translateY(-2px);}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .rank{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:13px;
+    color:var(--seafoam-dark);
+    background:rgba(95,182,166,0.15);
+    padding:3px 9px;
+    border-radius:999px;
+    white-space:nowrap;
+  }
+  .price-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+  .card-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:21px;
+    margin:0;
+    line-height:1.15;
+  }
+  .card-address{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  /* tide-gauge rating */
+  .tide-row{display:flex; align-items:center; gap:10px; margin-top:2px;}
+  .tide-gauge{
+    position:relative;
+    flex:1;
+    height:14px;
+    background:#E4D9BE;
+    border-radius:999px;
+    overflow:hidden;
+  }
+  .tide-fill{
+    position:absolute; top:0; left:0; bottom:0;
+    background:linear-gradient(90deg, var(--seafoam-dark), var(--seafoam));
+    border-radius:999px;
+  }
+  .tide-fill::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(115deg, rgba(255,255,255,0.35) 0 2px, transparent 2px 9px);
+    mix-blend-mode:overlay;
+  }
+  .tide-value{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    font-weight:500;
+    white-space:nowrap;
+  }
+  .review-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+
+  .card-summary{
+    font-size:14px;
+    line-height:1.55;
+    color:var(--ink);
+    margin:2px 0 4px;
+  }
+  .card-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:auto;
+    padding-top:6px;
+    border-top:1px dashed var(--line);
+  }
+  .card-link{
+    font-size:13px;
+    font-weight:600;
+    text-decoration:none;
+    color:var(--navy-mid);
+  }
+  .card-link:hover{color:var(--coral-dark);}
+  .opine-link{
+    font-size:13px;
+    font-weight:600;
+    color:var(--coral-dark);
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:inherit;
+  }
+
+  /* ---------- METHODOLOGY STRIP ---------- */
+  .method-strip{
+    background:var(--navy-deep);
+    color:var(--offwhite);
+  }
+  .method-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:24px;
+  }
+  @media (max-width:760px){ .method-grid{grid-template-columns:1fr;} }
+  .method-item{border-top:2px solid var(--seafoam); padding-top:14px;}
+  .method-item h3{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:18px;
+    margin:0 0 8px;
+  }
+  .method-item p{font-size:14px; color:#B9C9CE; line-height:1.55; margin:0;}
+
+  /* ---------- FORM ---------- */
+  .form-section{
+    background:var(--sand);
+  }
+  .form-card{
+    background:var(--sand-card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:36px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:28px;
+  }
+  @media (max-width:760px){ .form-card{grid-template-columns:1fr; padding:24px;} }
+  .form-intro h2{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 12px;
+  }
+  .form-intro p{font-size:14px; color:var(--ink-soft); line-height:1.6;}
+  .form-fields{display:flex; flex-direction:column; gap:14px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .field input[type="text"],
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:11px 13px;
+    border-radius:9px;
+    border:1px solid var(--line);
+    font-family:'Public Sans', sans-serif;
+    font-size:14px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .field textarea{resize:vertical; min-height:90px;}
+  .stars{display:flex; gap:6px;}
+  .stars button{
+    width:38px; height:38px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:#fff;
+    cursor:pointer;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14px;
+    color:var(--ink-soft);
+  }
+  .stars button.active{
+    background:var(--seafoam);
+    border-color:var(--seafoam-dark);
+    color:#0E2433;
+  }
+  .form-submit{
+    margin-top:6px;
+    background:var(--coral);
+    color:#1A1206;
+    border:none;
+    padding:13px 20px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:15px;
+    cursor:pointer;
+  }
+  .form-submit:hover{background:var(--coral-dark);}
+  .form-status{font-size:13px; margin-top:4px; min-height:18px;}
+  .form-status.ok{color:var(--seafoam-dark);}
+  .form-status.err{color:#C24A2E;}
+
+  footer{
+    padding:30px 24px 50px;
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+  }
+</style>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">Vecinos La Serena · Opina</div>
+    <h1 class="hero-title">Los sabores de la<br><em>Avenida del Mar</em>, en un solo lugar.</h1>
+    <p class="hero-sub">Reunimos la calificación y el volumen de reseñas de Google de los veinte restaurantes de la costanera, y dejamos espacio para que tú agregues tu propia opinión.</p>
+    <div class="hero-stats">
+      <div><div class="stat-num">20</div><div class="stat-label">Restaurantes</div></div>
+      <div><div class="stat-num">42K+</div><div class="stat-label">Reseñas analizadas</div></div>
+      <div><div class="stat-num">4.3</div><div class="stat-label">Promedio de la avenida</div></div>
+    </div>
+    <div class="hero-actions">
+      <a href="/" class="btn btn-primary" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:#fff;">&larr; Volver a vecinoslaserena.cl</a>
+      <a href="#ranking" class="btn btn-primary">Ver el ranking</a>
+      <a href="#opina" class="btn btn-ghost">Dejar mi opinin</a>
+    </div>
+  </div>
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 90" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C240,90 480,0 720,35 C960,70 1200,10 1440,45 L1440,90 L0,90 Z" fill="#F1E7D2"></path>
+    </svg>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <label for="sortSelect">Ordenar por</label>
+  <select id="sortSelect">
+    <option value="reviews">N° de reseñas (más comentado)</option>
+    <option value="rating">Calificación (mejor primero)</option>
+    <option value="name">Nombre (A-Z)</option>
+  </select>
+  <span class="result-count" id="resultCount"></span>
+</div>
+
+<main>
+  <section class="section" id="ranking">
+    <div class="section-head">
+      <h2 class="section-title">Ranking de la avenida</h2>
+      <p class="section-note">La "marea" de cada tarjeta representa la calificación en Google (0 a 5). El resumen es una síntesis propia de las reseñas más recientes, no una cita textual.</p>
+    </div>
+    <div class="grid" id="cardGrid"></div>
+  </section>
+
+  <section class="method-strip">
+    <div class="section">
+      <div class="section-head">
+        <h2 class="section-title" style="color:#fff;">Cómo se construyó este ranking</h2>
+      </div>
+      <div class="method-grid">
+        <div class="method-item">
+          <h3>Fuente primaria: Google</h3>
+          <p>Calificación, número de reseñas, horario y nivel de precio se obtuvieron de la ficha de Google de cada local en Av. del Mar.</p>
+        </div>
+        <div class="method-item">
+          <h3>Lectura de reseñas</h3>
+          <p>Se revisaron las reseñas de texto de cada local para identificar patrones repetidos: servicio, comida, vista y precio.</p>
+        </div>
+        <div class="method-item">
+          <h3>Espacio para vecinos</h3>
+          <p>Esta sección se actualiza con las opiniones que dejan los propios vecinos, para complementar (no reemplazar) los datos de Google.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="opiniones-vecinos" style="display:none;">
+    <div class="section-head">
+      <h2 class="section-title">Lo que dicen los vecinos</h2>
+      <p class="section-note">Reseñas recientes enviadas por la comunidad. Se actualizan automáticamente.</p>
+    </div>
+    <div class="grid" id="vecinosGrid">
+      <!-- Tarjetas dinámicas desde Google Sheets -->
+    </div>
+  </section>
+
+  <section class="section form-section" id="opina">
+    <div class="form-card">
+      <div class="form-intro">
+        <h2>Danos tu opinión</h2>
+        <p>¿Comiste en alguno de estos lugares esta semana? Cuéntanos cómo te fue. Tu opinión queda registrada y, tras una revisión rápida, se suma al panel de este sitio.</p>
+        <p id="formNote" style="margin-top:16px; font-size:12px; color:var(--ink-soft);">Los campos marcados con * son obligatorios.</p>
+      </div>
+      <form class="form-fields" id="opinionForm">
+        <div class="field">
+          <label for="f-name">Tu nombre</label>
+          <input type="text" id="f-name" name="nombre" placeholder="Opcional, o 'Anónimo'">
+        </div>
+        <div class="field">
+          <label for="f-restaurant">Restaurante *</label>
+          <select id="f-restaurant" name="restaurante" required></select>
+        </div>
+        <div class="field" id="f-otro-container" style="display:none;">
+          <label for="f-otro-local">¿Qué local? *</label>
+          <input type="text" id="f-otro-local" placeholder="Escribe el nombre del local">
+        </div>
+        <div class="field">
+          <label for="f-rating">Tu calificación (1 a 5, permite decimales) *</label>
+          <input type="number" id="f-rating" name="calificacion" min="1" max="5" step="0.1" required placeholder="Ej: 4.5">
+        </div>
+        <div class="field">
+          <label for="f-comment">Tu comentario *</label>
+          <textarea id="f-comment" name="comentario" required placeholder="¿Qué pediste? ¿Cómo fue el servicio y la vista?"></textarea>
+        </div>
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEhqZxNM51Qh_WvZ"></div>
+        <button type="submit" class="form-submit">Enviar opinión</button>
+        <div class="form-status" id="formStatus"></div>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Datos de calificación y reseñas obtenidos de Google · Última actualización: agosto 2026 · vecinoslaserena.cl/opina
+</footer>
+
+<script>
+  // =========================================================
+  // 1) CONFIGURACIÓN: pega aquí la URL de tu webhook de Make
+  // =========================================================
+  const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/vobbi6b31xe2n3plsp641mytap5kby66";
+
+  // =========================================================
+  // 2) DATOS BASE: los 20 restaurantes de Av. del Mar
+  //    (rating y reviews desde Google; summary es redacción propia)
+  // =========================================================
+  const restaurantes = [
+    { nombre:"Huentelauquen RestoBar - Pizzería", direccion:"Av. del Mar 4500", rating:4.4, reviews:9824, precio:2,
+      resumen:"Local grande y familiar con zona de juegos para niños y buena vista desde el piso superior; la comida es correcta pero el ritmo de atención varía según la hora.",
+      maps:"https://maps.google.com/?cid=12039372784065774005" },
+    { nombre:"Pub El Muelle", direccion:"Av. del Mar 4600", rating:4.5, reviews:6232, precio:2,
+      resumen:"Ambiente de pub con música y buena selección de cerveza, ideal para tomar algo sin necesariamente cenar; el servicio es irregular en horas punta.",
+      maps:"https://maps.google.com/?cid=16188297629170543061" },
+    { nombre:"Restaurant Bakulic", direccion:"Av. del Mar 5700", rating:4.5, reviews:3539, precio:2,
+      resumen:"Cocina de autor con foco en mariscos y buena presentación; el atardecer desde la terraza es uno de sus mayores atractivos.",
+      maps:"https://maps.google.com/?cid=17826277579242129544" },
+    { nombre:"Tololo Beach", direccion:"Av. del Mar 5200", rating:4.2, reviews:3627, precio:2,
+      resumen:"Ambiente elegante frente al mar, tanto para desayuno como para una cena especial; el servicio recibe elogios frecuentes.",
+      maps:"https://maps.google.com/?cid=12473253392465894231" },
+    { nombre:"Taikin Sushi and Bar", direccion:"Av. del Mar 2492", rating:4.8, reviews:2784, precio:2,
+      resumen:"Cocina japonesa muy bien valorada, especialmente los cortes con camarón; algunos comentarios mencionan precios altos para el tamaño de las porciones.",
+      maps:"https://maps.google.com/?cid=17616508149470049344" },
+    { nombre:"Restaurante Estación", direccion:"Av. del Mar 4000", rating:4.3, reviews:1769, precio:2,
+      resumen:"Decoración moderna y buena ubicación frente a la playa; el menú es acotado y el servicio puede sentirse lento cuando el local está vacío.",
+      maps:"https://maps.google.com/?cid=17287908207082442743" },
+    { nombre:"La Parrilla de Humberto", direccion:"Av. del Mar 4402", rating:4.2, reviews:1655, precio:null,
+      resumen:"Especialista en parrilla; destaca el costillar de cerdo. El ambiente puede sentirse ruidoso en horas de alta demanda.",
+      maps:"https://maps.google.com/?cid=11728499594531284649" },
+    { nombre:"Baldoria Pizzería Napoletana", direccion:"Av. del Mar 2496", rating:4.7, reviews:1534, precio:2,
+      resumen:"Pizza artesanal muy bien valorada por la masa y los ingredientes; ocasionalmente la pasta no alcanza el mismo nivel.",
+      maps:"https://maps.google.com/?cid=13963247805032967054" },
+    { nombre:"Fontana Beach Restaurante", direccion:"Av. del Mar 2200", rating:4.1, reviews:1021, precio:2,
+      resumen:"Buena repostería y atención rápida incluso cerca del cierre; ofrece variedad entre mariscos, carnes y opciones vegetarianas.",
+      maps:"https://maps.google.com/?cid=6546040956995277564" },
+    { nombre:"Cafetería Poisson", direccion:"Av. del Mar 1001", rating:4.5, reviews:974, precio:2,
+      resumen:"Frente a la playa, ideal para desayunos y opciones a buen precio; la atención puede demorar cuando hay pedidos calientes.",
+      maps:"https://maps.google.com/?cid=7394559940313966815" },
+    { nombre:"Beirut La Serena", direccion:"Av. del Mar 2492", rating:4.5, reviews:854, precio:2,
+      resumen:"Comida libanesa y siria con buena sazón; la calidad baja notablemente en los pedidos para delivery frente a comer en el local.",
+      maps:"https://maps.google.com/?cid=11433653640149936296" },
+    { nombre:"Restaurante La Tabla", direccion:"Av. del Mar 3200", rating:4.0, reviews:805, precio:2,
+      resumen:"Ambiente íntimo con vista al mar, buena opción para desayuno; algunos platos han recibido críticas por sabor plano.",
+      maps:"https://maps.google.com/?cid=13913128834167728136" },
+    { nombre:"Kalea Poké", direccion:"Av. del Mar 1300, Local 3", rating:4.7, reviews:679, precio:2,
+      resumen:"Bowls saludables con insumos frescos y utensilios eco-amigables; ambiente acogedor a pasos de la playa.",
+      maps:"https://maps.google.com/?cid=13451086096596108723" },
+    { nombre:"Restobar Entremar La Serena", direccion:"Av. del Mar 3501", rating:3.3, reviews:290, precio:2,
+      resumen:"Ubicación atractiva pero servicio muy inconsistente, con quejas de cobros indebidos y platos que llegan fríos.",
+      maps:"https://maps.google.com/?cid=16560914270346660692" },
+    { nombre:"Brisa", direccion:"Av. del Mar 1300", rating:3.7, reviews:267, precio:2,
+      resumen:"Parte del Hotel Club, con buena carta de vinos y desayuno buffet; el principal punto débil es la lentitud del servicio.",
+      maps:"https://maps.google.com/?cid=6234757921276801537" },
+    { nombre:"Sunshine Sushi Beach", direccion:"Av. del Mar 2200, Loc 6", rating:4.1, reviews:192, precio:2,
+      resumen:"Fusión coreano-japonesa con buenos cócteles; algunos platos fritos han sido criticados por exceso de aceite.",
+      maps:"https://maps.google.com/?cid=12448838881047982751" },
+    { nombre:"Pacífico Beach Restaurante", direccion:"Av. del Mar 2300", rating:3.6, reviews:160, precio:2,
+      resumen:"Buena ubicación, pero varias reseñas recientes mencionan porciones pequeñas para el precio cobrado.",
+      maps:"https://maps.google.com/?cid=2482764550372170429" },
+    { nombre:"Napoleón Restaurant", direccion:"Av. del Mar 3500", rating:4.5, reviews:49, precio:2,
+      resumen:"Propuesta de cocina local de temporada con buena carta de piscos; local relativamente nuevo con reseñas muy positivas.",
+      maps:"https://maps.google.com/?cid=1276557610132388166" },
+    { nombre:"Servicios Gastronómicos Living Coffee Bar", direccion:"Av. del Mar 4400", rating:3.7, reviews:46, precio:2,
+      resumen:"Buena relación precio-calidad y terraza agradable; la cocina puede ser algo lenta en horas de mayor demanda.",
+      maps:"https://maps.google.com/?cid=13190654426691876980" },
+    { nombre:"Asumaki sucursal Beach", direccion:"Av. del Mar 1300", rating:4.9, reviews:40, precio:3,
+      resumen:"Fusión peruano-nikkei con calificación casi perfecta, aunque todavía con pocas reseñas para confirmar la tendencia.",
+      maps:"https://maps.google.com/?cid=17067992222094270437" }
+  ];
+
+  const priceLabel = p => p ? "$".repeat(p) : "n/d";
+
+  function renderCards(list){
+    const grid = document.getElementById('cardGrid');
+    grid.innerHTML = "";
+    list.forEach((r, i) => {
+      const pct = (r.rating/5*100).toFixed(0);
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="rank mono">N° ${String(i+1).padStart(2,'0')}</span>
+          <span class="price-tag">${priceLabel(r.precio)}</span>
+        </div>
+        <h3 class="card-name">${r.nombre}</h3>
+        <p class="card-address">${r.direccion}, La Serena</p>
+        <div class="tide-row">
+          <div class="tide-gauge"><div class="tide-fill" style="width:${pct}%"></div></div>
+          <span class="tide-value">${r.rating.toFixed(1)}</span>
+        </div>
+        <span class="review-count">${r.reviews.toLocaleString('es-CL')} reseñas en Google</span>
+        <p class="card-summary">${r.resumen}</p>
+        <div class="card-actions">
+          <a class="card-link" href="${r.maps}" target="_blank" rel="noopener">Ver ficha en Google →</a>
+          <button class="opine-link" data-name="${r.nombre}">Opinar de este local</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+    document.getElementById('resultCount').textContent = `${list.length} locales`;
+  }
+
+  function sortList(criterio){
+    const copia = [...restaurantes];
+    if(criterio === 'reviews') copia.sort((a,b)=>b.reviews-a.reviews);
+    if(criterio === 'rating') copia.sort((a,b)=>b.rating-a.rating);
+    if(criterio === 'name') copia.sort((a,b)=>a.nombre.localeCompare(b.nombre));
+    renderCards(copia);
+  }
+
+  document.getElementById('sortSelect').addEventListener('change', e => sortList(e.target.value));
+  sortList('reviews');
+
+  // poblar el select del formulario
+  const selectRest = document.getElementById('f-restaurant');
+  restaurantes.forEach(r=>{
+    const opt = document.createElement('option');
+    opt.value = r.nombre;
+    opt.textContent = r.nombre;
+    selectRest.appendChild(opt);
+  });
+  const optOtro = document.createElement('option');
+  optOtro.value = "Otro local de Av. del Mar";
+  optOtro.textContent = "Otro local de Av. del Mar";
+  selectRest.appendChild(optOtro);
+
+  // clic en "Opinar de este local" precarga el select y hace scroll
+  document.getElementById('cardGrid').addEventListener('click', e=>{
+    if(e.target.classList.contains('opine-link')){
+      selectRest.value = e.target.dataset.name;
+      document.getElementById('opina').scrollIntoView({behavior:'smooth'});
+      document.getElementById('f-comment').focus();
+    }
+  });
+
+  // Mostrar input para 'Otro local'
+  const otroContainer = document.getElementById('f-otro-container');
+  const otroInput = document.getElementById('f-otro-local');
+  const ratingInput = document.getElementById('f-rating');
+
+  selectRest.addEventListener('change', (e) => {
+    if (e.target.value === 'Otro local de Av. del Mar') {
+      otroContainer.style.display = 'block';
+      otroInput.required = true;
+    } else {
+      otroContainer.style.display = 'none';
+      otroInput.required = false;
+      otroInput.value = '';
+    }
+  });
+
+  // envío del formulario al webhook de Make
+  document.getElementById('opinionForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const status = document.getElementById('formStatus');
+    
+    let selectedRestaurant = selectRest.value;
+    if (selectedRestaurant === 'Otro local de Av. del Mar') {
+      selectedRestaurant = otroInput.value;
+    }
+
+    const calificacion = Number(ratingInput.value);
+    if (!calificacion || calificacion < 1 || calificacion > 5) {
+      status.textContent = "Por favor ingresa una calificación válida entre 1 y 5.";
+      status.className = "form-status err";
+      return;
+    }
+
+    // Seguridad 1: Bloqueo básico por dispositivo (Evitar SPAM repetido)
+    const reviewHistory = JSON.parse(localStorage.getItem('vls_reviews') || '{}');
+    if (reviewHistory[selectedRestaurant]) {
+      status.textContent = "Ya has enviado una reseña para este local anteriormente. ¡Gracias por participar!";
+      status.className = "form-status err";
+      return;
+    }
+
+    // Seguridad 2: Cloudflare Turnstile
+    const turnstileToken = turnstile.getResponse();
+    if (!turnstileToken) {
+      status.textContent = "Por favor, completa la verificación de seguridad.";
+      status.className = "form-status err";
+      return;
+    }
+
+    const payload = {
+      nombre: document.getElementById('f-name').value || "Anónimo",
+      restaurante: selectedRestaurant,
+      calificacion: calificacion,
+      comentario: document.getElementById('f-comment').value,
+      fecha: new Date().toISOString(),
+      origen: "vecinoslaserena.cl/opina",
+      turnstileToken: turnstileToken
+    };
+
+    status.textContent = "Enviando...";
+    status.className = "form-status";
+
+    try{
+      const resp = await fetch(MAKE_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      let respData = null;
+      try {
+        respData = await resp.clone().json();
+      } catch(e) { }
+
+      if(!resp.ok || (respData && (respData.ok === false || respData.success === false))) {
+        status.textContent = "No pudimos verificar que eres una persona real. Intenta de nuevo.";
+        status.className = "form-status err";
+        turnstile.reset();
+        return;
+      }
+
+      status.textContent = "¡Gracias! Tu opinión fue enviada y será revisada antes de publicarse.";
+      status.className = "form-status ok";
+      
+      // Guardamos en el dispositivo que ya opinó sobre este restaurante
+      reviewHistory[selectedRestaurant] = true;
+      localStorage.setItem('vls_reviews', JSON.stringify(reviewHistory));
+
+      e.target.reset();
+      otroContainer.style.display = 'none';
+      otroInput.required = false;
+      turnstile.reset();
+    }catch(err){
+      status.textContent = "No pudimos enviar tu opinión. Intenta de nuevo en un momento.";
+      status.className = "form-status err";
+      turnstile.reset();
+    }
+  });
+
+  // =========================================================
+  // 3) MOSTRAR RESEÑAS DESDE GOOGLE SHEETS
+  // =========================================================
+  const PUBLISHED_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTF1HZ9PjVq1lPt_f0LyUaWL22d-PiyfZBncoL63tVT-4YRVRJF00FNSv4RtZv76630e2EAyGvEIPqn/pub?output=csv";
+
+  function parseCSV(text) {
+    const lines = text.split('\n');
+    const result = [];
+    if(lines.length < 2) return result;
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    
+    for(let i = 1; i < lines.length; i++) {
+      if(!lines[i].trim()) continue;
+      // Regex para separar por comas ignorando las que están dentro de comillas
+      let row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      let obj = {};
+      for(let j = 0; j < headers.length; j++){
+        obj[headers[j]] = row[j] ? row[j].replace(/^"|"$/g, '').trim() : '';
+      }
+      result.push(obj);
+    }
+    return result;
+  }
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = str ?? '';
+    return div.innerHTML;
+  }
+
+  function renderVecinosReviews(data) {
+    const grid = document.getElementById('vecinosGrid');
+    const section = document.getElementById('opiniones-vecinos');
+    
+    if(!data || data.length === 0) {
+      section.style.display = 'none';
+      return;
+    }
+    
+    section.style.display = 'block';
+    grid.innerHTML = "";
+    
+    // Invertir para mostrar las más nuevas primero
+    data.reverse().forEach(r => {
+      const card = document.createElement('article');
+      card.className = 'card';
+      
+      let estrellas = Number(r.estrellas);
+      if (isNaN(estrellas) || estrellas < 0 || estrellas > 5) estrellas = 0;
+      
+      const estrellasHTML = '★'.repeat(estrellas) + '☆'.repeat(5 - estrellas);
+      const fecha = r.fecha ? escapeHTML(new Date(r.fecha).toLocaleDateString('es-CL')) : 'Reciente';
+      const nombre = escapeHTML(r.nombre || 'Anónimo');
+      const restaurante = escapeHTML(r.restaurante);
+      const comentario = escapeHTML(r.comentario);
+
+      card.innerHTML = `
+        <div class="card-top">
+          <span class="rank mono" style="background:rgba(228,96,47,0.1); color:var(--coral-dark);">Vecino</span>
+          <span class="price-tag">${fecha}</span>
+        </div>
+        <h3 class="card-name" style="font-size:18px;">${restaurante}</h3>
+        <p class="card-address">Por: ${nombre}</p>
+        <div class="tide-row" style="margin-top:6px; color:var(--coral); font-size:16px;">
+          ${estrellasHTML}
+        </div>
+        <p class="card-summary" style="margin-top:10px; font-style:italic;">"${comentario}"</p>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  async function cargarOpinionesPublicadas(){
+    try{
+      const resp = await fetch(PUBLISHED_CSV_URL, { cache: "no-store" });
+      const text = await resp.text();
+      const data = parseCSV(text);
+      renderVecinosReviews(data);
+    }catch(err){
+      console.warn("No se pudieron cargar las opiniones de los vecinos.", err);
+    }
+  }
+  
+  // Cargar opiniones al iniciar
+  cargarOpinionesPublicadas();
+</script>
+
+</body>
+</html>

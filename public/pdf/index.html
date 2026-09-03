@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Máquina de Editar PDF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#efe8d5;
+    --paper-edge:#dcd2b6;
+    --body-dark:#2b2b26;
+    --body-mid:#3d3c33;
+    --brass:#a98f52;
+    --brass-light:#cdb271;
+    --ink:#1c1b18;
+    --ribbon-red:#9c3b34;
+    --key-face:#e9e2cd;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: radial-gradient(ellipse at top, #4a4940 0%, #1c1b18 70%);
+    min-height:100vh;
+    font-family:'Courier Prime', monospace;
+    color:var(--paper);
+    padding:24px 12px 60px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  h1{
+    font-family:'Special Elite', cursive;
+    font-weight:400;
+    font-size:1.4rem;
+    letter-spacing:0.5px;
+    color:var(--brass-light);
+    margin:0 0 4px;
+  }
+  .subtitle{
+    color:#b9b29a;
+    font-size:0.85rem;
+    margin-bottom:20px;
+    text-align:center;
+    max-width:520px;
+  }
+  .machine{
+    background:linear-gradient(180deg,var(--body-mid),var(--body-dark));
+    border-radius:18px;
+    padding:18px 18px 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.05);
+    width:100%;
+    max-width:920px;
+    border:1px solid #14140f;
+  }
+  .empty-slot{
+    border:2px dashed var(--brass);
+    border-radius:10px;
+    padding:50px 20px;
+    text-align:center;
+    color:var(--brass-light);
+    font-family:'Special Elite', cursive;
+    cursor:pointer;
+    background: repeating-linear-gradient(135deg, rgba(169,143,82,0.05) 0 10px, transparent 10px 20px);
+  }
+  .empty-slot:hover{ background-color: rgba(169,143,82,0.08); }
+  .carriage-bar{
+    display:flex;
+    align-items:stretch;
+    gap:10px;
+  }
+  .rotor-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:flex-start;
+    padding-top:6px;
+    gap:6px;
+    width:64px;
+    flex-shrink:0;
+  }
+  .rotor{
+    width:52px;height:52px;border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #d8c58c, var(--brass) 55%, #6f5a2c 100%);
+    border:3px solid #574821;
+    cursor:pointer;
+    position:relative;
+    transition:transform 0.15s ease;
+    box-shadow: inset 0 2px 4px rgba(255,255,255,0.3), 0 3px 6px rgba(0,0,0,0.5);
+  }
+  .rotor:active{ transform:scale(0.95); }
+  .rotor::before{
+    content:'';
+    position:absolute; top:6%; left:48%;
+    width:4%; height:38%;
+    background:#3d3220;
+    border-radius:2px;
+  }
+  .rotor-label{ font-size:0.62rem; color:#9c9585; font-family:'Special Elite',cursive; text-align:center; }
+  .page-window{
+    flex:1;
+    background:#0e0d0b;
+    border-radius:6px;
+    padding:14px;
+    overflow:auto;
+    max-height:640px;
+    box-shadow: inset 0 6px 18px rgba(0,0,0,0.6);
+    display:flex;
+    justify-content:center;
+  }
+  .page-stage{ position:relative; box-shadow:0 6px 20px rgba(0,0,0,0.5); height:fit-content; }
+  .page-stage canvas{ display:block; background:#fff; }
+  #overlayCanvas{ position:absolute; top:0; left:0; cursor:crosshair; }
+  .keys-toolbar{
+    margin-top:14px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-items:center;
+    justify-content:center;
+    padding:10px;
+    background:#221f19;
+    border-radius:10px;
+  }
+  .key-btn{
+    font-family:'Special Elite', cursive;
+    background: linear-gradient(180deg, var(--key-face), #cfc6a9);
+    border:1px solid #7a6f4d;
+    border-bottom:3px solid #5c5335;
+    border-radius:8px;
+    color:#2a2a22;
+    padding:9px 13px;
+    font-size:0.78rem;
+    cursor:pointer;
+    user-select:none;
+    transition: transform 0.06s ease;
+  }
+  .key-btn:hover{ filter:brightness(1.05); }
+  .key-btn:active{ transform:translateY(2px); border-bottom-width:1px; }
+  .key-btn.active{ background:linear-gradient(180deg,var(--ribbon-red),#6f231d); color:#f2e8df; border-color:#4a1712; }
+  .key-btn.small{ padding:7px 10px; font-size:0.7rem; }
+  .key-sep{ width:1px; align-self:stretch; background:#4a4638; margin:2px 4px; }
+  .status-line{
+    margin-top:10px;
+    font-size:0.75rem;
+    color:#c9c2ab;
+    text-align:center;
+    min-height:18px;
+    font-family:'Special Elite', cursive;
+  }
+  .pagenav{ display:flex; align-items:center; gap:8px; font-size:0.78rem; color:#d8d0b8; font-family:'Special Elite',cursive;}
+  select#fontSizeSel{ font-family:'Courier Prime',monospace; padding:6px; border-radius:6px; border:1px solid #7a6f4d; }
+  footer.credit{ color:#77715e; font-size:0.68rem; margin-top:18px; text-align:center; }
+  .hidden{ display:none !important; }
+</style>
+</head>
+<body>
+
+<h1>⌨ MÁQUINA DE EDITAR PDF</h1>
+<p class="subtitle">Sube una ficha en PDF, apunta con la aguja al texto que quieres corregir, tapa con la cinta blanca y escribe encima — como en una máquina de escribir real. Exporta un PDF estándar, sin romper la estructura.</p>
+
+<div class="machine">
+
+  <div id="emptySlot" class="empty-slot">
+    📄 Haz clic aquí (o arrastra un PDF) para cargar la hoja en el rodillo
+  </div>
+
+  <input type="file" id="fileInput" accept="application/pdf" class="hidden">
+  <input type="file" id="imageInput" accept="image/*" class="hidden">
+  <input type="text" id="hiddenType" class="hidden" autocomplete="off">
+
+  <div id="editorArea" class="hidden">
+    <div class="carriage-bar">
+      <div class="rotor-wrap">
+        <div class="rotor" id="rotorUp" title="Retroceder línea (subir)"></div>
+        <div class="rotor-label">◀ línea</div>
+      </div>
+      <div class="page-window">
+        <div class="page-stage" id="pageStage">
+          <canvas id="baseCanvas"></canvas>
+          <canvas id="overlayCanvas"></canvas>
+        </div>
+      </div>
+      <div class="rotor-wrap">
+        <div class="rotor" id="rotorDown" title="Avanzar línea (bajar)"></div>
+        <div class="rotor-label">línea ▶</div>
+      </div>
+    </div>
+
+    <div class="keys-toolbar">
+      <button class="key-btn" id="modeSelect" title="Apuntar y corregir texto detectado">🎯 Apuntar / Corregir</button>
+      <button class="key-btn" id="modeFree" title="Escribir texto nuevo en cualquier parte">✍️ Escribir libre</button>
+      <button class="key-btn" id="modeErase" title="Tapar con cinta blanca cualquier zona (texto o imagen)">🩹 Borrar zona</button>
+      <button class="key-btn" id="modeImage" title="Detectar / reemplazar imágenes del PDF">🖼️ Imágenes</button>
+      <div class="key-sep"></div>
+      <select id="fontSizeSel">
+        <option value="9">9pt</option>
+        <option value="10" selected>10pt</option>
+        <option value="11">11pt</option>
+        <option value="12">12pt</option>
+        <option value="14">14pt</option>
+        <option value="18">18pt</option>
+      </select>
+      <button class="key-btn small" id="ribbonToggle" title="Cambiar color de cinta">🔴 Cinta: negra</button>
+      <div class="key-sep"></div>
+      <button class="key-btn small" id="undoBtn" title="Deshacer última edición">↩ Deshacer</button>
+      <button class="key-btn small" id="clearPageBtn" title="Borrar todas las ediciones de esta hoja">🗑 Limpiar hoja</button>
+      <div class="key-sep"></div>
+      <div class="pagenav">
+        <button class="key-btn small" id="prevPage">◀ Hoja</button>
+        <span id="pageIndicator">Hoja 1 de 1</span>
+        <button class="key-btn small" id="nextPage">Hoja ▶</button>
+      </div>
+      <div class="key-sep"></div>
+      <button class="key-btn small" id="newDocBtn">📂 Cargar otro PDF</button>
+      <button class="key-btn" id="exportBtn" style="background:linear-gradient(180deg,#4c7a4a,#2f5c2d); color:#fff;">💾 Exportar PDF final</button>
+    </div>
+    <div class="status-line" id="statusLine">Elige un modo y luego toca el papel.</div>
+  </div>
+</div>
+
+<footer class="credit">Herramienta local: tu PDF no se sube a ningún servidor, todo ocurre en tu navegador.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" onerror="showFatalError('No se pudo cargar la librería pdf.js desde cdnjs.cloudflare.com. ¿Tu hosting bloquea ese dominio? Revisa el firewall / CSP del sitio.')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" onerror="showFatalError('No se pudo cargar la librería pdf-lib desde cdnjs.cloudflare.com. ¿Tu hosting bloquea ese dominio?')"></script>
+<div id="fatalBanner" style="display:none; position:fixed; top:0; left:0; right:0; background:#7a1f1f; color:#fff; padding:14px 18px; font-family:'Courier Prime',monospace; font-size:0.85rem; z-index:9999; text-align:center;"></div>
+<script>
+function showFatalError(msg){
+  const b = document.getElementById('fatalBanner');
+  if (!b) { alert(msg); return; }
+  b.textContent = '⚠ ' + msg;
+  b.style.display = 'block';
+}
+window.addEventListener('error', (e) => {
+  showFatalError('Error en la máquina: ' + (e.message || 'revisa la consola (F12) para más detalle.'));
+});
+window.addEventListener('unhandledrejection', (e) => {
+  showFatalError('Error al procesar el PDF: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+});
+
+if (typeof pdfjsLib === 'undefined'){
+  showFatalError('pdfjsLib no se cargó. El PDF no se puede leer. Revisa que tu sitio permita scripts de cdnjs.cloudflare.com.');
+}
+if (typeof pdfjsLib !== 'undefined'){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+}
+
+// ---------- estado global ----------
+let pdfDoc = null;           // documento pdf.js
+let pdfBytesOriginal = null; // ArrayBuffer original, para exportar con pdf-lib
+let numPages = 1;
+let currentPage = 1;
+let pagesState = {}; // pageNum -> {viewport, scale, pdfW, pdfH, textItems, images, edits:[]}
+let mode = 'select'; // select | free | erase | image
+let ribbonColor = '#111111';
+let selectedTextItem = null;
+let selectedImage = null;
+let freeCursor = null; // {x,y, startX}
+let activeTextEdit = null; // edit being typed live
+let dragErase = null; // {x,y,w,h} while dragging
+let undoStack = []; // {page, editRemoved} for simple undo
+
+const baseCanvas = document.getElementById('baseCanvas');
+const overlayCanvas = document.getElementById('overlayCanvas');
+const bctx = baseCanvas.getContext('2d');
+const octx = overlayCanvas.getContext('2d');
+const hiddenType = document.getElementById('hiddenType');
+const statusLine = document.getElementById('statusLine');
+const pageWindow = document.querySelector('.page-window');
+
+function setStatus(msg){ statusLine.textContent = msg; }
+
+// ---------- carga de archivo ----------
+const emptySlot = document.getElementById('emptySlot');
+const fileInput = document.getElementById('fileInput');
+emptySlot.addEventListener('click', () => fileInput.click());
+emptySlot.addEventListener('dragover', e => { e.preventDefault(); });
+emptySlot.addEventListener('drop', e => {
+  e.preventDefault();
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) loadFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', e => { if (e.target.files[0]) loadFile(e.target.files[0]); });
+document.getElementById('newDocBtn').addEventListener('click', () => fileInput.click());
+
+async function loadFile(file){
+  if (!file || file.type !== 'application/pdf'){ setStatus('Ese archivo no es un PDF.'); return; }
+  if (typeof pdfjsLib === 'undefined'){ showFatalError('pdfjsLib no está disponible: no se puede leer el PDF.'); return; }
+  setStatus('Cargando hoja en el rodillo...');
+  try {
+    const buf = await file.arrayBuffer();
+    pdfBytesOriginal = buf.slice(0);
+    pdfDoc = await pdfjsLib.getDocument({ data: buf.slice(0) }).promise;
+    numPages = pdfDoc.numPages;
+    currentPage = 1;
+    pagesState = {};
+    emptySlot.classList.add('hidden');
+    document.getElementById('editorArea').classList.remove('hidden');
+    await renderPage(currentPage);
+    setStatus('Listo. Elige un modo y toca el papel.');
+  } catch (err){
+    console.error(err);
+    showFatalError('No se pudo abrir ese PDF: ' + (err && err.message ? err.message : err));
+  }
+}
+
+// ---------- render de página ----------
+async function renderPage(num){
+ try {
+  const page = await pdfDoc.getPage(num);
+  const unscaled = page.getViewport({ scale: 1 });
+  const targetWidth = Math.min(820, pageWindow.clientWidth - 40 || 780);
+  const scale = targetWidth / unscaled.width;
+  const viewport = page.getViewport({ scale });
+
+  baseCanvas.width = overlayCanvas.width = viewport.width;
+  baseCanvas.height = overlayCanvas.height = viewport.height;
+  baseCanvas.style.width = overlayCanvas.style.width = viewport.width + 'px';
+  baseCanvas.style.height = overlayCanvas.style.height = viewport.height + 'px';
+
+  await page.render({ canvasContext: bctx, viewport }).promise;
+
+  if (!pagesState[num]){
+    const textContent = await page.getTextContent();
+    const textItems = textContent.items.map(item => {
+      const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+      // tx: [a,b,c,d,e,f] ; e,f = posición base (esquina inferior-izq del glifo) en px canvas
+      const fontHeight = Math.hypot(tx[2], tx[3]);
+      const width = item.width * scale;
+      const x = tx[4];
+      const yTop = tx[5] - fontHeight; // aproximar techo del texto
+      return { str: item.str, x, y: yTop, w: Math.abs(width), h: fontHeight };
+    }).filter(t => t.str.trim().length > 0);
+
+    let images = [];
+    try {
+      const opList = await page.getOperatorList();
+      let stack = [[1,0,0,1,0,0]];
+      let ctm = stack[0];
+      for (let i=0;i<opList.fnArray.length;i++){
+        const fn = opList.fnArray[i];
+        const args = opList.argsArray[i];
+        if (fn === pdfjsLib.OPS.save){ stack.push(ctm.slice()); }
+        else if (fn === pdfjsLib.OPS.restore){ ctm = stack.pop() || [1,0,0,1,0,0]; }
+        else if (fn === pdfjsLib.OPS.transform){ ctm = pdfjsLib.Util.transform(ctm, args); }
+        else if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintInlineImageXObject){
+          const corners = [[0,0],[1,0],[1,1],[0,1]].map(p => {
+            const up = pdfjsLib.Util.applyTransform(p, ctm);
+            return pdfjsLib.Util.applyTransform(up, viewport.transform);
+          });
+          const xs = corners.map(c=>c[0]), ys = corners.map(c=>c[1]);
+          const x = Math.min(...xs), y = Math.min(...ys);
+          const w = Math.max(...xs)-x, h = Math.max(...ys)-y;
+          if (w > 3 && h > 3) images.push({ x, y, w, h });
+        }
+      }
+    } catch(e){ /* deteccion de imagenes es best-effort */ }
+
+    pagesState[num] = {
+      viewport, scale,
+      pdfW: unscaled.width, pdfH: unscaled.height,
+      textItems, images, edits: []
+    };
+  } else {
+    pagesState[num].viewport = viewport;
+    pagesState[num].scale = scale;
+  }
+
+  document.getElementById('pageIndicator').textContent = `Hoja ${num} de ${numPages}`;
+  redrawOverlay();
+ } catch (err){
+   console.error(err);
+   showFatalError('No se pudo dibujar la hoja en el rodillo: ' + (err && err.message ? err.message : err));
+ }
+}
+
+// ---------- overlay: dibuja ediciones, selección, cursor ----------
+function redrawOverlay(){
+  octx.clearRect(0,0,overlayCanvas.width, overlayCanvas.height);
+  const st = pagesState[currentPage];
+  if (!st) return;
+
+  // ediciones guardadas
+  st.edits.forEach(ed => drawEdit(ed));
+
+  // resaltar item de texto seleccionado
+  if (mode === 'select' && selectedTextItem){
+    octx.strokeStyle = '#c0392b';
+    octx.lineWidth = 1.5;
+    octx.setLineDash([4,3]);
+    octx.strokeRect(selectedTextItem.x-2, selectedTextItem.y-2, selectedTextItem.w+4, selectedTextItem.h+4);
+    octx.setLineDash([]);
+  }
+
+  if (mode === 'image' && selectedImage){
+    octx.strokeStyle = '#2e6fbf';
+    octx.lineWidth = 2;
+    octx.setLineDash([6,4]);
+    octx.strokeRect(selectedImage.x, selectedImage.y, selectedImage.w, selectedImage.h);
+    octx.setLineDash([]);
+  }
+
+  if (mode === 'image'){
+    octx.strokeStyle = 'rgba(46,111,191,0.35)';
+    octx.lineWidth = 1;
+    st.images.forEach(im => octx.strokeRect(im.x, im.y, im.w, im.h));
+  }
+
+  if (mode === 'free' && freeCursor){
+    octx.strokeStyle = ribbonColor;
+    octx.lineWidth = 2;
+    octx.beginPath();
+    octx.moveTo(freeCursor.x, freeCursor.y);
+    octx.lineTo(freeCursor.x, freeCursor.y + freeCursor.fontSize*1.1);
+    octx.stroke();
+  }
+
+  if (dragErase){
+    octx.fillStyle = 'rgba(255,255,255,0.6)';
+    octx.strokeStyle = '#999';
+    octx.setLineDash([3,3]);
+    octx.fillRect(dragErase.x, dragErase.y, dragErase.w, dragErase.h);
+    octx.strokeRect(dragErase.x, dragErase.y, dragErase.w, dragErase.h);
+    octx.setLineDash([]);
+  }
+}
+
+function drawEdit(ed){
+  if (ed.type === 'whiteout'){
+    octx.fillStyle = '#ffffff';
+    octx.fillRect(ed.x, ed.y, ed.w, ed.h);
+  } else if (ed.type === 'text'){
+    octx.fillStyle = ed.color || '#111111';
+    octx.font = `${ed.fontSize}px 'Courier Prime', monospace`;
+    octx.textBaseline = 'top';
+    const lines = (ed.text || '').split('\n');
+    lines.forEach((line, i) => {
+      octx.fillText(line, ed.x, ed.y + i * ed.fontSize * 1.25);
+    });
+  } else if (ed.type === 'image' && ed._img){
+    octx.drawImage(ed._img, ed.x, ed.y, ed.w, ed.h);
+  }
+}
+
+// ---------- utilidades ----------
+function canvasPoint(evt){
+  const r = overlayCanvas.getBoundingClientRect();
+  const cx = (evt.touches ? evt.touches[0].clientX : evt.clientX) - r.left;
+  const cy = (evt.touches ? evt.touches[0].clientY : evt.clientY) - r.top;
+  return { x: cx * (overlayCanvas.width / r.width), y: cy * (overlayCanvas.height / r.height) };
+}
+function findNearestText(pt, st){
+  let best = null, bestD = 26;
+  st.textItems.forEach(t => {
+    const inside = pt.x >= t.x-4 && pt.x <= t.x+t.w+4 && pt.y >= t.y-4 && pt.y <= t.y+t.h+4;
+    if (inside){ best = t; bestD = 0; }
+  });
+  if (best) return best;
+  st.textItems.forEach(t => {
+    const cx = t.x + t.w/2, cy = t.y + t.h/2;
+    const d = Math.hypot(pt.x-cx, pt.y-cy);
+    if (d < bestD){ bestD = d; best = t; }
+  });
+  return best;
+}
+function findImageAt(pt, st){
+  return st.images.find(im => pt.x>=im.x && pt.x<=im.x+im.w && pt.y>=im.y && pt.y<=im.y+im.h) || null;
+}
+function pushEdit(ed){
+  pagesState[currentPage].edits.push(ed);
+  undoStack.push(currentPage);
+  redrawOverlay();
+}
+
+// ---------- modos ----------
+const modeButtons = {
+  select: document.getElementById('modeSelect'),
+  free: document.getElementById('modeFree'),
+  erase: document.getElementById('modeErase'),
+  image: document.getElementById('modeImage'),
+};
+function setMode(m){
+  mode = m;
+  Object.entries(modeButtons).forEach(([k,btn]) => btn.classList.toggle('active', k===m));
+  selectedTextItem = null; selectedImage = null; freeCursor = null;
+  commitActiveTextEdit();
+  hiddenType.blur();
+  const hints = {
+    select: 'Modo Apuntar/Corregir: toca un texto detectado, luego escribe encima para reemplazarlo.',
+    free: 'Modo Escribir libre: toca cualquier parte en blanco y empieza a escribir.',
+    erase: 'Modo Borrar zona: arrastra un rectángulo para tapar texto o una imagen con cinta blanca.',
+    image: 'Modo Imágenes: los recuadros azules son imágenes detectadas. Tócalas para borrarlas o reemplazarlas.'
+  };
+  setStatus(hints[m] || '');
+  redrawOverlay();
+}
+modeButtons.select.addEventListener('click', () => setMode('select'));
+modeButtons.free.addEventListener('click', () => setMode('free'));
+modeButtons.erase.addEventListener('click', () => setMode('erase'));
+modeButtons.image.addEventListener('click', () => setMode('image'));
+setMode('select');
+
+document.getElementById('ribbonToggle').addEventListener('click', function(){
+  if (ribbonColor === '#111111'){ ribbonColor = '#9c3b34'; this.textContent = '⚫ Cinta: roja'; }
+  else { ribbonColor = '#111111'; this.textContent = '🔴 Cinta: negra'; }
+});
+
+// ---------- escritura (input oculto) ----------
+function startTextEditAt(x, y, fontSize, existingText){
+  commitActiveTextEdit();
+  const ed = { type:'text', x, y, fontSize, text: existingText || '', color: ribbonColor };
+  activeTextEdit = ed;
+  pagesState[currentPage].edits.push(ed);
+  hiddenType.value = existingText || '';
+  hiddenType.style.left = '-9999px';
+  hiddenType.focus();
+  redrawOverlay();
+}
+function commitActiveTextEdit(){
+  if (activeTextEdit && !activeTextEdit.text){
+    // sin texto escrito: quitar la edición vacía
+    const arr = pagesState[currentPage]?.edits;
+    if (arr){ const i = arr.indexOf(activeTextEdit); if (i>=0) arr.splice(i,1); }
+  }
+  activeTextEdit = null;
+}
+hiddenType.addEventListener('input', () => {
+  if (activeTextEdit){ activeTextEdit.text = hiddenType.value; redrawOverlay(); }
+});
+hiddenType.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter'){
+    e.preventDefault();
+    if (mode === 'free' && activeTextEdit && freeCursor){
+      const fs = activeTextEdit.fontSize;
+      const newY = activeTextEdit.y + fs*1.25;
+      commitActiveTextEdit();
+      freeCursor = { x: freeCursor.startX, y: newY, startX: freeCursor.startX, fontSize: fs };
+      startTextEditAt(freeCursor.x, freeCursor.y, fs, '');
+    } else {
+      commitActiveTextEdit();
+      hiddenType.blur();
+    }
+  } else if (e.key === 'Escape'){
+    commitActiveTextEdit();
+    hiddenType.blur();
+    redrawOverlay();
+  }
+});
+hiddenType.addEventListener('blur', () => { commitActiveTextEdit(); redrawOverlay(); });
+
+// ---------- interacción con el papel ----------
+let isDragging = false;
+overlayCanvas.addEventListener('mousedown', onDown);
+overlayCanvas.addEventListener('touchstart', onDown, {passive:true});
+overlayCanvas.addEventListener('mousemove', onMove);
+overlayCanvas.addEventListener('touchmove', onMove, {passive:true});
+window.addEventListener('mouseup', onUp);
+window.addEventListener('touchend', onUp);
+
+function onDown(evt){
+  const st = pagesState[currentPage];
+  if (!st) return;
+  const pt = canvasPoint(evt);
+  const fontSize = parseInt(document.getElementById('fontSizeSel').value, 10);
+
+  if (mode === 'select'){
+    const item = findNearestText(pt, st);
+    if (item){
+      selectedTextItem = item;
+      // tapar con cinta blanca y abrir escritura encima, en el mismo lugar/tamaño
+      pushEdit({ type:'whiteout', x:item.x-1, y:item.y-1, w:item.w+2, h:item.h+2 });
+      startTextEditAt(item.x, item.y, Math.max(8, Math.round(item.h*0.82)), '');
+      setStatus(`Apuntando a: "${item.str}" — escribe el texto nuevo.`);
+    }
+  } else if (mode === 'free'){
+    freeCursor = { x: pt.x, y: pt.y, startX: pt.x, fontSize };
+    startTextEditAt(pt.x, pt.y, fontSize, '');
+  } else if (mode === 'erase'){
+    isDragging = true;
+    dragErase = { x: pt.x, y: pt.y, w:0, h:0 };
+  } else if (mode === 'image'){
+    const im = findImageAt(pt, st);
+    selectedImage = im;
+    redrawOverlay();
+    if (im) setStatus('Imagen seleccionada. Usa Borrar o Reemplazar (clic de nuevo abre opciones).');
+  }
+}
+function onMove(evt){
+  if (mode === 'erase' && isDragging && dragErase){
+    const pt = canvasPoint(evt);
+    dragErase.w = pt.x - dragErase.x;
+    dragErase.h = pt.y - dragErase.y;
+    redrawOverlay();
+  }
+}
+function onUp(){
+  if (mode === 'erase' && isDragging && dragErase){
+    isDragging = false;
+    let {x,y,w,h} = dragErase;
+    if (w<0){ x+=w; w=-w; } if (h<0){ y+=h; h=-h; }
+    if (w>3 && h>3) pushEdit({ type:'whiteout', x, y, w, h });
+    dragErase = null;
+    redrawOverlay();
+  }
+}
+
+// clic sobre imagen ya seleccionada -> preguntar accion
+overlayCanvas.addEventListener('click', (evt) => {
+  if (mode !== 'image' || !selectedImage) return;
+  const pt = canvasPoint(evt);
+  const im = findImageAt(pt, pagesState[currentPage]);
+  if (im === selectedImage){
+    const accion = confirm('Aceptar = Borrar imagen (tapar con blanco)\nCancelar = Reemplazar por otra imagen');
+    if (accion){
+      pushEdit({ type:'whiteout', x: im.x, y: im.y, w: im.w, h: im.h });
+      selectedImage = null;
+    } else {
+      pendingImageTarget = im;
+      document.getElementById('imageInput').click();
+    }
+  }
+});
+let pendingImageTarget = null;
+document.getElementById('imageInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file || !pendingImageTarget) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const img = new Image();
+    img.onload = () => {
+      pushEdit({ type:'image', x: pendingImageTarget.x, y: pendingImageTarget.y, w: pendingImageTarget.w, h: pendingImageTarget.h, dataUrl: ev.target.result, _img: img });
+      pendingImageTarget = null;
+      selectedImage = null;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+// ---------- rotores (avance/retroceso de línea) ----------
+document.getElementById('rotorDown').addEventListener('click', function(){
+  this.style.transform = 'rotate(35deg)';
+  setTimeout(()=> this.style.transform='', 150);
+  pageWindow.scrollBy({ top: 26, behavior:'smooth' });
+});
+document.getElementById('rotorUp').addEventListener('click', function(){
+  this.style.transform = 'rotate(-35deg)';
+  setTimeout(()=> this.style.transform='', 150);
+  pageWindow.scrollBy({ top: -26, behavior:'smooth' });
+});
+
+// ---------- navegación de hojas ----------
+document.getElementById('prevPage').addEventListener('click', async () => {
+  if (currentPage > 1){ currentPage--; await renderPage(currentPage); }
+});
+document.getElementById('nextPage').addEventListener('click', async () => {
+  if (currentPage < numPages){ currentPage++; await renderPage(currentPage); }
+});
+
+// ---------- deshacer / limpiar ----------
+document.getElementById('undoBtn').addEventListener('click', () => {
+  const st = pagesState[currentPage];
+  if (st && st.edits.length){ st.edits.pop(); redrawOverlay(); }
+});
+document.getElementById('clearPageBtn').addEventListener('click', () => {
+  const st = pagesState[currentPage];
+  if (st && confirm('¿Borrar todas las ediciones de esta hoja?')){ st.edits = []; redrawOverlay(); }
+});
+
+// ---------- exportar PDF final ----------
+document.getElementById('exportBtn').addEventListener('click', async () => {
+  if (!pdfBytesOriginal){ return; }
+  setStatus('Escribiendo la hoja final...');
+  try {
+    const { PDFDocument, StandardFonts, rgb } = PDFLib;
+    const outDoc = await PDFDocument.load(pdfBytesOriginal);
+    const font = await outDoc.embedFont(StandardFonts.Courier);
+    const pages = outDoc.getPages();
+
+    for (const [pageNumStr, st] of Object.entries(pagesState)){
+      const pageNum = parseInt(pageNumStr, 10);
+      if (!st.edits.length) continue;
+      const page = pages[pageNum - 1];
+      const scale = st.scale;
+      const pdfH = st.pdfH;
+
+      for (const ed of st.edits){
+        if (ed.type === 'whiteout'){
+          page.drawRectangle({
+            x: ed.x / scale,
+            y: pdfH - (ed.y + ed.h) / scale,
+            width: ed.w / scale,
+            height: ed.h / scale,
+            color: rgb(1,1,1),
+          });
+        } else if (ed.type === 'text' && ed.text){
+          const fontSizePt = ed.fontSize / scale;
+          const col = ed.color === '#9c3b34' ? rgb(0.61,0.23,0.20) : rgb(0.07,0.07,0.06);
+          const lines = ed.text.split('\n');
+          lines.forEach((line, i) => {
+            const lineTopPx = ed.y + i * ed.fontSize * 1.25;
+            const baselinePx = lineTopPx + ed.fontSize * 0.82;
+            page.drawText(line, {
+              x: ed.x / scale,
+              y: pdfH - baselinePx / scale,
+              size: fontSizePt,
+              font,
+              color: col,
+            });
+          });
+        } else if (ed.type === 'image' && ed.dataUrl){
+          let embedded;
+          if (ed.dataUrl.startsWith('data:image/png')) embedded = await outDoc.embedPng(ed.dataUrl);
+          else embedded = await outDoc.embedJpg(ed.dataUrl);
+          page.drawImage(embedded, {
+            x: ed.x / scale,
+            y: pdfH - (ed.y + ed.h) / scale,
+            width: ed.w / scale,
+            height: ed.h / scale,
+          });
+        }
+      }
+    }
+
+    const bytes = await outDoc.save();
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'ficha-editada.pdf';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    setStatus('PDF exportado: revisa tu carpeta de descargas.');
+  } catch (err){
+    console.error(err);
+    setStatus('Hubo un problema al exportar. Revisa la consola del navegador.');
+  }
+});
+</script>
+</body>
+</html>
